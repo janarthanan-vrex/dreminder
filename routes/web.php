@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -8,7 +11,14 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::get('/', function () {return view('index');});
+Route::get('/', function () {
+
+    if (auth()->check()) {
+        return redirect()->route('user.dashboard'); // ✅ correct
+    }
+
+    return view('index');
+});
 Route::get('/index', function () {return view('index');});
 Route::get('/about', function () {return view('about');});
 Route::get('/category', function () {return view('category');});
@@ -19,11 +29,23 @@ Route::get('/contact', function () {return view('contact');});
 Route::get('/pricing', function () {return view('pricing');});
 Route::get('/privacy', function () {return view('privacy');});
 Route::get('/terms', function () {return view('terms');});
-Route::get('/login', function () {return view('login');});
-Route::get('/register', function () {return view('register');});
+
+
+Route::get('/login',[AuthController::class,'loginpage'])->name('loginpage');
+Route::get('/register', [AuthController::class, 'registerpage'])->name('registerpage');
+Route::post('/register', [AuthController::class, 'store'])->name('register.store');
+Route::post('/coupon/apply',  [AuthController::class, 'applyCoupon'])->name('coupon.apply');
+Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('check.email');
+Route::get('/user/magic-login/{id}/{token}', [AuthController::class, 'magicLogin'])->name('user.magic.login');
+Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/save-token', [AuthController::class, 'saveToken'])->middleware('auth');
+
 Route::get('/forgot-password', function () {return view('forgot-password');});
 Route::get('/reset-password', function () {return view('reset-password');});
 Route::get('/test', function () {return view('test');});
+Route::get('/invoice', function () {return view('emails.invoice_view');});
 
 
 // Admin
@@ -64,7 +86,8 @@ Route::get('/admin-cms-privacy', function () { return view('admin.admin-cms-priv
 
 
 // User
-Route::get('/user-dashboard', function () {return view('user.dashboard');});
+
+Route::get('/user-dashboard',[UserController::class,'userDashboard'])->name('user.dashboard');
 Route::get('/user-profile', function () {return view('user.profile');});
 Route::get('/user-analytics', function () {return view('user.analytics');});
 Route::get('/user-calendar', function () {return view('user.calendar');});

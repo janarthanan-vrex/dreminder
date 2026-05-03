@@ -51,13 +51,20 @@
         <div class="user-row" style="display:flex;align-items:center;gap:9px;overflow:hidden">
             <div id="av-box" style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#0d9488);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;cursor:pointer;overflow:hidden" onclick="go('profile')">JM</div>
             <div class="user-meta lbl" style="flex:1;min-width:0;overflow:hidden">
-                <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="user-name-sb">Kishore Rex</div>
-                <div style="font-size:.7rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Kishore@example.com</div>
+                <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="user-name">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</div>
+                <div style="font-size:.7rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{$user->email}}</div>
             </div>
             <button class="logout-btn btn btn-xs btn-ghost" onclick="handleLogout()" style="flex-shrink:0;padding:5px 7px" title="Logout"><i class="ri-logout-box-r-line"></i></button>
         </div>
     </div>
 </aside>
+
+
+<script>
+    var logoutUrl = "{{ route('logout') }}";
+    var loginUrl = "{{ route('loginpage') }}";
+    var csrfToken = "{{ csrf_token() }}";
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
@@ -72,5 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link.classList.add("active");
         }
     });
+
+    
 });
 </script>

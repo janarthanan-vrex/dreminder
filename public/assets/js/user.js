@@ -2104,8 +2104,18 @@ function selPri(btn) {
 
 function handleLogout() {
     confirm_act('Are you sure you want to logout?', () => {
-        toast('Logged out successfully', 'success');
-        setTimeout(() => window.location.reload(), 1500);
+        fetch(logoutUrl, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken
+            }
+        })
+        .then(() => {
+            toast('Logged out successfully', 'success');
+            setTimeout(() => {
+                window.location.href = loginUrl;
+            }, 1000);
+        });
     });
 }
 
