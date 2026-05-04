@@ -44,6 +44,8 @@ Route::post('/save-token', [AuthController::class, 'saveToken'])->middleware('au
 
 Route::get('/forgot-password',[AuthController::class,'forgotPasswordPage'])->name('forgotpassword.page');
 Route::post('/store-forgot-password', [AuthController::class, 'storeForgotPassword'])->name('storeToken.forgotpassword');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
+Route::post('/user/reset-password', [AuthController::class, 'resetPassword'])->name('user.reset-password');
 
 
 Route::get('/reset-password', function () {return view('reset-password');});
@@ -91,7 +93,9 @@ Route::get('/admin-cms-privacy', function () { return view('admin.admin-cms-priv
 // User
 
 Route::get('/user-dashboard',[UserController::class,'userDashboard'])->name('user.dashboard');
-Route::get('/user-profile', function () {return view('user.profile');});
+Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
+Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
+
 Route::get('/user-analytics', function () {return view('user.analytics');});
 Route::get('/user-calendar', function () {return view('user.calendar');});
 Route::get('/user-reminder-history', function () {return view('user.reminder-history');});

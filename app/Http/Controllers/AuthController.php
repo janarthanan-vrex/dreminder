@@ -14,6 +14,8 @@ use Stripe\Stripe;
 use Stripe\Customer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Carbon;
 
 
 use Illuminate\Support\Facades\Auth;
@@ -31,14 +33,14 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-{
-    Auth::logout(); // log the user out
+    {
+        Auth::logout(); // log the user out
 
-    $request->session()->invalidate(); // clear session
-    $request->session()->regenerateToken(); // new CSRF token
+        $request->session()->invalidate(); // clear session
+        $request->session()->regenerateToken(); // new CSRF token
 
-    return redirect()->route('loginpage'); // or wherever you want
-}
+        return redirect()->route('loginpage'); // or wherever you want
+    }
 
     public function loginpage()
     {
@@ -121,157 +123,7 @@ class AuthController extends Controller
     }
 
 
-    // ─── Registration Store ────────────────────────────────────────────
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'firstName'       => 'required|string|max:100',
-    //         'lastName'        => 'required|string|max:100',
-    //         'email'           => 'required|email|unique:users,email|max:255',
-    //         'password'        => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
-    //         'confirmPassword' => 'required|same:password',
-    //         'terms'           => 'accepted',
-    //         'address1'        => 'required|string|max:255',
-    //         'address2'        => 'nullable|string|max:255',
-    //         'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
-    //         'country'         => 'required|string|max:100',
-    //         'phone'           => ['required', 'regex:/^\+?[\d\s\-]{10,15}$/'],
-    //         'plan_id'         => 'required|exists:plan_price,id',
-    //         'cardName'        => 'required|string|max:255',
-    //         'cardNumber'      => 'required|string',
-    //         'expiry'          => ['required', 'regex:/^\d{2}\/\d{2}$/'],
-    //         'cvv'             => 'required|string',
-    //         'stripeToken'     => 'required|string',
-    //         'coupon_code'     => 'nullable|string|max:100',
-    //     ], [
-    //         'firstName.required'       => 'First name is required.',
-    //         'lastName.required'        => 'Last name is required.',
-    //         'email.required'           => 'Email address is required.',
-    //         'email.email'              => 'Please enter a valid email address.',
-    //         'email.unique'             => 'This email is already registered.',
-    //         'password.required'        => 'Password is required.',
-    //         'password.min'             => 'Password must be at least 8 characters.',
-    //         'password.regex'           => 'Password must contain uppercase, lowercase and a number.',
-    //         'confirmPassword.required' => 'Please confirm your password.',
-    //         'confirmPassword.same'     => 'Passwords do not match.',
-    //         'terms.accepted'           => 'You must accept the Terms & Conditions.',
-    //         'address1.required'        => 'Address line 1 is required.',
-    //         'postcode.required'        => 'Post code is required.',
-    //         'postcode.regex'           => 'Please enter a valid UK postcode (e.g. SW1A 1AA).',
-    //         'country.required'         => 'Country is required.',
-    //         'phone.required'           => 'Phone number is required.',
-    //         'phone.regex'              => 'Please enter a valid phone number (10-15 digits).',
-    //         'plan_id.required'         => 'Please select a plan.',
-    //         'plan_id.exists'           => 'Selected plan is invalid.',
-    //         'cardName.required'        => 'Name on card is required.',
-    //         'cardNumber.required'      => 'Card number is required.',
-    //         'expiry.required'          => 'Expiry date is required.',
-    //         'expiry.regex'             => 'Expiry must be in MM/YY format.',
-    //         'cvv.required'             => 'CVV is required.',
-    //         'stripeToken.required'     => 'Payment token missing. Please re-enter card details.',
-    //     ]);
-
-    //      // Email Verification GUID
-    //     $data = random_bytes(16);
-    //     $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
-    //     $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
-    //     $guid = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-
-    //     $plan = PlanPrice::findOrFail($request->plan_id);
-
-    //     // ─── Server-side coupon + amount calculation ───────────────────
-    //     $couponCode     = null;
-    //     $discountAmount = 0.00;
-    //     $finalAmount    = (float) $plan->total_price;
-
-    //     if (!empty($request->coupon_code)) {
-    //         $coupon = Coupon::where('code', strtoupper(trim($request->coupon_code)))
-    //             ->where('status', 'active')
-    //             ->whereDate('start_date', '<=', now())
-    //             ->whereDate('expiry_date', '>=', now())
-    //             ->first();
-
-    //         if ($coupon) {
-    //             $couponCode = $coupon->code;
-    //             if ($coupon->coupon_type === 'percentage') {
-    //                 $discountAmount = round($plan->total_price * $coupon->discount / 100, 2);
-    //             } else {
-    //                 $discountAmount = min((float) $coupon->discount, $plan->total_price);
-    //             }
-    //             $finalAmount = round(max(0, $plan->total_price - $discountAmount), 2);
-    //         }
-    //     }
-
-    //     $chargeAmountPence = (int) ($finalAmount * 100);
-
-    //     try {
-    //         Stripe::setApiKey(config('services.stripe.secret'));
-
-    //         $customer = Customer::create([
-    //             'email'  => $request->email,
-    //             'name'   => $request->firstName . ' ' . $request->lastName,
-    //             'source' => $request->stripeToken,
-    //         ]);
-
-    //         $charge = \Stripe\Charge::create([
-    //             'amount'      => $chargeAmountPence,
-    //             'currency'    => 'gbp',
-    //             'customer'    => $customer->id,
-    //             'description' => $plan->plan_name . ' Plan - Annual Subscription'
-    //                 . ($couponCode ? " (Coupon: {$couponCode})" : ''),
-    //         ]);
-
-    //         if ($charge->status !== 'succeeded') {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Payment was not successful. Please try again.',
-    //             ], 422);
-    //         }
-
-    //         [$expMonth, $expYear] = explode('/', $request->expiry);
-
-    //         $user = User::create([
-    //             'first_name' => $request->firstName,
-    //             'last_name'  => $request->lastName,
-    //             'email'      => $request->email,
-    //             'email_verification_code' => $guid,
-    //             'password'   => Hash::make($request->password),
-    //             'phone'      => $request->phone,
-    //             'address1'   => $request->address1,
-    //             'address2'   => $request->address2,
-    //             'postcode'   => strtoupper($request->postcode),
-    //             'country'    => 'United Kingdom',
-    //             'plan_id'    => $plan->id,
-    //             'status'     => 'active',
-    //         ]);
-
-    //         Payment::create([
-    //             'user_id'           => $user->id,
-    //             'card_holder_name'  => $request->cardName,
-    //             'card_last_four'    => substr(str_replace([' ', '•'], '', $request->cardNumber), -4),
-    //             'exp_month'         => trim($expMonth),
-    //             'exp_year'          => '20' . trim($expYear),
-    //             'stripe_payment_id' => $charge->id,
-    //             'discount'          => $discountAmount,   // server-verified discount
-    //             'amount'            => $finalAmount,       // server-verified final amount
-    //             'currency'          => 'GBP',
-    //             'status'            => 'successful',
-    //         ]);
-
-    //         auth()->login($user);
-
-    //         return response()->json([
-    //             'success'  => true,
-    //             'redirect' => route('loginpage'),
-    //         ]);
-
-    //     } catch (\Stripe\Exception\CardException $e) {
-    //         return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
-    //     } catch (\Exception $e) {
-    //         Log::error('Registration error: ' . $e->getMessage());
-    //         return response()->json(['success' => false, 'message' => 'Something went wrong. Please try again.'], 500);
-    //     }
-    // }
+   
 
     public function store(Request $request)
     {
@@ -478,60 +330,60 @@ class AuthController extends Controller
         }
     }
 
-   public function login(Request $request)
-{
-    
-    // ✅ Validation
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required|min:6'
-    ]);
+    public function login(Request $request)
+    {
 
-    $user = User::where('email', $request->email)->first();
+        // ✅ Validation
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ]);
 
-    // ❌ User not found
-    if (!$user) {
+        $user = User::where('email', $request->email)->first();
+
+        // ❌ User not found
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 401);
+        }
+
+        // ❌ Password incorrect
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Password is incorrect'
+            ], 401);
+        }
+
+        // ❌ User inactive
+        if ($user->status != 'active') {
+            return response()->json([
+                'status' => false,
+                'message' => 'User is inactive'
+            ], 403);
+        }
+
+        // ✅ Login with remember me
+        Auth::login($user, $request->remember);
+
+        // ✅ 🔔 SAVE FCM TOKEN HERE
+        if ($request->has('fcm_token')) {
+            $user->update([
+                'fcm_token' => $request->fcm_token
+            ]);
+        }
+
         return response()->json([
-            'status' => false,
-            'message' => 'User not found'
-        ], 401);
-    }
-
-    // ❌ Password incorrect
-    if (!Hash::check($request->password, $user->password)) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Password is incorrect'
-        ], 401);
-    }
-
-    // ❌ User inactive
-    if ($user->status != 'active') {
-        return response()->json([
-            'status' => false,
-            'message' => 'User is inactive'
-        ], 403);
-    }
-
-    // ✅ Login with remember me
-    Auth::login($user, $request->remember);
-
-    // ✅ 🔔 SAVE FCM TOKEN HERE
-    if ($request->has('fcm_token')) {
-        $user->update([
-            'fcm_token' => $request->fcm_token
+            'status' => true,
+            'message' => 'Login successful'
         ]);
     }
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Login successful'
-    ]);
-}
-
-        public function saveToken(Request $request)
+    public function saveToken(Request $request)
     {
-      
+
         $request->validate([
             'token' => 'required'
         ]);
@@ -547,65 +399,149 @@ class AuthController extends Controller
 
     public function forgotPasswordPage()
     {
-        
+
         return view('forgot-password');
     }
 
     public function storeForgotPassword(Request $request)
-{
-    try {
+    {
+        try {
 
-        $request->validate([
-            'email' => 'required|email:rfc,dns'
-        ]);
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email:rfc,dns'
+            ]);
 
-        $user = User::where('email', $request->email)->first();
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $validator->errors()->first()
+                ], 422);
+            }
 
-        if (!$user) {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'This email is not registered with us.'
+                ]);
+            }
+
+            $token = \Str::random(64);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'role' => 'user',
+                    'token' => $token,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            );
+
+            Mail::send('emails.user_reset_link', [
+                'token' => $token,
+                'email' => $request->email
+            ], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('User Reset Password');
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Reset link sent successfully'
+            ]);
+        } catch (\Exception $e) {
+
+            \Log::error($e); // 🔥 important for debugging
+
             return response()->json([
                 'status' => false,
-                'message' => 'This email is not registered with us.'
-            ]);
+                'message' => 'Server error: ' . $e->getMessage()
+            ], 500);
         }
+    }
 
-        $token = Str::random(64);
-
-        DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            [
-                'role' => 'user',
-                'token' => $token,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]
-        );
-
-        Mail::send('emails.user_reset_link', [
+    public function showResetForm($token, Request $request)
+    {
+        return view('reset-password', [
             'token' => $token,
             'email' => $request->email
-        ], function ($message) use ($request) {
-            $message->to($request->email);
-            $message->subject('User Reset Password');
-        });
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Reset link sent successfully'
-        ]);
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-
-        return response()->json([
-            'status' => false,
-            'message' => $e->errors()['email'][0] ?? 'Validation error'
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'status' => false,
-            'message' => 'Something went wrong'
         ]);
     }
+
+    public function resetPassword(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'email' => ['required', 'email'],
+        'token' => ['required'],
+        'new_password' => [
+            'required',
+            'min:8',
+            'confirmed',
+            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+            ], [
+                'new_password.required' => 'New password is required',
+                'new_password.min' => 'Password must be at least 8 characters',
+                'new_password.confirmed' => 'Passwords do not match',
+                'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
+                ]);
+                
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'errors' => $validator->errors()
+                        ], 422);
+                        }
+                        
+                       
+    // Find reset record
+    $reset = DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->where('role', 'user') // 👈 change role
+        ->first();
+
+    if (!$reset) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid reset request'
+        ], 400);
+    }
+
+    if (!hash_equals($reset->token, $request->token)) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Invalid or expired token'
+        ], 400);
+    }
+
+    if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Token expired'
+        ], 400);
+    }
+
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return response()->json([
+            'status' => false,
+            'message' => 'User not found'
+        ], 404);
+    }
+
+    $user->password = Hash::make($request->new_password);
+    $user->save();
+
+    DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Password reset successful'
+    ]);
 }
 }

@@ -19,6 +19,7 @@ class User extends Authenticatable
         'email',
         'email_verification_code',
         'password',
+        'profile',
         'phone',
         'fcm_token', // ✅ IMPORTANT
         'address1',
@@ -44,4 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function plan()
+    {
+        return $this->belongsTo(PlanPrice::class);
+    }
 }

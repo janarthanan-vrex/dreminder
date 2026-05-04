@@ -7,6 +7,10 @@
     .mob-close{display:none;}
 </style>
 
+@php
+    $user = Auth::user();
+@endphp
+
 <aside id="sidebar" class="sidebar flex flex-col">
     <!-- Logo -->
     <div style="display:flex;align-items:center;gap:10px;padding:16px 12px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;align-self: center;">
@@ -49,7 +53,10 @@
     <!-- User -->
     <div style="padding:10px 8px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0">
         <div class="user-row" style="display:flex;align-items:center;gap:9px;overflow:hidden">
-            <div id="av-box" style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#0d9488);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;cursor:pointer;overflow:hidden" onclick="go('profile')">JM</div>
+            <div id="av-box" style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#0d9488);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;cursor:pointer;overflow:hidden" onclick="go('profile')">
+
+              {{ strtoupper(substr($user->first_name ?? '', 0, 1) . substr($user->last_name ?? '', 0, 1)) }}
+            </div>
             <div class="user-meta lbl" style="flex:1;min-width:0;overflow:hidden">
                 <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="user-name">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</div>
                 <div style="font-size:.7rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{$user->email}}</div>

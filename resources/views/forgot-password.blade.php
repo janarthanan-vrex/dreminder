@@ -61,7 +61,14 @@
         </div>
         <div>
           <h4 class="font-bold text-sm text-white mb-1">Email Sent!</h4>
-          <p class="text-xs text-white/35">Check your inbox for password reset instructions. Didn't receive it? <button id="resendBtn" class="text-emerald-400 font-semibold hover:text-emerald-300">Resend</button></p>
+   <p class="text-xs text-white/35">
+  Check your inbox for password reset instructions.
+  Didn't receive it?
+  <a href="{{ route('forgotpassword.page') }}" id="resendBtn"
+     class="btn text-emerald-400 font-semibold hover:text-emerald-300">
+     Resend
+  </a>
+</p>
         </div>
       </div>
     </div>
@@ -78,9 +85,11 @@
 <script src="{{ asset('assets/js/script.js') }}"></script>
 
 <script>
+
 /* =========================
    RESET PASSWORD (API CALL)
 ========================= */
+
 document.getElementById('resetBtn')?.addEventListener('click', async function () {
 
   const email = document.getElementById('forgotEmail').value;
@@ -100,7 +109,7 @@ document.getElementById('resetBtn')?.addEventListener('click', async function ()
 
   try {
 
-    const res = await fetch('/admin-forgot-password', {
+    const res = await fetch("{{ route('storeToken.forgotpassword') }}", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -155,6 +164,7 @@ document.getElementById('resendBtn')?.addEventListener('click', async function (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'X-CSRF-TOKEN': '{{ csrf_token() }}'
       },
       body: JSON.stringify({ email: email })
@@ -231,6 +241,23 @@ document.getElementById('forgotEmail')?.addEventListener('input', function () {
 
     requestAnimationFrame(anim);
   })();
+})();
+</script>
+
+<script>
+// Show error message from URL
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get('error');
+
+  if (error) {
+    const emailErr = document.getElementById('emailErr');
+
+    if (emailErr) {
+      emailErr.innerText = decodeURIComponent(error);
+      emailErr.classList.add('show');
+    }
+  }
 })();
 </script>
 

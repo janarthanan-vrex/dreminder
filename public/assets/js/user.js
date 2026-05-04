@@ -2032,39 +2032,39 @@ function swTab(group, name, btn) {
 // ============================================================
 // MISC
 // ============================================================
-function saveProfile() {
-    const n = document.getElementById('p-name').value.trim();
-    if (n.length < 2) {
-        toast('Name must be at least 2 characters', 'error');
-        return;
-    }
-    document.getElementById('profile-display-name').textContent = n;
-    document.getElementById('user-name-sb').textContent = n;
-    S.set('user_name', n);
-    toast('Profile saved successfully!', 'success');
-}
+// function saveProfile() {
+//     const n = document.getElementById('p-name').value.trim();
+//     if (n.length < 2) {
+//         toast('Name must be at least 2 characters', 'error');
+//         return;
+//     }
+//     document.getElementById('profile-display-name').textContent = n;
+//     document.getElementById('user-name-sb').textContent = n;
+//     S.set('user_name', n);
+//     toast('Profile saved successfully!', 'success');
+// }
 
-function handleAvatar(e) {
-    const f = e.target.files[0];
-    if (!f) return;
-    if (f.size > 2097152) {
-        toast('File size must not exceed 2MB', 'error');
-        return;
-    }
-    const r = new FileReader();
-    r.onload = ev => {
-        const b = document.getElementById('av-big');
-        const sb = document.getElementById('av-box');
-        [b, sb].forEach(el => {
-            el.style.backgroundImage = `url(${ev.target.result})`;
-            el.style.backgroundSize = 'cover';
-            el.style.backgroundPosition = 'center';
-            el.textContent = '';
-        });
-        toast('Profile photo updated!', 'success');
-    };
-    r.readAsDataURL(f);
-}
+// function handleAvatar(e) {
+//     const f = e.target.files[0];
+//     if (!f) return;
+//     if (f.size > 2097152) {
+//         toast('File size must not exceed 2MB', 'error');
+//         return;
+//     }
+//     const r = new FileReader();
+//     r.onload = ev => {
+//         const b = document.getElementById('av-big');
+//         const sb = document.getElementById('av-box');
+//         [b, sb].forEach(el => {
+//             el.style.backgroundImage = `url(${ev.target.result})`;
+//             el.style.backgroundSize = 'cover';
+//             el.style.backgroundPosition = 'center';
+//             el.textContent = '';
+//         });
+//         toast('Profile photo updated!', 'success');
+//     };
+//     r.readAsDataURL(f);
+// }
 
 function clearNotifs() {
     confirm_act('Clear all notifications?', () => {

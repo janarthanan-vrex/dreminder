@@ -264,19 +264,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="auth-label">First name <span style="color:red;">*</span></label>
-                <input type="text" name="firstName" id="firstName" class="auth-input" placeholder="Enter Your First Name">
+                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="firstName" id="firstName" class="auth-input" placeholder="Enter Your First Name">
                 <p class="field-error" id="err-firstName">First name is required.</p>
               </div>
               <div>
                 <label class="auth-label">Last name <span style="color:red;">*</span></label>
-                <input type="text" name="lastName" id="lastName" class="auth-input" placeholder="Enter Your Last Name">
+                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="lastName" id="lastName" class="auth-input" placeholder="Enter Your Last Name">
                 <p class="field-error" id="err-lastName">Last name is required.</p>
               </div>
             </div>
 
             <div>
               <label class="auth-label">Email address <span style="color:red;">*</span></label>
-              <input type="email" name="email" id="email" class="auth-input" placeholder="Enter Your Email">
+              <input maxlength="40" type="email" name="email" id="email" class="auth-input" placeholder="Enter Your Email">
               <p class="field-error" id="err-email">Please enter a valid email address.</p>
               <p class="text-[11px] text-white/30 mt-1">We'll send important account updates and reminders here.</p>
             </div>
@@ -287,7 +287,7 @@
                 <span class="text-[10px] text-white/30 font-normal">(min 8 chars, 1 uppercase, 1 lowercase, 1 number)</span>
               </label>
               <div class="relative">
-                <input type="password" name="password" id="password" class="auth-input pr-10" placeholder="Create a strong password">
+                <input maxlength="100" type="password" name="password" id="password" class="auth-input pr-10" placeholder="Create a strong password">
                 <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
                   <i class="ri-eye-off-line"></i>
                 </button>
@@ -305,7 +305,7 @@
             <div>
               <label class="auth-label">Confirm password <span style="color:red;">*</span></label>
               <div class="relative">
-                <input type="password" name="confirmPassword" id="confirmPassword" class="auth-input pr-10" placeholder="Re-enter your password">
+                <input maxlength="100" type="password" name="confirmPassword" id="confirmPassword" class="auth-input pr-10" placeholder="Re-enter your password">
                 <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
                   <i class="ri-eye-off-line"></i>
                 </button>
@@ -336,19 +336,19 @@
           <div class="space-y-4">
             <div>
               <label class="auth-label">Address Line 1 <span style="color:red;">*</span></label>
-              <input type="text" name="address1" id="address1" class="auth-input" placeholder="123 High Street">
+              <input maxlength="100" type="text" name="address1" id="address1" class="auth-input" placeholder="123 High Street">
               <p class="field-error" id="err-address1">Address line 1 is required.</p>
             </div>
 
             <div>
               <label class="auth-label">Address Line 2 <span class="text-white/25 text-xs">(optional)</span></label>
-              <input type="text" name="address2" id="address2" class="auth-input" placeholder="Apartment, suite, etc.">
+              <input maxlength="100" type="text" name="address2" id="address2" class="auth-input" placeholder="Apartment, suite, etc.">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="auth-label">Post code <span style="color:red;">*</span></label>
-                <input type="text" name="postcode" id="postcode" class="auth-input" placeholder="SW1A 1AA">
+                <input maxlength="8" type="text" name="postcode" id="postcode" class="auth-input" placeholder="SW1A 1AA">
                 <p class="field-error" id="err-postcode">Please enter a valid UK postcode (e.g. SW1A 1AA).</p>
               </div>
               <div>
@@ -362,7 +362,7 @@
 
             <div>
               <label class="auth-label">Phone number <span style="color:red;">*</span></label>
-              <input type="tel" name="phone" id="phone" class="auth-input" placeholder="+44 7123 456789">
+              <input    oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" type="tel" name="phone" id="phone" class="auth-input" placeholder="+44 7123 456789">
               <p class="field-error" id="err-phone">Please enter a valid phone number (10–15 digits).</p>
               <p class="text-[11px] text-white/30 mt-1">10–15 digits, including country code.</p>
             </div>
@@ -467,7 +467,7 @@
 
             <div>
               <label class="auth-label">Name on card <span style="color:red;">*</span></label>
-              <input type="text" name="cardName" id="cardName" class="auth-input" placeholder="Enter Your Card Name">
+              <input type="text" maxlength="100" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="cardName" id="cardName" class="auth-input" placeholder="Enter Your Card Name">
               <p class="field-error" id="err-cardName">Name on card is required.</p>
             </div>
 
