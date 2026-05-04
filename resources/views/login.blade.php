@@ -62,7 +62,7 @@
       <div>
         <div class="flex items-center justify-between mb-2">
           <label class="auth-label" style="margin-bottom:0">Password</label>
-          <a href="forgot-password" class="text-xs text-purple-400 hover:text-purple-300 transition">Forgot password?</a>
+          <a href="{{ route('forgotpassword.page') }}" class="text-xs text-purple-400 hover:text-purple-300 transition">Forgot password?</a>
         </div>
         <div class="auth-input-icon" style="position:relative">
           <i class="ri-lock-line auth-icon"></i>
@@ -78,7 +78,7 @@
       <button type="button" class="auth-submit-dark" id="loginBtn"><i class="ri-login-box-line mr-2"></i>Sign In</button>
     </form>
 
-    <p class="text-center text-sm text-white/35 mt-6">Don't have an account? <a href="register" class="text-purple-400 font-bold hover:text-purple-300 transition">Sign up </a></p>
+    <p class="text-center text-sm text-white/35 mt-6">Don't have an account? <a href="{{route('registerpage')}}" class="text-purple-400 font-bold hover:text-purple-300 transition">Sign up </a></p>
 
     <div id="forgotPanel" class="hidden mt-5 p-4 rounded-2xl" style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2)">
       <h4 class="font-bold text-sm text-white mb-2"><i class="ri-lock-unlock-line mr-2 text-purple-400"></i>Reset Password</h4>
@@ -276,6 +276,16 @@ if (permission !== "granted") {
       requestAnimationFrame(anim)
     })();
   })();
+</script>
+
+<script>
+document.getElementById('loginEmail')?.addEventListener('input', function () {
+  document.getElementById('emailErr')?.classList.remove('show');
+});
+
+document.getElementById('loginPwd')?.addEventListener('input', function () {
+  document.getElementById('pwdErr')?.classList.remove('show');
+});
 </script>
 
 

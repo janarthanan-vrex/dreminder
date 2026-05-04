@@ -1,10 +1,28 @@
 @extends('layouts.app')
 @section('content')
 <style>
-    .o2{display: none !important;}
+  .o2 {
+    display: none !important;
+  }
 </style>
 
-<script>tailwind.config={theme:{extend:{colors:{primary:'#7c3aed',secondary:'#06b6d4',accent:'#10b981',dark:'#030014'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#7c3aed',
+          secondary: '#06b6d4',
+          accent: '#10b981',
+          dark: '#030014'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
 
 <div class="auth-wrap-dark section-dark min-h-screen relative overflow-hidden">
   <div class="gradient-blob w-[600px] h-[600px] bg-primary top-[-20%] left-[-15%]"></div>
@@ -58,45 +76,161 @@
 </div>
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
+
 <script>
-document.getElementById('resetBtn')?.addEventListener('click', function() {
+/* =========================
+   RESET PASSWORD (API CALL)
+========================= */
+document.getElementById('resetBtn')?.addEventListener('click', async function () {
+
   const email = document.getElementById('forgotEmail').value;
   const emailErr = document.getElementById('emailErr');
-  
+
   emailErr.classList.remove('show');
-  
-  if(!email || !email.includes('@')) {
+
+  // Frontend validation
+  if (!email || !email.includes('@')) {
+    emailErr.innerText = "Please enter a valid email address.";
     emailErr.classList.add('show');
     return;
   }
-  
+
   this.innerHTML = '<i class="ri-loader-4-line ri-spin mr-2"></i>Sending...';
   this.disabled = true;
-  
-  // Simulate API call
-  setTimeout(() => {
+
+  try {
+
+    const res = await fetch('/admin-forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ email: email })
+    });
+
+    const data = await res.json();
+
+    // ❌ Backend error
+    if (!data.status) {
+      emailErr.innerText = data.message;
+      emailErr.classList.add('show');
+
+      this.innerHTML = '<i class="ri-mail-send-line mr-2"></i>Send Reset Link';
+      this.disabled = false;
+      return;
+    }
+
+    // ✅ SUCCESS
     this.classList.add('hidden');
     document.getElementById('successMsg').classList.remove('hidden');
-  }, 1500);
+
+  } catch (err) {
+    console.log(err);
+    this.innerHTML = '<i class="ri-mail-send-line mr-2"></i>Send Reset Link';
+    this.disabled = false;
+  }
 });
 
-document.getElementById('resendBtn')?.addEventListener('click', function() {
+
+/* =========================
+   RESEND BUTTON
+========================= */
+document.getElementById('resendBtn')?.addEventListener('click', async function () {
+
+  const email = document.getElementById('forgotEmail').value;
+  const emailErr = document.getElementById('emailErr');
+
+  if (!email || !email.includes('@')) {
+    emailErr.innerText = "Enter valid email to resend.";
+    emailErr.classList.add('show');
+    return;
+  }
+
   this.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>';
-  setTimeout(() => {
+
+  try {
+
+    await fetch("{{ route('storeToken.forgotpassword') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({ email: email })
+    });
+
     this.innerHTML = 'Sent!';
     setTimeout(() => {
       this.innerHTML = 'Resend';
     }, 2000);
-  }, 1000);
+
+  } catch (err) {
+    console.log(err);
+    this.innerHTML = 'Resend';
+  }
 });
 
-// Particle background animation
-(function(){
-  const c=document.getElementById('authParticleC');if(!c)return;
-  const ctx=c.getContext('2d');let pts=[];
-  function rz(){c.width=innerWidth;c.height=innerHeight;pts=[];for(let i=0;i<60;i++){pts.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,s:Math.random()*2+1,a:Math.random()*.3+.05,h:[265,190,155][~~(Math.random()*3)]})}}
-  rz();window.addEventListener('resize',rz);
-  (function anim(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<-10)p.x=c.width+10;if(p.x>c.width+10)p.x=-10;if(p.y<-10)p.y=c.height+10;if(p.y>c.height+10)p.y=-10;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fillStyle=`hsla(${p.h},75%,60%,${p.a})`;ctx.fill()});requestAnimationFrame(anim)})();
+
+/* =========================
+   HIDE ERROR ON INPUT (SAFE)
+========================= */
+document.getElementById('forgotEmail')?.addEventListener('input', function () {
+  document.getElementById('emailErr')?.classList.remove('show');
+});
+
+
+/* =========================
+   PARTICLE BACKGROUND
+========================= */
+(function () {
+  const c = document.getElementById('authParticleC');
+  if (!c) return;
+
+  const ctx = c.getContext('2d');
+  let pts = [];
+
+  function rz() {
+    c.width = innerWidth;
+    c.height = innerHeight;
+    pts = [];
+
+    for (let i = 0; i < 60; i++) {
+      pts.push({
+        x: Math.random() * c.width,
+        y: Math.random() * c.height,
+        vx: (Math.random() - .5) * .4,
+        vy: (Math.random() - .5) * .4,
+        s: Math.random() * 2 + 1,
+        a: Math.random() * .3 + .05,
+        h: [265, 190, 155][~~(Math.random() * 3)]
+      });
+    }
+  }
+
+  rz();
+  window.addEventListener('resize', rz);
+
+  (function anim() {
+    ctx.clearRect(0, 0, c.width, c.height);
+
+    pts.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+
+      if (p.x < -10) p.x = c.width + 10;
+      if (p.x > c.width + 10) p.x = -10;
+      if (p.y < -10) p.y = c.height + 10;
+      if (p.y > c.height + 10) p.y = -10;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.h},75%,60%,${p.a})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(anim);
+  })();
 })();
 </script>
 

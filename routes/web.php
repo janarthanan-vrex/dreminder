@@ -42,7 +42,10 @@ Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/save-token', [AuthController::class, 'saveToken'])->middleware('auth');
 
-Route::get('/forgot-password', function () {return view('forgot-password');});
+Route::get('/forgot-password',[AuthController::class,'forgotPasswordPage'])->name('forgotpassword.page');
+Route::post('/store-forgot-password', [AuthController::class, 'storeForgotPassword'])->name('storeToken.forgotpassword');
+
+
 Route::get('/reset-password', function () {return view('reset-password');});
 Route::get('/test', function () {return view('test');});
 Route::get('/invoice', function () {return view('emails.invoice_view');});

@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use Stripe\Customer;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -542,4 +545,67 @@ class AuthController extends Controller
         ]);
     }
 
+    public function forgotPasswordPage()
+    {
+        
+        return view('forgot-password');
+    }
+
+    public function storeForgotPassword(Request $request)
+{
+    try {
+
+        $request->validate([
+            'email' => 'required|email:rfc,dns'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'This email is not registered with us.'
+            ]);
+        }
+
+        $token = Str::random(64);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $request->email],
+            [
+                'role' => 'user',
+                'token' => $token,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]
+        );
+
+        Mail::send('emails.user_reset_link', [
+            'token' => $token,
+            'email' => $request->email
+        ], function ($message) use ($request) {
+            $message->to($request->email);
+            $message->subject('User Reset Password');
+        });
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Reset link sent successfully'
+        ]);
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+
+        return response()->json([
+            'status' => false,
+            'message' => $e->errors()['email'][0] ?? 'Validation error'
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Something went wrong'
+        ]);
+    }
+}
 }
