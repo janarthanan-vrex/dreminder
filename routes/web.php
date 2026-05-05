@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 
 Route::get('/test-notification', function () {
 
@@ -15,8 +16,9 @@ Route::get('/test-notification', function () {
 
     $user = auth()->user();
 
+    // ✅ Token not ready yet
     if (!$user->fcm_token) {
-        return "No FCM token found ❌";
+        return "⚠️ FCM token not ready. Open dashboard and wait 2 seconds.";
     }
 
     $messaging = app('firebase.messaging');
@@ -29,11 +31,35 @@ Route::get('/test-notification', function () {
         ],
     ]);
 
-    $messaging->send($message);
+    try {
+        $messaging->send($message);
 
-    return "Notification sent to logged user ✅";
+        return response()->json([
+            'status' => true,
+            'message' => 'Notification sent successfully ✅',
+            'token_used' => $user->fcm_token
+        ]);
+
+    } catch (NotFound $e) {
+
+        // 🔥 Token invalid → reset
+        $user->update(['fcm_token' => null]);
+
+        return response()->json([
+            'status' => false,
+            'message' => '❌ Token expired. Refresh dashboard to regenerate.',
+        ]);
+
+    } catch (\Exception $e) {
+
+        // 🔥 Any other Firebase error
+        return response()->json([
+            'status' => false,
+            'message' => '🔥 Firebase error: ' . $e->getMessage()
+        ]);
+    }
+
 });
-
 
 
 Route::get('/', function () {
@@ -120,6 +146,7 @@ Route::get('/admin-cms-privacy', function () { return view('admin.admin-cms-priv
 Route::get('/user-dashboard',[UserController::class,'userDashboard'])->name('user.dashboard');
 Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
 Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
+Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
 
 Route::get('/user-analytics', function () {return view('user.analytics');});
 Route::get('/user-calendar', function () {return view('user.calendar');});

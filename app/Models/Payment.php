@@ -19,6 +19,7 @@ class Payment extends Model
         'discount',
         'amount',
         'currency',
+        'payment_mode',
         'status',
     ];
 }

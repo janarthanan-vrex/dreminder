@@ -362,7 +362,7 @@
 
             <div>
               <label class="auth-label">Phone number <span style="color:red;">*</span></label>
-              <input    oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" type="tel" name="phone" id="phone" class="auth-input" placeholder="+44 7123 456789">
+              <input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" type="tel" name="phone" id="phone" class="auth-input" placeholder="+44 7123 456789">
               <p class="field-error" id="err-phone">Please enter a valid phone number (10–15 digits).</p>
               <p class="text-[11px] text-white/30 mt-1">10–15 digits, including country code.</p>
             </div>

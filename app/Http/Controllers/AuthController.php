@@ -100,7 +100,7 @@ class AuthController extends Controller
         return response()->json(['exists' => $exists]);
     }
 
-    public function magicLogin($id, $token)
+    public function magicLogin($id, $token, Request $request)
     {
         $user = User::where('id', $id)
             ->where('email_verification_code', $token)
@@ -114,6 +114,7 @@ class AuthController extends Controller
 
         // ✅ Login using default user guard
         Auth::login($user);
+
 
         // Optional: expire token after use
         // $user->email_verification_code = null;
@@ -255,6 +256,7 @@ class AuthController extends Controller
                 'discount'          => $discountAmount,
                 'amount'            => $finalAmount,
                 'currency'          => 'GBP',
+                'payment_mode'       => 'card',
                 'status'            => 'successful',
             ]);
 

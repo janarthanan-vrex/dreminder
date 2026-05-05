@@ -180,6 +180,60 @@
 @include('user.layouts.firebase_setup')
 
 <script>
+async function initFCMAndSave() {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      console.log("Permission denied");
+      return;
+    }
+
+    // 🔥 get token
+    const token = await messaging.getToken({
+      vapidKey: "BIkREF621bG6cSbBAo2Xn4VO6APwEyJ-mvnMDVm_5jsG8XLGFNpz2mLCDiP3FX8zmWfvUewvBO2Rvw8Iq0U_tkg"
+    });
+
+    if (!token) {
+      console.log("No token ❌");
+      return;
+    }
+
+    console.log("Token:", token);
+
+    // 🔥 get existing token from DB
+    const existingToken = @json(auth()->user()->fcm_token);
+
+    // ✅ ONLY STORE IF NOT EXISTS
+    if (existingToken) {
+      console.log("Token already exists in DB ✅");
+      return;
+    }
+
+    // 🔥 save token
+    await fetch('/save-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+      },
+      body: JSON.stringify({
+        token: token
+      })
+    });
+
+    console.log("Token stored successfully ✅");
+
+  } catch (err) {
+    console.log("FCM error:", err);
+  }
+}
+
+// 🚀 run immediately
+initFCMAndSave();
+</script>
+
+<script>
     // Add click animation
     document.querySelectorAll('.ticker-item.clickable').forEach(item => {
         item.addEventListener('click', function(e) {

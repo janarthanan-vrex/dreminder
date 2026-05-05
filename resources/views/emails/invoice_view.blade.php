@@ -1,172 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>Invoice {{ $invoiceId ?? '' }}</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
 
-  body {
-    font-family: DejaVu Sans, sans-serif;
-    font-size: 12px;
-    color: #1a1a2e;
-    background: #ffffff;
-    padding: 36px 40px;
-  }
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
 
-  .header-table { width: 100%; margin-bottom: 28px; border-bottom: 3px solid #7c3aed; padding-bottom: 20px; }
-  .brand-name   { font-size: 24px; font-weight: 700; color: #7c3aed; }
-  .brand-sub    { font-size: 10px; color: #888; margin-top: 3px; }
-  .inv-title    { font-size: 26px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 2px; text-align: right; }
-  .inv-number   { font-size: 11px; color: #666; text-align: right; margin-top: 4px; }
+    <style>
+        :root{
+            --bg:#f8fafc;
+            --panel:#ffffff;
+            --panel-2:#f1f5f9;
+            --line:#e2e8f0;
+            --border:#cbd5e1;
+            --text:#1e293b;
+            --muted:#64748b;
+            --faint:#94a3b8;
+            --primary:#7c3aed;
+            --accent:#0d9488;
+            --success:#10b981;
+            --warning:#f59e0b;
+            --white:#ffffff;
+            --black:#0f172a;
+            --radius:20px;
+        }
 
-  .badge-paid    { display: inline-block; background: #d1fae5; color: #065f46; font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 3px 10px; border-radius: 12px; }
-  .badge-pending { display: inline-block; background: #fef3c7; color: #92400e; font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 3px 10px; border-radius: 12px; }
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{height:100%}
+        body{font-family: Inter, "Segoe UI", sans-serif;background:
+                radial-gradient(circle at top left, rgba(124,58,237,.08), transparent 40%),
+                radial-gradient(circle at bottom right, rgba(13,148,136,.06), transparent 35%),linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);color:var(--text);padding:24px;}
 
-  .meta-table   { width: 100%; margin-bottom: 28px; border-spacing: 10px 0; border-collapse: separate; }
-  .meta-cell    { width: 50%; background: #f8f7ff; border: 1px solid #ede9fe; border-radius: 6px; padding: 14px 16px; }
-  .meta-label   { font-size: 9px; text-transform: uppercase; color: #7c3aed; font-weight: 700; margin-bottom: 8px; }
-  .meta-name    { font-size: 13px; font-weight: 700; }
-  .meta-text    { font-size: 11px; color: #444; line-height: 1.7; }
+        .invoice-shell{max-width:960px;margin:0 auto;}
+        .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+        .topbar-title h1{font-size:1.4rem;font-weight:800;color:var(--black);}
+        .topbar-title p{font-size:.86rem;color:var(--muted);margin-top:4px;}
+        .topbar-actions{display:flex;gap:10px;flex-wrap:wrap;}
+        .btn{border:1px solid var(--border);background:var(--white);color:var(--text);border-radius:12px;padding:10px 14px;font-size:.84rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:all .2s ease;}
+        .btn:hover{background:var(--panel-2);border-color:var(--muted);}
+        .btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent));border-color:transparent;color:#fff;}
+        .btn.primary:hover{box-shadow:0 8px 20px rgba(124,58,237,.25);transform:translateY(-1px);}
+        .invoice-card{background:var(--white);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.08);}
+        .invoice-head{padding:28px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:linear-gradient(135deg, rgba(124,58,237,.06), rgba(13,148,136,.04));}
+        .brand{display:flex;flex-direction:column;gap:12px;width: 50%;}
+        .brand-mark{width:30%;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:800;}        .brand-mark img{width:100%;}
+        .brand-info h2{font-size:1rem;font-weight:800;color:var(--black);}
+        .brand-info p{font-size:.78rem;color:var(--muted);margin-top:4px;line-height:1.5;}
+        .invoice-meta{text-align:right;min-width:220px;}
+        .invoice-meta h3{font-size:1.25rem;font-weight:800;color:var(--black);}
+        .invoice-meta p{font-size:.8rem;color:var(--muted);margin-top:6px;line-height:1.6;}
+        .status-badge{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:7px 12px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.03em;}
+        .status-badge.completed{color:var(--success);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);}
+        .status-badge.pending{color:#d97706;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);}
+        .status-dot{width:7px;height:7px;border-radius:50%;background:currentColor;}
+        .invoice-body{padding:28px;}
+        .info-grid{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:16px;margin-bottom:20px;}
+        .info-box{background:var(--panel-2);border:1px solid var(--line);border-radius:16px;padding:16px;}
+        .label{font-size:.69rem;color:var(--faint);text-transform:uppercase;letter-spacing:.12em;font-weight:800;margin-bottom:10px;}
+        .info-box .main{font-size:.9rem;font-weight:700;color:var(--black);line-height:1.6;}
+        .info-box .sub{font-size:.8rem;color:var(--muted);line-height:1.7;margin-top:4px;}
+        .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;margin-bottom:18px;}
+        table{width:100%;border-collapse:collapse;min-width:700px;}
+        thead th{text-align:left;padding:14px 16px;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;background:var(--panel-2);border-bottom:1px solid var(--line);}
+        tbody td{padding:16px;font-size:.84rem;color:var(--text);border-bottom:1px solid var(--line);}
+        tbody tr:last-child td{border-bottom:none;}
+        tbody tr:hover{background:rgba(124,58,237,.02);}
+        .text-right{text-align:right;}
+        .summary-row{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;}
+        .notes-box, .totals-box{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:18px;}
+        .notes-box p{font-size:.82rem;color:var(--muted);line-height:1.8;}
+        .totals-list{display:flex;flex-direction:column;gap:12px;}
+        .totals-item{display:flex;justify-content:space-between;gap:16px;font-size:.84rem;color:var(--muted);}
+        .totals-item strong{color:var(--black);}
+        .totals-item.grand{margin-top:6px;padding-top:14px;border-top:1px solid var(--line);font-size:1rem;font-weight:800;}
+        .totals-item.grand span:first-child{color:var(--black);}
+        .totals-item.grand span:last-child{color:#0d9488;}
+        @media (max-width: 768px){
+            body{padding:14px}
+            .invoice-head,.invoice-body{padding:18px}
+            .info-grid,.summary-row{grid-template-columns:1fr}
+            .invoice-meta{text-align:left}
+        }
 
-  .items-table  { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-  .items-table thead tr { background: #7c3aed; color: #ffffff; }
-  .items-table thead th { padding: 9px 12px; font-size: 10px; text-align: left; }
-  .items-table thead th.right { text-align: right; }
-  .items-table tbody td { padding: 10px 12px; font-size: 12px; border-bottom: 1px solid #ede9fe; }
-  .items-table tbody td.right { text-align: right; font-weight: 600; }
-
-  .totals-wrap  { width: 260px; margin-left: auto; margin-bottom: 28px; }
-  .totals-table { width: 100%; border-collapse: collapse; }
-  .totals-table td { padding: 5px 4px; font-size: 12px; border-bottom: 1px solid #ede9fe; }
-  .totals-table td.right { text-align: right; font-weight: 600; }
-  .totals-table tr.discount td { color: #059669; }
-  .totals-table tr.total td { font-size: 14px; font-weight: 700; color: #7c3aed; border-bottom: none; }
-
-  .thankyou { text-align: center; background: #f8f7ff; border-radius: 6px; padding: 12px; margin-bottom: 24px; }
-
-  .footer-table { width: 100%; margin-top: 28px; border-top: 1px solid #ede9fe; padding-top: 12px; }
-  .footer-table td { font-size: 10px; color: #aaa; }
-  .footer-table td.right { text-align: right; }
-  .footer-table td.center { text-align: center; }
-</style>
+        @media print{
+            body{background:#fff;padding:0;color:#111827;}
+            .topbar{display:none;}
+            .invoice-card{box-shadow:none;border:1px solid #e5e7eb;}
+            .invoice-head{background:#fff;}
+            .brand-info h2,
+            .invoice-meta h3,
+            .info-box .main,
+            tbody td,
+            .totals-item strong{color:#111827 !important;}
+            .brand-info p,
+            .invoice-meta p,
+            .info-box .sub,
+            .notes-box p,
+            thead th,
+            .totals-item{color:#475569 !important;}
+            .info-box,.notes-box,.totals-box,.table-wrap{background:#fff;border:1px solid #e5e7eb;}
+        }
+    </style>
 </head>
 <body>
+<div class="invoice-shell">
 
-<table class="header-table">
-  <tr>
-    <td>
-      <div class="brand-name">DReminder</div>
-      <div class="brand-sub">Bill &amp; Subscription Reminder Service</div>
-    </td>
-    <td style="text-align:right;">
-      <div class="inv-title">Invoice</div>
-      <div class="inv-number"># {{ $invoiceId ?? '' }}</div>
-      <div style="margin-top:6px;">
-        @if(($isPaid ?? false))
-          <span class="badge-paid">Paid</span>
-        @else
-          <span class="badge-pending">Pending</span>
-        @endif
-      </div>
-    </td>
-  </tr>
-</table>
+    {{-- TOPBAR (optional for PDF, keep if needed) --}}
+    <div class="topbar">
+        <div class="topbar-title">
+            <h1>Invoice Preview</h1>
+            <p>Standalone invoice route opened from your transactions drawer.</p>
+        </div>
+    </div>
 
-<table class="meta-table">
-  <tr>
-    <td class="meta-cell">
-      <div class="meta-label">Bill To</div>
-      <div class="meta-name">{{ ($user->first_name ?? '') }} {{ ($user->last_name ?? '') }}</div>
-      <div class="meta-text">{{ $user->email ?? '' }}</div>
-      <div class="meta-text">{{ $user->phone ?? '' }}</div>
-      <div class="meta-text">
-        {{ $user->address1 ?? '' }}
-        {{ isset($user->address2) ? ', '.$user->address2 : '' }}
-      </div>
-      <div class="meta-text">{{ $user->postcode ?? '' }}, {{ $user->country ?? '' }}</div>
-    </td>
+    <div class="invoice-card">
 
-    <td class="meta-cell">
-      <div class="meta-label">Invoice Details</div>
-      <div class="meta-text"><strong>Invoice No:</strong> {{ $invoiceId ?? '' }}</div>
-      <div class="meta-text"><strong>Issue Date:</strong> {{ $issueDate ?? '' }}</div>
-      <div class="meta-text"><strong>Due Date:</strong> {{ $dueDate ?? '' }}</div>
-      <div class="meta-text"><strong>Payment Method:</strong> Card (Stripe)</div>
-      <div class="meta-text"><strong>Transaction ID:</strong> {{ $payment->stripe_payment_id ?? '' }}</div>
-    </td>
-  </tr>
-</table>
+        {{-- HEADER --}}
+        <div class="invoice-head">
 
-<table class="items-table">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Description</th>
-      <th>Period</th>
-      <th class="right">Amount</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>
-        {{ $plan->plan_name ?? '' }} Plan
-        @if(!empty($couponCode))
-          <div>Coupon: {{ $couponCode }}</div>
-        @endif
-      </td>
-      <td>
-        {{ now()->format('d M Y') }} -<br>
-        {{ now()->addYear()->format('d M Y') }}
-      </td>
-      <td class="right">
-        {{ $currencySymbol ?? '' }}{{ number_format($plan->total_price ?? 0, 2) }}
-      </td>
-    </tr>
+            <div class="brand">
+                <div class="brand-mark">
+                    
+                <img src=" {{ public_path('assets/images/common/d-remind.png') }}" alt="d-reminder-logo">
+                   
+                </div>
 
-    @if(($vatAmount ?? 0) > 0)
-    <tr>
-      <td>2</td>
-      <td>VAT</td>
-      <td></td>
-      <td class="right">{{ $currencySymbol ?? '' }}{{ number_format($vatAmount ?? 0, 2) }}</td>
-    </tr>
-    @endif
-  </tbody>
-</table>
+                <div class="brand-info">
+                    <p>
+                        123 Sample Street, Chennai, Tamil Nadu<br>
+                        support@yourstore.com · +91 98765 43210
+                    </p>
+                </div>
+            </div>
 
-<div class="totals-wrap">
-  <table class="totals-table">
-    <tr>
-      <td>Subtotal</td>
-      <td class="right">{{ $currencySymbol ?? '' }}{{ number_format($plan->total_price ?? 0, 2) }}</td>
-    </tr>
+            <div class="invoice-meta">
+                <h3>{{ $invoiceId ?? 'INV-0000' }}</h3>
 
-    @if(($discount ?? 0) > 0)
-    <tr class="discount">
-      <td>Discount</td>
-      <td class="right">- {{ $currencySymbol ?? '' }}{{ number_format($discount ?? 0, 2) }}</td>
-    </tr>
-    @endif
+                <p>
+                    Invoice date · {{ $issueDate ?? now()->format('d M Y') }}
+                </p>
 
-    <tr class="total">
-      <td>Total Paid</td>
-      <td class="right">{{ $currencySymbol ?? '' }}{{ number_format($finalAmount ?? 0, 2) }}</td>
-    </tr>
-  </table>
+                <div>
+                    @if(($isPaid ?? false))
+                        <span class="status-badge completed">
+                            <span class="status-dot"></span>Paid
+                        </span>
+                    @else
+                        <span class="status-badge pending">
+                            <span class="status-dot"></span>Pending
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+        </div>
+
+        {{-- BODY --}}
+        <div class="invoice-body">
+
+            <div class="info-grid">
+
+                {{-- BILL TO --}}
+                <div class="info-box">
+                    <div class="label">Bill To</div>
+
+                    <div class="main">
+                        {{ trim((optional($user)->first_name ?? '') . ' ' . (optional($user)->last_name ?? '')) ?: 'Customer' }}
+                    </div>
+
+                    <div class="sub">
+                        {{ optional($user)->email ?? '-' }}
+                    </div>
+
+                    <div class="sub">
+                        {{ optional($user)->address1 ?? '' }}
+                        {{ optional($user)->address2 ?? '' }}
+                        {{ optional($user)->postcode ?? '' }}
+                    </div>
+                </div>
+
+                {{-- INVOICE DETAILS --}}
+                <div class="info-box">
+                    <div class="label">Invoice Details</div>
+
+                    <div class="sub">
+                        Transaction ID:
+                        <span class="main">
+                            {{ optional($payment)->stripe_payment_id ?? '-' }}
+                        </span>
+                    </div>
+
+                    <div class="sub">
+                        Order Ref:
+                        <span class="main">
+                            {{ $invoiceId ?? '-' }}
+                        </span>
+                    </div>
+
+                    <div class="sub">
+                        Payment Method:
+                        {{ ucfirst(optional($payment)->payment_mode ?? 'card') }}
+                    </div>
+
+                    <div class="sub">
+                        Currency:
+                        {{ optional($payment)->currency ?? 'GBP' }}
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- TABLE --}}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Description</th>
+                        <th class="text-right">Qty</th>
+                        <th class="text-right">Unit</th>
+                        <th class="text-right">VAT</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {{-- SINGLE PLAN ITEM (safe) --}}
+                    <tr>
+                        <td>1</td>
+
+                        <td>
+                            {{ optional($plan)->plan_name ?? 'Subscription Plan' }}
+                        </td>
+
+                        <td class="text-right">1</td>
+
+                        <td class="text-right">
+                            {{ $currencySymbol ?? '£' }}
+                            {{ number_format($basePrice ?? 0, 2) }}
+                        </td>
+
+                        <td class="text-right">
+                            {{ number_format($vatAmount ?? 0, 2) }}
+                        </td>
+
+                        <td class="text-right">
+                            {{ $currencySymbol ?? '£' }}
+                            {{ number_format($finalAmount ?? 0, 2) }}
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- SUMMARY --}}
+            <div class="summary-row">
+
+                <div class="notes-box">
+                    <div class="label">Notes</div>
+                    <p>
+                        Thank you for your purchase. This invoice was generated automatically.
+                    </p>
+                </div>
+
+                <div class="totals-box">
+                    <div class="label">Amount Breakdown</div>
+
+                    <div class="totals-list">
+
+                        <div class="totals-item">
+                            <span>Subtotal</span>
+                            <strong>
+                                {{ $currencySymbol ?? '£' }}
+                                {{ number_format($basePrice ?? 0, 2) }}
+                            </strong>
+                        </div>
+
+                        <div class="totals-item">
+                            <span>Discount</span>
+                            <strong>
+                                -{{ $currencySymbol ?? '£' }}
+                                {{ number_format($discount ?? 0, 2) }}
+                            </strong>
+                        </div>
+
+                        <div class="totals-item">
+                            <span>VAT</span>
+                            <strong>
+                                {{ $currencySymbol ?? '£' }}
+                                {{ number_format($vatAmount ?? 0, 2) }}
+                            </strong>
+                        </div>
+
+                        <div class="totals-item grand">
+                            <span>Total Due</span>
+                            <span>
+                                {{ $currencySymbol ?? '£' }}
+                                {{ number_format($finalAmount ?? 0, 2) }}
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </div>
-
-<div class="thankyou">Thank you for your payment!</div>
-
-<table class="footer-table">
-  <tr>
-    <td>DReminder &copy; {{ now()->year }}</td>
-    <td class="center">Auto-generated invoice</td>
-    <td class="right">support@dreminder.co.uk</td>
-  </tr>
-</table>
-
 </body>
 </html>
