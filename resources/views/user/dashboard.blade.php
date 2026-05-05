@@ -177,6 +177,8 @@
     </div> -->
 </section>
 
+@include('user.layouts.firebase_setup')
+
 <script>
     // Add click animation
     document.querySelectorAll('.ticker-item.clickable').forEach(item => {

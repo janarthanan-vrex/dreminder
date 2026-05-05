@@ -13,15 +13,16 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-// 🔔 Handle background notifications
+// 🔔 BACKGROUND MESSAGE
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
-  const notificationTitle = payload.notification.title || "Notification";
-  const notificationOptions = {
-    body: payload.notification.body,
-    icon: '/icon.png' // optional
+  console.log('Background message:', payload);
+
+  const title = payload.data.title;
+  const options = {
+    body: payload.data.body,
+    icon: '/icon.png'
   };
 
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(title, options);
 });

@@ -2,6 +2,22 @@ window.addEventListener('load',()=>{
   setTimeout(()=>{document.getElementById('loader').classList.add('hidden')},800);
 });
 
+//firebase
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAQLjzYYiC35OlGEzrDMr-oKgKxCQN7lK0",
+//   authDomain: "dreminder-d1412.firebaseapp.com",
+//   projectId: "dreminder-d1412",
+//   storageBucket: "dreminder-d1412.firebasestorage.app",
+//   messagingSenderId: "697606460456",
+//   appId: "1:697606460456:web:cf3f2f1c5dac92c8b6d11d"
+// };
+
+
+// firebase.initializeApp(firebaseConfig);
+
+// // ✅ THIS WAS MISSING
+// const messaging = firebase.messaging();
+
 // ============================================================
 // DATA
 // ============================================================

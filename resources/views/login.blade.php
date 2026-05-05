@@ -95,25 +95,9 @@
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAQLjzYYiC35OlGEzrDMr-oKgKxCQN7lK0",
-  authDomain: "dreminder-d1412.firebaseapp.com",
-  projectId: "dreminder-d1412",
-  storageBucket: "dreminder-d1412.firebasestorage.app",
-  messagingSenderId: "697606460456",
-  appId: "1:697606460456:web:cf3f2f1c5dac92c8b6d11d"
-};
+@include('user.layouts.firebase_setup')
 
 
-firebase.initializeApp(firebaseConfig);
-
-// ✅ THIS WAS MISSING
-const messaging = firebase.messaging();
-</script>
 <script>
   document.getElementById('togglePwd')?.addEventListener('click', function() {
     const inp = document.getElementById('loginPwd');

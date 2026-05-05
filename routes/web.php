@@ -4,10 +4,35 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 
 use Illuminate\Support\Facades\Route;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/test-notification', function () {
+
+    if (!auth()->check()) {
+        return "User not logged in ❌";
+    }
+
+    $user = auth()->user();
+
+    if (!$user->fcm_token) {
+        return "No FCM token found ❌";
+    }
+
+    $messaging = app('firebase.messaging');
+
+    $message = CloudMessage::fromArray([
+        'token' => $user->fcm_token,
+        'data' => [
+            'title' => 'Hello 🔔',
+            'body' => 'This is notification for logged user',
+        ],
+    ]);
+
+    $messaging->send($message);
+
+    return "Notification sent to logged user ✅";
+});
 
 
 
