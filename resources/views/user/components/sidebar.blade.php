@@ -28,7 +28,7 @@
     <!-- Nav -->
     <nav style="flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 8px">
         <div class="section-lbl"><span>Main</span></div>
-        <a class="nav-link" href="user-dashboard"><i class="ri-dashboard-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Dashboard</span></a>
+        <a class="nav-link" href="{{ route('user.dashboard') }}"><i class="ri-dashboard-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Dashboard</span></a>
         <a class="nav-link" href="user-analytics"><i class="ri-bar-chart-box-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Analytics</span></a>
         <div class="section-lbl" style="margin-top:4px"><span>Reminders</span></div>
         <a class="nav-link" href="user-reminders"><i class="ri-alarm-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">My Reminders</span></a>
@@ -39,11 +39,11 @@
         <!-- <a class="nav-link" href="user-templates"><i class="ri-file-list-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Templates</span></a> -->
         <!-- <a class="nav-link" href="user-shared-reminders"><i class="ri-share-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Shared Reminders</span></a> -->
         <div class="section-lbl" style="margin-top:4px"><span>Account</span></div>
-        <a class="nav-link" href="user-profile"><i class="ri-user-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Settings</span></a>
+        <a class="nav-link" href="{{ route('user.profile') }}"><i class="ri-user-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Settings</span></a>
         <a class="nav-link" href="user-notification"><i class="ri-notification-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl" style="flex:1">Notifications</span><span class="nav-notif-badge badge badge-red" id="notif-count" style="font-size:.58rem">3</span></a>
         <a class="nav-link" href="user-membership"><i class="ri-vip-crown-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Membership</span></a>
         <!-- <a class="nav-link" href="user-transaction"><i class="ri-exchange-dollar-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transaction</span></a> -->
-        <a class="nav-link" href="user-transactions"><i class="ri-shopping-bag-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transactions</span></a>
+        <a class="nav-link" href="{{ route('user.transactions') }}"><i class="ri-shopping-bag-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transactions</span></a>
         <!-- <div class="section-lbl" style="margin-top:4px"><span>Support</span></div>
         <a class="nav-link" href="user-help"><i class="ri-question-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Help & Support</span></a>
         <a class="nav-link" href="user-feedback"><i class="ri-feedback-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Feedback</span></a> -->

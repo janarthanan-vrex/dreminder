@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -131,4 +133,44 @@ class UserController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
+   public function userTransaction(Request $request)
+{
+    $user = Auth::user();
+
+    $invoices = Invoice::with(['plan', 'payment', 'user'])
+        ->where('user_id', $user->id)
+        ->latest()
+        ->get();
+
+    $ordersData = $invoices->map(function ($invoice) {
+        $firstName = $invoice->user->first_name ?? '';
+        $lastName  = $invoice->user->last_name  ?? '';
+        $fullName  = trim($firstName . ' ' . $lastName);
+        $txnId     = $invoice->invoice_id ? $invoice->invoice_id : ('TXN-' . $invoice->id);
+        $orderId   = str_pad((string) $invoice->id, 5, '0', STR_PAD_LEFT);
+        $planName  = ($invoice->plan && $invoice->plan->plan_name) ? $invoice->plan->plan_name : 'N/A';
+        $status    = $invoice->payment_id ? 'completed' : 'pending';
+        $type      = $invoice->type ? $invoice->type : 'N/A';
+
+        return [
+            'id'        => $invoice->id,
+            'txn_id'    => $txnId,
+            'order_ref' => 'ORD-' . $orderId,
+            'customer'  => [
+                'name'  => ($fullName !== '') ? $fullName : 'Unknown User',
+                'email' => $invoice->user->email ?? '',
+                'color' => '#7c3aed',
+            ],
+            'plan_name' => $planName,
+            'amount'    => (float) ($invoice->amount ?? 0),
+            'discount'  => (float) ($invoice->discount ?? 0),
+            'type'      => $type,
+            'status'    => $status,
+            'date'      => $invoice->created_at->format('Y-m-d H:i:s'),
+            'dateStr'   => $invoice->created_at->format('d M Y'),
+        ];
+    })->values()->toArray();
+
+    return view('user.transactions', compact('user', 'invoices', 'ordersData'));
+}
 }

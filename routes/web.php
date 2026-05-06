@@ -147,6 +147,7 @@ Route::get('/user-dashboard',[UserController::class,'userDashboard'])->name('use
 Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
 Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
+Route::get('/user-transaction',[UserController::class,'userTransaction'])->name('user.transactions');
 
 Route::get('/user-analytics', function () {return view('user.analytics');});
 Route::get('/user-calendar', function () {return view('user.calendar');});
@@ -161,7 +162,7 @@ Route::get('/user-reminders', function () {return view('user.reminders');});
 Route::get('/user-templates', function () {return view('user.templates');});
 Route::get('/user-shared-reminders', function () {return view('user.reminders');});
 // Route::get('/user-transaction', function () {return view('user.transaction');});
-Route::get('/user-transactions', function () {return view('user.transactions');});
+
 Route::get('/layout', function () {return view('user.layout');});
 Route::get('/loader', function () {return view('user.loader');});
 
