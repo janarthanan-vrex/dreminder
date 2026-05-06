@@ -7,15 +7,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Category;
 
 
 class UserController extends Controller
 {
     public function userDashboard(Request $request)
-    {
-        $user = Auth::user();
-        return view('user.dashboard', compact('user'));
-    }
+{
+    $user = Auth::user();
+
+    $categories = Category::with([
+        'subcategories' => function ($query) {
+            $query->where('status', 'Active');
+        }
+    ])
+    ->where('status', 'Active')
+    ->get();
+
+    return view('user.dashboard', compact(
+        'user',
+        'categories'
+    ));
+}
     public function userProfile(Request $request)
     {
         $user = Auth::user()->load('plan');

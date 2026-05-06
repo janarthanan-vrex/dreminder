@@ -599,6 +599,7 @@ document.getElementById('confirm-ok').onclick = () => {
 // ============================================================
 // TOAST
 // ============================================================
+
 function toast(msg, type = 'info', dur = 3500) {
     const cfg = {
         success: {
@@ -935,29 +936,94 @@ function initCreate() {
     }
 }
 
+// function updateSubs() {
+//     const cat = document.getElementById('r-cat').value;
+//     const sub = document.getElementById('r-sub');
+//     sub.innerHTML = '<option value="">Select subcategory…</option>';
+//     if (cat && CATS[cat]) {
+//         // Built-in subs
+//         CATS[cat].subs.forEach(s => {
+//             const o = document.createElement('option');
+//             o.value = s;
+//             o.textContent = s;
+//             sub.appendChild(o)
+//         });
+//         // Custom subs for this category
+//         customSubs.filter(cs => cs.parent === cat).forEach(cs => {
+//             const o = document.createElement('option');
+//             o.value = cs.name;
+//             o.textContent = cs.name + ' (Custom)';
+//             sub.appendChild(o)
+//         });
+//         sub.disabled = false;
+//         document.getElementById('opt-fields').style.display = (cat !== 'special-days' && cat !== 'others') ? 'block' : 'none';
+//     } else {
+//         sub.disabled = true;
+//         document.getElementById('opt-fields').style.display = 'none';
+//     }
+// }
+
 function updateSubs() {
+
     const cat = document.getElementById('r-cat').value;
+
     const sub = document.getElementById('r-sub');
+
     sub.innerHTML = '<option value="">Select subcategory…</option>';
+
+    // 🔥 RESET OPTIONAL FIELDS
+    document.getElementById('opt-fields').style.display = 'none';
+
     if (cat && CATS[cat]) {
-        // Built-in subs
+
+        // 🔥 BUILT-IN SUBS
         CATS[cat].subs.forEach(s => {
+
             const o = document.createElement('option');
+
             o.value = s;
+
             o.textContent = s;
-            sub.appendChild(o)
+
+            sub.appendChild(o);
         });
-        // Custom subs for this category
-        customSubs.filter(cs => cs.parent === cat).forEach(cs => {
-            const o = document.createElement('option');
-            o.value = cs.name;
-            o.textContent = cs.name + ' (Custom)';
-            sub.appendChild(o)
-        });
+
+        // 🔥 CUSTOM SUBS
+        customSubs
+            .filter(cs => cs.parent === cat)
+            .forEach(cs => {
+
+                const o = document.createElement('option');
+
+                o.value = cs.name;
+
+                o.textContent = cs.name + ' (Custom)';
+
+                sub.appendChild(o);
+            });
+
         sub.disabled = false;
-        document.getElementById('opt-fields').style.display = (cat !== 'special-days' && cat !== 'others') ? 'block' : 'none';
+
+        // 🔥 IMPORTANT CONDITION
+        const catName = CATS[cat].name.toLowerCase();
+
+        // ✅ HIDE OPTIONAL FIELDS
+        if (
+            catName === 'special-days' ||
+            catName === 'others'
+        ) {
+
+            document.getElementById('opt-fields').style.display = 'none';
+
+        } else {
+
+            document.getElementById('opt-fields').style.display = 'block';
+        }
+
     } else {
+
         sub.disabled = true;
+
         document.getElementById('opt-fields').style.display = 'none';
     }
 }
@@ -2166,28 +2232,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Modal Open
-function openReminderModal() {
-    // Populate categories if empty
+// function openReminderModal() {
+//     // Populate categories if empty
+//     const cs = document.getElementById('r-cat');
+//     if (cs.children.length <= 1) {
+//         cs.innerHTML = '<option value="">Select category…</option>';
+//         Object.entries(CATS).forEach(([k, c]) => {
+//             const o = document.createElement('option');
+//             o.value = k;
+//             o.textContent = c.name;
+//             cs.appendChild(o);
+//         });
+//     }
+
+//     // Reset subcategory
+//     const sub = document.getElementById('r-sub');
+//     sub.innerHTML = '<option value="">Select category first…</option>';
+//     sub.disabled = true;
+
+//     document.getElementById('opt-fields').style.display = 'none';
+//     document.getElementById('reminder-modal').style.display = 'flex';
+//     document.body.style.overflow = 'hidden';
+// }
+
+function openReminderModal(categoryId = '', categoryName = '') {
+
     const cs = document.getElementById('r-cat');
-    if (cs.children.length <= 1) {
-        cs.innerHTML = '<option value="">Select category…</option>';
-        Object.entries(CATS).forEach(([k, c]) => {
-            const o = document.createElement('option');
-            o.value = k;
-            o.textContent = c.name;
-            cs.appendChild(o);
-        });
-    }
 
-    // Reset subcategory
-    const sub = document.getElementById('r-sub');
-    sub.innerHTML = '<option value="">Select category first…</option>';
-    sub.disabled = true;
+    // 🔥 RESET
+    cs.innerHTML = '<option value="">Select category…</option>';
 
-    document.getElementById('opt-fields').style.display = 'none';
+    // 🔥 DYNAMIC CATEGORY FETCH
+    Object.entries(CATS).forEach(([k, c]) => {
+
+        const o = document.createElement('option');
+
+        o.value = k;
+
+        o.textContent = c.name;
+
+        // ✅ auto select clicked category
+        if (
+            String(c.id) === String(categoryId) ||
+            c.name.toLowerCase() === categoryName.toLowerCase()
+        ) {
+            o.selected = true;
+        }
+
+        cs.appendChild(o);
+    });
+
+    // 🔥 UPDATE SUBS AUTOMATICALLY
+    updateSubs();
+
     document.getElementById('reminder-modal').style.display = 'flex';
+
     document.body.style.overflow = 'hidden';
 }
+
 // Modal Close
 function closeReminderModal() {
     document.getElementById('reminder-modal').style.display = 'none';

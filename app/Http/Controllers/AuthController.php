@@ -442,6 +442,7 @@ class AuthController extends Controller
             );
 
             Mail::send('emails.user_reset_link', [
+                'user' => $user,
                 'token' => $token,
                 'email' => $request->email
             ], function ($message) use ($request) {
