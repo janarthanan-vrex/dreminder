@@ -6,7 +6,9 @@
                 ORDERS PAGE — CUSTOM DATATABLE STYLES
                 ═══════════════════════════════════════════ */
 
-    .dt-wrapper { position: relative; }
+    .dt-wrapper {
+        position: relative;
+    }
 
     .dt-toolbar {
         display: flex;
@@ -17,7 +19,8 @@
         margin-bottom: 14px;
     }
 
-    .dt-toolbar-left, .dt-toolbar-right {
+    .dt-toolbar-left,
+    .dt-toolbar-right {
         display: flex;
         align-items: center;
         gap: 8px;
@@ -40,8 +43,8 @@
     }
 
     .dt-search {
-        background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.09);
+        background: rgba(255, 255, 255, .04);
+        border: 1px solid rgba(255, 255, 255, .09);
         border-radius: 10px;
         padding: 8px 12px 8px 34px;
         color: #e2e8f0;
@@ -53,19 +56,23 @@
     }
 
     .dt-search:focus {
-        border-color: rgba(124,58,237,.5);
+        border-color: rgba(124, 58, 237, .5);
         width: 270px;
     }
 
-    .dt-search::placeholder { color: #475569; }
+    .dt-search::placeholder {
+        color: #475569;
+    }
 
     .light .dt-search {
         background: #fff;
-        border-color: rgba(99,102,241,.15);
+        border-color: rgba(99, 102, 241, .15);
         color: #1e1b4b;
     }
 
-    .light .dt-search::placeholder { color: #94a3b8; }
+    .light .dt-search::placeholder {
+        color: #94a3b8;
+    }
 
     .dt-filter-chip {
         display: inline-flex;
@@ -76,21 +83,21 @@
         font-size: .73rem;
         font-weight: 700;
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,.08);
-        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255, 255, 255, .08);
+        background: rgba(255, 255, 255, .03);
         color: #64748b;
         transition: all .18s;
         white-space: nowrap;
     }
 
     .dt-filter-chip:hover {
-        border-color: rgba(124,58,237,.3);
+        border-color: rgba(124, 58, 237, .3);
         color: #a78bfa;
     }
 
     .dt-filter-chip.active {
-        background: rgba(124,58,237,.15);
-        border-color: rgba(124,58,237,.4);
+        background: rgba(124, 58, 237, .15);
+        border-color: rgba(124, 58, 237, .4);
         color: #a78bfa;
     }
 
@@ -101,8 +108,8 @@
     }
 
     .light .dt-filter-chip.active {
-        background: rgba(124,58,237,.1);
-        border-color: rgba(124,58,237,.3);
+        background: rgba(124, 58, 237, .1);
+        border-color: rgba(124, 58, 237, .3);
         color: #7c3aed;
     }
 
@@ -113,13 +120,15 @@
         min-width: 18px;
         height: 18px;
         border-radius: 5px;
-        background: rgba(124,58,237,.25);
+        background: rgba(124, 58, 237, .25);
         color: #a78bfa;
         font-size: .65rem;
         padding: 0 4px;
     }
 
-    .dt-filter-chip.active .chip-count { background: rgba(124,58,237,.4); }
+    .dt-filter-chip.active .chip-count {
+        background: rgba(124, 58, 237, .4);
+    }
 
     .dt-action-btn {
         display: inline-flex;
@@ -130,23 +139,23 @@
         font-size: .75rem;
         font-weight: 700;
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,.09);
-        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255, 255, 255, .09);
+        background: rgba(255, 255, 255, .04);
         color: #94a3b8;
         transition: all .18s;
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     .dt-action-btn:hover {
-        border-color: rgba(124,58,237,.35);
+        border-color: rgba(124, 58, 237, .35);
         color: #a78bfa;
-        background: rgba(124,58,237,.08);
+        background: rgba(124, 58, 237, .08);
     }
 
     .dt-action-btn.danger:hover {
-        border-color: rgba(244,63,94,.35);
+        border-color: rgba(244, 63, 94, .35);
         color: #f43f5e;
-        background: rgba(244,63,94,.07);
+        background: rgba(244, 63, 94, .07);
     }
 
     .light .dt-action-btn {
@@ -155,7 +164,9 @@
         color: #475569;
     }
 
-    .dt-table-wrap { overflow-x: auto; }
+    .dt-table-wrap {
+        overflow-x: auto;
+    }
 
     .dt-table {
         width: 100%;
@@ -171,7 +182,7 @@
         text-transform: uppercase;
         letter-spacing: .08em;
         color: #475569;
-        border-bottom: 1px solid rgba(255,255,255,.07);
+        border-bottom: 1px solid rgba(255, 255, 255, .07);
         white-space: nowrap;
         background: transparent;
         cursor: pointer;
@@ -179,18 +190,24 @@
         transition: color .15s;
     }
 
-    .dt-table thead tr th:hover { color: #a78bfa; }
+    .dt-table thead tr th:hover {
+        color: #a78bfa;
+    }
 
     .dt-table thead tr th.sorted-asc,
-    .dt-table thead tr th.sorted-desc { color: #a78bfa; }
+    .dt-table thead tr th.sorted-desc {
+        color: #a78bfa;
+    }
 
     .light .dt-table thead tr th {
         color: #94a3b8;
-        border-color: rgba(99,102,241,.1);
+        border-color: rgba(99, 102, 241, .1);
     }
 
     .light .dt-table thead tr th.sorted-asc,
-    .light .dt-table thead tr th.sorted-desc { color: #7c3aed; }
+    .light .dt-table thead tr th.sorted-desc {
+        color: #7c3aed;
+    }
 
     .dt-sort-icon {
         display: inline-block;
@@ -203,29 +220,41 @@
 
     th:hover .dt-sort-icon,
     th.sorted-asc .dt-sort-icon,
-    th.sorted-desc .dt-sort-icon { opacity: 1; }
+    th.sorted-desc .dt-sort-icon {
+        opacity: 1;
+    }
 
     .dt-table tbody tr {
         transition: background .15s;
         cursor: default;
     }
 
-    .dt-table tbody tr:hover { background: rgba(124,58,237,.06); }
-    .light .dt-table tbody tr:hover { background: rgba(99,102,241,.04); }
+    .dt-table tbody tr:hover {
+        background: rgba(124, 58, 237, .06);
+    }
 
-    .dt-table tbody tr.dt-row-selected { background: rgba(124,58,237,.1) !important; }
-    .light .dt-table tbody tr.dt-row-selected { background: rgba(124,58,237,.07) !important; }
+    .light .dt-table tbody tr:hover {
+        background: rgba(99, 102, 241, .04);
+    }
+
+    .dt-table tbody tr.dt-row-selected {
+        background: rgba(124, 58, 237, .1) !important;
+    }
+
+    .light .dt-table tbody tr.dt-row-selected {
+        background: rgba(124, 58, 237, .07) !important;
+    }
 
     .dt-table tbody td {
         padding: 11px 14px;
-        border-bottom: 1px solid rgba(255,255,255,.04);
+        border-bottom: 1px solid rgba(255, 255, 255, .04);
         color: #94a3b8;
         vertical-align: middle;
         white-space: nowrap;
     }
 
     .light .dt-table tbody td {
-        border-color: rgba(99,102,241,.06);
+        border-color: rgba(99, 102, 241, .06);
         color: #475569;
     }
 
@@ -249,7 +278,9 @@
         letter-spacing: .03em;
     }
 
-    .light .dt-order-id { color: #6d28d9; }
+    .light .dt-order-id {
+        color: #6d28d9;
+    }
 
     .dt-customer {
         display: flex;
@@ -270,7 +301,9 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    .dt-customer-info { line-height: 1.3; }
+    .dt-customer-info {
+        line-height: 1.3;
+    }
 
     .dt-customer-name {
         font-size: .82rem;
@@ -278,7 +311,9 @@
         color: #e2e8f0;
     }
 
-    .light .dt-customer-name { color: #1e1b4b; }
+    .light .dt-customer-name {
+        color: #1e1b4b;
+    }
 
     .dt-customer-email {
         font-size: .7rem;
@@ -300,8 +335,8 @@
         border-radius: 5px;
         font-size: .67rem;
         font-weight: 600;
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255, 255, 255, .05);
+        border: 1px solid rgba(255, 255, 255, .08);
         color: #94a3b8;
         white-space: nowrap;
     }
@@ -318,7 +353,9 @@
         color: #f1f5f9;
     }
 
-    .light .dt-amount { color: #1e1b4b; }
+    .light .dt-amount {
+        color: #1e1b4b;
+    }
 
     .dt-amount-sub {
         font-size: .7rem;
@@ -347,25 +384,25 @@
     }
 
     .dt-status.pending {
-        background: rgba(245,158,11,.12);
+        background: rgba(245, 158, 11, .12);
         color: #f59e0b;
-        border: 1px solid rgba(245,158,11,.25);
+        border: 1px solid rgba(245, 158, 11, .25);
     }
 
     .dt-status.completed {
-        background: rgba(16,185,129,.1);
+        background: rgba(16, 185, 129, .1);
         color: #10b981;
-        border: 1px solid rgba(16,185,129,.2);
+        border: 1px solid rgba(16, 185, 129, .2);
     }
 
     .dt-status-dot.pending {
         background: #f59e0b;
-        box-shadow: 0 0 6px rgba(245,158,11,.6);
+        box-shadow: 0 0 6px rgba(245, 158, 11, .6);
     }
 
     .dt-status-dot.completed {
         background: #10b981;
-        box-shadow: 0 0 6px rgba(16,185,129,.6);
+        box-shadow: 0 0 6px rgba(16, 185, 129, .6);
     }
 
     .dt-row-actions {
@@ -383,16 +420,16 @@
         justify-content: center;
         font-size: .8rem;
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,.07);
-        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255, 255, 255, .07);
+        background: rgba(255, 255, 255, .03);
         color: #64748b;
         transition: all .15s;
     }
 
     .dt-row-btn:hover {
-        border-color: rgba(124,58,237,.35);
+        border-color: rgba(124, 58, 237, .35);
         color: #a78bfa;
-        background: rgba(124,58,237,.08);
+        background: rgba(124, 58, 237, .08);
     }
 
     .light .dt-row-btn {
@@ -415,8 +452,13 @@
         color: #475569;
     }
 
-    .dt-info strong { color: #94a3b8; }
-    .light .dt-info strong { color: #475569; }
+    .dt-info strong {
+        color: #94a3b8;
+    }
+
+    .light .dt-info strong {
+        color: #475569;
+    }
 
     .dt-pagination {
         display: flex;
@@ -435,24 +477,24 @@
         font-weight: 700;
         font-family: 'Plus Jakarta Sans', sans-serif;
         cursor: pointer;
-        border: 1px solid rgba(255,255,255,.07);
-        background: rgba(255,255,255,.03);
+        border: 1px solid rgba(255, 255, 255, .07);
+        background: rgba(255, 255, 255, .03);
         color: #64748b;
         transition: all .15s;
         padding: 0 8px;
     }
 
     .dt-page-btn:hover {
-        border-color: rgba(124,58,237,.35);
+        border-color: rgba(124, 58, 237, .35);
         color: #a78bfa;
-        background: rgba(124,58,237,.08);
+        background: rgba(124, 58, 237, .08);
     }
 
     .dt-page-btn.active {
         background: linear-gradient(135deg, #7c3aed, #0d9488);
         color: #fff;
         border-color: transparent;
-        box-shadow: 0 4px 12px rgba(124,58,237,.35);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, .35);
     }
 
     .dt-page-btn:disabled {
@@ -482,8 +524,8 @@
     }
 
     .dt-per-page select {
-        background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.09);
+        background: rgba(255, 255, 255, .04);
+        border: 1px solid rgba(255, 255, 255, .09);
         border-radius: 8px;
         color: #94a3b8;
         padding: 5px 26px 5px 9px;
@@ -516,15 +558,17 @@
         opacity: .25;
     }
 
-    .dt-empty p { font-size: .84rem; }
+    .dt-empty p {
+        font-size: .84rem;
+    }
 
     .dt-bulk-bar {
         display: flex;
         align-items: center;
         gap: 10px;
         padding: 10px 14px;
-        background: linear-gradient(135deg, rgba(124,58,237,.15), rgba(13,148,136,.1));
-        border: 1px solid rgba(124,58,237,.3);
+        background: linear-gradient(135deg, rgba(124, 58, 237, .15), rgba(13, 148, 136, .1));
+        border: 1px solid rgba(124, 58, 237, .3);
         border-radius: 10px;
         margin-bottom: 10px;
         flex-wrap: wrap;
@@ -536,13 +580,15 @@
         color: #a78bfa;
     }
 
-    .light .dt-bulk-count { color: #7c3aed; }
+    .light .dt-bulk-count {
+        color: #7c3aed;
+    }
 
     /* ── Order detail drawer ── */
     .order-drawer-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,.65);
+        background: rgba(0, 0, 0, .65);
         backdrop-filter: blur(5px);
         z-index: 9997;
         opacity: 0;
@@ -562,23 +608,27 @@
         width: min(480px, 100vw);
         height: 100vh;
         background: #0c0c1e;
-        border-left: 1px solid rgba(124,58,237,.2);
+        border-left: 1px solid rgba(124, 58, 237, .2);
         z-index: 9998;
         transform: translateX(100%);
-        transition: transform .32s cubic-bezier(.16,1,.3,1);
+        transition: transform .32s cubic-bezier(.16, 1, .3, 1);
         overflow-y: auto;
         padding: 28px;
-        box-shadow: -20px 0 60px rgba(0,0,0,.5);
+        box-shadow: -20px 0 60px rgba(0, 0, 0, .5);
     }
 
     .light .order-drawer {
         background: #fff;
-        border-color: rgba(99,102,241,.15);
+        border-color: rgba(99, 102, 241, .15);
     }
 
-    .order-drawer.open { transform: translateX(0); }
+    .order-drawer.open {
+        transform: translateX(0);
+    }
 
-    .drawer-section { margin-bottom: 22px; }
+    .drawer-section {
+        margin-bottom: 22px;
+    }
 
     .drawer-section-title {
         font-size: .65rem;
@@ -588,10 +638,12 @@
         color: #475569;
         margin-bottom: 10px;
         padding-bottom: 8px;
-        border-bottom: 1px solid rgba(255,255,255,.06);
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
     }
 
-    .light .drawer-section-title { border-color: rgba(99,102,241,.08); }
+    .light .drawer-section-title {
+        border-color: rgba(99, 102, 241, .08);
+    }
 
     .drawer-row {
         display: flex;
@@ -601,7 +653,9 @@
         font-size: .83rem;
     }
 
-    .drawer-row-label { color: #64748b; }
+    .drawer-row-label {
+        color: #64748b;
+    }
 
     .drawer-row-val {
         color: #e2e8f0;
@@ -609,11 +663,18 @@
         text-align: right;
     }
 
-    .light .drawer-row-val { color: #1e1b4b; }
+    .light .drawer-row-val {
+        color: #1e1b4b;
+    }
 
     @media (max-width: 768px) {
-        .dt-search { width: 160px; }
-        .dt-search:focus { width: 200px; }
+        .dt-search {
+            width: 160px;
+        }
+
+        .dt-search:focus {
+            width: 200px;
+        }
     }
 </style>
 
@@ -763,23 +824,19 @@ const transactionsTable = (function () {
     let dateFilt   = 'all';
     let selected   = new Set();
 
-    /* ── init ── */
     function init() {
         updateCounts();
         applyFilters();
     }
 
-    /* ── chip counts ── */
     function updateCounts() {
         const counts = { pending: 0, completed: 0 };
         data.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
-
         document.getElementById('fc-all').textContent       = data.length;
         document.getElementById('fc-pending').textContent   = counts.pending;
         document.getElementById('fc-completed').textContent = counts.completed;
     }
 
-    /* ── filter + sort ── */
     function applyFilters() {
         const cutoff = dateFilt !== 'all'
             ? new Date(Date.now() - (+dateFilt) * 86400000)
@@ -790,13 +847,7 @@ const transactionsTable = (function () {
             if (cutoff && new Date(r.date) < cutoff) return false;
             if (searchQ) {
                 const q = searchQ.toLowerCase();
-                const haystack = [
-                    r.txn_id,
-                    r.order_ref,
-                    r.customer.name,
-                    r.customer.email,
-                    r.plan_name,
-                ].join(' ').toLowerCase();
+                const haystack = [r.txn_id, r.order_ref, r.customer.name, r.customer.email, r.plan_name].join(' ').toLowerCase();
                 if (!haystack.includes(q)) return false;
             }
             return true;
@@ -806,16 +857,10 @@ const transactionsTable = (function () {
             filtered.sort((a, b) => {
                 let va, vb;
                 switch (sortCol) {
-                    case 'amount':
-                        va = a.amount; vb = b.amount; break;
-                    case 'date':
-                        va = new Date(a.date).getTime();
-                        vb = new Date(b.date).getTime(); break;
-                    case 'customer':
-                        va = a.customer.name; vb = b.customer.name; break;
-                    default:
-                        va = String(a[sortCol] ?? '');
-                        vb = String(b[sortCol] ?? '');
+                    case 'amount':   va = a.amount; vb = b.amount; break;
+                    case 'date':     va = new Date(a.date).getTime(); vb = new Date(b.date).getTime(); break;
+                    case 'customer': va = a.customer.name; vb = b.customer.name; break;
+                    default:         va = String(a[sortCol] ?? ''); vb = String(b[sortCol] ?? '');
                 }
                 if (va > vb) return sortDir === 'asc' ?  1 : -1;
                 if (va < vb) return sortDir === 'asc' ? -1 :  1;
@@ -827,7 +872,6 @@ const transactionsTable = (function () {
         render();
     }
 
-    /* ── render table body ── */
     function render() {
         const tbody = document.getElementById('transactions-tbody');
         const total = filtered.length;
@@ -839,64 +883,39 @@ const transactionsTable = (function () {
 
         if (!slice.length) {
             tbody.innerHTML = `
-                <tr>
-                    <td colspan="9">
-                        <div class="dt-empty">
-                            <i class="ri-receipt-line"></i>
-                            <p>No transactions found</p>
-                        </div>
-                    </td>
-                </tr>`;
+                <tr><td colspan="9">
+                    <div class="dt-empty">
+                        <i class="ri-receipt-line"></i>
+                        <p>No transactions found</p>
+                    </div>
+                </td></tr>`;
         } else {
             tbody.innerHTML = slice.map(rowHTML).join('');
         }
 
         renderPagination(total, pages);
-
         document.getElementById('transactions-info').innerHTML =
             `Showing <strong>${Math.min(start + 1, total)}–${Math.min(start + perPage, total)}</strong> of <strong>${total}</strong> transactions`;
-
         updateBulkBar();
     }
 
-    /* ── row template ── */
     function rowHTML(r) {
         const statusLabel = { pending: 'Pending', completed: 'Completed' };
-
-        // Build avatar initials from customer name
-        const initials = r.customer.name
-            .split(' ')
-            .filter(Boolean)
-            .map(w => w[0].toUpperCase())
-            .slice(0, 2)
-            .join('');
-
-        // Escape txn_id for use in inline onclick (handle special chars)
+        const initials = r.customer.name.split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0, 2).join('');
         const safeId = r.txn_id.replace(/'/g, "\\'");
 
         return `
         <tr>
             <td class="dt-cb-col">
-                <input type="checkbox"
-                    ${selected.has(r.txn_id) ? 'checked' : ''}
+                <input type="checkbox" ${selected.has(r.txn_id) ? 'checked' : ''}
                     onchange="transactionsTable.toggleRow('${safeId}', this.checked)"
                     style="accent-color:#7c3aed;width:14px;height:14px;cursor:pointer">
             </td>
-
-            <td>
-                <span class="dt-order-id">${escHtml(r.txn_id)}</span>
-            </td>
-
-            <td>
-                <span class="dt-order-id" style="color:#0ea5e9">
-                    ${escHtml(r.order_ref)}
-                </span>
-            </td>
-
+            <td><span class="dt-order-id">${escHtml(r.txn_id)}</span></td>
+            <td><span class="dt-order-id" style="color:#0ea5e9">${escHtml(r.order_ref)}</span></td>
             <td>
                 <div class="dt-customer">
-                    <div class="dt-avatar"
-                        style="background:${r.customer.color}22;color:${r.customer.color}">
+                    <div class="dt-avatar" style="background:${r.customer.color}22;color:${r.customer.color}">
                         ${escHtml(initials || '?')}
                     </div>
                     <div class="dt-customer-info">
@@ -905,62 +924,36 @@ const transactionsTable = (function () {
                     </div>
                 </div>
             </td>
-
-            <td>
-                <div class="dt-items-wrap">
-                    <span class="dt-item-tag">${escHtml(r.plan_name)}</span>
-                </div>
-            </td>
-
+            <td><div class="dt-items-wrap"><span class="dt-item-tag">${escHtml(r.plan_name)}</span></div></td>
             <td>
                 <div class="dt-amount">£${r.amount.toFixed(2)}</div>
                 ${r.discount > 0
                     ? `<div class="dt-amount-sub">-£${r.discount.toFixed(2)} discount</div>`
                     : `<div class="dt-amount-sub">incl. VAT</div>`}
             </td>
-
             <td>
                 <span class="dt-status ${r.status}">
                     <span class="dt-status-dot ${r.status}"></span>
                     ${statusLabel[r.status] ?? r.status}
                 </span>
             </td>
-
             <td>${escHtml(r.dateStr)}</td>
-
             <td style="text-align:right">
-                <button class="dt-row-btn" title="View details"
-                    onclick="openOrderDrawer('${safeId}')">
+                <button class="dt-row-btn" title="View details" onclick="openOrderDrawer('${safeId}')">
                     <i class="ri-eye-line"></i>
                 </button>
             </td>
         </tr>`;
     }
 
-    /* ── pagination ── */
     function renderPagination(total, pages) {
         const pg = document.getElementById('transactions-pagination');
-        let html = '';
-
-        html += `<button class="dt-page-btn"
-            onclick="transactionsTable.goPage(${page - 1})"
-            ${page <= 1 ? 'disabled' : ''}>Prev</button>`;
-
-        // Show at most 7 page buttons to avoid overflow
-        const range = paginationRange(page, pages);
-        range.forEach(i => {
-            if (i === '…') {
-                html += `<span class="dt-page-btn" style="cursor:default;opacity:.4">…</span>`;
-            } else {
-                html += `<button class="dt-page-btn ${i === page ? 'active' : ''}"
-                    onclick="transactionsTable.goPage(${i})">${i}</button>`;
-            }
+        let html = `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>Prev</button>`;
+        paginationRange(page, pages).forEach(i => {
+            if (i === '…') html += `<span class="dt-page-btn" style="cursor:default;opacity:.4">…</span>`;
+            else html += `<button class="dt-page-btn ${i === page ? 'active' : ''}" onclick="transactionsTable.goPage(${i})">${i}</button>`;
         });
-
-        html += `<button class="dt-page-btn"
-            onclick="transactionsTable.goPage(${page + 1})"
-            ${page >= pages ? 'disabled' : ''}>Next</button>`;
-
+        html += `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page + 1})" ${page >= pages ? 'disabled' : ''}>Next</button>`;
         pg.innerHTML = html;
     }
 
@@ -971,135 +964,57 @@ const transactionsTable = (function () {
         return [1, '…', current-1, current, current+1, '…', total];
     }
 
-    /* ── bulk bar ── */
     function updateBulkBar() {
         const bar = document.getElementById('transactions-bulk-bar');
         document.getElementById('transactions-bulk-count').textContent = selected.size;
         bar.style.display = selected.size > 0 ? 'flex' : 'none';
-
-        // sync header checkbox
-        const allOnPage = filtered
-            .slice((page-1)*perPage, page*perPage)
-            .every(r => selected.has(r.txn_id));
+        const allOnPage = filtered.slice((page-1)*perPage, page*perPage).every(r => selected.has(r.txn_id));
         document.getElementById('transactions-cb-all').checked = allOnPage && filtered.length > 0;
     }
 
-    /* ── HTML escape helper ── */
     function escHtml(str) {
-        return String(str ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;');
+        return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* ── public API ── */
     return {
         init,
-
-        search(q) {
-            searchQ = q.trim();
-            applyFilters();
-        },
-
-        /**
-         * filterStatus — receives the status string AND the clicked button element
-         * so we can update the active chip highlight correctly.
-         */
-        filterStatus(s, btnEl) {
-            statusFilt = s;
-            // update chip active state
-            document.querySelectorAll('#transactions-filter-chips .dt-filter-chip')
-                .forEach(el => el.classList.toggle('active', el === btnEl));
-            applyFilters();
-        },
-
-        filterDate(v) {
-            dateFilt = v;
-            applyFilters();
-        },
-
+        search(q)             { searchQ = q.trim(); applyFilters(); },
+        filterStatus(s, btnEl){ statusFilt = s; document.querySelectorAll('#transactions-filter-chips .dt-filter-chip').forEach(el => el.classList.toggle('active', el === btnEl)); applyFilters(); },
+        filterDate(v)         { dateFilt = v; applyFilters(); },
         sort(col, thEl) {
-            if (sortCol === col) {
-                sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                sortCol = col;
-                sortDir = 'asc';
-            }
-            // update header sort classes
-            document.querySelectorAll('.dt-table thead th').forEach(th => {
-                th.classList.remove('sorted-asc', 'sorted-desc');
-            });
+            if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+            else { sortCol = col; sortDir = 'asc'; }
+            document.querySelectorAll('.dt-table thead th').forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
             if (thEl) thEl.classList.add('sorted-' + sortDir);
             applyFilters();
         },
-
-        goPage(p) {
-            const pages = Math.max(1, Math.ceil(filtered.length / perPage));
-            if (p < 1 || p > pages) return;
-            page = p;
-            render();
-        },
-
-        setPerPage(n) {
-            perPage = n;
-            page = 1;
-            render();
-        },
-
-        toggleAll(checked) {
-            const start = (page - 1) * perPage;
-            filtered.slice(start, start + perPage).forEach(r => {
-                checked ? selected.add(r.txn_id) : selected.delete(r.txn_id);
-            });
-            render();
-        },
-
-        toggleRow(id, checked) {
-            checked ? selected.add(id) : selected.delete(id);
-            updateBulkBar();
-        },
-
-        bulkAction(action) {
-            if (!selected.size) return;
-            if (action === 'export') {
-                const rows = data.filter(r => selected.has(r.txn_id));
-                exportCSV(rows);
-            }
-        },
-
+        goPage(p)      { const pages = Math.max(1, Math.ceil(filtered.length / perPage)); if (p < 1 || p > pages) return; page = p; render(); },
+        setPerPage(n)  { perPage = n; page = 1; render(); },
+        toggleAll(checked) { const start = (page-1)*perPage; filtered.slice(start, start+perPage).forEach(r => { checked ? selected.add(r.txn_id) : selected.delete(r.txn_id); }); render(); },
+        toggleRow(id, checked) { checked ? selected.add(id) : selected.delete(id); updateBulkBar(); },
+        bulkAction(action) { if (!selected.size) return; if (action === 'export') exportCSV(data.filter(r => selected.has(r.txn_id))); },
         getSelected() { return [...selected]; },
     };
-
 })();
 
 /* ─── CSV Export ─────────────────────────────────────────────── */
 function exportCSV(rows) {
     rows = rows || ORDERS_DATA;
-    const headers = ['Transaction ID', 'Order Ref', 'Customer', 'Email', 'Plan', 'Amount (£)', 'Discount (£)', 'Status', 'Date'];
-    const lines = [
-        headers.join(','),
-        ...rows.map(r => [
-            r.txn_id,
-            r.order_ref,
-            `"${r.customer.name.replace(/"/g, '""')}"`,
-            r.customer.email,
-            `"${r.plan_name.replace(/"/g, '""')}"`,
-            r.amount.toFixed(2),
-            r.discount.toFixed(2),
-            r.status,
-            r.dateStr,
-        ].join(','))
-    ];
+    const headers = ['Transaction ID','Order Ref','Customer','Email','Plan','Amount (£)','Discount (£)','Status','Date'];
+    const lines = [headers.join(','), ...rows.map(r => [
+        r.txn_id, r.order_ref,
+        `"${r.customer.name.replace(/"/g,'""')}"`,
+        r.customer.email,
+        `"${r.plan_name.replace(/"/g,'""')}"`,
+        r.amount.toFixed(2), r.discount.toFixed(2),
+        r.status, r.dateStr,
+    ].join(','))];
     const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `transactions_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
+    a.href = url; a.download = `transactions_${new Date().toISOString().slice(0,10)}.csv`; a.click();
     URL.revokeObjectURL(url);
 }
-
 function exportTransactionsCSV() { exportCSV(ORDERS_DATA); }
 
 /* ─── Drawer ─────────────────────────────────────────────────── */
@@ -1111,7 +1026,18 @@ function openOrderDrawer(txnId) {
     document.getElementById('drawer-order-date').textContent = 'Placed on ' + o.dateStr;
 
     const statusLabel = { pending: 'Pending', completed: 'Completed' };
-    const statusColor = { pending: '#f59e0b', completed: '#10b981' };
+    const esc = str => String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    /* ── build invoice button depending on whether a PDF exists ── */
+    const hasInvoice = !!o.invoice_path;
+    const invoiceBtn = hasInvoice
+        ? `<button class="btn btn-primary btn-sm" style="flex:1"
+                onclick="openInvoicePDF('${esc(o.txn_id)}')">
+                <i class="ri-file-pdf-line"></i> View Invoice
+           </button>`
+        : `<button class="btn btn-ghost btn-sm" style="flex:1;opacity:.45;cursor:not-allowed" disabled>
+                <i class="ri-file-pdf-line"></i> No Invoice
+           </button>`;
 
     document.getElementById('drawer-content').innerHTML = `
         <div class="drawer-section">
@@ -1152,8 +1078,7 @@ function openOrderDrawer(txnId) {
             <div class="drawer-row">
                 <span class="drawer-row-label">Discount</span>
                 <span class="drawer-row-val" style="color:#10b981">-£${o.discount.toFixed(2)}</span>
-            </div>
-            ` : ''}
+            </div>` : ''}
             <div class="drawer-row">
                 <span class="drawer-row-label">Status</span>
                 <span class="dt-status ${o.status}" style="font-size:.72rem">
@@ -1166,7 +1091,11 @@ function openOrderDrawer(txnId) {
                 <span class="drawer-row-val">${esc(o.dateStr)}</span>
             </div>
         </div>
-    `;
+
+        <!-- ── Invoice action ── -->
+        <div style="display:flex;gap:8px;margin-top:4px">
+            ${invoiceBtn}
+        </div>`;
 
     document.getElementById('order-drawer-overlay').classList.add('open');
     document.getElementById('order-drawer').classList.add('open');
@@ -1177,12 +1106,24 @@ function closeOrderDrawer() {
     document.getElementById('order-drawer').classList.remove('open');
 }
 
-function esc(str) {
-    return String(str ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+/* ─── Open stored PDF in a small popup window ────────────────── */
+function openInvoicePDF(txnId) {
+    const o = ORDERS_DATA.find(r => r.txn_id === txnId);
+    if (!o || !o.invoice_path) return;
+
+    /* Build the public URL — adjust the base path to match your storage setup */
+    const pdfUrl = '/invoices/' + o.invoice_path.replace('invoices/', '');
+
+    const popup = window.open(
+        pdfUrl,
+        'invoicePreview',
+        'width=900,height=700,top=60,left=100,resizable=yes,scrollbars=yes'
+    );
+
+    /* Fallback: if the browser blocks the popup, open in same tab */
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+        window.open(pdfUrl, '_blank');
+    }
 }
 
 /* ─── Boot ───────────────────────────────────────────────────── */

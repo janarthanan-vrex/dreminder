@@ -23,8 +23,12 @@
   <body>
 
     <!-- LOADER -->
-    <div id="loader">
+    <!-- <div id="loader">
       <img src="{{ asset('assets/images/common/loader.gif') }}" alt="">
+    </div> -->
+    <div id="loader">
+        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" type="module"></script>
+      <dotlottie-wc src="https://lottie.host/9e89873a-1424-4d8a-85de-8eaf04ba6f2a/x6B0SnIuaY.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
     <!-- CURSOR -->

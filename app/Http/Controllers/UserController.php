@@ -168,6 +168,7 @@ class UserController extends Controller
             'status'    => $status,
             'date'      => $invoice->created_at->format('Y-m-d H:i:s'),
             'dateStr'   => $invoice->created_at->format('d M Y'),
+            'invoice_path' => $invoice->invoice_path ?? null,   // ← ADD THIS
         ];
     })->values()->toArray();
 
