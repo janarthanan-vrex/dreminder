@@ -152,7 +152,10 @@ Route::get('/user-transaction',[UserController::class,'userTransaction'])->name(
 Route::get('/user-analytics', function () {return view('user.analytics');});
 Route::get('/user-calendar', function () {return view('user.calendar');});
 Route::get('/user-reminder-history', function () {return view('user.reminder-history');});
-Route::get('/user-category', function () {return view('user.category');});
+// Route::get('/user-category', function () {return view('user.category');});
+
+Route::get('/user-category',[UserController::class,'userCategory'])->name('user.category');  
+Route::post('/store-subcategory', [UserController::class, 'storeSubCategory'])->name('user.store.subcategory'); 
 Route::get('/user-create-reminder', function () {return view('user.create-reminder');});
 Route::get('/user-feedback', function () {return view('user.feedback');});
 Route::get('/user-help', function () {return view('user.help');});

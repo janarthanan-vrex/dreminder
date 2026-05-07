@@ -1,5 +1,12 @@
 @extends('user.layouts.app')
 @section('content')
+<style>
+.error-text{
+    color:#f43f5e;
+    font-size:12px;
+    margin-top:5px;
+}
+</style>
 
 <section id="page-categories" class="">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -38,4 +45,124 @@
     </div>
 </section>
 
+<script>
+async function saveSubcat() {
+
+    // 🔥 CLEAR ERRORS
+    document.querySelectorAll('.error-text')
+        .forEach(el => el.innerText = '');
+
+    const btn = event.target;
+
+    const data = {
+
+        category_id: document.getElementById('sub-cat-parent').value,
+
+        name: document.getElementById('sub-cat-name').value,
+
+        description: document.getElementById('sub-cat-desc').value
+    };
+
+    btn.disabled = true;
+
+    btn.innerHTML = 'Saving...';
+
+    try {
+
+        const res = await fetch(
+            "{{ route('user.store.subcategory') }}",
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await res.json();
+
+        // 🔴 VALIDATION
+        if (res.status === 422) {
+
+            Object.keys(result.errors).forEach(field => {
+
+                const el = document.getElementById('err-' + field);
+
+                if (el) {
+                    el.innerText = result.errors[field][0];
+                }
+            });
+
+            btn.disabled = false;
+
+            btn.innerHTML = '<i class="ri-check-line"></i> Add Subcategory';
+
+            return;
+        }
+
+        // ✅ SUCCESS
+        toast(result.message, 'success');
+
+        document.getElementById('sub-cat-parent').value = '';
+
+        document.getElementById('sub-cat-name').value = '';
+
+        document.getElementById('sub-cat-desc').value = '';
+
+        closeModal('add-sub-modal');
+
+    } catch (err) {
+
+        console.log(err);
+    }
+
+    btn.disabled = false;
+
+    btn.innerHTML = '<i class="ri-check-line"></i> Add Subcategory';
+}
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    function clearErrorOnInput(inputId, errorId, eventType = 'input') {
+
+        const input = document.getElementById(inputId);
+
+        const error = document.getElementById(errorId);
+
+        if (!input || !error) return;
+
+        input.addEventListener(eventType, function () {
+
+            error.innerText = '';
+
+        });
+    }
+
+    // 🔥 INPUTS
+    clearErrorOnInput('sub-cat-name', 'err-name');
+
+    clearErrorOnInput('sub-cat-desc', 'err-description');
+
+    // 🔥 SELECT
+    clearErrorOnInput(
+        'sub-cat-parent',
+        'err-category_id',
+        'change'
+    );
+
+});
+
+</script>
+
+
 @endsection
+
+

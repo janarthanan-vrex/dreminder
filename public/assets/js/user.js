@@ -1702,43 +1702,43 @@ function updateCustomSubUI() {
 </div>`).join('');
 }
 
-function saveSubcat() {
-    const parent = document.getElementById('sub-cat-parent').value;
-    const name = document.getElementById('sub-cat-name').value.trim();
-    const desc = document.getElementById('sub-cat-desc').value.trim();
-    if (!parent) {
-        toast('Please select a parent category', 'error');
-        return;
-    }
-    if (name.length < 2) {
-        toast('Minimum 2 characters required', 'error');
-        return;
-    }
+// function saveSubcat() {
+//     const parent = document.getElementById('sub-cat-parent').value;
+//     const name = document.getElementById('sub-cat-name').value.trim();
+//     const desc = document.getElementById('sub-cat-desc').value.trim();
+//     if (!parent) {
+//         toast('Please select a parent category', 'error');
+//         return;
+//     }
+//     if (name.length < 2) {
+//         toast('Minimum 2 characters required', 'error');
+//         return;
+//     }
 
-    if (name.length > 30) {
-        toast('Max 30 characters allowed', 'error');
-        return;
-    }
-    // Check for duplicate
-    const allSubs = [...CATS[parent]?.subs || [], ...customSubs.filter(cs => cs.parent === parent).map(cs => cs.name)];
-    if (allSubs.some(s => s.toLowerCase() === name.toLowerCase())) {
-        toast('A subcategory with this name already exists', 'error');
-        return;
-    }
-    customSubs.push({
-        parent,
-        name,
-        desc,
-        createdAt: new Date().toISOString()
-    });
-    S.set('custom_subs', customSubs);
-    toast(`Subcategory "${name}" added successfully!`, 'success');
-    closeModal('add-sub-modal');
-    document.getElementById('sub-cat-parent').value = '';
-    document.getElementById('sub-cat-name').value = '';
-    document.getElementById('sub-cat-desc').value = '';
-    if (curPage === 'categories') renderCategories();
-}
+//     if (name.length > 30) {
+//         toast('Max 30 characters allowed', 'error');
+//         return;
+//     }
+//     // Check for duplicate
+//     const allSubs = [...CATS[parent]?.subs || [], ...customSubs.filter(cs => cs.parent === parent).map(cs => cs.name)];
+//     if (allSubs.some(s => s.toLowerCase() === name.toLowerCase())) {
+//         toast('A subcategory with this name already exists', 'error');
+//         return;
+//     }
+//     customSubs.push({
+//         parent,
+//         name,
+//         desc,
+//         createdAt: new Date().toISOString()
+//     });
+//     S.set('custom_subs', customSubs);
+//     toast(`Subcategory "${name}" added successfully!`, 'success');
+//     closeModal('add-sub-modal');
+//     document.getElementById('sub-cat-parent').value = '';
+//     document.getElementById('sub-cat-name').value = '';
+//     document.getElementById('sub-cat-desc').value = '';
+//     if (curPage === 'categories') renderCategories();
+// }
 
 function deleteCustomSub(idx) {
     confirm_act('Delete this custom subcategory?', () => {

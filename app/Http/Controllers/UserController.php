@@ -8,27 +8,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Category;
+use App\Models\SubCategory;
+
+
 
 
 class UserController extends Controller
 {
     public function userDashboard(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $categories = Category::with([
-        'subcategories' => function ($query) {
-            $query->where('status', 'Active');
-        }
-    ])
-    ->where('status', 'Active')
-    ->get();
+        $categories = Category::with([
+            'subcategories' => function ($query) {
+                $query->where('status', 'Active');
+            }
+        ])
+            ->where('status', 'Active')
+            ->get();
 
-    return view('user.dashboard', compact(
-        'user',
-        'categories'
-    ));
-}
+        return view('user.dashboard', compact(
+            'user',
+            'categories'
+        ));
+    }
     public function userProfile(Request $request)
     {
         $user = Auth::user()->load('plan');
@@ -146,45 +149,112 @@ class UserController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
-   public function userTransaction(Request $request)
+    public function userTransaction(Request $request)
+    {
+        $user = Auth::user();
+
+        $invoices = Invoice::with(['plan', 'payment', 'user'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        $ordersData = $invoices->map(function ($invoice) {
+            $firstName = $invoice->user->first_name ?? '';
+            $lastName  = $invoice->user->last_name  ?? '';
+            $fullName  = trim($firstName . ' ' . $lastName);
+            $txnId     = $invoice->invoice_id ? $invoice->invoice_id : ('TXN-' . $invoice->id);
+            $orderId   = str_pad((string) $invoice->id, 5, '0', STR_PAD_LEFT);
+            $planName  = ($invoice->plan && $invoice->plan->plan_name) ? $invoice->plan->plan_name : 'N/A';
+            $status    = $invoice->payment_id ? 'completed' : 'pending';
+            $type      = $invoice->type ? $invoice->type : 'N/A';
+
+            return [
+                'id'        => $invoice->id,
+                'txn_id'    => $txnId,
+                'order_ref' => 'ORD-' . $orderId,
+                'customer'  => [
+                    'name'  => ($fullName !== '') ? $fullName : 'Unknown User',
+                    'email' => $invoice->user->email ?? '',
+                    'color' => '#7c3aed',
+                ],
+                'plan_name' => $planName,
+                'amount'    => (float) ($invoice->amount ?? 0),
+                'discount'  => (float) ($invoice->discount ?? 0),
+                'type'      => $type,
+                'status'    => $status,
+                'date'      => $invoice->created_at->format('Y-m-d H:i:s'),
+                'dateStr'   => $invoice->created_at->format('d M Y'),
+                'invoice_path' => $invoice->invoice_path ?? null,   // ← ADD THIS
+            ];
+        })->values()->toArray();
+
+        return view('user.transactions', compact('user', 'invoices', 'ordersData'));
+    }
+
+    public function userCategory(Request $request)
+    {
+       
+        $user = Auth::user();
+
+        $categories = Category::with([
+            'subcategories' => function ($query) use ($user) {
+                $query->where('status', 'Active')
+                    ->where(function ($q) use ($user) {
+                        $q->where('role', 'admin')
+                            ->orWhere(function ($subQ) use ($user) {
+                                $subQ->where('role', 'user')
+                                    ->where('created_by', $user->id);
+                            });
+                    });
+            }
+        ])
+            ->where('status', 'Active')
+            ->get();
+
+        return view('user.category', compact(
+            'user',
+            'categories'
+        ));
+    }
+    public function storeSubCategory(Request $request)
 {
     $user = Auth::user();
 
-    $invoices = Invoice::with(['plan', 'payment', 'user'])
-        ->where('user_id', $user->id)
-        ->latest()
-        ->get();
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
 
-    $ordersData = $invoices->map(function ($invoice) {
-        $firstName = $invoice->user->first_name ?? '';
-        $lastName  = $invoice->user->last_name  ?? '';
-        $fullName  = trim($firstName . ' ' . $lastName);
-        $txnId     = $invoice->invoice_id ? $invoice->invoice_id : ('TXN-' . $invoice->id);
-        $orderId   = str_pad((string) $invoice->id, 5, '0', STR_PAD_LEFT);
-        $planName  = ($invoice->plan && $invoice->plan->plan_name) ? $invoice->plan->plan_name : 'N/A';
-        $status    = $invoice->payment_id ? 'completed' : 'pending';
-        $type      = $invoice->type ? $invoice->type : 'N/A';
+        'name' => 'required|string|min:3|max:50',
 
-        return [
-            'id'        => $invoice->id,
-            'txn_id'    => $txnId,
-            'order_ref' => 'ORD-' . $orderId,
-            'customer'  => [
-                'name'  => ($fullName !== '') ? $fullName : 'Unknown User',
-                'email' => $invoice->user->email ?? '',
-                'color' => '#7c3aed',
-            ],
-            'plan_name' => $planName,
-            'amount'    => (float) ($invoice->amount ?? 0),
-            'discount'  => (float) ($invoice->discount ?? 0),
-            'type'      => $type,
-            'status'    => $status,
-            'date'      => $invoice->created_at->format('Y-m-d H:i:s'),
-            'dateStr'   => $invoice->created_at->format('d M Y'),
-            'invoice_path' => $invoice->invoice_path ?? null,   // ← ADD THIS
-        ];
-    })->values()->toArray();
+        'description' => 'nullable|string|max:100',
+    ]);
 
-    return view('user.transactions', compact('user', 'invoices', 'ordersData'));
+    // 🔥 CHECK DUPLICATE
+    $exists = SubCategory::where('category_id', $request->category_id)
+        ->where('name', $request->name)
+        ->exists();
+
+    if ($exists) {
+
+        return response()->json([
+            'status' => false,
+            'errors' => [
+                'name' => ['Subcategory already exists']
+            ]
+        ], 422);
+    }
+
+    // ✅ STORE
+    SubCategory::create([
+        'category_id' => $request->category_id,
+        'name' => $request->name,
+        'role' => 'user',
+        'created_by' => $user->id,
+        'status' => 'Active',
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Subcategory added successfully'
+    ]);
 }
 }

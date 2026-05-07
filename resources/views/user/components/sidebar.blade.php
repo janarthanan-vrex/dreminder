@@ -34,7 +34,7 @@
         <a class="nav-link" href="user-reminders"><i class="ri-alarm-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">My Reminders</span></a>
         <!--<a class="nav-link" href="user-create-reminder"><i class="ri-add-circle-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Create Reminder</span></a>-->
         <a class="nav-link" href="user-calendar"><i class="ri-calendar-event-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Calendar View</span></a>
-        <a class="nav-link" href="user-category"><i class="ri-folder-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Category</span></a>
+        <a class="nav-link" href="{{route('user.category')}}"><i class="ri-folder-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Category</span></a>
         <!-- <a class="nav-link" href="user-reminder-history"><i class="ri-history-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Reminder History</span></a> -->
         <!-- <a class="nav-link" href="user-templates"><i class="ri-file-list-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Templates</span></a> -->
         <!-- <a class="nav-link" href="user-shared-reminders"><i class="ri-share-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Shared Reminders</span></a> -->

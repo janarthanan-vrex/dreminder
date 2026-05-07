@@ -10,99 +10,154 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="{{ asset('/assets/css/user.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-<style>
-  /* ─── Page Loader Overlay ─── */
-  #page-loader {
-    position: fixed;
-    inset: 0;
-    background: #f7f5f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    <style>
+        /* ─── Page Loader Overlay ─── */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: #f7f5f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
                 visibility 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #page-loader.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+        }
 
-  /* ─── Loader Card ─── */
-  #loader-card {
-    width: 380px;
-    max-width: 90vw;
-    border-radius: 24px;
-    overflow: hidden;
-    transform: translateY(0);
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #page-loader.hidden #loader-card {
-    transform: translateY(-12px);
-  }
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
-  /* ─── Accent bar ─── */
-  .accent-bar {
-    height: 3px;
-    background: linear-gradient(90deg, #7c3aed, #a855f7, #e879f9, #c084fc);
-    background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
-  }
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+        /* ─── Loader Card ─── */
+        #loader-card {
+            width: 380px;
+            max-width: 90vw;
+            border-radius: 24px;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  /* ─── Canvas Stage ─── */
-  #loader-stage {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    overflow: hidden;
-  }
-  #loader-stage canvas {
-    position: absolute;
-    inset: 0;
-    width: 100% !important;
-    height: 100% !important;
-  }
+        #page-loader.hidden #loader-card {
+            transform: translateY(-12px);
+        }
+
+        /* ─── Accent bar ─── */
+        .accent-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #e879f9, #c084fc);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ─── Canvas Stage ─── */
+        #loader-stage {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        #loader-stage canvas {
+            position: absolute;
+            inset: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
 
 
-  /* ─── Progress dots ─── */
-  .dots {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    margin-top: 12px;
-  }
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #c4b5fd;
-    animation: pulse-dot 1.4s ease-in-out infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse-dot {
-    0%, 80%, 100% { transform: scale(1); background: #c4b5fd; }
-    40%            { transform: scale(1.5); background: #7c3aed; }
-  }
+        /* ─── Progress dots ─── */
+        .dots {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 12px;
+        }
 
-</style>
-   
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #c4b5fd;
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
 
-<style>
-    /* PRELOADER */
-    #loader{position:fixed;inset:0;z-index:999;background:#030014;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
-    #loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-    .loader-ring{width:50px;height:50px;border:3px solid rgba(124,58,237,.15);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-</style>
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(1);
+                background: #c4b5fd;
+            }
+
+            40% {
+                transform: scale(1.5);
+                background: #7c3aed;
+            }
+        }
+    </style>
+
+
+    <style>
+        /* PRELOADER */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: #030014;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .6s, visibility .6s
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none
+        }
+
+        .loader-ring {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(124, 58, 237, .15);
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin .8s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+    </style>
 
 
 </head>
@@ -116,7 +171,7 @@
 
     <div id="loader">
         <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" type="module"></script>
-      <dotlottie-wc src="https://lottie.host/9e89873a-1424-4d8a-85de-8eaf04ba6f2a/x6B0SnIuaY.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <dotlottie-wc src="https://lottie.host/9e89873a-1424-4d8a-85de-8eaf04ba6f2a/x6B0SnIuaY.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
     <!-- <section id="page-loader" role="status" aria-label="Loading RemindMe">
@@ -245,26 +300,32 @@
             <div style="margin-bottom:14px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Parent Category <span style="color:#f43f5e">*</span></label>
                 <select class="inp" id="sub-cat-parent">
+
                     <option value="">Select parent category…</option>
-                    <option value="special-days">Special Days</option>
-                    <option value="home">Home</option>
-                    <option value="insurance">Insurance</option>
-                    <option value="motor-vehicle">Motor Vehicle</option>
-                    <option value="subscriptions">Subscriptions</option>
-                    <option value="health">Health</option>
-                    <option value="travel">Travel</option>
-                    <option value="pet-care">Pet Care</option>
-                    <option value="tv-telephone-mobile">TV, Tel & Mobile</option>
-                    <option value="others">Others</option>
+
+                    @foreach($categories as $category)
+
+                    <option value="{{ $category->id }}">
+
+                        {{ $category->name }}
+
+                    </option>
+
+                    @endforeach
+
                 </select>
+                <div class="error-text" id="err-category_id"></div>
             </div>
             <div style="margin-bottom:14px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Subcategory Name <span style="color:#f43f5e">*</span></label>
                 <input class="inp" id="sub-cat-name" placeholder="Enter name (3–50 characters)" maxlength="50">
+                <div class="error-text" id="err-name"></div>
+
             </div>
             <div style="margin-bottom:18px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Description (Optional)</label>
                 <input class="inp" id="sub-cat-desc" placeholder="Brief description…" maxlength="100">
+                <div class="error-text" id="err-description"></div>
             </div>
             <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('add-sub-modal')">Cancel</button><button class="btn btn-primary" onclick="saveSubcat()"><i class="ri-check-line"></i> Add Subcategory</button></div>
         </div>
@@ -432,12 +493,12 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Sub-category Create Modal -->
     <div id="sub-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
-        
+
         <div style="width:320px;background:#0f172a;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
-            
+
             <h3 style="font-size:.9rem;font-weight:700;color:#fff !important;margin-bottom:10px">
                 Add Subcategory
             </h3>
@@ -458,7 +519,7 @@
         const typeSelect = document.getElementById('r-type');
         const customInput = document.getElementById('r-custom');
 
-        typeSelect.addEventListener('change', function () {
+        typeSelect.addEventListener('change', function() {
             if (this.value === 'custom') {
                 customInput.style.display = 'block';
                 customInput.focus();
@@ -493,26 +554,144 @@
     </style>
 
     <style>
-       .modal-overlay {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: rgba(0, 0, 0, 0.75);backdrop-filter: blur(4px);z-index: 9999;display: flex;align-items: center;justify-content: center;padding: 20px;animation: fadeIn 0.2s ease;}
-        .modal-container {background: #1e293b;border-radius: 12px;width: 100%;max-height: 90vh;overflow-y: auto;box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);animation: slideUp 0.3s ease;}
-        .modal-header {display: flex;justify-content: space-between;align-items: flex-start;padding: 24px 24px 16px;border-bottom: 1px solid rgba(255, 255, 255, 0.06);position: sticky;top: 0;background: #1e293b;z-index: 1;}
-        .modal-close {background: rgba(255, 255, 255, 0.05);border: 1px solid rgba(255, 255, 255, 0.1);color: #94a3b8;width: 32px; height: 32px;border-radius: 6px;display: flex;align-items: center;justify-content: center;cursor: pointer;transition: all 0.2s;flex-shrink: 0;}
-        .modal-close:hover {background: rgba(255, 255, 255, 0.1);color: #f1f5f9;}
-        .modal-body {padding: 24px;}
-        .light .modal-overlay {background: rgba(0, 0, 0, 0.45);}
-        .light .modal-container {background: #ffffff;box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);}
-        .light .modal-header {background: #ffffff;border-bottom: 1px solid rgba(0, 0, 0, 0.08);}
-        .light .modal-close {background: rgba(0, 0, 0, 0.05);border: 1px solid rgba(0, 0, 0, 0.1);color: #475569;}
-        .light .modal-close:hover {background: rgba(0, 0, 0, 0.08);color: #0f172a;}
-        @keyframes fadeIn {from { opacity: 0; }to   { opacity: 1; }}
-        @keyframes slideUp {from { opacity: 0; transform: translateY(20px); }to   { opacity: 1; transform: translateY(0); }}
-        @media (max-width: 640px) {.modal-container { max-height: 95vh; }.modal-header, .modal-body { padding: 16px; }}
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-container {
+            background: #1e293b;
+            border-radius: 12px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            background: #1e293b;
+            z-index: 1;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .light .modal-overlay {
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        .light .modal-container {
+            background: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .light .modal-header {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .light .modal-close {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #475569;
+        }
+
+        .light .modal-close:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #0f172a;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .modal-container {
+                max-height: 95vh;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 16px;
+            }
+        }
     </style>
 
     <script src="{{ asset('assets/js/user.js') }}"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
+
+    <script>
+        new TomSelect("#sub-cat-parent", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            placeholder: "Search category..."
+        });
+    </script>
 </body>
 
 </html>
