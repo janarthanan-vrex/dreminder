@@ -191,31 +191,35 @@ class UserController extends Controller
         return view('user.transactions', compact('user', 'invoices', 'ordersData'));
     }
 
-    public function userCategory(Request $request)
-    {
-       
-        $user = Auth::user();
+   public function userCategory(Request $request)
+{
+    $user = Auth::user();
 
-        $categories = Category::with([
-            'subcategories' => function ($query) use ($user) {
-                $query->where('status', 'Active')
-                    ->where(function ($q) use ($user) {
-                        $q->where('role', 'admin')
-                            ->orWhere(function ($subQ) use ($user) {
-                                $subQ->where('role', 'user')
-                                    ->where('created_by', $user->id);
-                            });
-                    });
-            }
-        ])
-            ->where('status', 'Active')
-            ->get();
+    $categories = Category::with([
+        'subcategories' => function ($query) use ($user) {
 
-        return view('user.category', compact(
-            'user',
-            'categories'
-        ));
-    }
+            $query->where('status', 'Active')
+
+                ->where(function ($q) use ($user) {
+
+                    $q->where('role', 'admin')
+
+                      ->orWhere(function ($subQ) use ($user) {
+
+                          $subQ->where('role', 'user')
+                               ->where('created_by', $user->id);
+                      });
+                });
+        }
+    ])
+    ->where('status', 'Active')
+    ->get();
+
+    return view('user.category', compact(
+        'user',
+        'categories'
+    ));
+}
     public function storeSubCategory(Request $request)
 {
     $user = Auth::user();
@@ -250,6 +254,7 @@ class UserController extends Controller
         'role' => 'user',
         'created_by' => $user->id,
         'status' => 'Active',
+        'description' => $request->description,
     ]);
 
     return response()->json([

@@ -162,6 +162,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
+@php
+$cats = $categories->mapWithKeys(function ($category) {
+    return [
+        $category->id => [
+            'id' => $category->id,
+            'name' => $category->name,
+            'icon' => $category->icon,
+            'color' => $category->color,
+            'subs' => $category->subcategories
+                ->pluck('name')
+                ->toArray()
+        ]
+    ];
+})->toArray();
+@endphp
+
+<script>
+window.CATS = @json($cats);
+</script>
+
 
 @endsection
 

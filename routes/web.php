@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use App\Http\Controllers\ReminderController;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 
 Route::get('/test-notification', function () {
@@ -169,6 +170,8 @@ Route::get('/user-shared-reminders', function () {return view('user.reminders');
 Route::get('/layout', function () {return view('user.layout');});
 Route::get('/loader', function () {return view('user.loader');});
 
+//reminder routes
+Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
 
 
 
