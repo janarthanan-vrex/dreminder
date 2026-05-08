@@ -242,29 +242,29 @@
             <div class="layer"></div>
             <div class="layer2"></div>
             <div style="width:40px;height:40px;border-radius:11px;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="ri-alarm-line" style="color:#a78bfa;font-size:1.1rem"></i></div>
-            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f1f5f9" id="s-active">0</div>
+            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f1f5f9" id="s-active"> {{ $activeReminders }}</div>
             <div style="font-size:.73rem;color:#64748b;margin-top:3px;font-weight:600">Active Reminders</div>
         </div>
         <div class="stat-card relative overflow-hidden">
             <div class="layer"></div>
             <div class="layer2"></div>
             <div style="width:40px;height:40px;border-radius:11px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="ri-time-line" style="color:#f59e0b;font-size:1.1rem"></i></div>
-            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f59e0b" id="s-week">0</div>
+            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f59e0b" id="s-week">{{ $dueThisWeek }}</div>
             <div style="font-size:.73rem;color:#64748b;margin-top:3px;font-weight:600">Due This Week</div>
         </div>
         <div class="stat-card relative overflow-hidden">
             <div class="layer"></div>
             <div class="layer2"></div>
             <div style="width:40px;height:40px;border-radius:11px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="ri-check-double-line" style="color:#10b981;font-size:1.1rem"></i></div>
-            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#10b981" id="s-done">0</div>
+            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#10b981" id="s-done">{{ $completedReminders }}</div>
             <div style="font-size:.73rem;color:#64748b;margin-top:3px;font-weight:600">Completed</div>
         </div>
         <div class="stat-card relative overflow-hidden">
             <div class="layer"></div>
             <div class="layer2"></div>
             <div style="width:40px;height:40px;border-radius:11px;background:rgba(244,63,94,.12);display:flex;align-items:center;justify-content:center;margin-bottom:12px"><i class="ri-error-warning-line" style="color:#f43f5e;font-size:1.1rem"></i></div>
-            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f43f5e" id="s-over">0</div>
-            <div style="font-size:.73rem;color:#64748b;margin-top:3px;font-weight:600">Overdue</div>
+            <div class="font-jakarta" style="font-size:1.6rem;font-weight:800;color:#f43f5e" id="s-over"> {{ $todayReminders }}</div>
+            <div style="font-size:.73rem;color:#64748b;margin-top:3px;font-weight:600">Today</div>
         </div>
     </div>
 

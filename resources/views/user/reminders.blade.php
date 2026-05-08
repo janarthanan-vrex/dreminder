@@ -42,4 +42,47 @@
     </div>
 </section>
 
+@php
+
+$formattedReminders = $reminders->map(function ($r) {
+    return [
+        'id' => $r->id,
+        'title' => $r->title,
+        'category' => (string) $r->category_id,
+        'subcategory' => optional($r->subcategory)->name,
+        'dueDate' => $r->reminder_date,
+       'dueTime' => \Carbon\Carbon::parse($r->reminder_time)->format('g:i A'),
+        'description' => $r->description,
+        'provider' => $r->provider,
+        'cost' => $r->cost,
+        'frequency' => $r->payment_frequency,
+        'status' => $r->status,
+        'createdAt' => $r->created_at,
+    ];
+})->values();
+
+$cats = $categories->mapWithKeys(function ($category) {
+    return [
+        $category->id => [
+            'id' => $category->id,
+            'name' => $category->name,
+            'icon' => $category->icon ?? 'ri-folder-line',
+            'color' => $category->color ?? '#14b8a6',
+            'bg' => 'rgba(20,184,166,.12)',
+            'subs' => $category->subcategories
+                        ->pluck('name')
+                        ->toArray()
+        ]
+    ];
+
+})->toArray();
+@endphp
+
+<script>
+
+window.DB_REMINDERS = @json($formattedReminders);
+
+window.CATS = @json($cats);
+
+</script>
 @endsection

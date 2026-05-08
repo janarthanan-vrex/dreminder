@@ -25,4 +25,8 @@ class SubCategory extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function reminders()
+{
+    return $this->hasMany(Reminder::class);
+}
 }

@@ -433,7 +433,7 @@
                 <form id="rem-form" onsubmit="return false;">
                     <div style="margin-bottom:18px">
                         <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Title <span style="color:#f43f5e">*</span></label>
-                        <input class="inp" id="r-title" placeholder="e.g. Car Insurance Renewal" maxlength="100">
+                        <input class="inp" id="r-title" maxlength="35" placeholder="e.g. Car Insurance Renewal" maxlength="100">
                         <div class="error-text" id="err-title"></div>
                         <div style="font-size:.72rem;color:#475569;margin-top:4px">3–100 characters</div>
                     </div>
@@ -464,7 +464,7 @@
                     <div class="g2" style="margin-bottom:18px">
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e">*</span></label>
-                            <input class="inp" type="date" id="r-date">
+                            <input class="inp" type="date" id="r-date"  min="{{ date('Y-m-d') }}">
                             <div class="error-text" id="err-reminder_date"></div>
                         </div>
                         <div>
@@ -483,7 +483,7 @@
                         <div class="g2" style="margin-bottom:18px">
                             <div>
                                 <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Provider</label>
-                                <input class="inp" id="r-provider" placeholder="e.g. AA Insurance" maxlength="50">
+                                <input class="inp" id="r-provider" maxlength="45" placeholder="e.g. AA Insurance" maxlength="50">
                                 <div class="error-text" id="err-provider"></div>
                             </div>
                             <div>
@@ -553,7 +553,7 @@
                 Add Subcategory
             </h3>
 
-            <input id="new-sub-input" placeholder="Enter subcategory..."
+            <input id="new-sub-input" maxlength="45" placeholder="Enter subcategory..."
                 style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
                     background:rgba(255,255,255,.05);color:#fff;font-size:.8rem">
 
@@ -730,9 +730,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
 
-    <script>
-        window.CATS = @json($cats);
-    </script>
+   
 
     <script>
         new TomSelect("#sub-cat-parent", {

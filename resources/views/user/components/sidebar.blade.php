@@ -31,7 +31,7 @@
         <a class="nav-link" href="{{ route('user.dashboard') }}"><i class="ri-dashboard-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Dashboard</span></a>
         <a class="nav-link" href="user-analytics"><i class="ri-bar-chart-box-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Analytics</span></a>
         <div class="section-lbl" style="margin-top:4px"><span>Reminders</span></div>
-        <a class="nav-link" href="user-reminders"><i class="ri-alarm-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">My Reminders</span></a>
+        <a class="nav-link" href="{{route('user.reminders')}}"><i class="ri-alarm-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">My Reminders</span></a>
         <!--<a class="nav-link" href="user-create-reminder"><i class="ri-add-circle-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Create Reminder</span></a>-->
         <a class="nav-link" href="user-calendar"><i class="ri-calendar-event-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Calendar View</span></a>
         <a class="nav-link" href="{{route('user.category')}}"><i class="ri-folder-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Category</span></a>

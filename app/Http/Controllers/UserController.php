@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\Reminder;
+use Carbon\Carbon;
 
 
 
@@ -16,22 +18,67 @@ use App\Models\SubCategory;
 class UserController extends Controller
 {
     public function userDashboard(Request $request)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        $categories = Category::with([
-            'subcategories' => function ($query) {
-                $query->where('status', 'Active');
-            }
+    $categories = Category::with([
+        'subcategories' => function ($query) {
+            $query->where('status', 'Active');
+        }
+    ])
+    ->where('status', 'Active')
+    ->get();
+
+    // Current date & time
+    $now = Carbon::now();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reminder Counts
+    |--------------------------------------------------------------------------
+    */
+
+    // Active reminders (upcoming + today)
+    $activeReminders = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->where(function ($query) use ($now) {
+            $query->whereDate('reminder_date', '>', $now->toDateString())
+                  ->orWhere(function ($q) use ($now) {
+                      $q->whereDate('reminder_date', $now->toDateString())
+                        ->whereTime('reminder_time', '>=', $now->toTimeString());
+                  });
+        })
+        ->count();
+
+    // Due this week
+    $dueThisWeek = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->whereBetween('reminder_date', [
+            $now->startOfWeek()->toDateString(),
+            $now->copy()->endOfWeek()->toDateString()
         ])
-            ->where('status', 'Active')
-            ->get();
+        ->count();
 
-        return view('user.dashboard', compact(
-            'user',
-            'categories'
-        ));
-    }
+    // Completed reminders
+    $completedReminders = Reminder::where('user_id', $user->id)
+        ->where('reminder_status', 'Completed')
+        ->count();
+
+    // Today's reminders
+    $todayReminders = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->whereDate('reminder_date', Carbon::today())
+        ->count();
+
+    return view('user.dashboard', compact(
+        'user',
+        'categories',
+        'activeReminders',
+        'dueThisWeek',
+        'completedReminders',
+        'todayReminders'
+    ));
+}
     public function userProfile(Request $request)
     {
         $user = Auth::user()->load('plan');
@@ -190,8 +237,7 @@ class UserController extends Controller
 
         return view('user.transactions', compact('user', 'invoices', 'ordersData'));
     }
-
-   public function userCategory(Request $request)
+public function userCategory(Request $request)
 {
     $user = Auth::user();
 
@@ -215,10 +261,53 @@ class UserController extends Controller
     ->where('status', 'Active')
     ->get();
 
-    return view('user.category', compact(
-        'user',
-        'categories'
-    ));
+    // 🔥 REMINDERS
+    $reminders = Reminder::with([
+        'category',
+        'subcategory'
+    ])
+    ->where('user_id', $user->id)
+    ->latest()
+    ->get()
+    ->map(function ($r) {
+
+        return [
+
+            'id' => $r->id,
+
+            'title' => $r->title,
+
+            // 🔥 IMPORTANT
+            'category' => $r->category->id,
+
+            'subcategory' => optional($r->subcategory)->name,
+
+            'dueDate' => $r->reminder_date,
+
+            'dueTime' => $r->reminder_time,
+
+            'description' => $r->description,
+
+            'provider' => $r->provider,
+
+            'cost' => $r->cost,
+
+            'frequency' => $r->payment_frequency,
+
+            'status' => $r->status,
+
+            'createdAt' => $r->created_at,
+        ];
+    });
+
+    return view(
+        'user.category',
+        compact(
+            'user',
+            'categories',
+            'reminders'
+        )
+    );
 }
     public function storeSubCategory(Request $request)
 {

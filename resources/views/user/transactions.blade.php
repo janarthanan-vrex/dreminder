@@ -706,7 +706,8 @@
                         oninput="transactionsTable.search(this.value)">
                 </div>
                 <!-- Status filter chips -->
-                <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center" id="transactions-filter-chips">
+                <!-- <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center" id="transactions-filter-chips"> -->
+                <div style="display:none;gap:5px;flex-wrap:wrap;align-items:center" id="transactions-filter-chips">
                     <button class="dt-filter-chip active" data-status="all"
                         onclick="transactionsTable.filterStatus('all', this)">
                         All <span class="chip-count" id="fc-all">0</span>
@@ -750,13 +751,14 @@
             <table class="dt-table" id="transactions-table">
                 <thead>
                     <tr>
-                        <th class="dt-cb-col">
+                        <!-- <th class="dt-cb-col">
                             <input type="checkbox" id="transactions-cb-all"
                                 onchange="transactionsTable.toggleAll(this.checked)"
                                 style="accent-color:#7c3aed;width:14px;height:14px;cursor:pointer">
-                        </th>
-                        <th onclick="transactionsTable.sort('txn_id', this)">Transaction ID <span class="dt-sort-icon">↕</span></th>
-                        <th onclick="transactionsTable.sort('order_ref', this)">Order Ref <span class="dt-sort-icon">↕</span></th>
+                        </th> -->
+                        <th onclick="transactionsTable.sort('txn_id', this)">S.NO <span class="dt-sort-icon">↕</span></th>
+                        <th onclick="transactionsTable.sort('txn_id', this)">Invoice ID <span class="dt-sort-icon">↕</span></th>
+                        {{--<th onclick="transactionsTable.sort('order_ref', this)">Order Ref <span class="dt-sort-icon">↕</span></th>--}}
                         <th onclick="transactionsTable.sort('customer', this)">Customer <span class="dt-sort-icon">↕</span></th>
                         <th>Plan</th>
                         <th onclick="transactionsTable.sort('amount', this)">Amount <span class="dt-sort-icon">↕</span></th>
@@ -808,111 +810,136 @@
 </div>
 
 <script>
-const ORDERS_DATA = @json($ordersData);
+    const ORDERS_DATA = @json($ordersData);
 
-/* ─── DataTable IIFE ─────────────────────────────────────────── */
-const transactionsTable = (function () {
+    /* ─── DataTable IIFE ─────────────────────────────────────────── */
+    const transactionsTable = (function() {
 
-    let data     = [...ORDERS_DATA];
-    let filtered = [...data];
-    let page     = 1;
-    let perPage  = 10;
-    let sortCol  = 'date';
-    let sortDir  = 'desc';
-    let statusFilt = 'all';
-    let searchQ    = '';
-    let dateFilt   = 'all';
-    let selected   = new Set();
+        let data = [...ORDERS_DATA];
+        let filtered = [...data];
+        let page = 1;
+        let perPage = 10;
+        let sortCol = 'date';
+        let sortDir = 'desc';
+        let statusFilt = 'all';
+        let searchQ = '';
+        let dateFilt = 'all';
+        let selected = new Set();
 
-    function init() {
-        updateCounts();
-        applyFilters();
-    }
-
-    function updateCounts() {
-        const counts = { pending: 0, completed: 0 };
-        data.forEach(r => { if (counts[r.status] !== undefined) counts[r.status]++; });
-        document.getElementById('fc-all').textContent       = data.length;
-        document.getElementById('fc-pending').textContent   = counts.pending;
-        document.getElementById('fc-completed').textContent = counts.completed;
-    }
-
-    function applyFilters() {
-        const cutoff = dateFilt !== 'all'
-            ? new Date(Date.now() - (+dateFilt) * 86400000)
-            : null;
-
-        filtered = data.filter(r => {
-            if (statusFilt !== 'all' && r.status !== statusFilt) return false;
-            if (cutoff && new Date(r.date) < cutoff) return false;
-            if (searchQ) {
-                const q = searchQ.toLowerCase();
-                const haystack = [r.txn_id, r.order_ref, r.customer.name, r.customer.email, r.plan_name].join(' ').toLowerCase();
-                if (!haystack.includes(q)) return false;
-            }
-            return true;
-        });
-
-        if (sortCol) {
-            filtered.sort((a, b) => {
-                let va, vb;
-                switch (sortCol) {
-                    case 'amount':   va = a.amount; vb = b.amount; break;
-                    case 'date':     va = new Date(a.date).getTime(); vb = new Date(b.date).getTime(); break;
-                    case 'customer': va = a.customer.name; vb = b.customer.name; break;
-                    default:         va = String(a[sortCol] ?? ''); vb = String(b[sortCol] ?? '');
-                }
-                if (va > vb) return sortDir === 'asc' ?  1 : -1;
-                if (va < vb) return sortDir === 'asc' ? -1 :  1;
-                return 0;
-            });
+        function init() {
+            updateCounts();
+            applyFilters();
         }
 
-        page = 1;
-        render();
-    }
+        function updateCounts() {
+            const counts = {
+                pending: 0,
+                completed: 0
+            };
+            data.forEach(r => {
+                if (counts[r.status] !== undefined) counts[r.status]++;
+            });
+            document.getElementById('fc-all').textContent = data.length;
+            document.getElementById('fc-pending').textContent = counts.pending;
+            document.getElementById('fc-completed').textContent = counts.completed;
+        }
 
-    function render() {
-        const tbody = document.getElementById('transactions-tbody');
-        const total = filtered.length;
-        const pages = Math.max(1, Math.ceil(total / perPage));
-        if (page > pages) page = pages;
+        function applyFilters() {
+            const cutoff = dateFilt !== 'all' ?
+                new Date(Date.now() - (+dateFilt) * 86400000) :
+                null;
 
-        const start = (page - 1) * perPage;
-        const slice = filtered.slice(start, start + perPage);
+            filtered = data.filter(r => {
+                if (statusFilt !== 'all' && r.status !== statusFilt) return false;
+                if (cutoff && new Date(r.date) < cutoff) return false;
+                if (searchQ) {
+                    const q = searchQ.toLowerCase();
+                    const haystack = [r.txn_id, r.order_ref, r.customer.name, r.customer.email, r.plan_name].join(' ').toLowerCase();
+                    if (!haystack.includes(q)) return false;
+                }
+                return true;
+            });
 
-        if (!slice.length) {
-            tbody.innerHTML = `
+            if (sortCol) {
+                filtered.sort((a, b) => {
+                    let va, vb;
+                    switch (sortCol) {
+                        case 'amount':
+                            va = a.amount;
+                            vb = b.amount;
+                            break;
+                        case 'date':
+                            va = new Date(a.date).getTime();
+                            vb = new Date(b.date).getTime();
+                            break;
+                        case 'customer':
+                            va = a.customer.name;
+                            vb = b.customer.name;
+                            break;
+                        default:
+                            va = String(a[sortCol] ?? '');
+                            vb = String(b[sortCol] ?? '');
+                    }
+                    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+                    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+                    return 0;
+                });
+            }
+
+            page = 1;
+            render();
+        }
+
+        function render() {
+            const tbody = document.getElementById('transactions-tbody');
+            const total = filtered.length;
+            const pages = Math.max(1, Math.ceil(total / perPage));
+            if (page > pages) page = pages;
+
+            const start = (page - 1) * perPage;
+            const slice = filtered.slice(start, start + perPage);
+
+            if (!slice.length) {
+                tbody.innerHTML = `
                 <tr><td colspan="9">
                     <div class="dt-empty">
                         <i class="ri-receipt-line"></i>
                         <p>No transactions found</p>
                     </div>
                 </td></tr>`;
-        } else {
-            tbody.innerHTML = slice.map(rowHTML).join('');
+            } else {
+                tbody.innerHTML = slice.map((r, i) => rowHTML({
+                    ...r,
+                    sno: start + i + 1
+                })).join('');
+            }
+
+            renderPagination(total, pages);
+            document.getElementById('transactions-info').innerHTML =
+                `Showing <strong>${Math.min(start + 1, total)}–${Math.min(start + perPage, total)}</strong> of <strong>${total}</strong> transactions`;
+            updateBulkBar();
         }
 
-        renderPagination(total, pages);
-        document.getElementById('transactions-info').innerHTML =
-            `Showing <strong>${Math.min(start + 1, total)}–${Math.min(start + perPage, total)}</strong> of <strong>${total}</strong> transactions`;
-        updateBulkBar();
-    }
+        function rowHTML(r) {
+            const statusLabel = {
+                pending: 'Pending',
+                completed: 'Completed'
+            };
+            const initials = r.customer.name.split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0, 2).join('');
+            const safeId = r.txn_id.replace(/'/g, "\\'");
 
-    function rowHTML(r) {
-        const statusLabel = { pending: 'Pending', completed: 'Completed' };
-        const initials = r.customer.name.split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0, 2).join('');
-        const safeId = r.txn_id.replace(/'/g, "\\'");
-
-        return `
+            return `
         <tr>
+        {{--
             <td class="dt-cb-col">
                 <input type="checkbox" ${selected.has(r.txn_id) ? 'checked' : ''}
                     onchange="transactionsTable.toggleRow('${safeId}', this.checked)"
                     style="accent-color:#7c3aed;width:14px;height:14px;cursor:pointer">
             </td>
+            --}}
+            <td><span class="dt-sno">${r.sno}</span></td>
             <td><span class="dt-order-id">${escHtml(r.txn_id)}</span></td>
-            <td><span class="dt-order-id" style="color:#0ea5e9">${escHtml(r.order_ref)}</span></td>
+            {{--<td><span class="dt-order-id" style="color:#0ea5e9">${escHtml(r.order_ref)}</span></td>--}}
             <td>
                 <div class="dt-customer">
                     <div class="dt-avatar" style="background:${r.customer.color}22;color:${r.customer.color}">
@@ -944,102 +971,150 @@ const transactionsTable = (function () {
                 </button>
             </td>
         </tr>`;
-    }
+        }
 
-    function renderPagination(total, pages) {
-        const pg = document.getElementById('transactions-pagination');
-        let html = `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>Prev</button>`;
-        paginationRange(page, pages).forEach(i => {
-            if (i === '…') html += `<span class="dt-page-btn" style="cursor:default;opacity:.4">…</span>`;
-            else html += `<button class="dt-page-btn ${i === page ? 'active' : ''}" onclick="transactionsTable.goPage(${i})">${i}</button>`;
+        function renderPagination(total, pages) {
+            const pg = document.getElementById('transactions-pagination');
+            let html = `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>Prev</button>`;
+            paginationRange(page, pages).forEach(i => {
+                if (i === '…') html += `<span class="dt-page-btn" style="cursor:default;opacity:.4">…</span>`;
+                else html += `<button class="dt-page-btn ${i === page ? 'active' : ''}" onclick="transactionsTable.goPage(${i})">${i}</button>`;
+            });
+            html += `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page + 1})" ${page >= pages ? 'disabled' : ''}>Next</button>`;
+            pg.innerHTML = html;
+        }
+
+        function paginationRange(current, total) {
+            if (total <= 7) return Array.from({
+                length: total
+            }, (_, i) => i + 1);
+            if (current <= 4) return [1, 2, 3, 4, 5, '…', total];
+            if (current >= total - 3) return [1, '…', total - 4, total - 3, total - 2, total - 1, total];
+            return [1, '…', current - 1, current, current + 1, '…', total];
+        }
+
+        function updateBulkBar() {
+            const bar = document.getElementById('transactions-bulk-bar');
+            document.getElementById('transactions-bulk-count').textContent = selected.size;
+            bar.style.display = selected.size > 0 ? 'flex' : 'none';
+            const allOnPage = filtered.slice((page - 1) * perPage, page * perPage).every(r => selected.has(r.txn_id));
+            document.getElementById('transactions-cb-all').checked = allOnPage && filtered.length > 0;
+        }
+
+        function escHtml(str) {
+            return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        return {
+            init,
+            search(q) {
+                searchQ = q.trim();
+                applyFilters();
+            },
+            filterStatus(s, btnEl) {
+                statusFilt = s;
+                document.querySelectorAll('#transactions-filter-chips .dt-filter-chip').forEach(el => el.classList.toggle('active', el === btnEl));
+                applyFilters();
+            },
+            filterDate(v) {
+                dateFilt = v;
+                applyFilters();
+            },
+            sort(col, thEl) {
+                if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+                else {
+                    sortCol = col;
+                    sortDir = 'asc';
+                }
+                document.querySelectorAll('.dt-table thead th').forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
+                if (thEl) thEl.classList.add('sorted-' + sortDir);
+                applyFilters();
+            },
+            goPage(p) {
+                const pages = Math.max(1, Math.ceil(filtered.length / perPage));
+                if (p < 1 || p > pages) return;
+                page = p;
+                render();
+            },
+            setPerPage(n) {
+                perPage = n;
+                page = 1;
+                render();
+            },
+            toggleAll(checked) {
+                const start = (page - 1) * perPage;
+                filtered.slice(start, start + perPage).forEach(r => {
+                    checked ? selected.add(r.txn_id) : selected.delete(r.txn_id);
+                });
+                render();
+            },
+            toggleRow(id, checked) {
+                checked ? selected.add(id) : selected.delete(id);
+                updateBulkBar();
+            },
+            bulkAction(action) {
+                if (!selected.size) return;
+                if (action === 'export') exportCSV(data.filter(r => selected.has(r.txn_id)));
+            },
+            getSelected() {
+                return [...selected];
+            },
+        };
+    })();
+
+    /* ─── CSV Export ─────────────────────────────────────────────── */
+    function exportCSV(rows) {
+        rows = rows || ORDERS_DATA;
+        const headers = ['Transaction ID', 'Order Ref', 'Customer', 'Email', 'Plan', 'Amount (£)', 'Discount (£)', 'Status', 'Date'];
+        const lines = [headers.join(','), ...rows.map(r => [
+            r.txn_id, r.order_ref,
+            `"${r.customer.name.replace(/"/g,'""')}"`,
+            r.customer.email,
+            `"${r.plan_name.replace(/"/g,'""')}"`,
+            r.amount.toFixed(2), r.discount.toFixed(2),
+            r.status, r.dateStr,
+        ].join(','))];
+        const blob = new Blob([lines.join('\n')], {
+            type: 'text/csv'
         });
-        html += `<button class="dt-page-btn" onclick="transactionsTable.goPage(${page + 1})" ${page >= pages ? 'disabled' : ''}>Next</button>`;
-        pg.innerHTML = html;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `transactions_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
     }
 
-    function paginationRange(current, total) {
-        if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-        if (current <= 4) return [1, 2, 3, 4, 5, '…', total];
-        if (current >= total - 3) return [1, '…', total-4, total-3, total-2, total-1, total];
-        return [1, '…', current-1, current, current+1, '…', total];
+    function exportTransactionsCSV() {
+        exportCSV(ORDERS_DATA);
     }
 
-    function updateBulkBar() {
-        const bar = document.getElementById('transactions-bulk-bar');
-        document.getElementById('transactions-bulk-count').textContent = selected.size;
-        bar.style.display = selected.size > 0 ? 'flex' : 'none';
-        const allOnPage = filtered.slice((page-1)*perPage, page*perPage).every(r => selected.has(r.txn_id));
-        document.getElementById('transactions-cb-all').checked = allOnPage && filtered.length > 0;
-    }
+    /* ─── Drawer ─────────────────────────────────────────────────── */
+    function openOrderDrawer(txnId) {
+        const o = ORDERS_DATA.find(r => r.txn_id === txnId);
+        if (!o) return;
 
-    function escHtml(str) {
-        return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
+        document.getElementById('drawer-order-id').textContent = o.txn_id;
+        document.getElementById('drawer-order-date').textContent = 'Placed on ' + o.dateStr;
 
-    return {
-        init,
-        search(q)             { searchQ = q.trim(); applyFilters(); },
-        filterStatus(s, btnEl){ statusFilt = s; document.querySelectorAll('#transactions-filter-chips .dt-filter-chip').forEach(el => el.classList.toggle('active', el === btnEl)); applyFilters(); },
-        filterDate(v)         { dateFilt = v; applyFilters(); },
-        sort(col, thEl) {
-            if (sortCol === col) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
-            else { sortCol = col; sortDir = 'asc'; }
-            document.querySelectorAll('.dt-table thead th').forEach(th => th.classList.remove('sorted-asc', 'sorted-desc'));
-            if (thEl) thEl.classList.add('sorted-' + sortDir);
-            applyFilters();
-        },
-        goPage(p)      { const pages = Math.max(1, Math.ceil(filtered.length / perPage)); if (p < 1 || p > pages) return; page = p; render(); },
-        setPerPage(n)  { perPage = n; page = 1; render(); },
-        toggleAll(checked) { const start = (page-1)*perPage; filtered.slice(start, start+perPage).forEach(r => { checked ? selected.add(r.txn_id) : selected.delete(r.txn_id); }); render(); },
-        toggleRow(id, checked) { checked ? selected.add(id) : selected.delete(id); updateBulkBar(); },
-        bulkAction(action) { if (!selected.size) return; if (action === 'export') exportCSV(data.filter(r => selected.has(r.txn_id))); },
-        getSelected() { return [...selected]; },
-    };
-})();
+        const statusLabel = {
+            pending: 'Pending',
+            completed: 'Completed'
+        };
+        const esc = str => String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/* ─── CSV Export ─────────────────────────────────────────────── */
-function exportCSV(rows) {
-    rows = rows || ORDERS_DATA;
-    const headers = ['Transaction ID','Order Ref','Customer','Email','Plan','Amount (£)','Discount (£)','Status','Date'];
-    const lines = [headers.join(','), ...rows.map(r => [
-        r.txn_id, r.order_ref,
-        `"${r.customer.name.replace(/"/g,'""')}"`,
-        r.customer.email,
-        `"${r.plan_name.replace(/"/g,'""')}"`,
-        r.amount.toFixed(2), r.discount.toFixed(2),
-        r.status, r.dateStr,
-    ].join(','))];
-    const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `transactions_${new Date().toISOString().slice(0,10)}.csv`; a.click();
-    URL.revokeObjectURL(url);
-}
-function exportTransactionsCSV() { exportCSV(ORDERS_DATA); }
-
-/* ─── Drawer ─────────────────────────────────────────────────── */
-function openOrderDrawer(txnId) {
-    const o = ORDERS_DATA.find(r => r.txn_id === txnId);
-    if (!o) return;
-
-    document.getElementById('drawer-order-id').textContent  = o.txn_id;
-    document.getElementById('drawer-order-date').textContent = 'Placed on ' + o.dateStr;
-
-    const statusLabel = { pending: 'Pending', completed: 'Completed' };
-    const esc = str => String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-
-    /* ── build invoice button depending on whether a PDF exists ── */
-    const hasInvoice = !!o.invoice_path;
-    const invoiceBtn = hasInvoice
-        ? `<button class="btn btn-primary btn-sm" style="flex:1"
+        /* ── build invoice button depending on whether a PDF exists ── */
+        const hasInvoice = !!o.invoice_path;
+        const invoiceBtn = hasInvoice ?
+            `<button class="btn btn-primary btn-sm" style="flex:1"
                 onclick="openInvoicePDF('${esc(o.txn_id)}')">
                 <i class="ri-file-pdf-line"></i> View Invoice
-           </button>`
-        : `<button class="btn btn-ghost btn-sm" style="flex:1;opacity:.45;cursor:not-allowed" disabled>
+           </button>` :
+            `<button class="btn btn-ghost btn-sm" style="flex:1;opacity:.45;cursor:not-allowed" disabled>
                 <i class="ri-file-pdf-line"></i> No Invoice
            </button>`;
 
-    document.getElementById('drawer-content').innerHTML = `
+        document.getElementById('drawer-content').innerHTML = `
         <div class="drawer-section">
             <div class="drawer-section-title">Customer</div>
             <div class="drawer-row">
@@ -1054,10 +1129,8 @@ function openOrderDrawer(txnId) {
 
         <div class="drawer-section">
             <div class="drawer-section-title">Order Details</div>
-            <div class="drawer-row">
-                <span class="drawer-row-label">Order Ref</span>
-                <span class="drawer-row-val" style="font-family:'DM Mono',monospace;color:#0ea5e9">${esc(o.order_ref)}</span>
-            </div>
+
+           
             <div class="drawer-row">
                 <span class="drawer-row-label">Plan</span>
                 <span class="drawer-row-val">${esc(o.plan_name)}</span>
@@ -1097,36 +1170,36 @@ function openOrderDrawer(txnId) {
             ${invoiceBtn}
         </div>`;
 
-    document.getElementById('order-drawer-overlay').classList.add('open');
-    document.getElementById('order-drawer').classList.add('open');
-}
-
-function closeOrderDrawer() {
-    document.getElementById('order-drawer-overlay').classList.remove('open');
-    document.getElementById('order-drawer').classList.remove('open');
-}
-
-/* ─── Open stored PDF in a small popup window ────────────────── */
-function openInvoicePDF(txnId) {
-    const o = ORDERS_DATA.find(r => r.txn_id === txnId);
-    if (!o || !o.invoice_path) return;
-
-    /* Build the public URL — adjust the base path to match your storage setup */
-    const pdfUrl = '/invoices/' + o.invoice_path.replace('invoices/', '');
-
-    const popup = window.open(
-        pdfUrl,
-        'invoicePreview',
-        'width=900,height=700,top=60,left=100,resizable=yes,scrollbars=yes'
-    );
-
-    /* Fallback: if the browser blocks the popup, open in same tab */
-    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-        window.open(pdfUrl, '_blank');
+        document.getElementById('order-drawer-overlay').classList.add('open');
+        document.getElementById('order-drawer').classList.add('open');
     }
-}
 
-/* ─── Boot ───────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => transactionsTable.init());
+    function closeOrderDrawer() {
+        document.getElementById('order-drawer-overlay').classList.remove('open');
+        document.getElementById('order-drawer').classList.remove('open');
+    }
+
+    /* ─── Open stored PDF in a small popup window ────────────────── */
+    function openInvoicePDF(txnId) {
+        const o = ORDERS_DATA.find(r => r.txn_id === txnId);
+        if (!o || !o.invoice_path) return;
+
+        /* Build the public URL — adjust the base path to match your storage setup */
+        const pdfUrl = '/invoices/' + o.invoice_path.replace('invoices/', '');
+
+        const popup = window.open(
+            pdfUrl,
+            'invoicePreview',
+            'width=900,height=700,top=60,left=100,resizable=yes,scrollbars=yes'
+        );
+
+        /* Fallback: if the browser blocks the popup, open in same tab */
+        if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+            window.open(pdfUrl, '_blank');
+        }
+    }
+
+    /* ─── Boot ───────────────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', () => transactionsTable.init());
 </script>
 @endsection

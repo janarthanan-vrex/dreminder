@@ -182,6 +182,11 @@ $cats = $categories->mapWithKeys(function ($category) {
 window.CATS = @json($cats);
 </script>
 
+<script>
+window.DB_REMINDERS = @json($reminders);
+console.log('Reminders loaded:', window.DB_REMINDERS);
+</script>
+
 
 @endsection
 

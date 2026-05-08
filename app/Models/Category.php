@@ -26,6 +26,10 @@ class Category extends Model
 {
     return $this->hasMany(SubCategory::class, 'category_id');
 }
+public function reminders()
+{
+    return $this->hasMany(Reminder::class);
+}
 
     
 }

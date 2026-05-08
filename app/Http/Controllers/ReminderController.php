@@ -14,71 +14,143 @@ use App\Models\SubCategory;
 class ReminderController extends Controller
 {
 
+public function userReminders(Request $request)
+{
+    $user = Auth::user();
+
+    // reminders with relations
+    $reminders = Reminder::with([
+        'category',
+        'subcategory'
+    ])
+    ->where('user_id', $user->id)
+    ->latest()
+    ->get();
+
+    // categories with subcategories
+    $categories = Category::with('subcategories')
+        ->where('status', 'Active')
+        ->get();
+
+    return view('user.reminders', compact(
+        'user',
+        'reminders',
+        'categories'
+    ));
+}
 public function store(Request $request)
-    {
-       
-        $request->validate([
+{
+    $request->validate([
 
-            'title' => 'required|string|min:3|max:100',
+        'title' => 'required|string|min:3|max:100',
 
-            'category_id' => 'required|integer|exists:categories,id',
+        'category_id' => 'required|integer|exists:categories,id',
 
-            'subcategory_name' => 'required|string|max:100',
+        'subcategory_name' => 'required|string|max:100',
 
-            'reminder_date' => 'required|date',
+      'reminder_date' => 'required|date|after_or_equal:today',
 
-            'reminder_time' => 'required',
+        'reminder_time' => 'required',
 
-            'description' => 'nullable|string|max:200',
+        'description' => 'nullable|string|max:200',
 
-            'provider' => 'nullable|string|max:100',
+        'provider' => 'nullable|string|max:100',
 
-            'cost' => 'nullable|numeric|min:0',
+        'cost' => 'nullable|numeric|min:0',
 
-            'payment_frequency' => 'nullable|string|max:50',
+        'payment_frequency' => 'nullable|string|max:50',
 
-        ]);
+    ]);
 
-        // 🔥 find subcategory id from name
-        $subcategory = SubCategory::where('category_id', $request->category_id)
+    // 🔥 FIND CATEGORY
+    $category = Category::find($request->category_id);
 
-            ->where('name', $request->subcategory_name)
+    // 🔥 CHECK EXISTING SUBCATEGORY
+    $subcategory = SubCategory::where(
+            'category_id',
+            $request->category_id
+        )
+        ->whereRaw(
+            'LOWER(name) = ?',
+            [strtolower($request->subcategory_name)]
+        )
+        ->first();
 
-            ->first();
+    // 🔥 IF NOT EXISTS → CREATE CUSTOM SUBCATEGORY
+    if (!$subcategory) {
 
-        Reminder::create([
-
-            'user_id' => Auth::id(),
+        $subcategory = SubCategory::create([
 
             'category_id' => $request->category_id,
 
-            'subcategory_id' => $subcategory?->id,
+            'name' => ucfirst($request->subcategory_name),
 
-            'title' => $request->title,
+            'description' => null,
 
-            'reminder_date' => $request->reminder_date,
+            'role' => 'user',
 
-            'reminder_time' => $request->reminder_time,
-
-            'description' => $request->description,
-
-            'provider' => $request->provider,
-
-            'cost' => $request->cost,
-
-            'payment_frequency' => $request->payment_frequency,
+            'created_by' => Auth::id(),
 
             'status' => 'Active',
-
-        ]);
-
-        return response()->json([
-
-            'status' => true,
-
-            'message' => 'Reminder created successfully'
-
         ]);
     }
+
+    // 🔥 STORE REMINDER
+    Reminder::create([
+
+        'user_id' => Auth::id(),
+
+        'category_id' => $request->category_id,
+
+        'subcategory_id' => $subcategory->id,
+
+        'title' => ucfirst($request->title),
+
+        'reminder_date' => $request->reminder_date,
+
+        'reminder_time' => $request->reminder_time,
+
+        'description' => $request->description,
+
+        'provider' => $request->provider,
+
+        'cost' => $request->cost,
+
+        'payment_frequency' => $request->payment_frequency,
+
+        'status' => 'Active',
+    ]);
+
+    return response()->json([
+
+        'status' => true,
+
+        'message' => 'Reminder created successfully'
+    ]);
+}
+
+public function deleteReminder($id)
+{
+    $user = Auth::user();
+
+    $reminder = Reminder::where('id', $id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    if (!$reminder) {
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Reminder not found'
+        ], 404);
+    }
+
+    $reminder->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Reminder deleted successfully'
+    ]);
+}
     
 }
