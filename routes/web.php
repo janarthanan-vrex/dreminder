@@ -158,6 +158,10 @@ Route::get('/user-reminder-history', function () {return view('user.reminder-his
 
 Route::get('/user-category',[UserController::class,'userCategory'])->name('user.category');  
 Route::post('/store-subcategory', [UserController::class, 'storeSubCategory'])->name('user.store.subcategory'); 
+Route::delete('/user/delete-subcategory/{id}',[UserController::class, 'deleteSubcategory'])->name('user.delete.subcategory');
+Route::put('/user/update-subcategory/{id}',[UserController::class, 'updateSubcategory'])->name('user.update.subcategory');
+
+
 Route::get('/user-create-reminder', function () {return view('user.create-reminder');});
 Route::get('/user-feedback', function () {return view('user.feedback');});
 Route::get('/user-help', function () {return view('user.help');});

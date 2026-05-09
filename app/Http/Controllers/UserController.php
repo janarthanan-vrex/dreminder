@@ -18,67 +18,67 @@ use Carbon\Carbon;
 class UserController extends Controller
 {
     public function userDashboard(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $categories = Category::with([
-        'subcategories' => function ($query) {
-            $query->where('status', 'Active');
-        }
-    ])
-    ->where('status', 'Active')
-    ->get();
+        $categories = Category::with([
+            'subcategories' => function ($query) {
+                $query->where('status', 'Active');
+            }
+        ])
+            ->where('status', 'Active')
+            ->get();
 
-    // Current date & time
-    $now = Carbon::now();
+        // Current date & time
+        $now = Carbon::now();
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | Reminder Counts
     |--------------------------------------------------------------------------
     */
 
-    // Active reminders (upcoming + today)
-    $activeReminders = Reminder::where('user_id', $user->id)
-        ->where('status', 'Active')
-        ->where(function ($query) use ($now) {
-            $query->whereDate('reminder_date', '>', $now->toDateString())
-                  ->orWhere(function ($q) use ($now) {
-                      $q->whereDate('reminder_date', $now->toDateString())
-                        ->whereTime('reminder_time', '>=', $now->toTimeString());
-                  });
-        })
-        ->count();
+        // Active reminders (upcoming + today)
+        $activeReminders = Reminder::where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->where(function ($query) use ($now) {
+                $query->whereDate('reminder_date', '>', $now->toDateString())
+                    ->orWhere(function ($q) use ($now) {
+                        $q->whereDate('reminder_date', $now->toDateString())
+                            ->whereTime('reminder_time', '>=', $now->toTimeString());
+                    });
+            })
+            ->count();
 
-    // Due this week
-    $dueThisWeek = Reminder::where('user_id', $user->id)
-        ->where('status', 'Active')
-        ->whereBetween('reminder_date', [
-            $now->startOfWeek()->toDateString(),
-            $now->copy()->endOfWeek()->toDateString()
-        ])
-        ->count();
+        // Due this week
+        $dueThisWeek = Reminder::where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->whereBetween('reminder_date', [
+                $now->startOfWeek()->toDateString(),
+                $now->copy()->endOfWeek()->toDateString()
+            ])
+            ->count();
 
-    // Completed reminders
-    $completedReminders = Reminder::where('user_id', $user->id)
-        ->where('reminder_status', 'Completed')
-        ->count();
+        // Completed reminders
+        $completedReminders = Reminder::where('user_id', $user->id)
+            ->where('reminder_status', 'Completed')
+            ->count();
 
-    // Today's reminders
-    $todayReminders = Reminder::where('user_id', $user->id)
-        ->where('status', 'Active')
-        ->whereDate('reminder_date', Carbon::today())
-        ->count();
+        // Today's reminders
+        $todayReminders = Reminder::where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->whereDate('reminder_date', Carbon::today())
+            ->count();
 
-    return view('user.dashboard', compact(
-        'user',
-        'categories',
-        'activeReminders',
-        'dueThisWeek',
-        'completedReminders',
-        'todayReminders'
-    ));
-}
+        return view('user.dashboard', compact(
+            'user',
+            'categories',
+            'activeReminders',
+            'dueThisWeek',
+            'completedReminders',
+            'todayReminders'
+        ));
+    }
     public function userProfile(Request $request)
     {
         $user = Auth::user()->load('plan');
@@ -237,118 +237,175 @@ class UserController extends Controller
 
         return view('user.transactions', compact('user', 'invoices', 'ordersData'));
     }
-public function userCategory(Request $request)
-{
-    $user = Auth::user();
+    public function userCategory(Request $request)
+    {
+        $user = Auth::user();
 
-    $categories = Category::with([
-        'subcategories' => function ($query) use ($user) {
+        $categories = Category::with([
+            'subcategories' => function ($query) use ($user) {
 
-            $query->where('status', 'Active')
+                $query->where('status', 'Active')
 
-                ->where(function ($q) use ($user) {
+                    ->where(function ($q) use ($user) {
 
-                    $q->where('role', 'admin')
+                        $q->where('role', 'admin')
 
-                      ->orWhere(function ($subQ) use ($user) {
+                            ->orWhere(function ($subQ) use ($user) {
 
-                          $subQ->where('role', 'user')
-                               ->where('created_by', $user->id);
-                      });
-                });
+                                $subQ->where('role', 'user')
+                                    ->where('created_by', $user->id);
+                            });
+                    });
+            }
+        ])
+            ->where('status', 'Active')
+            ->get();
+
+        // 🔥 REMINDERS
+        $reminders = Reminder::with([
+            'category',
+            'subcategory'
+        ])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(function ($r) {
+                return [
+                    'id' => $r->id,
+                    'title' => $r->title,
+                    'category' => $r->category->id,
+                    'subcategory' => optional($r->subcategory)->name,
+                    'dueDate' => $r->reminder_date,
+                    'dueTime' => $r->reminder_time,
+                    'description' => $r->description,
+                    'provider' => $r->provider,
+                    'cost' => $r->cost,
+                    'frequency' => $r->payment_frequency,
+                    'status' => $r->status,
+                    'createdAt' => $r->created_at,
+                ];
+            });
+
+        // 🔥 TOTAL CATEGORY COUNT
+        $totalCategories = $categories->count();
+
+        // 🔥 CUSTOM SUBCATEGORY COUNT
+        $customSubCount = SubCategory::where('role', 'user')
+            ->where('created_by', $user->id)
+            ->count();
+
+        // 🔥 MOST USED CATEGORY
+        $mostUsedCategory = Reminder::select('category_id')
+            ->where('user_id', $user->id)
+            ->groupBy('category_id')
+            ->orderByRaw('COUNT(*) DESC')
+            ->first();
+
+        $mostUsedCategoryName = '—';
+
+        if ($mostUsedCategory) {
+
+            $cat = Category::find(
+                $mostUsedCategory->category_id
+            );
+
+            $mostUsedCategoryName = $cat?->name ?? '—';
         }
-    ])
-    ->where('status', 'Active')
-    ->get();
-
-    // 🔥 REMINDERS
-    $reminders = Reminder::with([
-        'category',
-        'subcategory'
-    ])
-    ->where('user_id', $user->id)
-    ->latest()
-    ->get()
-    ->map(function ($r) {
-
-        return [
-
-            'id' => $r->id,
-
-            'title' => $r->title,
-
-            // 🔥 IMPORTANT
-            'category' => $r->category->id,
-
-            'subcategory' => optional($r->subcategory)->name,
-
-            'dueDate' => $r->reminder_date,
-
-            'dueTime' => $r->reminder_time,
-
-            'description' => $r->description,
-
-            'provider' => $r->provider,
-
-            'cost' => $r->cost,
-
-            'frequency' => $r->payment_frequency,
-
-            'status' => $r->status,
-
-            'createdAt' => $r->created_at,
-        ];
-    });
-
-    return view(
-        'user.category',
-        compact(
-            'user',
-            'categories',
-            'reminders'
-        )
-    );
-}
+        return view('user.category', compact('user', 'categories', 'reminders', 'totalCategories', 'customSubCount', 'mostUsedCategoryName'));
+    }
     public function storeSubCategory(Request $request)
-{
-    $user = Auth::user();
+    {
+        $user = Auth::user();
 
-    $request->validate([
-        'category_id' => 'required|exists:categories,id',
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
 
-        'name' => 'required|string|min:3|max:50',
+            'name' => 'required|string|min:3|max:50',
 
-        'description' => 'nullable|string|max:100',
-    ]);
+            'description' => 'nullable|string|max:100',
+        ]);
 
-    // 🔥 CHECK DUPLICATE
-    $exists = SubCategory::where('category_id', $request->category_id)
-        ->where('name', $request->name)
-        ->exists();
+        // 🔥 CHECK DUPLICATE
+        $exists = SubCategory::where('category_id', $request->category_id)
+            ->where('name', $request->name)
+            ->exists();
 
-    if ($exists) {
+        if ($exists) {
+
+            return response()->json([
+                'status' => false,
+                'errors' => [
+                    'name' => ['Subcategory already exists']
+                ]
+            ], 422);
+        }
+
+        // ✅ STORE
+        SubCategory::create([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'role' => 'user',
+            'created_by' => $user->id,
+            'status' => 'Active',
+            'description' => $request->description,
+        ]);
 
         return response()->json([
-            'status' => false,
-            'errors' => [
-                'name' => ['Subcategory already exists']
-            ]
-        ], 422);
+            'status' => true,
+            'message' => 'Subcategory added successfully'
+        ]);
     }
 
-    // ✅ STORE
-    SubCategory::create([
-        'category_id' => $request->category_id,
-        'name' => $request->name,
-        'role' => 'user',
-        'created_by' => $user->id,
-        'status' => 'Active',
-        'description' => $request->description,
-    ]);
+    public function updateSubcategory(Request $request, $id)
+    {
+        $user = Auth::user();
+        $subcategory = SubCategory::where('id', $id)
+            ->where('created_by', $user->id)
+            ->where('role', 'user')
+            ->first();
+        if (!$subcategory) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Subcategory not found'
+            ], 404);
+        }
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|min:2|max:50',
+            'description' => 'nullable|string|max:100',
+        ]);
+        $subcategory->update([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Subcategory updated successfully'
+        ]);
+    }
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Subcategory added successfully'
-    ]);
-}
+    public function deleteSubcategory($id)
+    {
+        $user = Auth::user();
+        $subcategory = SubCategory::where('id', $id)
+            ->where('created_by', $user->id)
+            ->where('role', 'user')
+            ->first();
+        if (!$subcategory) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Subcategory not found'
+            ], 404);
+        }
+
+        $subcategory->delete();
+
+        return response()->json([
+
+            'status' => true,
+
+            'message' => 'Subcategory deleted successfully'
+        ]);
+    }
 }

@@ -18,12 +18,13 @@
 
 
     <style>
-        .error-text{
-    display:block;
-    color:#f43f5e;
-    font-size:.72rem;
-    margin-top:4px;
-}
+        .error-text {
+            display: block;
+            color: #f43f5e;
+            font-size: .72rem;
+            margin-top: 4px;
+        }
+
         /* ─── Page Loader Overlay ─── */
         #page-loader {
             position: fixed;
@@ -367,6 +368,71 @@
         </div>
     </div>
 
+    <!-- Edit Subcategory Modal -->
+    <div class="modal-bg" id="edit-sub-modal">
+        <div class="modal-box" style="max-width:500px">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+                <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9;display:flex;align-items:center;gap:8px">
+                    <i class="ri-pencil-line" style="color:#2dd4bf"></i> Edit Subcategory
+                </h3>
+
+                <button onclick="closeModal('edit-sub-modal')" class="btn btn-icon btn-ghost btn-sm">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="edit-sub-id">
+
+            <div style="margin-bottom:14px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Parent Category
+                </label>
+
+                <select class="inp" id="edit-sub-parent">
+                    @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+
+                <div class="error-text" id="edit-err-category_id"></div>
+            </div>
+
+            <div style="margin-bottom:14px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Subcategory Name
+                </label>
+
+                <input class="inp" id="edit-sub-name" maxlength="50">
+
+                <div class="error-text" id="edit-err-name"></div>
+            </div>
+
+            <div style="margin-bottom:18px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Description
+                </label>
+
+                <input class="inp" id="edit-sub-desc" maxlength="100">
+
+                <div class="error-text" id="edit-err-description"></div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeModal('edit-sub-modal')">Cancel</button>
+
+                <button class="btn btn-primary" onclick="updateSubcategory()">
+                    <i class="ri-check-line"></i> Update Subcategory
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
     <!-- Support Modal -->
     <div class="modal-bg" id="support-modal">
         <div class="modal-box">
@@ -452,7 +518,7 @@
                                 <select class="inp" id="r-sub" disabled style="flex:1">
                                     <option value="">Select category first…</option>
                                 </select>
-                           
+
                                 <button type="button" onclick="openSubPopup()"
                                     style="width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#a78bfa;cursor:pointer">
                                     <i class="ri-add-line"></i>
@@ -464,7 +530,7 @@
                     <div class="g2" style="margin-bottom:18px">
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e">*</span></label>
-                            <input class="inp" type="date" id="r-date"  min="{{ date('Y-m-d') }}">
+                            <input class="inp" type="date" id="r-date" min="{{ date('Y-m-d') }}">
                             <div class="error-text" id="err-reminder_date"></div>
                         </div>
                         <div>
@@ -730,10 +796,19 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
 
-   
+
 
     <script>
         new TomSelect("#sub-cat-parent", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            placeholder: "Search category..."
+        });
+
+        new TomSelect("#edit-sub-parent", {
             create: false,
             sortField: {
                 field: "text",
