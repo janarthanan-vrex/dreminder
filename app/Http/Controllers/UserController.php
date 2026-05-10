@@ -31,13 +31,6 @@ class UserController extends Controller
 
         // Current date & time
         $now = Carbon::now();
-
-        /*
-    |--------------------------------------------------------------------------
-    | Reminder Counts
-    |--------------------------------------------------------------------------
-    */
-
         // Active reminders (upcoming + today)
         $activeReminders = Reminder::where('user_id', $user->id)
             ->where('status', 'Active')
@@ -69,16 +62,36 @@ class UserController extends Controller
             ->where('status', 'Active')
             ->whereDate('reminder_date', Carbon::today())
             ->count();
+        // 🔥 UPCOMING REMINDERS
+        $upcomingReminders = Reminder::with([
+            'category',
+            'subcategory'
+        ])
+            ->where('user_id', $user->id)
+            ->where('status', 'Active')
+            ->whereDate('reminder_date', '>=', now())
+            ->orderBy('reminder_date')
+            ->orderBy('reminder_time')
+            ->take(5)
+            ->get()
+            ->map(function ($r) {
+                return [
+                    'id' => $r->id,
+                    'title' => $r->title,
+                    'category' => $r->category?->name,
+                    'subcategory' => $r->subcategory?->name,
+                    'dueDate' => $r->reminder_date,
+                    'dueTime' => $r->reminder_time,
+                    'status' => strtolower($r->status),
+                    'provider' => $r->provider
+                ];
+            });
 
-        return view('user.dashboard', compact(
-            'user',
-            'categories',
-            'activeReminders',
-            'dueThisWeek',
-            'completedReminders',
-            'todayReminders'
+        return view('user.dashboard', compact('user','categories','activeReminders','dueThisWeek','completedReminders',
+        'todayReminders','upcomingReminders'
         ));
     }
+    
     public function userProfile(Request $request)
     {
         $user = Auth::user()->load('plan');

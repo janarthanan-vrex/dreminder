@@ -796,7 +796,36 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
     <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
 
+@php
 
+$cats = $categories->mapWithKeys(function ($category) {
+    return [
+        $category->id => [
+            'id' => $category->id,
+            'name' => $category->name,
+            'icon' => $category->icon,
+            'bg' => $category->color,
+            'subs' => $category->subcategories
+                ->where('role', 'user')
+                ->map(function ($sub) {
+                    return [
+
+                        'id' => $sub->id,
+                        'name' => $sub->name,
+                        'description' => $sub->description,
+                    ];
+                })
+                ->values()
+                ->toArray()
+        ]
+    ];
+
+})->toArray();
+
+@endphp
+<script>
+window.CATS = @json($cats);
+</script>
 
     <script>
         new TomSelect("#sub-cat-parent", {

@@ -276,36 +276,25 @@
 
             @php
             $half = ceil($categories->count() / 2);
-
             $topCategories = $categories->take($half);
-
             $bottomCategories = $categories->skip($half);
             @endphp
 
             <!-- Top Row -->
             <div class="ticker-row">
-
                 <div class="ticker-content ticker-forward">
-
                     {{-- ORIGINAL --}}
                     @foreach($topCategories as $category)
 
                     <div class="ticker-item clickable"
                         onclick="openReminderModal('{{ $category->id }}','{{ $category->name }}')">
-
                         <div class="ticker-bg"></div>
-
                         <div class="ticker-border"></div>
-
                         <i class="{{ $category->icon }}"
                             style="color: {{ $category->color }}"></i>
-
                         <span>{{ $category->name }}</span>
-
                         <div class="click-pulse"></div>
-
                     </div>
-
                     @endforeach
 
 
@@ -314,18 +303,13 @@
 
                     <div class="ticker-item clickable"
                         onclick="openReminderModal('{{ $category->id }}','{{ $category->name }}')">
-
                         <div class="ticker-bg"></div>
-
                         <div class="ticker-border"></div>
-
                         <i class="{{ $category->icon }}"
                             style="color: {{ $category->color }}"></i>
 
                         <span>{{ $category->name }}</span>
-
                         <div class="click-pulse"></div>
-
                     </div>
 
                     @endforeach
@@ -483,7 +467,7 @@
         <div class="card" style="padding:20px">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
                 <h3 class="font-jakarta" style="font-weight:700;font-size:.93rem;color:#f1f5f9">Upcoming Reminders</h3>
-                <button class="btn btn-ghost btn-sm" onclick="window.location.href='user-notification'">View All <i class="ri-arrow-right-line"></i></button>
+                <a class="btn btn-ghost btn-sm" href="{{ route('user.reminders') }}">View All <i class="ri-arrow-right-line"></i></a>
             </div>
             <div id="dash-list" style="display:flex;flex-direction:column;gap:8px"></div>
         </div>
@@ -572,6 +556,16 @@
             }, 600);
         });
     });
+</script>
+<script>
+    window.UPCOMING_REMINDERS = @json($upcomingReminders);
+
+    window.DASH_STATS = {
+        active: {{ $activeReminders }},
+        week: {{ $dueThisWeek }},
+        done: {{ $completedReminders }},
+        today: {{ $todayReminders }}
+    };
 </script>
 
 @endsection

@@ -106,6 +106,7 @@ public function store(Request $request)
 
         'title' => ucfirst($request->title),
 
+        'end_reminder_date' => $request->reminder_date,
         'reminder_date' => $request->reminder_date,
 
         'reminder_time' => $request->reminder_time,

@@ -660,38 +660,41 @@ let dashChart = null;
 
 function initDash() {
     const h = new Date().getHours();
+
     document.getElementById("greeting").textContent =
         h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-    const rems = getRems();
-    const active = rems.filter((r) => r.status === "active");
-    const week = active.filter(
-        (r) => daysUntil(r.dueDate) >= 0 && daysUntil(r.dueDate) <= 7,
-    );
-    const done = rems.filter((r) => r.status === "completed");
-    const over = active.filter((r) => daysUntil(r.dueDate) < 0);
-    document.getElementById("s-active").textContent = active.length;
-    document.getElementById("s-week").textContent = week.length;
-    document.getElementById("s-done").textContent = done.length;
-    document.getElementById("s-over").textContent = over.length;
+
+    const rems = window.UPCOMING_REMINDERS || [];
+
+    const stats = window.DASH_STATS || {};
+
+    document.getElementById("s-active").textContent = stats.active || 0;
+
+    document.getElementById("s-week").textContent = stats.week || 0;
+
+    document.getElementById("s-done").textContent = stats.done || 0;
+
+    // 🔥 TODAY REMINDER COUNT
+    document.getElementById("s-over").textContent = stats.today || 0;
+
     document.getElementById("dash-summary").textContent =
-        week.length > 0
-            ? `You have ${week.length} reminder${week.length > 1 ? "s" : ""} due this week.`
+        stats.week > 0
+            ? `You have ${stats.week} reminder${stats.week > 1 ? "s" : ""} due this week.`
             : "No reminders due this week — great job! 🎉";
-    const up = active
-        .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-        .slice(0, 5);
+
     const ul = document.getElementById("dash-list");
+
     ul.innerHTML =
-        up.length === 0
+        rems.length === 0
             ? '<div style="text-align:center;padding:30px;color:#475569;font-size:.83rem">No upcoming reminders</div>'
-            : up.map((r) => remCardHTML(r, true)).join("");
+            : rems.map((r) => remCardHTML(r, true)).join("");
+
     initDashChart();
 }
 
 function initDashChart() {
     const cv = document.getElementById("dash-chart");
     if (!cv) return;
-
     if (dashChart) {
         dashChart.destroy();
         dashChart = null;
@@ -699,13 +702,15 @@ function initDashChart() {
 
     const isDark = document.documentElement.classList.contains("dark");
     const tc = isDark ? "#fff" : "#000";
+    const stats = window.DASH_STATS || {};
 
-    const labels = ["Work", "Personal", "Health", "Others"];
+    const labels = ["Active", "Due This Week", "Completed", "Today"];
+
     const data = [
-        Math.floor(Math.random() * 20),
-        Math.floor(Math.random() * 20),
-        Math.floor(Math.random() * 20),
-        Math.floor(Math.random() * 20),
+        stats.active || 0,
+        stats.week || 0,
+        stats.done || 0,
+        stats.today || 0,
     ];
 
     dashChart = new Chart(cv, {
@@ -717,22 +722,28 @@ function initDashChart() {
                     data,
                     backgroundColor: [
                         "#7c3aed",
-                        "#06b6d4",
-                        "#10b981",
                         "#f59e0b",
+                        "#10b981",
+                        "#f43f5e",
                     ],
                 },
             ],
         },
+
         options: {
             plugins: {
                 legend: {
                     labels: {
                         color: tc,
-                        font: { family: "DM Sans", size: 11 },
+
+                        font: {
+                            family: "DM Sans",
+                            size: 11,
+                        },
                     },
                 },
             },
+
             maintainAspectRatio: false,
         },
     });
@@ -1127,9 +1138,14 @@ function updateSubs() {
         CATS[cat].subs.forEach(function (item) {
             const option = document.createElement("option");
 
-            option.value = item;
+            // 🔥 VALUE
+            option.value = item.name;
 
-            option.textContent = item;
+            // 🔥 TEXT
+            option.textContent = item.name;
+
+            // 🔥 OPTIONAL SUBCATEGORY ID
+            option.dataset.id = item.id;
 
             sub.appendChild(option);
         });
@@ -1332,33 +1348,37 @@ function saveSubcategory() {
 
     const subSelect = document.getElementById("r-sub");
 
+    // 🔥 CATEGORY CHECK
     if (!cat || !CATS[cat]) {
         toast("Invalid category", "error");
 
         return;
     }
 
+    // 🔥 EMPTY CHECK
     if (!name) {
         toast("Enter subcategory name", "error");
 
         return;
     }
 
+    // 🔥 MIN LENGTH
     if (name.length < 2) {
         toast("Minimum 2 characters required", "error");
 
         return;
     }
 
+    // 🔥 MAX LENGTH
     if (name.length > 30) {
         toast("Max 30 characters allowed", "error");
 
         return;
     }
 
-    // 🔥 duplicate check from DB values
+    // 🔥 DUPLICATE CHECK
     const exists = CATS[cat].subs.some(function (s) {
-        return s.toLowerCase() === name.toLowerCase();
+        return s.name.toLowerCase() === name.toLowerCase();
     });
 
     if (exists) {
@@ -1367,24 +1387,34 @@ function saveSubcategory() {
         return;
     }
 
-    // 🔥 add dynamically into CATS
-    CATS[cat].subs.push(name);
+    // 🔥 ADD OBJECT FORMAT
+    CATS[cat].subs.push({
+        id: "custom_" + Date.now(),
 
-    // 🔥 refresh dropdown
+        name: name,
+
+        description: "",
+    });
+
+    // 🔥 REFRESH SUBCATEGORY
     updateSubs();
 
-    // 🔥 auto select new subcategory
+    // 🔥 AUTO SELECT
     subSelect.value = name;
 
-    // 🔥 enable dropdown
+    // 🔥 ENABLE SELECT
     subSelect.disabled = false;
 
-    // 🔥 clear popup input
+    // 🔥 CLEAR INPUT
     input.value = "";
+
+    // 🔥 CLEAR ERROR
     document.getElementById("err-subcategory_name").innerText = "";
 
+    // 🔥 CLOSE POPUP
     closeSubPopup();
 
+    // 🔥 SUCCESS
     toast("Subcategory added!", "success");
 }
 
@@ -2237,35 +2267,26 @@ openAddSubModal('${k}')">
     });
 }
 
-function openAddSubModal(categoryId = '') {
+function openAddSubModal(categoryId = "") {
+    document.getElementById("sub-cat-name").value = "";
 
-    document.getElementById('sub-cat-name').value = '';
+    document.getElementById("sub-cat-desc").value = "";
 
-    document.getElementById('sub-cat-desc').value = '';
+    document
+        .querySelectorAll("#add-sub-modal .error-text")
+        .forEach((el) => (el.innerText = ""));
 
-    document.querySelectorAll(
-        '#add-sub-modal .error-text'
-    ).forEach(el => el.innerText = '');
-
-    openModal('add-sub-modal');
+    openModal("add-sub-modal");
 
     // 🔥 FIX FOR TOMSELECT
     setTimeout(() => {
-
-        const select =
-            document.getElementById('sub-cat-parent');
+        const select = document.getElementById("sub-cat-parent");
 
         if (select.tomselect) {
-
-            select.tomselect.setValue(
-                categoryId
-            );
-
+            select.tomselect.setValue(categoryId);
         } else {
-
             select.value = categoryId;
         }
-
     }, 50);
 }
 
@@ -2433,37 +2454,36 @@ function openEditSubModal(cs) {
 }
 
 async function updateSubcategory() {
+    document
+        .querySelectorAll("#edit-sub-modal .error-text")
+        .forEach((el) => (el.innerText = ""));
 
-    document.querySelectorAll('#edit-sub-modal .error-text')
-        .forEach(el => el.innerText = '');
-
-    const id = document.getElementById('edit-sub-id').value;
+    const id = document.getElementById("edit-sub-id").value;
 
     const data = {
-        category_id: document.getElementById('edit-sub-parent').value,
-        name: document.getElementById('edit-sub-name').value,
-        description: document.getElementById('edit-sub-desc').value
+        category_id: document.getElementById("edit-sub-parent").value,
+        name: document.getElementById("edit-sub-name").value,
+        description: document.getElementById("edit-sub-desc").value,
     };
 
     try {
-
         const res = await fetch(`/user/update-subcategory/${id}`, {
-            method: 'PUT',
+            method: "PUT",
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
 
         const result = await res.json();
 
         if (res.status === 422) {
-
-            Object.keys(result.errors).forEach(field => {
-
-                const el = document.getElementById('edit-err-' + field);
+            Object.keys(result.errors).forEach((field) => {
+                const el = document.getElementById("edit-err-" + field);
 
                 if (el) {
                     el.innerText = result.errors[field][0];
@@ -2474,41 +2494,38 @@ async function updateSubcategory() {
         }
 
         if (!res.ok) {
-            toast(result.message, 'error');
+            toast(result.message, "error");
             return;
         }
 
-        toast(result.message, 'success');
+        toast(result.message, "success");
 
-        closeModal('edit-sub-modal');
+        closeModal("edit-sub-modal");
 
         setTimeout(() => {
             location.reload();
         }, 800);
-
     } catch (err) {
-
         console.log(err);
 
-        toast('Something went wrong', 'error');
+        toast("Something went wrong", "error");
     }
 }
 
-function clearEditError(inputId, errorId, eventType = 'input') {
-
+function clearEditError(inputId, errorId, eventType = "input") {
     const input = document.getElementById(inputId);
     const error = document.getElementById(errorId);
 
     if (!input || !error) return;
 
     input.addEventListener(eventType, function () {
-        error.innerText = '';
+        error.innerText = "";
     });
 }
 
-clearEditError('edit-sub-parent', 'edit-err-category_id', 'change');
-clearEditError('edit-sub-name', 'edit-err-name');
-clearEditError('edit-sub-desc', 'edit-err-description');
+clearEditError("edit-sub-parent", "edit-err-category_id", "change");
+clearEditError("edit-sub-name", "edit-err-name");
+clearEditError("edit-sub-desc", "edit-err-description");
 
 async function deleteCustomSub(id) {
     confirm_act("Delete this custom subcategory?", async () => {

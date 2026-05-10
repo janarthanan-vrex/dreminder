@@ -18,6 +18,7 @@ class Reminder extends Model
         'category_id',
         'subcategory_id',
         'title',
+        'end_reminder_date',
         'reminder_date',
         'reminder_time',
         'description',
