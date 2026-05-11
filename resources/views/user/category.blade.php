@@ -97,24 +97,20 @@ async function saveSubcat() {
                     el.innerText = result.errors[field][0];
                 }
             });
-
             btn.disabled = false;
-
             btn.innerHTML = '<i class="ri-check-line"></i> Add Subcategory';
-
             return;
         }
 
         // ✅ SUCCESS
         toast(result.message, 'success');
-
         document.getElementById('sub-cat-parent').value = '';
-
         document.getElementById('sub-cat-name').value = '';
-
         document.getElementById('sub-cat-desc').value = '';
-
         closeModal('add-sub-modal');
+        setTimeout(function(){
+            location.reload();
+        },1500);
 
     } catch (err) {
 

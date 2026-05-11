@@ -77,16 +77,16 @@ class SendReminderNotifications extends Command
          $message = CloudMessage::fromArray([
     'token' => $reminder->user->fcm_token,
 
-    'notification' => [
-        'title' => 'Winngoo Dreminder Alert',
+    'data' => [
+    'title' => 'Winngoo Dreminder Alert',
 
-        'body' =>
-            $reminder->title .
-            ' | ' .
-            ($reminder->category->name ?? 'No Category') .
-            ' → ' .
-            ($reminder->subcategory->name ?? 'No Subcategory'),
-    ],
+    'body' =>
+        $reminder->title .
+        ' | ' .
+        ($reminder->category->name ?? 'No Category') .
+        ' → ' .
+        ($reminder->subcategory->name ?? 'No Subcategory'),
+],
 ]);
             try {
 

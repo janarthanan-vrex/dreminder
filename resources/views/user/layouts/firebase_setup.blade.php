@@ -57,7 +57,6 @@ messaging.onMessage((payload) => {
   const audio = new Audio(
     '/assets/audio/reminder_sound.mp3'
   );
-
   audio.volume = 1;
 
   audio.play().catch(err => {

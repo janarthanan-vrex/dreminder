@@ -1084,27 +1084,18 @@ function initCreate() {
             editingId = null;
             return;
         }
-
         document.getElementById("create-title").textContent = "Edit Reminder";
-
         document.getElementById("create-btn-txt").textContent = "Save Changes";
-
         cs.tomselect.setValue(r.category);
-
         updateSubs();
-
         setTimeout(() => {
             document.getElementById("r-sub").value = r.subcategory;
         }, 100);
 
         document.getElementById("r-title").value = r.title;
-
         document.getElementById("r-date").value = r.dueDate;
-
         document.getElementById("r-time").value = r.dueTime || "09:00";
-
         document.getElementById("r-desc").value = r.description || "";
-
         document.getElementById("desc-len").textContent = (
             r.description || ""
         ).length;
