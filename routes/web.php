@@ -117,9 +117,7 @@ Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])-
 Route::post('/user/reset-password', [AuthController::class, 'resetPassword'])->name('user.reset-password');
 
 
-Route::get('/reset-password', function () {
-    return view('reset-password');
-});
+
 Route::get('/test', function () {
     return view('test');
 });
@@ -285,6 +283,7 @@ Route::get('/loader', function () {
 Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
 Route::get('/user-remindrs', [ReminderController::class, 'userReminders'])->name('user.reminders');
 Route::delete('/delete-reminder/{id}', [ReminderController::class, 'deleteReminder'])->name('user.reminder.delete');
+Route::put('/update-reminder/{id}', [ReminderController::class, 'update']);
 
 
 

@@ -443,7 +443,7 @@ const daysUntil = (d) => {
 
 function duePill(d) {
     const n = daysUntil(d);
-    if (n < 0) return `<span class="pill-urgent">Today</span>`;
+    if (n < 0) return `<span class="pill-urgent">Completed</span>`;
     if (n === 0) return `<span class="pill-urgent">Due today</span>`;
     if (n <= 3) return `<span class="pill-urgent">In ${n}d</span>`;
     if (n <= 7) return `<span class="pill-soon">In ${n}d</span>`;
@@ -801,7 +801,14 @@ function gridCardHTML(r) {
 <div style="font-size:.75rem;color:#64748b;margin-bottom:${r.cost ? "6" : "12"}px"><i class="ri-calendar-line"></i> ${fmtDate(r.dueDate)} at ${r.dueTime || "09:00"}</div>
 ${r.cost ? `<div style="font-weight:700;font-size:.85rem;color:#f1f5f9;margin-bottom:12px">£${r.cost}${r.frequency ? " / " + r.frequency : ""}</div>` : ""}
 <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
-<button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="editReminder('${r.id}')"><i class="ri-pencil-line"></i> Edit</button>
+
+${r.reminder_status !== 'completed' ? `
+<button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="editReminder('${r.id}')">
+    <i class="ri-pencil-line"></i> Edit
+</button>
+` : ''}
+
+
 <button class="btn btn-danger btn-xs" onclick="deleteRem('${r.id}')"><i class="ri-delete-bin-line"></i></button>
 </div>
 </div>`;
@@ -1160,111 +1167,74 @@ function updateSubs() {
 }
 
 async function submitReminder() {
+
     // 🔥 CLEAR ERRORS
-    document
-        .querySelectorAll(".error-text")
-        .forEach((el) => (el.innerText = ""));
+    document.querySelectorAll('.error-text').forEach(el => el.innerText = '');
 
-    const btn = document.getElementById("create-btn");
-
-    const btnText = document.getElementById("create-btn-txt");
+    const btn     = document.getElementById('create-btn');
+    const btnText = document.getElementById('create-btn-txt');
 
     const data = {
-        title: document.getElementById("r-title").value.trim(),
-
-        category_id: document.getElementById("r-cat").value,
-
-        subcategory_name: document.getElementById("r-sub").value,
-
-        reminder_date: document.getElementById("r-date").value,
-
-        reminder_time: document.getElementById("r-time").value,
-
-        description: document.getElementById("r-desc").value.trim(),
-
-        provider: document.getElementById("r-provider").value.trim(),
-
-        cost: document.getElementById("r-cost").value,
-
-        payment_frequency: document.getElementById("r-freq").value,
+        title:             document.getElementById('r-title').value.trim(),
+        category_id:       document.getElementById('r-cat').value,
+        subcategory_name:  document.getElementById('r-sub').value,
+        reminder_date:     document.getElementById('r-date').value,
+        reminder_time:     document.getElementById('r-time').value,
+        description:       document.getElementById('r-desc').value.trim(),
+        provider:          document.getElementById('r-provider').value.trim(),
+        cost:              document.getElementById('r-cost').value,
+        payment_frequency: document.getElementById('r-freq').value,
     };
 
-    btn.disabled = true;
+    // 🔥 decide URL and method
+    const isEdit = !!editingId;
+    const url    = isEdit ? `/update-reminder/${editingId}` : '/store-reminder';
+    const method = isEdit ? 'PUT' : 'POST';
 
-    btnText.innerText = "Creating...";
+    btn.disabled   = true;
+    btnText.innerText = isEdit ? 'Saving...' : 'Creating...';
 
     try {
-        const res = await fetch("/store-reminder", {
-            method: "POST",
+        const res = await fetch(url, {
+            method,
             headers: {
-                "Content-Type": "application/json",
-
-                "X-CSRF-TOKEN": document.querySelector(
-                    'meta[name="csrf-token"]',
-                ).content,
-
-                Accept: "application/json",
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
             },
-
-            body: JSON.stringify(data),
+            body: JSON.stringify(data)
         });
 
         const result = await res.json();
 
-        // 🔴 VALIDATION
+        // 🔴 VALIDATION ERRORS
         if (res.status === 422) {
-            // Map server field names to their error div IDs
-            const fieldIdMap = {
-                category_id: "err-rem-category_id",
-            };
-
-            Object.keys(result.errors).forEach((field) => {
-                const elId = fieldIdMap[field] || "err-" + field;
-                const el = document.getElementById(elId);
+            const fieldIdMap = { category_id: 'err-rem-category_id' };
+            Object.keys(result.errors).forEach(field => {
+                const elId = fieldIdMap[field] || ('err-' + field);
+                const el   = document.getElementById(elId);
                 if (el) {
-                    el.innerText = result.errors[field][0];
-                    el.style.color = "#f43f5e";
-                    el.style.fontSize = ".72rem";
-                    el.style.marginTop = "4px";
-                    el.style.display = "block";
+                    el.innerText       = result.errors[field][0];
+                    el.style.display   = 'block';
                 }
             });
-            btn.disabled = false;
-
-            btnText.innerText = "Create Reminder";
-
+            btn.disabled      = false;
+            btnText.innerText = isEdit ? 'Save Changes' : 'Create Reminder';
             return;
         }
 
         // ✅ SUCCESS
-        toast(result.message, "success");
-
-        // 🔥 RESET FORM
-        document.getElementById("rem-form").reset();
-
-        document.getElementById("r-sub").innerHTML =
-            '<option value="">Select category first...</option>';
-
-        document.getElementById("r-sub").disabled = true;
-
-        document.getElementById("opt-fields").style.display = "none";
-
-        document.getElementById("desc-len").innerText = "0";
-
-        // 🔥 CLOSE MODAL
+        toast(result.message, 'success');
         closeReminderModal();
-        setTimeout(() => {
-            location.reload();
-        }, 1500);
+        setTimeout(() => location.reload(), 1500);
+
     } catch (err) {
         console.log(err);
-
-        toast("Something went wrong", "error");
+        toast('Something went wrong', 'error');
     }
 
-    btn.disabled = false;
-
-    btnText.innerText = "Create Reminder";
+    btn.disabled      = false;
+    btnText.innerText = isEdit ? 'Save Changes' : 'Create Reminder';
 }
 
 // 🔥 FORM SUBMIT BIND
@@ -3091,69 +3061,110 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Modal Open
-
 function openReminderModal() {
-    const modal = document.getElementById("reminder-modal");
+    const modal = document.getElementById('reminder-modal');
+    modal.style.display = 'flex';
 
-    modal.style.display = "flex";
+    const catSelect = document.getElementById('r-cat');
 
-    const catSelect = document.getElementById("r-cat");
-
-    // destroy old tomselect
+    // 🔥 destroy old TomSelect
     if (catSelect.tomselect) {
         catSelect.tomselect.destroy();
     }
 
-    // clear old options
+    // 🔥 clear options
     catSelect.innerHTML = '<option value="">Select category...</option>';
 
-    // dynamic category load
+    // 🔥 populate categories
     Object.entries(CATS).forEach(([id, cat]) => {
-        const option = document.createElement("option");
-
+        const option = document.createElement('option');
         option.value = id;
-
         option.textContent = cat.name;
-
         catSelect.appendChild(option);
     });
 
-    // tomselect init
-    const categorySelect = new TomSelect("#r-cat", {
+    // 🔥 TomSelect init
+    const categorySelect = new TomSelect('#r-cat', {
         create: false,
-
-        placeholder: "Search category...",
-
-        sortField: {
-            field: "text",
-            direction: "asc",
-        },
+        placeholder: 'Search category...',
+        sortField: { field: 'text', direction: 'asc' }
     });
 
-    // 🔥 MOVE ERROR DIV INSIDE TS-WRAPPER
-    // AFTER
-    const wrapper = document.querySelector("#r-cat").parentElement;
-    if (wrapper && wrapper.classList.contains("ts-wrapper")) {
-        wrapper.appendChild(document.getElementById("err-rem-category_id"));
+    // 🔥 move error div inside ts-wrapper
+    const wrapper = document.querySelector('#r-cat').parentElement;
+    if (wrapper && wrapper.classList.contains('ts-wrapper')) {
+        wrapper.appendChild(document.getElementById('err-rem-category_id'));
     }
 
-    categorySelect.on("change", function () {
-        document.getElementById("err-rem-category_id").innerText = "";
+    // 🔥 clear error on change
+    categorySelect.on('change', function () {
+        document.getElementById('err-rem-category_id').innerText = '';
+        updateSubs();
     });
-    // reset subcategory
-    const sub = document.getElementById("r-sub");
 
+    // 🔥 reset sub
+    const sub = document.getElementById('r-sub');
     sub.innerHTML = '<option value="">Select category first...</option>';
-
     sub.disabled = true;
+
+    // 🔥 clear all errors
+    document.querySelectorAll('#reminder-modal .error-text')
+        .forEach(el => el.innerText = '');
+
+    // 🔥 EDIT MODE — populate fields
+    if (editingId) {
+        const r = getRems().find(x => String(x.id) === String(editingId));
+        if (r) {
+            // update modal title
+            document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
+            document.getElementById('create-btn-txt').textContent = 'Save Changes';
+
+            // set category in TomSelect
+            categorySelect.setValue(String(r.category));
+
+            // populate subcategories then select the right one
+            updateSubs();
+            setTimeout(() => {
+                document.getElementById('r-sub').value = r.subcategory || '';
+            }, 100);
+
+            // populate other fields
+            document.getElementById('r-title').value    = r.title || '';
+            document.getElementById('r-date').value     = r.dueDate || '';
+            document.getElementById('r-time').value     = r.dueTime || '09:00';
+            document.getElementById('r-desc').value     = r.description || '';
+            document.getElementById('desc-len').textContent = (r.description || '').length;
+            document.getElementById('r-provider').value = r.provider || '';
+            document.getElementById('r-cost').value     = r.cost || '';
+            document.getElementById('r-freq').value     = r.frequency || '';
+
+            // show optional fields if they have values
+            if (r.provider || r.cost || r.frequency) {
+                document.getElementById('opt-fields').style.display = 'block';
+            }
+        }
+    } else {
+        // 🔥 CREATE MODE
+        document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
+        document.getElementById('create-btn-txt').textContent = 'Create Reminder';
+        document.getElementById('rem-form').reset();
+        document.getElementById('desc-len').textContent = '0';
+        document.getElementById('opt-fields').style.display = 'none';
+    }
 }
 
 // Modal Close
 function closeReminderModal() {
-    document.getElementById("reminder-modal").style.display = "none";
-    document.body.style.overflow = ""; // Restore scroll
-    document.getElementById("rem-form").reset(); // Clear form
-    document.getElementById("desc-len").textContent = "0"; // Reset counter
+    document.getElementById('reminder-modal').style.display = 'none';
+    document.body.style.overflow = '';
+    document.getElementById('rem-form').reset();
+    document.getElementById('desc-len').textContent = '0';
+
+    // 🔥 reset editing state
+    editingId = null;
+    document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
+    document.getElementById('create-btn-txt').textContent = 'Create Reminder';
+    document.getElementById('opt-fields').style.display = 'none';
 }
 
 // Close on outside click

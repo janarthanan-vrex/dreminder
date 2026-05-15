@@ -4,6 +4,17 @@
   .o2 {
     display: none !important;
   }
+
+  .field-error {
+    display: none;
+    color: #ff4d4f;
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+.field-error.show {
+    display: block;
+}
 </style>
 
 <script>
@@ -46,6 +57,11 @@
           <input type="email" id="forgotEmail" placeholder="Enter your registered email" class="auth-input" autocomplete="email" required>
         </div>
         <div class="form-err-dark" id="emailErr">Please enter a valid email address.</div>
+        @if(session('error'))
+    <div class="field-error" id="sessionError" style="display:block;">
+        {{ session('error') }}
+    </div>
+@endif
       </div>
 
       <button type="button" class="auth-submit-dark" id="resetBtn">
@@ -187,6 +203,25 @@ document.getElementById('resendBtn')?.addEventListener('click', async function (
 ========================= */
 document.getElementById('forgotEmail')?.addEventListener('input', function () {
   document.getElementById('emailErr')?.classList.remove('show');
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const input = document.getElementById('forgotEmail');
+  const sessionError = document.getElementById('sessionError');
+
+  if (!input) return;
+
+  input.addEventListener('input', function () {
+
+    // Hide session error when user types
+    if (sessionError) {
+      sessionError.style.display = 'none';
+      sessionError.innerText = '';
+    }
+
+  });
+
 });
 
 

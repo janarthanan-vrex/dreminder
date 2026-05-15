@@ -28,13 +28,15 @@ class User extends Authenticatable
         'password',
         'profile',
         'phone',
-        'fcm_token', // ✅ IMPORTANT
+        'fcm_token', 
         'address1',
         'address2',
         'postcode',
         'country',
         'plan_id',
-        'status'
+        'status',
+        'email_notify',
+        'push_notify',
     ];
 
     /**

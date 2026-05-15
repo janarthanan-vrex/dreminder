@@ -466,12 +466,44 @@ class AuthController extends Controller
     }
 
     public function showResetForm($token, Request $request)
-    {
-        return view('reset-password', [
-            'token' => $token,
-            'email' => $request->email
-        ]);
+{
+    $reset = DB::table('password_reset_tokens')
+        ->where('email', $request->email)
+        ->where('role', 'user')
+        ->first();
+
+    // Check token exists
+    if (!$reset) {
+        return redirect()
+            ->route('forgotpassword.page')
+            ->with('error', 'Invalid reset link');
     }
+
+    // Check token match
+    if (!hash_equals($reset->token, $token)) {
+        return redirect()
+            ->route('forgotpassword.page')
+            ->with('error', 'Invalid reset token');
+    }
+
+    // Check token expiry (60 minutes)
+    if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+
+        // Optional: delete expired token
+        DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->delete();
+
+        return redirect()
+            ->route('forgotpassword.page')
+            ->with('error', 'Reset link expired');
+    }
+
+    return view('reset-password', [
+        'token' => $token,
+        'email' => $request->email
+    ]);
+}
 
     public function resetPassword(Request $request)
 {
@@ -547,4 +579,5 @@ class AuthController extends Controller
         'message' => 'Password reset successful'
     ]);
 }
+
 }

@@ -51,12 +51,13 @@ $formattedReminders = $reminders->map(function ($r) {
         'category' => (string) $r->category_id,
         'subcategory' => optional($r->subcategory)->name,
         'dueDate' => $r->reminder_date,
-       'dueTime' => \Carbon\Carbon::parse($r->reminder_time)->format('g:i A'),
+       'dueTime' => \Carbon\Carbon::parse($r->reminder_time)->format('H:i'),
         'description' => $r->description,
         'provider' => $r->provider,
         'cost' => $r->cost,
         'frequency' => $r->payment_frequency,
         'status' => $r->status,
+        'reminder_status' => $r->reminder_status,
         'createdAt' => $r->created_at,
     ];
 })->values();
