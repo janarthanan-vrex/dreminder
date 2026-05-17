@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Reminder;
 use App\Models\Category;
 use App\Models\SubCategory;
+use App\Models\Activity;
 
 
 class ReminderController extends Controller
@@ -80,7 +81,7 @@ public function store(Request $request)
     }
 
     // 🔥 STORE REMINDER
-    Reminder::create([
+   $reminder = Reminder::create([
         'user_id' => Auth::id(),
         'category_id' => $request->category_id,
         'subcategory_id' => $subcategory->id,
@@ -95,6 +96,15 @@ public function store(Request $request)
         'status' => 'Active',
     ]);
 
+    // 🔥 STORE ACTIVITY
+Activity::create([
+    'user_id' => Auth::id(),
+    'reminder_id' => $reminder->id,
+    'description' => 'Reminder created for category "' . $category->name . 
+                     '" and subcategory "' . $subcategory->name . '"',
+    'is_auto_generate' => 0,
+]);
+
     return response()->json([
         'status' => true,
         'message' => 'Reminder created successfully'
@@ -104,16 +114,35 @@ public function store(Request $request)
 public function deleteReminder($id)
 {
     $user = Auth::user();
+
     $reminder = Reminder::where('id', $id)
         ->where('user_id', $user->id)
         ->first();
+
     if (!$reminder) {
         return response()->json([
             'status' => false,
             'message' => 'Reminder not found'
         ], 404);
     }
+
+    // Store names before delete
+    $categoryName = optional($reminder->category)->name;
+    $subcategoryName = optional($reminder->subcategory)->name;
+
+    // 🔥 STORE ACTIVITY
+    Activity::create([
+        'user_id' => $user->id,
+        'reminder_id' => $reminder->id,
+        'description' => 'Reminder deleted for category "' . 
+                         $categoryName . '" and subcategory "' . 
+                         $subcategoryName . '"',
+        'is_auto_generate' => 0,
+    ]);
+
+    // Delete reminder
     $reminder->delete();
+
     return response()->json([
         'status' => true,
         'message' => 'Reminder deleted successfully'
@@ -138,6 +167,8 @@ public function update(Request $request, $id)
         ->where('user_id', Auth::id())
         ->firstOrFail();
 
+         $category = Category::find($request->category_id);
+
     // 🔥 Find subcategory id from name
     $subcategory = SubCategory::where('category_id', $request->category_id)
         ->where('name', $request->subcategory_name)
@@ -153,6 +184,16 @@ public function update(Request $request, $id)
         'provider'         => $request->provider,
         'cost'             => $request->cost,
         'payment_frequency'=> $request->payment_frequency,
+    ]);
+
+     // 🔥 STORE ACTIVITY
+    Activity::create([
+        'user_id' => Auth::id(),
+        'reminder_id' => $reminder->id,
+        'description' => 'Reminder updated for category "' .
+                         $category?->name . '" and subcategory "' .
+                         $subcategory?->name . '"',
+        'is_auto_generate' => 0,
     ]);
 
     return response()->json([

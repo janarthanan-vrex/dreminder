@@ -798,18 +798,37 @@
 
 @php
 
-$cats = $categories->mapWithKeys(function ($category) {
+$cats = $categories->mapWithKeys(function ($category) use ($user) {
+
     return [
         $category->id => [
             'id' => $category->id,
             'name' => $category->name,
             'icon' => $category->icon,
             'bg' => $category->color,
-            'subs' => $category->subcategories
-                ->where('role', 'user')
-                ->map(function ($sub) {
-                    return [
 
+            'subs' => $category->subcategories
+                ->where('status', 'Active')
+                ->filter(function ($sub) use ($user) {
+
+                    // Show all admin subcategories
+                    if ($sub->role === 'admin') {
+                        return true;
+                    }
+
+                    // Show only logged-in user's subcategories
+                    if (
+                        $sub->role === 'user' &&
+                        $sub->created_by == $user?->id
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                ->map(function ($sub) {
+
+                    return [
                         'id' => $sub->id,
                         'name' => $sub->name,
                         'description' => $sub->description,

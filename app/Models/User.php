@@ -35,8 +35,6 @@ class User extends Authenticatable
         'country',
         'plan_id',
         'status',
-        'email_notify',
-        'push_notify',
     ];
 
     /**
@@ -71,4 +69,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class);      
     }
+    public function notificationSetting()
+{
+    return $this->hasOne(UserNotificationSetting::class);
+}
 }

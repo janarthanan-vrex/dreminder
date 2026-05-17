@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\ActivityController;
+use App\Models\Activity;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 
 Route::get('/test-notification', function () {
@@ -260,9 +262,11 @@ Route::get('/user-help', function () {
 Route::get('/user-membership', function () {
     return view('user.membership');
 });
-Route::get('/user-notification', function () {
-    return view('user.notification');
-});
+
+
+Route::get('/user-notification',[ActivityController::class,'userNotifications'])->name('user.notifications');
+Route::post('/notification-settings/update',[ActivityController::class, 'updateOrCreate'])->name('notificcation.settings.update');
+    
 // Route::get('/user-reminders', function () {return view('user.reminders');});
 Route::get('/user-templates', function () {
     return view('user.templates');
