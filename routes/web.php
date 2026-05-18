@@ -266,6 +266,10 @@ Route::get('/user-membership', function () {
 
 Route::get('/user-notification',[ActivityController::class,'userNotifications'])->name('user.notifications');
 Route::post('/notification-settings/update',[ActivityController::class, 'updateOrCreate'])->name('notificcation.settings.update');
+Route::post('/notifications/{id}/mark-read', [ActivityController::class, 'markNotificationRead']);
+Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'deleteNotification']);
+Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
+Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
     
 // Route::get('/user-reminders', function () {return view('user.reminders');});
 Route::get('/user-templates', function () {

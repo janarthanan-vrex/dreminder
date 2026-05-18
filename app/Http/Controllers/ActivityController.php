@@ -14,12 +14,38 @@ class ActivityController extends Controller
     public function userNotifications()
     {
         
-        $activities = Activity::with('reminder')
-            ->where('user_id', auth()->id())
-            ->latest()
-            ->get();
+        $user = Auth::user();
 
-        return view('user.notification', compact('activities'));
+    $activities = Activity::with(['reminder.category', 'reminder.subcategory'])
+        ->where('user_id', $user->id)
+        ->latest()
+        ->get()
+        ->map(function ($activity) {
+            $reminder  = $activity->reminder;
+            $category  = $reminder?->category;
+
+            return [
+                'id'          => $activity->id,
+                'description' => $activity->description,
+                'is_seen'     => $activity->is_seen,
+                'is_auto'     => $activity->is_auto_generate,
+                'created_at'  => $activity->created_at->diffForHumans(),
+                'raw_date'    => $activity->created_at->format('d M Y'),
+                'reminder'    => $reminder ? [
+                    'id'    => $reminder->id,
+                    'title' => $reminder->title,
+                ] : null,
+                'category' => $category ? [
+                    'name'  => $category->name,
+                    'icon'  => $category->icon,
+                    'color' => $category->color,
+                ] : null,
+            ];
+        });
+
+    $unreadCount = $activities->where('is_seen', 0)->count();
+
+    return view('user.notification', compact('activities', 'unreadCount'));
     }
 
     public function updateOrCreate(Request $request)
@@ -59,4 +85,28 @@ class ActivityController extends Controller
             'data' => $setting
         ]);
     }
+
+    public function markNotificationRead($id)
+{
+    Activity::where('id', $id)->where('user_id', Auth::id())->update(['is_seen' => 1]);
+    return response()->json(['status' => true, 'message' => 'Marked as read']);
+}
+
+public function deleteNotification($id)
+{
+    Activity::where('id', $id)->where('user_id', Auth::id())->delete();
+    return response()->json(['status' => true, 'message' => 'Notification deleted']);
+}
+
+public function markAllRead()
+{
+    Activity::where('user_id', Auth::id())->update(['is_seen' => 1]);
+    return response()->json(['status' => true, 'message' => 'All marked as read']);
+}
+
+public function clearAllNotifications()
+{
+    Activity::where('user_id', Auth::id())->delete();
+    return response()->json(['status' => true, 'message' => 'All notifications cleared']);
+}
 }

@@ -11,6 +11,7 @@ class Activity extends Model
         'reminder_id',
         'description',
         'is_auto_generate',
+        'is_seen',
     ];
 
     protected $casts = [
