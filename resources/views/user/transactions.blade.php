@@ -790,6 +790,7 @@
         </div>
     </div>
 </section>
+@include('user.layouts.firebase_setup')
 
 <!-- ORDER DETAIL DRAWER -->
 <div class="order-drawer-overlay" id="order-drawer-overlay"

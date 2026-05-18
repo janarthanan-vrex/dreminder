@@ -41,7 +41,7 @@
         <div class="section-lbl" style="margin-top:4px"><span>Account</span></div>
         <a class="nav-link" href="{{ route('user.profile') }}"><i class="ri-user-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Settings</span></a>
         <a class="nav-link" href="user-notification"><i class="ri-notification-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl" style="flex:1">Notifications</span><span class="nav-notif-badge badge badge-red" id="notif-count" style="font-size:.58rem">3</span></a>
-        <a class="nav-link" href="user-membership"><i class="ri-vip-crown-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Membership</span></a>
+        <!-- <a class="nav-link" href="user-membership"><i class="ri-vip-crown-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Membership</span></a> -->
         <!-- <a class="nav-link" href="user-transaction"><i class="ri-exchange-dollar-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transaction</span></a> -->
         <a class="nav-link" href="{{ route('user.transactions') }}"><i class="ri-shopping-bag-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transactions</span></a>
         <!-- <div class="section-lbl" style="margin-top:4px"><span>Support</span></div>

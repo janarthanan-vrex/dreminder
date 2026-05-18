@@ -531,7 +531,7 @@
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e">*</span></label>
                             <input class="inp" type="date" id="r-date" min="{{ date('Y-m-d') }}">
-                            <div class="error-text" id="err-reminder_date"></div>
+                            <div class="error-text" id="err-end_reminder_date"></div>
                         </div>
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Time <span style="color:#f43f5e">*</span></label>

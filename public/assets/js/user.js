@@ -755,13 +755,13 @@ function initDashChart() {
 function remCardHTML(r, compact = false) {
     const cat = CATS[r.category] || {
         name: r.category,
-        icon: "ri-alarm-line",
-        color: "#94a3b8",
+        icon: r.icon || 'ri-alarm-line',
+        color: r.color || "#94a3b8",
         bg: "rgba(148,163,184,.12)",
     };
     const dp = duePill(r.dueDate);
     const doneBadge =
-        r.status === "completed"
+        r.reminder_status === "completed"
             ? '<span class="pill-done">Completed</span>'
             : "";
     return `<div class="rem-card group" onclick="viewDetail('${r.id}')">
@@ -771,13 +771,16 @@ function remCardHTML(r, compact = false) {
 <div style="font-size:.75rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cat.name} → ${r.subcategory}${r.provider ? " · " + r.provider : ""}${r.cost ? " · £" + r.cost : ""}</div>
 <div style="font-size:.73rem;color:#64748b;margin-top:2px"><i class="ri-calendar-line"></i> ${fmtDate(r.dueDate)} at ${r.dueTime || "09:00"}</div>
 </div>
-${r.status === "completed" ? doneBadge : dp}
+${r.reminder_status === "completed" ? doneBadge : dp}
 ${
     !compact
         ? `<div style="display:flex;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
-<button class="btn btn-ghost btn-xs" onclick="editReminder('${r.id}')" title="Edit"><i class="ri-pencil-line"></i></button>
-<button class="btn btn-danger btn-xs" onclick="deleteRem('${r.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
-</div>`
+            ${r.reminder_status !== 'completed' 
+                ? `<button class="btn btn-ghost btn-xs" onclick="editReminder('${r.id}')" title="Edit"><i class="ri-pencil-line"></i></button>` 
+                : ''
+            }
+            <button class="btn btn-danger btn-xs" onclick="deleteRem('${r.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
+           </div>`
         : ""
 }
 </div>`;
@@ -791,7 +794,7 @@ function gridCardHTML(r) {
         bg: "rgba(148,163,184,.12)",
     };
     const dp =
-        r.status === "completed"
+        r.reminder_status === "completed"
             ? '<span class="pill-done">Completed</span>'
             : duePill(r.dueDate);
     return `<div class="card" style="padding:16px;cursor:pointer;transition:all .2s" onclick="viewDetail('${r.id}')">
@@ -824,7 +827,7 @@ function viewDetail(id) {
         bg: "rgba(148,163,184,.12)",
     };
     const dp =
-        r.status === "completed"
+        r.reminder_status === "completed"
             ? '<span class="pill-done">Completed</span>'
             : duePill(r.dueDate);
     document.getElementById("detail-content").innerHTML = `
@@ -905,7 +908,7 @@ function editReminder(id) {
     setTimeout(() => {
         document.getElementById("r-sub").value = r.subcategory || "";
     }, 50);
-    document.getElementById("r-date").value = r.dueDate || "";
+    document.getElementById("r-date").value = r.end_reminder_date || "";
     document.getElementById("r-time").value = r.dueTime || "09:00";
     document.getElementById("r-desc").value = r.description || "";
     document.getElementById("desc-len").textContent = (
@@ -1100,7 +1103,7 @@ function initCreate() {
         }, 100);
 
         document.getElementById("r-title").value = r.title;
-        document.getElementById("r-date").value = r.dueDate;
+        document.getElementById("r-date").value = r.end_reminder_date || "";
         document.getElementById("r-time").value = r.dueTime || "09:00";
         document.getElementById("r-desc").value = r.description || "";
         document.getElementById("desc-len").textContent = (
@@ -1178,7 +1181,7 @@ async function submitReminder() {
         title:             document.getElementById('r-title').value.trim(),
         category_id:       document.getElementById('r-cat').value,
         subcategory_name:  document.getElementById('r-sub').value,
-        reminder_date:     document.getElementById('r-date').value,
+        end_reminder_date:     document.getElementById('r-date').value,
         reminder_time:     document.getElementById('r-time').value,
         description:       document.getElementById('r-desc').value.trim(),
         provider:          document.getElementById('r-provider').value.trim(),
@@ -1262,7 +1265,8 @@ clearReminderError("r-title", "err-title");
 
 clearReminderError("r-sub", "err-subcategory_name", "change");
 
-clearReminderError("r-date", "err-reminder_date", "change");
+
+clearReminderError("r-date", "err-end_reminder_date", "change");
 
 clearReminderError("r-time", "err-reminder_time", "change");
 
@@ -3130,7 +3134,7 @@ function openReminderModal() {
 
             // populate other fields
             document.getElementById('r-title').value    = r.title || '';
-            document.getElementById('r-date').value     = r.dueDate || '';
+            document.getElementById('r-date').value     = r.end_reminder_date || '';
             document.getElementById('r-time').value     = r.dueTime || '09:00';
             document.getElementById('r-desc').value     = r.description || '';
             document.getElementById('desc-len').textContent = (r.description || '').length;

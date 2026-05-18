@@ -26,6 +26,7 @@ class Reminder extends Model
         'cost',
         'payment_frequency',
         'status',
+        'reminder_status',
     ];
 
    

@@ -25,7 +25,6 @@ Route::get('/test-notification', function () {
     }
 
     $messaging = app('firebase.messaging');
-
     $message = CloudMessage::fromArray([
         'token' => $user->fcm_token,
         'data' => [

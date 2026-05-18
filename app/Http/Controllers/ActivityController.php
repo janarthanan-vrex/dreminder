@@ -13,39 +13,51 @@ class ActivityController extends Controller
 {
     public function userNotifications()
     {
-        
         $user = Auth::user();
 
-    $activities = Activity::with(['reminder.category', 'reminder.subcategory'])
-        ->where('user_id', $user->id)
-        ->latest()
-        ->get()
-        ->map(function ($activity) {
-            $reminder  = $activity->reminder;
-            $category  = $reminder?->category;
+        $activities = Activity::with(['reminder.category', 'reminder.subcategory'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                $reminder  = $activity->reminder;
+                $category  = $reminder?->category;
 
-            return [
-                'id'          => $activity->id,
-                'description' => $activity->description,
-                'is_seen'     => $activity->is_seen,
-                'is_auto'     => $activity->is_auto_generate,
-                'created_at'  => $activity->created_at->diffForHumans(),
-                'raw_date'    => $activity->created_at->format('d M Y'),
-                'reminder'    => $reminder ? [
-                    'id'    => $reminder->id,
-                    'title' => $reminder->title,
-                ] : null,
-                'category' => $category ? [
-                    'name'  => $category->name,
-                    'icon'  => $category->icon,
-                    'color' => $category->color,
-                ] : null,
-            ];
-        });
+                return [
+                    'id'          => $activity->id,
+                    'description' => $activity->description,
+                    'is_seen'     => $activity->is_seen,
+                    'is_auto'     => $activity->is_auto_generate,
+                    'created_at'  => $activity->created_at->diffForHumans(),
+                    'raw_date'    => $activity->created_at->format('d M Y'),
+                    'reminder'    => $reminder ? [
+                        'id'    => $reminder->id,
+                        'title' => $reminder->title,
+                    ] : null,
+                    'category' => $category ? [
+                        'name'  => $category->name,
+                        'icon'  => $category->icon,
+                        'color' => $category->color,
+                    ] : null,
+                ];
+            });
 
-    $unreadCount = $activities->where('is_seen', 0)->count();
+        $unreadCount = $activities->where('is_seen', 0)->count();
 
-    return view('user.notification', compact('activities', 'unreadCount'));
+        $settings = UserNotificationSetting::firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'email_notify'   => false,
+                'push_notify'    => false,
+                'before_30_days' => false,
+                'before_7_days'  => false,
+                'before_3_days'  => false,
+                'before_1_day'   => false,
+                'on_day'         => false,
+            ]
+        );
+
+        return view('user.notification', compact('activities', 'unreadCount', 'settings'));
     }
 
     public function updateOrCreate(Request $request)

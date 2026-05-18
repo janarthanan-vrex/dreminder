@@ -42,6 +42,8 @@
     </div>
 </section>
 
+@include('user.layouts.firebase_setup')
+
 @php
 
 $formattedReminders = $reminders->map(function ($r) {
@@ -51,7 +53,8 @@ $formattedReminders = $reminders->map(function ($r) {
         'category' => (string) $r->category_id,
         'subcategory' => optional($r->subcategory)->name,
         'dueDate' => $r->reminder_date,
-       'dueTime' => \Carbon\Carbon::parse($r->reminder_time)->format('H:i'),
+        'end_reminder_date' => $r->end_reminder_date,
+        'dueTime' => \Carbon\Carbon::parse($r->reminder_time)->format('H:i'),
         'description' => $r->description,
         'provider' => $r->provider,
         'cost' => $r->cost,

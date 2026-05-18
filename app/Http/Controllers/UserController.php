@@ -17,80 +17,95 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    public function userDashboard(Request $request)
-    {
-        $user = Auth::user();
+   public function userDashboard(Request $request)
+{
+    $user = Auth::user();
 
-        $categories = Category::with([
-            'subcategories' => function ($query) {
-                $query->where('status', 'Active');
-            }
+    $categories = Category::with([
+        'subcategories' => function ($query) {
+            $query->where('status', 'Active');
+        }
+    ])
+    ->where('status', 'Active')
+    ->get();
+
+    // Create an immutable or safely managed instance of current time
+    $now = Carbon::now();
+
+    // 1. Active reminders (upcoming + today remaining) - Excluding completed
+    $activeReminders = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->where('reminder_status', '!=', 'completed')
+        ->where(function ($query) use ($now) {
+            $query->whereDate('reminder_date', '>', $now->toDateString())
+                ->orWhere(function ($q) use ($now) {
+                    $q->whereDate('reminder_date', $now->toDateString())
+                      ->whereTime('reminder_time', '>=', $now->toTimeString());
+                });
+        })
+        ->count();
+
+    // 2. Due this week - Excluding completed & using safe date copies
+    $dueThisWeek = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->where('reminder_status', '!=', 'completed')
+        ->whereBetween('reminder_date', [
+            $now->copy()->startOfWeek()->toDateString(), // copy() prevents mutating $now
+            $now->copy()->endOfWeek()->toDateString()
         ])
-            ->where('status', 'Active')
-            ->get();
+        ->count();
 
-        // Current date & time
-        $now = Carbon::now();
-        // Active reminders (upcoming + today)
-        $activeReminders = Reminder::where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->where(function ($query) use ($now) {
-                $query->whereDate('reminder_date', '>', $now->toDateString())
-                    ->orWhere(function ($q) use ($now) {
-                        $q->whereDate('reminder_date', $now->toDateString())
-                            ->whereTime('reminder_time', '>=', $now->toTimeString());
-                    });
-            })
-            ->count();
+    // 3. Completed reminders (Ensured lowercase match to match database value)
+    $completedReminders = Reminder::where('user_id', $user->id)
+        ->where('reminder_status', 'completed') 
+        ->count();
 
-        // Due this week
-        $dueThisWeek = Reminder::where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->whereBetween('reminder_date', [
-                $now->startOfWeek()->toDateString(),
-                $now->copy()->endOfWeek()->toDateString()
-            ])
-            ->count();
+    // 4. Today's reminders - Remaining or total for today (Excluding completed)
+    $todayReminders = Reminder::where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->where('reminder_status', '!=', 'completed')
+        ->whereDate('reminder_date', $now->toDateString()) // Safely uses original date
+        ->count();
 
-        // Completed reminders
-        $completedReminders = Reminder::where('user_id', $user->id)
-            ->where('reminder_status', 'Completed')
-            ->count();
+    // 5. 🔥 UPCOMING REMINDERS (Top 5 list, excluding completed)
+    $upcomingReminders = Reminder::with([
+        'category',
+        'subcategory'
+    ])
+        ->where('user_id', $user->id)
+        ->where('status', 'Active')
+        ->where('reminder_status', '!=', 'completed')
+        ->whereDate('reminder_date', '>=', $now->toDateString())
+        ->orderBy('reminder_date')
+        ->orderBy('reminder_time')
+        ->take(5)
+        ->get()
+        ->map(function ($r) {
+            return [
+                'id' => $r->id,
+                'title' => $r->title,
+                'category' => $r->category?->name,
+                'icon' => $r->category?->icon,
+                'color' => $r->category?->color,
+                'subcategory' => $r->subcategory?->name,
+                'dueDate' => $r->reminder_date,
+                'dueTime' => $r->reminder_time,
+                'status' => strtolower($r->status),
+                'reminder_status' => strtolower($r->reminder_status), // Added for frontend context
+                'provider' => $r->provider
+            ];
+        });
 
-        // Today's reminders
-        $todayReminders = Reminder::where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->whereDate('reminder_date', Carbon::today())
-            ->count();
-        // 🔥 UPCOMING REMINDERS
-        $upcomingReminders = Reminder::with([
-            'category',
-            'subcategory'
-        ])
-            ->where('user_id', $user->id)
-            ->where('status', 'Active')
-            ->whereDate('reminder_date', '>=', now())
-            ->orderBy('reminder_date')
-            ->orderBy('reminder_time')
-            ->take(5)
-            ->get()
-            ->map(function ($r) {
-                return [
-                    'id' => $r->id,
-                    'title' => $r->title,
-                    'category' => $r->category?->name,
-                    'subcategory' => $r->subcategory?->name,
-                    'dueDate' => $r->reminder_date,
-                    'dueTime' => $r->reminder_time,
-                    'status' => strtolower($r->status),
-                    'provider' => $r->provider
-                ];
-            });
-
-        return view('user.dashboard', compact('user','categories','activeReminders','dueThisWeek','completedReminders',
-        'todayReminders','upcomingReminders'
-        ));
-    }
+    return view('user.dashboard', compact(
+        'user',
+        'categories',
+        'activeReminders',
+        'dueThisWeek',
+        'completedReminders',
+        'todayReminders',
+        'upcomingReminders'
+    ));
+}
     
     public function userProfile(Request $request)
     {
@@ -157,7 +172,6 @@ class UserController extends Controller
                 : null
         ]);
     }
-
 
     public function changePassword(Request $request)
     {

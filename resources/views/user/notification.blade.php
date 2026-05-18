@@ -174,8 +174,8 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1">
-                                    <button type="button" class="toggle on"
+                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1" {{ $settings->email_notify ? 'checked' : '' }}>
+                                    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
                                         onclick="this.classList.toggle('on');document.getElementById('email_notify').checked=this.classList.contains('on')">
                                     </button>
                                 </label>
@@ -193,8 +193,8 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1">
-                                    <button type="button" class="toggle"
+                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1" {{ $settings->push_notify ? 'checked' : '' }}>
+                                    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
                                         onclick="this.classList.toggle('on');document.getElementById('push_notify').checked=this.classList.contains('on')">
                                     </button>
                                 </label>
@@ -217,15 +217,15 @@
                         <div style="display:flex;flex-direction:column;gap:6px">
 
                             @foreach([
-                                ['before_30_days', '30 days before', 'Early planning alert',  true],
-                                ['before_7_days',  '7 days before',  'One week reminder',      true],
-                                ['before_3_days',  '3 days before',  'Important alert',        true],
-                                ['before_1_day',   '1 day before',   'Final reminder',         true],
-                                ['on_day',         'On the day',     'Date notification',      false],
-                            ] as [$name, $label, $sub, $checked])
+                                ['before_30_days', '30 days before', 'Early planning alert'],
+                                ['before_7_days',  '7 days before',  'One week reminder'],
+                                ['before_3_days',  '3 days before',  'Important alert'],
+                                ['before_1_day',   '1 day before',   'Final reminder'],
+                                ['on_day',         'On the day',     'Date notification'],
+                            ] as [$name, $label, $sub])
                             <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
                                 <input type="checkbox"
-                                    {{ $checked ? 'checked' : '' }}
+                                    {{ $settings->$name ? 'checked' : '' }}
                                     name="{{ $name }}"
                                     value="1"
                                     style="accent-color:#7c3aed;width:15px;height:15px">
@@ -605,7 +605,12 @@ document.getElementById('notification-form').addEventListener('submit', async fu
             body: JSON.stringify(data)
         });
         const result = await res.json();
-        toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
+        if (result.status) {
+            toast(result.message, 'success');
+            setTimeout(() => window.location.reload(), 400);
+        } else {
+            toast('Something went wrong', 'error');
+        }
     } catch (err) {
         console.error(err);
         toast('Server error', 'error');

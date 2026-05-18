@@ -45,6 +45,8 @@
     </div>
 </section>
 
+@include('user.layouts.firebase_setup')
+
 <script>
 async function saveSubcat() {
 

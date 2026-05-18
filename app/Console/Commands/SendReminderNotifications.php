@@ -17,82 +17,68 @@ class SendReminderNotifications extends Command
     protected $description = 'Send reminder notifications';
 
     public function handle()
-    {
-        $now = Carbon::now();
+{
+    $now = Carbon::now();
 
-        Log::info('====================');
-        Log::info('Reminder Cron Started');
-        Log::info('Current Time: '.$now);
+    Log::info('====================');
+    Log::info('Reminder Cron Started');
+    Log::info('Current Time: '.$now);
 
-        $from = now()->copy()->subMinute()->format('H:i:s');
-        $to = now()->format('H:i:s');
+    $from = now()->copy()->subMinute()->format('H:i:s');
+    $to = now()->format('H:i:s');
 
-        Log::info('From Time: '.$from);
-        Log::info('To Time: '.$to);
+    $reminders = Reminder::with(['user', 'category', 'subcategory'])
+        ->whereDate('reminder_date', now()->toDateString())
+        ->whereTime('reminder_time', '>=', $from)
+        ->whereTime('reminder_time', '<=', $to)
+        ->where('status', 'Active')
+        ->get();
 
-        $reminders = Reminder::with('user')
-            ->whereDate('reminder_date', now()->toDateString())
-            ->whereTime('reminder_time', '>=', $from)
-            ->whereTime('reminder_time', '<=', $to)
-            ->where('status', 'Active')
-            ->get();
+    Log::info('Reminder Count: '.$reminders->count());
 
-        Log::info('Reminder Count: '.$reminders->count());
+    if ($reminders->isEmpty()) {
 
-        if ($reminders->isEmpty()) {
+        Log::warning('No reminders found');
 
-            Log::warning('No reminders found');
+        return;
+    }
 
-            return;
-        }
+    $messaging = (new Factory)
+        ->withServiceAccount(storage_path('app/firebase.json'))
+        ->createMessaging();
 
-        $messaging = (new Factory)
-            ->withServiceAccount(storage_path('app/firebase.json'))
-            ->createMessaging();
+    foreach ($reminders as $reminder) {
 
-        foreach ($reminders as $reminder) {
+        Log::info('Processing Reminder ID: '.$reminder->id);
 
-            Log::info('Reminder ID: '.$reminder->id);
-            Log::info('Reminder Title: '.$reminder->title);
-            Log::info('Reminder Time: '.$reminder->reminder_time);
+        /*
+        |--------------------------------------------------------------------------
+        | SEND NOTIFICATION
+        |--------------------------------------------------------------------------
+        */
 
-            if (!$reminder->user) {
+        if ($reminder->user && $reminder->user->fcm_token) {
 
-                Log::error('User not found');
+            $message = CloudMessage::fromArray([
+                'token' => $reminder->user->fcm_token,
 
-                continue;
-            }
+                'data' => [
+                    'title' => 'Winngoo Reminder Alert',
 
-            Log::info('User ID: '.$reminder->user->id);
+                    'body' =>
+                        $reminder->title .
+                        ' | ' .
+                        ($reminder->category->name ?? 'No Category') .
+                        ' → ' .
+                        ($reminder->subcategory->name ?? 'No Subcategory'),
+                ],
+            ]);
 
-            if (!$reminder->user->fcm_token) {
-
-                Log::error('FCM Token Missing');
-
-                continue;
-            }
-
-            Log::info('FCM Token Found');
-
-         $message = CloudMessage::fromArray([
-    'token' => $reminder->user->fcm_token,
-
-    'data' => [
-    'title' => 'Winngoo Dreminder Alert',
-
-    'body' =>
-        $reminder->title .
-        ' | ' .
-        ($reminder->category->name ?? 'No Category') .
-        ' → ' .
-        ($reminder->subcategory->name ?? 'No Subcategory'),
-],
-]);
             try {
 
                 $messaging->send($message);
 
-                Log::info('Notification Sent Successfully');
+                Log::info('Notification Sent');
 
             } catch (\Exception $e) {
 
@@ -100,7 +86,108 @@ class SendReminderNotifications extends Command
             }
         }
 
-        Log::info('Reminder Cron Ended');
-        Log::info('====================');
+        /*
+        |--------------------------------------------------------------------------
+        | RECURRING LOGIC
+        |--------------------------------------------------------------------------
+        */
+
+        if (!$reminder->payment_frequency) {
+
+    $reminder->reminder_status = 'completed';
+
+    $reminder->save();
+
+    Log::info('One-time reminder completed');
+
+    continue;
+}
+
+        $months = 0;
+
+        switch (strtolower($reminder->payment_frequency)) {
+
+            case 'monthly':
+                $months = 1;
+                break;
+
+            case 'quarterly':
+                $months = 3;
+                break;
+
+            case 'half-yearly':
+                $months = 6;
+                break;
+
+            case 'annually':
+                $months = 12;
+                break;
+        }
+
+        if ($months == 0) {
+
+            Log::warning('Invalid payment frequency');
+
+            continue;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | CALCULATE NEXT REMINDER DATE
+        |--------------------------------------------------------------------------
+        */
+
+        $currentReminderDate = Carbon::parse($reminder->reminder_date);
+
+        $originalDay = $currentReminderDate->day;
+
+        $next = $currentReminderDate->copy()->addMonths($months);
+
+        $lastDay = $next->daysInMonth;
+
+        $nextReminderDate = $next->day(min($originalDay, $lastDay));
+
+        Log::info('Next Reminder Date: '.$nextReminderDate);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK END DATE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $reminder->end_reminder_date &&
+            $reminder->end_reminder_date != '0000-00-00'
+        ) {
+
+            $endDate = Carbon::parse($reminder->end_reminder_date);
+
+            if ($nextReminderDate->gt($endDate)) {
+
+                $reminder->reminder_status = 'completed';
+
+                $reminder->save();
+
+                Log::info('Reminder Completed');
+
+                continue;
+            }
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE NEXT REMINDER DATE
+        |--------------------------------------------------------------------------
+        */
+
+        $reminder->reminder_date = $nextReminderDate->format('Y-m-d');
+
+        $reminder->save();
+
+        Log::info('Reminder Date Updated');
     }
+
+    Log::info('Reminder Cron Ended');
+    Log::info('====================');
+}
 }
