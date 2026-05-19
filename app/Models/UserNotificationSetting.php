@@ -24,6 +24,10 @@ class UserNotificationSetting extends Model
         'before_3_days',
         'before_1_day',
         'on_day',
+
+        'quit_hours',
+        'start_time',
+        'end_time',
     ];
 
     protected $casts = [

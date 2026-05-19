@@ -174,8 +174,8 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1" {{ $settings->email_notify ? 'checked' : '' }}>
-                                    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
+                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1">
+                                    <button type="button" class="toggle on"
                                         onclick="this.classList.toggle('on');document.getElementById('email_notify').checked=this.classList.contains('on')">
                                     </button>
                                 </label>
@@ -193,8 +193,8 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1" {{ $settings->push_notify ? 'checked' : '' }}>
-                                    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
+                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1">
+                                    <button type="button" class="toggle"
                                         onclick="this.classList.toggle('on');document.getElementById('push_notify').checked=this.classList.contains('on')">
                                     </button>
                                 </label>
@@ -239,6 +239,37 @@
                         </div>
                     </div>
 
+                </div>
+
+                <!-- QUIET HOURS -->
+                <div class="card" style="padding:18px;margin-bottom:16px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                        <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Quiet Hours</h3>
+                        <input type="hidden" name="quit_hours" id="quit_hours" value="{{ $settings->quit_hours ? 1 : 0 }}">
+                        <button type="button"
+                            class="toggle {{ $settings->quit_hours ? 'on' : '' }}"
+                            id="quiet-toggle"
+                            onclick="
+                                this.classList.toggle('on');
+                                const isOn = this.classList.contains('on');
+                                document.getElementById('quit_hours').value = isOn ? 1 : 0;
+                                document.getElementById('quiet-cfg').style.display = isOn ? 'grid' : 'none';
+                            ">
+                        </button>
+                    </div>
+                    <p style="font-size:.78rem;color:#64748b;margin-bottom:10px">Suppress all notifications during these hours</p>
+                    <div id="quiet-cfg" class="g2" style="display:{{ $settings->quit_hours ? 'grid' : 'none' }}">
+                        <div>
+                            <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">Start Time</label>
+                            <input class="inp" type="time" name="start_time" id="start_time"
+                                value="{{ $settings->start_time ?? '22:00' }}">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">End Time</label>
+                            <input class="inp" type="time" name="end_time" id="end_time"
+                                value="{{ $settings->end_time ?? '08:00' }}">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- INFO BOX -->
@@ -541,11 +572,7 @@ async function deleteNotifAjax(id, btn) {
 
         const item = btn.closest('.notif-item');
         item.classList.add('removing');
-        setTimeout(() => {
-    item.remove();
-    refreshCounts();
-    location.reload();
-}, 300);
+        setTimeout(() => { item.remove(); refreshCounts(); }, 300);
         toast(result.message, 'info');
 
     } catch (err) {
@@ -572,7 +599,7 @@ async function clearAllAjax() {
                 setTimeout(() => item.remove(), 300);
             }, i * 40);
         });
-       setTimeout(() => { refreshCounts(); location.reload(); }, items.length * 40 + 350);
+        setTimeout(() => { refreshCounts(); location.reload(); }, items.length * 40 + 350);
         toast(result.message, 'success');
 
     } catch (err) {
@@ -586,13 +613,16 @@ document.getElementById('notification-form').addEventListener('submit', async fu
     e.preventDefault();
     const fd   = new FormData(this);
     const data = {
-        email_notify:  fd.has('email_notify')  ? 1 : 0,
-        push_notify:   fd.has('push_notify')   ? 1 : 0,
+        email_notify:   fd.has('email_notify')  ? 1 : 0,
+        push_notify:    fd.has('push_notify')   ? 1 : 0,
         before_30_days: fd.has('before_30_days') ? 1 : 0,
         before_7_days:  fd.has('before_7_days')  ? 1 : 0,
         before_3_days:  fd.has('before_3_days')  ? 1 : 0,
         before_1_day:   fd.has('before_1_day')   ? 1 : 0,
         on_day:         fd.has('on_day')          ? 1 : 0,
+        quit_hours:     parseInt(fd.get('quit_hours') ?? 0),
+        start_time:     fd.get('start_time') ?? null,
+        end_time:       fd.get('end_time')   ?? null,
     };
     try {
         const res    = await fetch('/notification-settings/update', {
@@ -605,12 +635,7 @@ document.getElementById('notification-form').addEventListener('submit', async fu
             body: JSON.stringify(data)
         });
         const result = await res.json();
-        if (result.status) {
-            toast(result.message, 'success');
-            setTimeout(() => window.location.reload(), 400);
-        } else {
-            toast('Something went wrong', 'error');
-        }
+        toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
     } catch (err) {
         console.error(err);
         toast('Server error', 'error');

@@ -60,43 +60,48 @@ class ActivityController extends Controller
         return view('user.notification', compact('activities', 'unreadCount', 'settings'));
     }
 
-    public function updateOrCreate(Request $request)
-    {
-        $request->validate([
-            'email_notify'   => 'nullable|boolean',
-            'push_notify'    => 'nullable|boolean',
+public function updateOrCreate(Request $request)
+{
+    
+    $request->validate([
+        'email_notify'   => 'nullable|boolean',
+        'push_notify'    => 'nullable|boolean',
+        'before_30_days' => 'nullable|boolean',
+        'before_7_days'  => 'nullable|boolean',
+        'before_3_days'  => 'nullable|boolean',
+        'before_1_day'   => 'nullable|boolean',
+        'on_day'         => 'nullable|boolean',
+        'quit_hours'     => 'nullable|boolean',
+        'start_time' => 'nullable|date_format:H:i:s',
+        'end_time'   => 'nullable|date_format:H:i:s',
+    ]);
 
-            'before_30_days' => 'nullable|boolean',
-            'before_7_days'  => 'nullable|boolean',
-            'before_3_days'  => 'nullable|boolean',
-            'before_1_day'   => 'nullable|boolean',
-            'on_day'         => 'nullable|boolean',
-        ]);
+    $quietOn = (bool) ($request->quit_hours ?? false);
 
-        $setting = UserNotificationSetting::updateOrCreate(
+    $setting = UserNotificationSetting::updateOrCreate(
+        ['user_id' => Auth::id()],
+        [
+            'email_notify'   => $request->email_notify   ?? false,
+            'push_notify'    => $request->push_notify    ?? false,
+            'before_30_days' => $request->before_30_days ?? false,
+            'before_7_days'  => $request->before_7_days  ?? false,
+            'before_3_days'  => $request->before_3_days  ?? false,
+            'before_1_day'   => $request->before_1_day   ?? false,
+            'on_day'         => $request->on_day         ?? false,
 
-            [
-                'user_id' => Auth::id()
-            ],
+            // quiet hours — if toggled OFF, clear the times
+            'quit_hours'     => $quietOn,
+            'start_time'     => $quietOn ? $request->start_time : null,
+            'end_time'       => $quietOn ? $request->end_time   : null,
+        ]
+    );
 
-            [
-                'email_notify'   => $request->email_notify ?? false,
-                'push_notify'    => $request->push_notify ?? false,
-
-                'before_30_days' => $request->before_30_days ?? false,
-                'before_7_days'  => $request->before_7_days ?? false,
-                'before_3_days'  => $request->before_3_days ?? false,
-                'before_1_day'   => $request->before_1_day ?? false,
-                'on_day'         => $request->on_day ?? false,
-            ]
-        );
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Notification settings saved successfully',
-            'data' => $setting
-        ]);
-    }
+    return response()->json([
+        'status'  => true,
+        'message' => 'Notification settings saved successfully',
+        'data'    => $setting,
+    ]);
+}
 
     public function markNotificationRead($id)
 {
