@@ -59,10 +59,16 @@ class ActivityController extends Controller
 
         return view('user.notification', compact('activities', 'unreadCount', 'settings'));
     }
-
 public function updateOrCreate(Request $request)
 {
-    
+    // Strip seconds from time inputs (DB stores H:i:s, browser re-sends them)
+    if ($request->filled('start_time')) {
+        $request->merge(['start_time' => substr($request->start_time, 0, 5)]);
+    }
+    if ($request->filled('end_time')) {
+        $request->merge(['end_time' => substr($request->end_time, 0, 5)]);
+    }
+
     $request->validate([
         'email_notify'   => 'nullable|boolean',
         'push_notify'    => 'nullable|boolean',
@@ -72,8 +78,8 @@ public function updateOrCreate(Request $request)
         'before_1_day'   => 'nullable|boolean',
         'on_day'         => 'nullable|boolean',
         'quit_hours'     => 'nullable|boolean',
-        'start_time' => 'nullable|date_format:H:i:s',
-        'end_time'   => 'nullable|date_format:H:i:s',
+        'start_time'     => 'nullable|date_format:H:i',
+        'end_time'       => 'nullable|date_format:H:i',
     ]);
 
     $quietOn = (bool) ($request->quit_hours ?? false);
@@ -88,11 +94,13 @@ public function updateOrCreate(Request $request)
             'before_3_days'  => $request->before_3_days  ?? false,
             'before_1_day'   => $request->before_1_day   ?? false,
             'on_day'         => $request->on_day         ?? false,
-
-            // quiet hours — if toggled OFF, clear the times
             'quit_hours'     => $quietOn,
-            'start_time'     => $quietOn ? $request->start_time : null,
-            'end_time'       => $quietOn ? $request->end_time   : null,
+            'start_time'     => $quietOn && $request->start_time
+                                    ? $request->start_time . ':00'
+                                    : null,
+            'end_time'       => $quietOn && $request->end_time
+                                    ? $request->end_time . ':00'
+                                    : null,
         ]
     );
 
@@ -126,4 +134,150 @@ public function clearAllNotifications()
     Activity::where('user_id', Auth::id())->delete();
     return response()->json(['status' => true, 'message' => 'All notifications cleared']);
 }
+public function userAnalytics(Request $request)
+{
+    $user = Auth::user();
+
+    $days = $request->days ?? 7;
+
+    $query = Reminder::where('user_id', $user->id);
+
+    if ($days != 'all') {
+
+        $query->whereDate(
+            'created_at',
+            '>=',
+            now()->subDays($days)
+        );
+    }
+
+    $reminders = $query->get();
+
+    $totalReminders = $reminders->count();
+
+    $completedReminders = $reminders
+        ->where('reminder_status', 'completed')
+        ->count();
+
+    $pendingReminders = $reminders
+        ->where('reminder_status', 'pending')
+        ->count();
+
+    $totalCost = 0;
+
+    foreach ($reminders as $reminder) {
+
+        if (
+            !$reminder->cost ||
+            !$reminder->reminder_date ||
+            !$reminder->end_reminder_date
+        ) {
+            continue;
+        }
+
+        $cost = (float) $reminder->cost;
+
+        $start = \Carbon\Carbon::parse($reminder->reminder_date);
+
+        $end = \Carbon\Carbon::parse($reminder->end_reminder_date);
+
+        $months = $start->diffInMonths($end) + 1;
+
+        switch ($reminder->payment_frequency) {
+
+            case 'Monthly':
+                $totalCost += $cost * $months;
+                break;
+
+            case 'Quarterly':
+                $totalCost += $cost * ceil($months / 3);
+                break;
+
+            case 'Half-Yearly':
+                $totalCost += $cost * ceil($months / 6);
+                break;
+
+            case 'Annually':
+                $totalCost += $cost * ceil($months / 12);
+                break;
+
+            default:
+                $totalCost += $cost;
+                break;
+        }
+    }
+
+    // Activity Chart
+    $activityLabels = [];
+    $createdData = [];
+    $completedData = [];
+
+    $loopDays = $days == 'all' ? 30 : $days;
+
+    for ($i = $loopDays - 1; $i >= 0; $i--) {
+
+        $date = now()->subDays($i);
+
+        $activityLabels[] = $date->format('d M');
+
+        $createdData[] = $reminders
+            ->filter(fn($r) => $r->created_at->format('Y-m-d') == $date->format('Y-m-d'))
+            ->count();
+
+        $completedData[] = $reminders
+            ->filter(fn($r) =>
+                strtolower($r->reminder_status) == 'completed' &&
+                $r->updated_at->format('Y-m-d') == $date->format('Y-m-d')
+            )
+            ->count();
+    }
+
+    // Category Chart
+    $categoryLabels = [];
+    $categoryTotals = [];
+
+    $categories = $reminders
+        ->groupBy('category_id');
+
+    foreach ($categories as $group) {
+
+        $categoryLabels[] = optional($group->first()->category)->name ?? 'Unknown';
+
+        $categoryTotals[] = $group->count();
+    }
+
+    // Completion Chart
+    $completionChart = [
+        $completedReminders,
+        $pendingReminders
+    ];
+
+    // Monthly Spending
+    $monthlySpending = [];
+
+    for ($m = 1; $m <= 12; $m++) {
+
+        $monthlySpending[] = $reminders
+            ->filter(fn($r) =>
+                $r->created_at->month == $m
+            )
+            ->sum('cost');
+    }
+
+    return view('user.analytics', compact(
+        'totalReminders',
+        'completedReminders',
+        'pendingReminders',
+        'totalCost',
+        'activityLabels',
+        'createdData',
+        'completedData',
+        'categoryLabels',
+        'categoryTotals',
+        'completionChart',
+        'monthlySpending',
+        'days'
+    ));
+}
+
 }

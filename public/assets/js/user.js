@@ -7,7 +7,7 @@ window.addEventListener("load", () => {
 // ============================================================
 // DATA
 // ============================================================
-const CATS = window.CATS || {};
+const CATS = window.PAGE_CATS || window.CATS || {};
 
 // const CATS = {
 //     'special-days': {
@@ -327,103 +327,6 @@ const S = {
 const gid = () =>
     "r_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
 let customSubs = S.get("custom_subs", []);
-
-// function initData() {
-//     if (S.get('reminders', []).length === 0) {
-//         const now = new Date();
-//         const d = (n) => {
-//             const dt = new Date(now);
-//             dt.setDate(dt.getDate() + n);
-//             return dt.toISOString().split('T')[0]
-//         };
-//         S.set('reminders', [{
-//                 id: gid(),
-//                 title: 'Car Insurance Renewal',
-//                 category: 'motor-vehicle',
-//                 subcategory: 'Car Insurance',
-//                 dueDate: d(2),
-//                 dueTime: '09:00',
-//                 provider: 'AA Insurance',
-//                 cost: 340,
-//                 frequency: 'Annually',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: 'Netflix Subscription',
-//                 category: 'subscriptions',
-//                 subcategory: 'Media Streaming',
-//                 dueDate: d(7),
-//                 dueTime: '09:00',
-//                 provider: 'Netflix',
-//                 cost: 10.99,
-//                 frequency: 'Monthly',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: 'GP Annual Check-Up',
-//                 category: 'health',
-//                 subcategory: 'GP Appointments',
-//                 dueDate: d(23),
-//                 dueTime: '14:30',
-//                 provider: 'NHS',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: "Mum's Birthday",
-//                 category: 'special-days',
-//                 subcategory: 'Birthdays',
-//                 dueDate: d(47),
-//                 dueTime: '09:00',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: 'MOT Test',
-//                 category: 'motor-vehicle',
-//                 subcategory: 'MOT',
-//                 dueDate: d(-5),
-//                 dueTime: '10:00',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: 'Home Insurance',
-//                 category: 'insurance',
-//                 subcategory: 'Home Insurance',
-//                 dueDate: d(60),
-//                 dueTime: '09:00',
-//                 provider: 'Aviva',
-//                 cost: 220,
-//                 frequency: 'Annually',
-//                 status: 'completed',
-//                 createdAt: new Date().toISOString()
-//             },
-//             {
-//                 id: gid(),
-//                 title: 'Broadband Renewal',
-//                 category: 'tv-telephone-mobile',
-//                 subcategory: 'Internet Services',
-//                 dueDate: d(14),
-//                 dueTime: '09:00',
-//                 provider: 'BT',
-//                 cost: 39.99,
-//                 frequency: 'Annually',
-//                 status: 'active',
-//                 createdAt: new Date().toISOString()
-//             },
-//         ]);
-//     }
-// }
-// const getRems = () => S.get('reminders', []);
-// const saveRems = (r) => S.set('reminders', r);
 
 let reminders = window.DB_REMINDERS || [];
 
@@ -2161,6 +2064,11 @@ function useTemplate(id) {
 // }
 
 function renderCategories() {
+    console.log("[Category] renderCategories start", {
+        CATS: CATS,
+        customSubs: customSubs,
+        currentPage: "categories",
+    });
     updateCustomSubUI();
     const rems = getRems();
 
@@ -2192,10 +2100,8 @@ function renderCategories() {
         div.className = "cat-card";
         div.onclick = () => expandCat(k);
 
-        // 🔥 FIX: use String() comparison for custom subs count
-        const customSubCount = customSubs.filter(
-            (cs) => String(cs.parent) === String(k),
-        ).length;
+        // 🔥 Use the server-provided category subcount only; local storage may duplicate backend items
+        const subcategoryCount = c.subs.length;
 
         div.innerHTML = `
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
@@ -2208,13 +2114,12 @@ function renderCategories() {
                             ${c.name}
                         </div>
                         <div style="font-size:.72rem;color:#64748b">
-                            ${c.subs.length + customSubCount} subcategories
+                            ${subcategoryCount} subcategories
                         </div>
                     </div>
                 </div>
                 <button class="btn btn-ghost btn-xs"
-                    onclick="event.stopPropagation();
-openAddSubModal('${k}')">
+                    onclick="event.stopPropagation();openAddSubModal('${k}')">
                     <i class="ri-add-line"></i>
                 </button>
             </div>
@@ -2278,29 +2183,57 @@ function openAddSubModal(categoryId = "") {
 function updateCustomSubUI() {
     const list = document.getElementById("custom-sub-list");
 
-    let dbSubs = [];
-
-    // 🔥 FETCH FROM DB CATEGORIES
-    Object.entries(CATS).forEach(([catId, cat]) => {
-        if (!cat.subs || !cat.subs.length) {
-            return;
-        }
-
-        cat.subs.forEach((sub) => {
-            dbSubs.push({
-                id: sub.id,
-                parent: catId,
-                name: sub.name,
-                desc: sub.description || "",
-            });
-        });
+    console.log("[Category] updateCustomSubUI start", {
+        CATS: typeof CATS !== "undefined" ? CATS : null,
+        CUSTOM_SUB_COUNT: window.CUSTOM_SUB_COUNT,
+        CURRENT_USER_ID: window.CURRENT_USER_ID,
+        listElement: list,
     });
 
-    // 🔥 COUNT
-    document.getElementById("custom-sub-count").textContent = dbSubs.length;
+    let dbSubs = [];
+
+    // 🔥 FETCH FROM DB CATEGORIES WHEN AVAILABLE
+    if (typeof CATS !== "undefined" && CATS) {
+        Object.entries(CATS).forEach(([catId, cat]) => {
+            if (!cat.subs || !cat.subs.length) {
+                return;
+            }
+
+            cat.subs.forEach((sub) => {
+                if (sub.role !== "user") {
+                    return;
+                }
+
+                if (
+                    typeof window.CURRENT_USER_ID !== "undefined" &&
+                    sub.created_by !== window.CURRENT_USER_ID
+                ) {
+                    return;
+                }
+
+                dbSubs.push({
+                    id: sub.id,
+                    parent: catId,
+                    name: sub.name,
+                    desc: sub.description || "",
+                });
+            });
+        });
+    }
+
+    console.log("[Category] updateCustomSubUI built dbSubs", dbSubs);
+
+    const customCount =
+        typeof window.CUSTOM_SUB_COUNT !== "undefined"
+            ? Number(window.CUSTOM_SUB_COUNT)
+            : dbSubs.length;
+
+    console.log("[Category] updateCustomSubUI customCount", customCount);
+
+    document.getElementById("custom-sub-count").textContent = customCount;
 
     document.getElementById("custom-sub-badge").textContent =
-        dbSubs.length + " Custom";
+        customCount + " Custom";
 
     // 🔥 EMPTY
     if (dbSubs.length === 0) {
@@ -2549,17 +2482,25 @@ function expandCat(k) {
 let charts = {};
 
 function initCharts() {
-    // const pg = document.getElementById('page-analytics');
-    // if (!pg || !pg.classList.contains('active')) return;
+
     const isDark = document.documentElement.classList.contains("dark");
-    const tc = isDark ? "rgba(255,255,255,.3)" : "rgba(0,0,0,.4)";
-    const gc = isDark ? "rgba(255,255,255,.05)" : "rgba(0,0,0,.05)";
+
+    const tc = isDark
+        ? "rgba(255,255,255,.3)"
+        : "rgba(0,0,0,.4)";
+
+    const gc = isDark
+        ? "rgba(255,255,255,.05)"
+        : "rgba(0,0,0,.05)";
+
     Object.values(charts).forEach((c) => {
         try {
             c.destroy();
         } catch (e) {}
     });
+
     charts = {};
+
     const baseOpts = (extra = {}) => ({
         responsive: true,
         maintainAspectRatio: false,
@@ -2571,7 +2512,6 @@ function initCharts() {
                         family: "DM Sans",
                         size: 11,
                     },
-                    boxWidth: 12,
                 },
             },
         },
@@ -2583,89 +2523,69 @@ function initCharts() {
                 },
                 ticks: {
                     color: tc,
-                    font: {
-                        family: "DM Sans",
-                        size: 10,
-                    },
                 },
             },
-            ...(extra.noY
-                ? {}
-                : {
-                      y: {
-                          grid: {
-                              color: gc,
-                          },
-                          ticks: {
-                              color: tc,
-                              font: {
-                                  family: "DM Sans",
-                                  size: 10,
-                              },
-                          },
-                      },
-                  }),
+            y: {
+                grid: {
+                    color: gc,
+                },
+                ticks: {
+                    color: tc,
+                },
+            },
         },
     });
+
+    // Activity Chart
     const ac = document.getElementById("act-trend-chart");
+
     if (ac)
         charts.act = new Chart(ac, {
             type: "line",
             data: {
-                labels: ["Wk 1", "Wk 2", "Wk 3", "Wk 4"],
+                labels: analyticsData.activityLabels,
                 datasets: [
                     {
                         label: "Created",
-                        data: [5, 8, 4, 7],
+                        data: analyticsData.createdData,
                         borderColor: "#7c3aed",
                         backgroundColor: "rgba(124,58,237,.12)",
                         fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointBackgroundColor: "#7c3aed",
+                        tension: 0.4,
                     },
                     {
                         label: "Completed",
-                        data: [3, 7, 4, 6],
+                        data: analyticsData.completedData,
                         borderColor: "#10b981",
                         backgroundColor: "rgba(16,185,129,.08)",
                         fill: true,
-                        tension: 0.45,
-                        pointRadius: 4,
-                        pointBackgroundColor: "#10b981",
+                        tension: 0.4,
                     },
                 ],
             },
             options: baseOpts(),
         });
+
+    // Category Chart
     const cc = document.getElementById("cat-dist-chart");
+
     if (cc)
         charts.cat = new Chart(cc, {
             type: "doughnut",
             data: {
-                labels: [
-                    "Subscriptions",
-                    "Insurance",
-                    "Motor",
-                    "Health",
-                    "Special Days",
-                    "Others",
-                ],
-                datasets: [
-                    {
-                        data: [12, 8, 6, 7, 8, 6],
-                        backgroundColor: [
-                            "#14b8a6",
-                            "#f43f5e",
-                            "#a78bfa",
-                            "#10b981",
-                            "#f59e0b",
-                            "#94a3b8",
-                        ],
-                        borderWidth: 0,
-                        hoverOffset: 8,
-                    },
-                ],
+                labels: analyticsData.categoryLabels,
+                datasets: [{
+                    data: analyticsData.categoryTotals,
+                    backgroundColor: [
+                        "#14b8a6",
+                        "#f43f5e",
+                        "#a78bfa",
+                        "#10b981",
+                        "#f59e0b",
+                        "#94a3b8",
+                    ],
+                    borderWidth: 0,
+                }],
             },
             options: {
                 plugins: {
@@ -2673,12 +2593,6 @@ function initCharts() {
                         position: "right",
                         labels: {
                             color: tc,
-                            font: {
-                                family: "DM Sans",
-                                size: 11,
-                            },
-                            boxWidth: 12,
-                            padding: 8,
                         },
                     },
                 },
@@ -2686,20 +2600,20 @@ function initCharts() {
                 maintainAspectRatio: false,
             },
         });
+
+    // Completion Chart
     const cs = document.getElementById("comp-chart");
+
     if (cs)
         charts.comp = new Chart(cs, {
             type: "doughnut",
             data: {
                 labels: ["Completed", "Pending"],
-                datasets: [
-                    {
-                        data: [42, 5],
-                        backgroundColor: ["#10b981", "#f43f5e"],
-                        borderWidth: 0,
-                        hoverOffset: 6,
-                    },
-                ],
+                datasets: [{
+                    data: analyticsData.completionChart,
+                    backgroundColor: ["#10b981", "#f43f5e"],
+                    borderWidth: 0,
+                }],
             },
             options: {
                 plugins: {
@@ -2707,11 +2621,6 @@ function initCharts() {
                         position: "bottom",
                         labels: {
                             color: tc,
-                            font: {
-                                family: "DM Sans",
-                                size: 11,
-                            },
-                            boxWidth: 12,
                         },
                     },
                 },
@@ -2719,172 +2628,53 @@ function initCharts() {
                 maintainAspectRatio: false,
             },
         });
+
+    // Monthly Spending
     const sc = document.getElementById("spend-chart");
+
     if (sc)
         charts.spend = new Chart(sc, {
             type: "bar",
             data: {
                 labels: [
-                    "J",
-                    "F",
-                    "M",
-                    "A",
-                    "M",
-                    "J",
-                    "J",
-                    "A",
-                    "S",
-                    "O",
-                    "N",
-                    "D",
+                    "Jan","Feb","Mar","Apr","May","Jun",
+                    "Jul","Aug","Sep","Oct","Nov","Dec"
                 ],
-                datasets: [
-                    {
-                        label: "£",
-                        data: [
-                            120, 95, 140, 180, 110, 95, 130, 160, 145, 120, 200,
-                            340,
-                        ],
-                        backgroundColor: "rgba(124,58,237,.65)",
-                        borderRadius: 5,
-                        borderSkipped: false,
-                    },
-                ],
+                datasets: [{
+                    label: "£",
+                    data: analyticsData.monthlySpending,
+                    backgroundColor: "rgba(124,58,237,.7)",
+                    borderRadius: 6,
+                }],
             },
-            options: {
-                ...baseOpts({
-                    plugins: {
-                        legend: {
-                            display: false,
-                        },
+            options: baseOpts({
+                plugins: {
+                    legend: {
+                        display: false,
                     },
-                }),
-            },
+                },
+            }),
         });
-    renderCatPerfTable();
-    renderActivityLog();
 }
 
-function renderCatPerfTable() {
-    const rows = [
-        {
-            name: "Subscriptions",
-            icon: "ri-smartphone-line",
-            col: "#14b8a6",
-            bg: "rgba(20,184,166,.12)",
-            total: 12,
-            done: 11,
-            rate: 92,
-            trend: "+8%",
-            up: true,
-        },
-        {
-            name: "Insurance",
-            icon: "ri-shield-line",
-            col: "#f43f5e",
-            bg: "rgba(244,63,94,.12)",
-            total: 8,
-            done: 7,
-            rate: 88,
-            trend: "+4%",
-            up: true,
-        },
-        {
-            name: "Motor Vehicle",
-            icon: "ri-car-line",
-            col: "#a78bfa",
-            bg: "rgba(167,139,250,.12)",
-            total: 6,
-            done: 5,
-            rate: 83,
-            trend: "0%",
-            up: false,
-        },
-        {
-            name: "Health",
-            icon: "ri-heart-pulse-line",
-            col: "#10b981",
-            bg: "rgba(16,185,129,.12)",
-            total: 7,
-            done: 6,
-            rate: 86,
-            trend: "+12%",
-            up: true,
-        },
-        {
-            name: "Special Days",
-            icon: "ri-cake-3-line",
-            col: "#f59e0b",
-            bg: "rgba(245,158,11,.12)",
-            total: 8,
-            done: 8,
-            rate: 100,
-            trend: "+5%",
-            up: true,
-        },
-    ];
-    document.getElementById("cat-perf-table").innerHTML = rows
-        .map(
-            (r) =>
-                `<tr class="tbl-row"><td style="padding:10px 0"><div style="display:flex;align-items:center;gap:8px"><div style="width:28px;height:28px;border-radius:7px;background:${r.bg};display:flex;align-items:center;justify-content:center"><i class="${r.icon}" style="color:${r.col};font-size:.8rem"></i></div><span style="font-size:.84rem;font-weight:600;color:#94a3b8">${r.name}</span></div></td><td style="padding:10px 8px;text-align:center;font-weight:700;color:#f1f5f9">${r.total}</td><td style="padding:10px 8px;text-align:center;color:#10b981">${r.done}</td><td style="padding:10px 8px;text-align:center"><div style="display:flex;align-items:center;gap:6px;justify-content:center"><div style="width:50px;height:5px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden"><div style="height:100%;border-radius:99px;background:#10b981;width:${r.rate}%"></div></div><span style="font-size:.77rem;font-weight:700;color:#10b981">${r.rate}%</span></div></td><td style="padding:10px 0;text-align:center;font-size:.77rem;font-weight:700;color:${r.up ? "#10b981" : "#64748b"}">${r.up ? "↑" : "–"} ${r.trend}</td></tr>`,
-        )
-        .join("");
-}
+const originalAnalyticsData = JSON.parse(JSON.stringify(analyticsData));
 
-function renderActivityLog() {
-    const acts = [
-        {
-            icon: "ri-check-line",
-            bg: "rgba(16,185,129,.12)",
-            col: "#10b981",
-            title: "Completed Reminder",
-            desc: 'Marked "Gym Membership Renewal" as complete',
-            time: "Today at 14:32",
-        },
-        {
-            icon: "ri-add-circle-line",
-            bg: "rgba(20,184,166,.12)",
-            col: "#14b8a6",
-            title: "Created New Reminder",
-            desc: 'Added "Passport Renewal" to Travel category',
-            time: "Today at 10:15",
-        },
-        {
-            icon: "ri-share-line",
-            bg: "rgba(167,139,250,.12)",
-            col: "#a78bfa",
-            title: "Shared Reminder",
-            desc: 'Shared "Mum\'s Birthday" via WhatsApp with 5 people',
-            time: "Yesterday at 16:45",
-        },
-        {
-            icon: "ri-pencil-line",
-            bg: "rgba(245,158,11,.12)",
-            col: "#f59e0b",
-            title: "Updated Reminder",
-            desc: 'Modified "Car Insurance Renewal" Date',
-            time: "2 days ago",
-        },
-    ];
-    document.getElementById("activity-log").innerHTML = acts
-        .map(
-            (a) =>
-                `<div class="act-item" style="display:flex;align-items:flex-start;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:${a.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="${a.icon}" style="color:${a.col}"></i></div><div><div style="font-size:.85rem;font-weight:600;color:#f1f5f9">${a.title}</div><div style="font-size:.77rem;color:#64748b;margin-top:2px">${a.desc}</div><div style="font-size:.72rem;color:#475569;margin-top:4px"><i class="ri-time-line"></i> ${a.time}</div></div></div>`,
-        )
-        .join("");
-}
+function setPeriod(btn, days) {
 
-function setPeriod(btn) {
     document
         .querySelectorAll(".period-btn")
         .forEach((b) => b.classList.remove("active"));
+
     btn.classList.add("active");
-    toast(`Showing: ${btn.textContent}`, "info", 1800);
+
+    window.location.href =
+        `/user-analytics?days=${days}`;
 }
 
 // ============================================================
 // HELP
 // ============================================================
+
 function renderFAQs(q = "") {
     const cats = [...new Set(FAQS.map((f) => f.cat))];
     let html = "";

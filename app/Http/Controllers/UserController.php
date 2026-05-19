@@ -320,6 +320,7 @@ class UserController extends Controller
         $customSubCount = SubCategory::where('role', 'user')
             ->where('created_by', $user->id)
             ->count();
+            // dd($customSubCount);
 
         // 🔥 MOST USED CATEGORY
         $mostUsedCategory = Reminder::select('category_id')

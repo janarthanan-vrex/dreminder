@@ -173,12 +173,15 @@
                                         <div style="font-size:.73rem;color:#64748b">{{ auth()->user()->email }}</div>
                                     </div>
                                 </div>
-                                <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1">
-                                    <button type="button" class="toggle on"
-                                        onclick="this.classList.toggle('on');document.getElementById('email_notify').checked=this.classList.contains('on')">
-                                    </button>
-                                </label>
+                                <!-- EMAIL -->
+<label style="cursor:pointer">
+    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1"
+        {{ $settings->email_notify ? 'checked' : '' }}>
+    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
+        onclick="this.classList.toggle('on');
+                 document.getElementById('email_notify').checked = this.classList.contains('on')">
+    </button>
+</label>
                             </div>
 
                             <!-- PUSH -->
@@ -193,11 +196,13 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1">
-                                    <button type="button" class="toggle"
-                                        onclick="this.classList.toggle('on');document.getElementById('push_notify').checked=this.classList.contains('on')">
-                                    </button>
-                                </label>
+    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1"
+        {{ $settings->push_notify ? 'checked' : '' }}>
+    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
+        onclick="this.classList.toggle('on');
+                 document.getElementById('push_notify').checked = this.classList.contains('on')">
+    </button>
+</label>
                             </div>
 
                         </div>
@@ -262,12 +267,12 @@
                         <div>
                             <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">Start Time</label>
                             <input class="inp" type="time" name="start_time" id="start_time"
-                                value="{{ $settings->start_time ?? '22:00' }}">
+                                value="{{ $settings->start_time ?? '' }}">
                         </div>
                         <div>
                             <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">End Time</label>
                             <input class="inp" type="time" name="end_time" id="end_time"
-                                value="{{ $settings->end_time ?? '08:00' }}">
+                                value="{{ $settings->end_time ?? '' }}">
                         </div>
                     </div>
                 </div>

@@ -37,7 +37,7 @@
     <div class="card" style="padding:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
             <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Custom Subcategories</h3>
-            <span class="badge badge-purple" id="custom-sub-badge">0 Custom</span>
+            <span class="badge badge-purple" id="custom-sub-badge">{{ $customSubCount }} Custom</span>
         </div>
         <div id="custom-sub-list"
      style="display:flex;flex-direction:column;gap:8px">
@@ -177,6 +177,8 @@ $cats = $categories->mapWithKeys(function ($category) {
                         'id' => $sub->id,
                         'name' => $sub->name,
                         'description' => $sub->description,
+                        'role' => $sub->role,
+                        'created_by' => $sub->created_by,
                     ];
                 })
                 ->values()
@@ -188,7 +190,9 @@ $cats = $categories->mapWithKeys(function ($category) {
 
 @endphp
 <script>
-window.CATS = @json($cats);
+window.PAGE_CATS = @json($cats);
+window.CUSTOM_SUB_COUNT = {{ $customSubCount }};
+window.CURRENT_USER_ID = {{ Auth::id() }};
 </script>
 
 <script>

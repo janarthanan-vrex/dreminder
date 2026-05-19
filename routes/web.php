@@ -231,10 +231,6 @@ Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->n
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
 Route::get('/user-transaction', [UserController::class, 'userTransaction'])->name('user.transactions');
 
-
-Route::get('/user-analytics', function () {
-    return view('user.analytics');
-});
 Route::get('/user-calendar', function () {
     return view('user.calendar');
 });
@@ -269,6 +265,8 @@ Route::post('/notifications/{id}/mark-read', [ActivityController::class, 'markNo
 Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'deleteNotification']);
 Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
 Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
+
+Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
     
 // Route::get('/user-reminders', function () {return view('user.reminders');});
 Route::get('/user-templates', function () {
