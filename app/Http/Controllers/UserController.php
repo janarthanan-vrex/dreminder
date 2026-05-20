@@ -437,29 +437,41 @@ class UserController extends Controller
         ]);
     }
 
-public function calenderView(Request $request)
+   public function calenderView(Request $request)
 {
     $userId = auth()->id();
 
-    // ── Dynamic categories from DB
-    $categories = \App\Models\Category::where('status', 'active')
+    // ── Full CATS with subs — KEY = integer ID (not slug)
+    $fullCats = \App\Models\Category::where('status', 'active')
+        ->with(['subcategories' => function ($q) {
+            $q->where('status', 'active');
+        }])
         ->get()
         ->mapWithKeys(function ($cat) {
-            $slug = \Str::slug($cat->name);
             return [
-                $slug => [
+                $cat->id => [                          // ✅ integer ID as key
                     'name'  => $cat->name,
-                    'color' => $cat->color  ?? '#94a3b8',
-                    'icon'  => $cat->icon   ?? 'ri-alarm-line',
-                    'bg'    => 'rgba(148,163,184,.15)', // fallback bg
+                    'color' => $cat->color ?? '#94a3b8',
+                    'icon'  => $cat->icon  ?? 'ri-alarm-line',
+                    'bg'    => 'rgba(148,163,184,.15)',
+                    'subs'  => $cat->subcategories->map(fn($sub) => [
+                        'id'          => $sub->id,
+                        'name'        => $sub->name,
+                        'role'        => $sub->role,
+                        'description' => $sub->description,
+                        'created_by'  => $sub->created_by,
+                    ])->toArray(),
                 ]
             ];
         });
 
+    // ── Slim CAL_CATS for chip colours — KEY = integer ID (not slug)
+    $categories = $fullCats->map(fn($c) => collect($c)->except('subs'));
+
     // ── Reminder histories
     $histories = \App\Models\ReminderHistory::with([
             'reminder.category',
-            'reminder.subcategory'
+            'reminder.subcategory',
         ])
         ->where('user_id', $userId)
         ->get()
@@ -467,29 +479,30 @@ public function calenderView(Request $request)
             $reminder = $h->reminder;
             if (!$reminder) return null;
 
-            $categorySlug = \Str::slug($reminder->category?->name ?? 'others');
-
             return [
-                'id'               => $h->id,
-                'reminder_id'      => $h->reminder_id,
-                'title'            => $reminder->title,
-                'category'         => $categorySlug,
-                'subcategory'      => $reminder->subcategory?->name ?? '',
-                'dueDate'          => $h->reminder_date
-                                        ? \Carbon\Carbon::parse($h->reminder_date)->format('Y-m-d')
-                                        : null,
-                'dueTime'          => $h->reminder_time,
-                'provider'         => $reminder->provider,
-                'cost'             => $reminder->cost,
-                'status'           => $h->status,
-                'reminder_status'  => $reminder->reminder_status,
-                'description'      => $reminder->description,
-                'end_reminder_date'=> $reminder->end_reminder_date,
+                'id'                => $h->id,
+                'reminder_id'       => $h->reminder_id,
+                'title'             => $reminder->title,
+                'category'          => $reminder->category_id,  // ✅ integer ID (not slug)
+                'subcategory'       => $reminder->subcategory?->name ?? '',
+                'dueDate'           => $h->reminder_date
+                                         ? \Carbon\Carbon::parse($h->reminder_date)->format('Y-m-d')
+                                         : null,
+                'dueTime'           => $h->reminder_time,
+                'provider'          => $reminder->provider,
+                'cost'              => $reminder->cost,
+                'frequency'         => $reminder->payment_frequency,
+                'status'            => $h->status,
+                'reminder_status'   => $reminder->reminder_status,
+                'description'       => $reminder->description,
+                'end_reminder_date' => $reminder->end_reminder_date,
             ];
         })
         ->filter()
         ->values();
 
-    return view('user.calendar', compact('histories', 'categories'));
+    return view('user.calendar', compact('histories', 'categories', 'fullCats'));
 }
+
+
 }

@@ -9,40 +9,92 @@
     <div class="g2">
         <div class="card" style="padding:22px">
             <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:14px">Share Your Thoughts</h3>
-            <form onsubmit="submitFeedback(event)">
-                <div style="margin-bottom:14px"><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Type <span style="color:#f43f5e">*</span></label><select class="inp" id="fb-type" required>
-                        <option value="">Select type…</option>
-                        <option>General Suggestion</option>
-                        <option>Bug Report</option>
-                        <option>Feature Request</option>
-                        <option>Compliment</option>
-                        <option>Complaint</option>
-                    </select></div>
-                <div style="margin-bottom:14px"><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Subject <span style="color:#f43f5e">*</span></label><input class="inp" id="fb-subject" placeholder="Brief title (5–100 chars)" minlength="5" maxlength="100" required></div>
-                <div style="margin-bottom:14px"><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Category</label><select class="inp">
-                        <option value="">Related to…</option>
-                        <option>Reminders</option>
-                        <option>Notifications</option>
-                        <option>Calendar</option>
-                        <option>Analytics</option>
-                        <option>Mobile</option>
-                        <option>Billing</option>
-                        <option>Other</option>
-                    </select></div>
-                <div style="margin-bottom:14px"><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Message <span style="color:#f43f5e">*</span></label><textarea class="inp" id="fb-msg" rows="5" placeholder="Describe your feedback in detail… (min 10 chars)" minlength="10" required oninput="document.getElementById('fb-len').textContent=this.value.length" style="resize:vertical"></textarea>
-                    <div style="font-size:.72rem;color:#475569;margin-top:4px;text-align:right"><span id="fb-len">0</span> characters</div>
+
+            {{-- ✅ Removed onsubmit= attribute; handled via JS below --}}
+            <form id="feedbackForm">
+
+                <input type="hidden" id="fb-priority" name="priority" value="Low">
+
+                {{-- SUBJECT --}}
+                <div style="margin-bottom:16px">
+                    <label style="display:block;font-size:.67rem;font-weight:700;color:#64748b;margin-bottom:6px">
+                        Subject <span style="color:#f43f5e">*</span>
+                    </label>
+                    <input
+                        class="inp"
+                        id="fb-subject"
+                        name="subject"
+                        placeholder="Brief title (5–100 chars)"
+                        minlength="5"
+                        maxlength="100"
+                        
+                    >
+                    <div id="err-subject" style="display:none;margin-top:6px;font-size:.74rem;color:#ef4444;font-weight:500"></div>
                 </div>
-                <div style="margin-bottom:14px"><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:8px">Priority</label>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="pri-btn sel" onclick="selPri(this)">Low</button><button type="button" class="pri-btn" onclick="selPri(this)">Medium</button><button type="button" class="pri-btn" onclick="selPri(this)">High</button><button type="button" class="pri-btn" onclick="selPri(this)">Critical</button></div>
+
+                {{-- MESSAGE --}}
+                <div style="margin-bottom:16px">
+                    <label style="display:block;font-size:.67rem;font-weight:700;color:#64748b;margin-bottom:6px">
+                        Message <span style="color:#f43f5e">*</span>
+                    </label>
+                    <textarea
+                        class="inp"
+                        id="fb-msg"
+                        name="message"
+                        rows="5"
+                        placeholder="Describe your feedback… (min 10 chars)"
+                        minlength="10"
+                        
+                        style="resize:vertical"
+                    ></textarea>
+                    <div style="font-size:.72rem;color:#475569;margin-top:4px;text-align:right">
+                        <span id="fb-len">0</span> characters
+                    </div>
+                    <div id="err-message" style="display:none;margin-top:6px;font-size:.74rem;color:#ef4444;font-weight:500"></div>
                 </div>
-                <div style="margin-bottom:18px"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.84rem;color:#64748b"><input type="checkbox" style="accent-color:#7c3aed;width:14px;height:14px"> Allow team to contact me about this feedback</label></div>
-                <div style="display:flex;gap:10px;justify-content:flex-end"><button type="reset" class="btn btn-ghost" onclick="document.getElementById('fb-len').textContent='0'"><i class="ri-refresh-line"></i> Clear</button><button type="submit" class="btn btn-primary"><i class="ri-send-plane-line"></i> Submit Feedback</button></div>
+
+                {{-- PRIORITY --}}
+                <div style="margin-bottom:16px">
+                    <label style="display:block;font-size:.67rem;font-weight:700;color:#64748b;margin-bottom:8px">
+                        Priority
+                    </label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        {{-- ✅ Removed onclick= attributes; handled via JS below --}}
+                        <button type="button" class="pri-btn sel" data-value="Low">Low</button>
+                        <button type="button" class="pri-btn" data-value="Medium">Medium</button>
+                        <button type="button" class="pri-btn" data-value="High">High</button>
+                        <button type="button" class="pri-btn" data-value="Critical">Critical</button>
+                    </div>
+                    <div id="err-priority" style="display:none;margin-top:6px;font-size:.74rem;color:#ef4444;font-weight:500"></div>
+                </div>
+
+                {{-- CHECKBOX --}}
+                <div style="margin-bottom:20px">
+                    <label style="display:flex;align-items:center;gap:8px;color:#64748b">
+                        <input type="checkbox" id="fb-receive" name="is_receive">
+                        Allow team to contact me
+                    </label>
+                </div>
+
+                {{-- SUCCESS --}}
+                <div id="fb-success" style="display:none;background:#dcfce7;color:#166534;padding:10px;border-radius:10px;margin-bottom:14px"></div>
+
+                {{-- BUTTONS --}}
+                <div style="display:flex;gap:10px;justify-content:flex-end">
+                    {{-- ✅ Removed onclick= attribute; handled via JS below --}}
+                    <button type="reset" class="btn btn-ghost" id="fb-clear-btn">Clear</button>
+                    <button type="submit" class="btn btn-primary" id="fb-submit-btn">Submit Feedback</button>
+                </div>
+
             </form>
         </div>
+
         <div style="display:flex;flex-direction:column;gap:14px">
             <div class="card" style="padding:18px">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-                    <div style="width:42px;height:42px;border-radius:12px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center"><i class="ri-thumb-up-line" style="color:#10b981;font-size:1.1rem"></i></div>
+                    <div style="width:42px;height:42px;border-radius:12px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center">
+                        <i class="ri-thumb-up-line" style="color:#10b981;font-size:1.1rem"></i>
+                    </div>
                     <div>
                         <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Your Past Feedback</h3>
                         <div style="font-size:.75rem;color:#64748b">3 submissions</div>
@@ -50,22 +102,191 @@
                 </div>
                 <div style="display:flex;flex-direction:column;gap:8px">
                     <div style="padding:12px;border-radius:10px;border:1px solid rgba(16,185,129,.25);background:rgba(16,185,129,.04)">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:.85rem;font-weight:600;color:#94a3b8">Add recurring reminders</span><span class="badge badge-green"><i class="ri-check-line"></i> Resolved</span></div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <span style="font-size:.85rem;font-weight:600;color:#94a3b8">Add recurring reminders</span>
+                            <span class="badge badge-green"><i class="ri-check-line"></i> Resolved</span>
+                        </div>
                         <div style="font-size:.75rem;color:#64748b">Feature Request · Apr 10</div>
                     </div>
                     <div style="padding:12px;border-radius:10px;border:1px solid rgba(245,158,11,.2);background:rgba(245,158,11,.04)">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:.85rem;font-weight:600;color:#94a3b8">Calendar export feature</span><span class="badge badge-amber"><i class="ri-time-line"></i> Pending</span></div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <span style="font-size:.85rem;font-weight:600;color:#94a3b8">Calendar export feature</span>
+                            <span class="badge badge-amber"><i class="ri-time-line"></i> Pending</span>
+                        </div>
                         <div style="font-size:.75rem;color:#64748b">Feature Request · Apr 14</div>
                     </div>
                     <div style="padding:12px;border-radius:10px;border:1px solid rgba(20,184,166,.2);background:rgba(20,184,166,.04)">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><span style="font-size:.85rem;font-weight:600;color:#94a3b8">Great app, loving it!</span><span class="badge badge-teal"><i class="ri-eye-line"></i> Reviewed</span></div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+                            <span style="font-size:.85rem;font-weight:600;color:#94a3b8">Great app, loving it!</span>
+                            <span class="badge badge-teal"><i class="ri-eye-line"></i> Reviewed</span>
+                        </div>
                         <div style="font-size:.75rem;color:#64748b">Compliment · Mar 28</div>
                     </div>
                 </div>
             </div>
-            <div class="card" style="padding:16px;text-align:center"><a href="mailto:support@winngoodremind.co.uk" style="font-size:.84rem;color:#a78bfa;font-weight:600;text-decoration:none"><i class="ri-mail-line" style="margin-right:4px"></i>support@winngoodremind.co.uk</a></div>
+            <div class="card" style="padding:16px;text-align:center">
+                <a href="mailto:support@winngoodremind.co.uk" style="font-size:.84rem;color:#a78bfa;font-weight:600;text-decoration:none">
+                    <i class="ri-mail-line" style="margin-right:4px"></i>support@winngoodremind.co.uk
+                </a>
+            </div>
         </div>
     </div>
 </section>
+
+<script>
+// ✅ Entire block is wrapped in an IIFE so nothing leaks into global scope
+// ✅ DOMContentLoaded ensures elements exist before we touch them
+(function () {
+    'use strict';
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+
+    function clearErrors() {
+        ['subject', 'message', 'priority'].forEach(function (f) {
+            var el = document.getElementById('err-' + f);
+            if (el) { el.style.display = 'none'; el.innerHTML = ''; }
+        });
+    }
+
+    function resetPriority() {
+        document.querySelectorAll('.pri-btn').forEach(function (b) {
+            b.classList.remove('sel');
+        });
+        var first = document.querySelector('.pri-btn');
+        if (first) first.classList.add('sel');
+
+        var hidden = document.getElementById('fb-priority');
+        if (hidden) hidden.value = 'Low';
+    }
+
+    function clearForm() {
+        clearErrors();
+
+        var len = document.getElementById('fb-len');
+        if (len) len.textContent = '0';
+
+        var success = document.getElementById('fb-success');
+        if (success) { success.style.display = 'none'; success.innerHTML = ''; }
+
+        resetPriority();
+    }
+
+    // ── wire up priority buttons ─────────────────────────────────────────────
+
+    document.querySelectorAll('.pri-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.pri-btn').forEach(function (b) {
+                b.classList.remove('sel');
+            });
+            btn.classList.add('sel');
+
+            var hidden = document.getElementById('fb-priority');
+            if (hidden) hidden.value = btn.dataset.value;
+        });
+    });
+
+    // ── character counter ────────────────────────────────────────────────────
+
+    var msgEl = document.getElementById('fb-msg');
+    var lenEl = document.getElementById('fb-len');
+    if (msgEl && lenEl) {
+        msgEl.addEventListener('input', function () {
+            lenEl.textContent = msgEl.value.length;
+        });
+    }
+
+    // ── clear button ─────────────────────────────────────────────────────────
+
+    var clearBtn = document.getElementById('fb-clear-btn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            // The `type="reset"` already resets native inputs;
+            // clearForm() handles our custom state on top of that.
+            clearForm();
+        });
+    }
+
+    // ── form submit ──────────────────────────────────────────────────────────
+
+    var form = document.getElementById('feedbackForm');
+    if (!form) return; // not on this page — stop here safely
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        clearErrors();
+
+        var subjectEl  = document.getElementById('fb-subject');
+        var messagEl   = document.getElementById('fb-msg');
+        var priorityEl = document.getElementById('fb-priority');
+        var receiveEl  = document.getElementById('fb-receive');
+        var submitBtn  = document.getElementById('fb-submit-btn');
+        var successBox = document.getElementById('fb-success');
+
+        // Guard: if any critical element is missing, bail out cleanly
+        if (!subjectEl || !messagEl || !priorityEl || !receiveEl || !submitBtn) {
+            console.error('[feedback] One or more form elements not found');
+            return;
+        }
+
+        var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+
+        var payload = {
+            subject   : subjectEl.value,
+            message   : messagEl.value,
+            priority  : priorityEl.value,
+            is_receive: receiveEl.checked ? 1 : 0,
+        };
+
+        try {
+            var response = await fetch("{{ route('feedback.store') }}", {
+                method : 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'X-CSRF-TOKEN' : csrfToken,
+                    'Accept'       : 'application/json',  // ✅ ensures Laravel returns JSON on errors
+                },
+                body: JSON.stringify(payload),
+            });
+
+            var data = await response.json();
+
+            if (!response.ok) {
+                // Laravel validation errors come back as { errors: { field: ['msg'] } }
+                if (data.errors) {
+                    Object.keys(data.errors).forEach(function (field) {
+                        var errBox = document.getElementById('err-' + field);
+                        if (errBox) {
+                            errBox.style.display = 'block';
+                            errBox.textContent = data.errors[field][0];
+                        }
+                    });
+                }
+                return;
+            }
+
+            // ── success ──
+            if (successBox) {
+                successBox.style.display = 'block';
+                successBox.textContent = data.message || 'Feedback submitted successfully';
+            }
+
+            form.reset();
+            clearForm();
+
+        } catch (err) {
+            console.error('[feedback] Unexpected error:', err);
+            alert('Something went wrong. Please try again.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Feedback';
+        }
+    });
+
+}()); // end IIFE
+</script>
 
 @endsection

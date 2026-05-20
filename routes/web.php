@@ -248,9 +248,12 @@ Route::get('/user-calendar',[UserController::class, 'calenderView'])->name('user
 Route::get('/user-create-reminder', function () {
     return view('user.create-reminder');
 });
-Route::get('/user-feedback', function () {
-    return view('user.feedback');
-});
+// Route::get('/user-feedback', function () {
+//     return view('user.feedback');
+// });
+
+Route::get('/user-feedback',[ActivityController::class,'userFeedback'])->name('user.feedback');
+Route::post('/feedback/store', [ActivityController::class, 'storeFeedback'])->name('feedback.store');
 Route::get('/user-help', function () {
     return view('user.help');
 });
@@ -265,17 +268,14 @@ Route::post('/notifications/{id}/mark-read', [ActivityController::class, 'markNo
 Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'deleteNotification']);
 Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
 Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
-
 Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
     
-// Route::get('/user-reminders', function () {return view('user.reminders');});
 Route::get('/user-templates', function () {
     return view('user.templates');
 });
 Route::get('/user-shared-reminders', function () {
     return view('user.reminders');
 });
-// Route::get('/user-transaction', function () {return view('user.transaction');});
 
 Route::get('/layout', function () {
     return view('user.layout');
@@ -289,9 +289,6 @@ Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user
 Route::get('/user-remindrs', [ReminderController::class, 'userReminders'])->name('user.reminders');
 Route::delete('/delete-reminder/{id}', [ReminderController::class, 'deleteReminder'])->name('user.reminder.delete');
 Route::put('/update-reminder/{id}', [ReminderController::class, 'update']);
-
-
-
 
 
 Route::get('/transaction-invoice', function () {

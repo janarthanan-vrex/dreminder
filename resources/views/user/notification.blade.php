@@ -4,6 +4,13 @@
 <style>
     .tabs-header { position: relative; }
 
+    .g2 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    }
+
+
     .tab-btn {
         display: flex;
         align-items: center;
@@ -160,7 +167,7 @@
                             Enable or disable notification methods
                         </p>
 
-                        <div style="display:flex;flex-direction:column;gap:10px">
+                        <div style="display: grid;gap:10px;grid-template-columns: repeat(2, 1fr);">
 
                             <!-- EMAIL -->
                             <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
@@ -209,7 +216,7 @@
                     </div>
 
                     <!-- ALERT TIMINGS -->
-                    <div class="card" style="padding:18px">
+                    <div class="card hidden" style="padding:18px">
 
                         <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">
                             Alert Timing

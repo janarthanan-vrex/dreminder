@@ -389,13 +389,21 @@
     .cat-filter-bar {
         display: flex;
         gap: 6px;
-        overflow-x: auto;
-        padding-bottom: 2px;
-        scrollbar-width: none;
+        flex-wrap: wrap;
+        max-height: 38px; /* 1 row */
+        overflow: hidden;
+        transition: 0.3s ease;
     }
 
-    .cat-filter-bar::-webkit-scrollbar {
-        display: none;
+    .cat-filter-bar.expanded {
+        max-height: 300px; /* enough for all */
+    }
+
+    .cat-toggle {
+        cursor: pointer;
+        font-size: 12px;
+        color: #3b82f6;
+        font-weight: 600;
     }
 
     /* Responsive */
@@ -460,15 +468,26 @@
     <!-- ── STATS ROW ── -->
     <div style="display:flex;gap:10px;margin-bottom:14px;overflow-x:auto" id="cal-stats-row"></div>
 
-    <!-- ── CATEGORY FILTER ── -->
+     <!-- ── CATEGORY FILTER ── -->
     <div class="card" style="padding:12px 14px;margin-bottom:14px">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <span style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;flex-shrink:0">Filter:</span>
-            <div class="cat-filter-bar" id="cat-filter-bar">
-                <button class="cat-legend-item active" data-cat="all" onclick="calSetCatFilter('all',this)">
-                    <div class="cat-legend-dot" style="background:linear-gradient(135deg,#7c3aed,#0d9488)"></div> All
-                </button>
+            
+            <span style="font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;flex-shrink:0">
+                Filter:
+            </span>
+
+            <div class="cat-filter-wrapper">
+                <div class="cat-filter-bar" id="cat-filter-bar">
+                    <button class="cat-legend-item active" data-cat="all" onclick="calSetCatFilter('all',this)">
+                        <div class="cat-legend-dot" style="background:linear-gradient(135deg,#7c3aed,#0d9488)"></div> 
+                        All
+                    </button>
+                </div>
+
+                <!-- Toggle button -->
+                <span class="cat-toggle" id="cat-toggle" onclick="toggleCats()">Show More</span>
             </div>
+
         </div>
     </div>
 
@@ -597,11 +616,10 @@
 </div>
 
 <script>
-    // Dynamic categories from DB — replaces hardcoded CAL_CATS
-    window.CALENDAR_CATS     = @json($categories);
-
-    // Reminder history data for calendar
     window.CALENDAR_HISTORIES = @json($histories);
+    window.CALENDAR_CATS      = @json($categories);  
+    window.PAGE_CATS          = @json($fullCats);      
+    window.CATS               = window.PAGE_CATS;      
 </script>
 
 <!-- <script>

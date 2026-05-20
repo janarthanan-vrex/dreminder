@@ -9,78 +9,7 @@ window.addEventListener("load", () => {
 // ============================================================
 const CATS = window.PAGE_CATS || window.CATS || {};
 
-// const CATS = {
-//     'special-days': {
-//         name: 'Special Days',
-//         icon: 'ri-cake-3-line',
-//         color: '#f59e0b',
-//         bg: 'rgba(245,158,11,.12)',
-//         subs: ['Birthdays', 'Anniversaries', 'Festivals', 'Functions', 'Christenings', 'Graduations']
-//     },
-//     'home': {
-//         name: 'Home',
-//         icon: 'ri-home-4-line',
-//         color: '#14b8a6',
-//         bg: 'rgba(20,184,166,.12)',
-//         subs: ['Electricity', 'Gas', 'Dual Fuel Options', 'Council Tax', 'Water Bill']
-//     },
-//     'insurance': {
-//         name: 'Insurance',
-//         icon: 'ri-shield-star-line',
-//         color: '#f43f5e',
-//         bg: 'rgba(244,63,94,.12)',
-//         subs: ['Home Insurance', 'Contents Insurance', 'Life Insurance', 'Home & Contents Insurance', 'Critical Illness']
-//     },
-//     'tv-telephone-mobile': {
-//         name: 'TV, Tel & Mobile',
-//         icon: 'ri-smartphone-line',
-//         color: '#14b8a6',
-//         bg: 'rgba(20,184,166,.12)',
-//         subs: ['Phone Plans', 'SIM Only', 'Home Telephone', 'Internet Services', 'Bundled Plans', 'TV Packages']
-//     },
-//     'motor-vehicle': {
-//         name: 'Motor Vehicle',
-//         icon: 'ri-car-line',
-//         color: '#a78bfa',
-//         bg: 'rgba(167,139,250,.12)',
-//         subs: ['Car Insurance', 'Motorcycle Insurance', 'MOT', 'Road VAT(12-Month)', 'Road VAT(6-Month)', 'Breakdown Cover']
-//     },
-//     'travel': {
-//         name: 'Travel',
-//         icon: 'ri-flight-takeoff-line',
-//         color: '#ec4899',
-//         bg: 'rgba(236,72,153,.12)',
-//         subs: ['Passport Renewal', 'Driving License', 'Visa Applications', 'Travel Points', 'Travel Insurance']
-//     },
-//     'subscriptions': {
-//         name: 'Subscriptions',
-//         icon: 'ri-refresh-line',
-//         color: '#14b8a6',
-//         bg: 'rgba(20,184,166,.12)',
-//         subs: ['Membership Plans', 'Software Subscriptions', 'Media Streaming', 'Gaming Subscriptions', 'Newspaper / Magazine']
-//     },
-//     'pet-care': {
-//         name: 'Pet Care',
-//         icon: 'ri-footprint-line',
-//         color: '#10b981',
-//         bg: 'rgba(16,185,129,.12)',
-//         subs: ['Pet Insurance', 'Vaccinations', 'Annual Check-Ups', 'Grooming', 'Flea & Worm Treatment']
-//     },
-//     'health': {
-//         name: 'Health',
-//         icon: 'ri-heart-pulse-line',
-//         color: '#10b981',
-//         bg: 'rgba(16,185,129,.12)',
-//         subs: ['Health Insurance', 'GP Appointments', 'Vaccinations', 'Gym Memberships', 'Dental Check-Up']
-//     },
-//     'others': {
-//         name: 'Others',
-//         icon: 'ri-more-2-line',
-//         color: '#94a3b8',
-//         bg: 'rgba(148,163,184,.12)',
-//         subs: ['Miscellaneous']
-//     }
-// };
+
 
 const TEMPLATES = [
     {
@@ -803,7 +732,12 @@ async function deleteRem(id) {
 
 function editReminder(id) {
     editingId = id;
-    const r = getRems().find((x) => String(x.id) === String(id));
+    // Try to find the reminder in the main reminders store
+    let r = typeof getRems === 'function' ? getRems().find((x) => String(x.id) === String(id)) : null;
+    // Fallback: if not found and calendar histories are available, find by reminder_id
+    if (!r && Array.isArray(window.CALENDAR_HISTORIES)) {
+        r = window.CALENDAR_HISTORIES.find((x) => String(x.reminder_id) === String(id));
+    }
     if (!r) return;
     document.getElementById("r-title").value = r.title || "";
     document.getElementById("r-cat").value = r.category || "";
@@ -1448,6 +1382,19 @@ function calSetCatFilter(cat, btn) {
     _renderStats();
 }
 
+function toggleCats() {
+    const bar = document.getElementById('cat-filter-bar');
+    const toggle = document.getElementById('cat-toggle');
+
+    bar.classList.toggle('expanded');
+
+    if (bar.classList.contains('expanded')) {
+        toggle.innerText = 'Show Less';
+    } else {
+        toggle.innerText = 'Show More';
+    }
+}
+
 // ── Get reminders for calendar (uses history data, falls back to DB_REMINDERS)
 function _getCalRems() {
     // Prefer history-based data injected from calenderView()
@@ -1651,7 +1598,7 @@ function _selectDay(d) {
             </div>
             ${r.provider ? `<div style="font-size:.72rem;color:#64748b;margin-top:6px;display:flex;align-items:center;gap:4px"><i class="ri-building-line"></i> ${r.provider}${r.cost ? " · £" + r.cost : ""}</div>` : ""}
             <div style="display:flex;gap:5px;margin-top:8px">
-                <button class="btn btn-ghost btn-xs" onclick="openReminderModal()" style="padding:4px 8px !important;font-size:.7rem"><i class="ri-pencil-line"></i> Edit</button>
+                <button class="btn btn-ghost btn-xs" onclick="editReminder('${r.reminder_id}')" style="padding:4px 8px !important;font-size:.7rem"><i class="ri-pencil-line"></i> Edit</button>
             </div>
         </div>`;
         })
@@ -1686,10 +1633,12 @@ function _renderMonthEvents() {
                                   ? daysUntil(r.dueDate)
                                   : 0;
                           return n < 0
-                              ? '<span class="pill-urgent" style="font-size:.58rem">Overdue</span>'
-                              : n <= 7
-                                ? `<span class="pill-soon" style="font-size:.58rem">In ${n}d</span>`
-                                : `<span class="pill-ok" style="font-size:.58rem">In ${n}d</span>`;
+    ? '<span class="pill-urgent" style="font-size:.58rem">Overdue</span>'
+    : n === 0
+        ? '<span class="pill-urgent" style="font-size:.58rem">Today</span>'
+        : n <= 7
+            ? `<span class="pill-soon" style="font-size:.58rem">In ${n}d</span>`
+            : `<span class="pill-ok" style="font-size:.58rem">In ${n}d</span>`;
                       })();
             const dayNum = parseInt(r.dueDate.split("-")[2]);
             return `<div class="month-ev-item" onclick="_selectDay(${dayNum})">
@@ -1705,38 +1654,90 @@ function _renderMonthEvents() {
 }
 
 // ── Stats
+
+// function _renderStats() {
+//     // const allRems = (typeof getRems === "function" ? getRems() : []).filter(
+//     //     (r) => {
+//     //         const d = new Date(r.dueDate);
+//     //         return d.getFullYear() === _calY && d.getMonth() === _calM;
+//     //     },
+//     // );
+//     const allRems = _getCalRems().filter((r) => {
+//     const d = new Date(r.dueDate);
+//     return d.getFullYear() === _calY && d.getMonth() === _calM;
+// });
+//     const filtered =
+//         _calCatFilter === "all"
+//             ? allRems
+//             : allRems.filter((r) => r.category === _calCatFilter);
+//     const active = filtered.filter((r) => r.status === "active");
+//     const done = filtered.filter((r) => r.status === "completed");
+//     const overdue = active.filter(
+//         (r) => (typeof daysUntil === "function" ? daysUntil(r.dueDate) : 0) < 0,
+//     );
+//     const upcoming = active.filter((r) => {
+//         const n = typeof daysUntil === "function" ? daysUntil(r.dueDate) : 0;
+//         return n >= 0 && n <= 7;
+//     });
+
+//     const stats = [
+//         { num: filtered.length, lbl: "Total", color: "#a78bfa" },
+//         { num: overdue.length, lbl: "Pending", color: "#f43f5e" },
+//         { num: done.length, lbl: "Completed", color: "#10b981" },
+//          { num: active.length, lbl: "Category", color: "#14b8a6" },
+//         { num: upcoming.length, lbl: "Cost", color: "#f59e0b" },
+//     ];
+//     const row = document.getElementById("cal-stats-row");
+//     row.innerHTML = stats
+//         .map(
+//             (s) => `
+//         <div class="cal-stat">
+//             <div class="cal-stat-num" style="color:${s.color}">${s.num}</div>
+//             <div class="cal-stat-lbl">${s.lbl}</div>
+//         </div>
+//     `,
+//         )
+//         .join("");
+// }
+
 function _renderStats() {
-    // const allRems = (typeof getRems === "function" ? getRems() : []).filter(
-    //     (r) => {
-    //         const d = new Date(r.dueDate);
-    //         return d.getFullYear() === _calY && d.getMonth() === _calM;
-    //     },
-    // );
     const allRems = _getCalRems().filter((r) => {
-    const d = new Date(r.dueDate);
-    return d.getFullYear() === _calY && d.getMonth() === _calM;
-});
-    const filtered =
-        _calCatFilter === "all"
-            ? allRems
-            : allRems.filter((r) => r.category === _calCatFilter);
-    const active = filtered.filter((r) => r.status === "active");
-    const done = filtered.filter((r) => r.status === "completed");
-    const overdue = active.filter(
-        (r) => (typeof daysUntil === "function" ? daysUntil(r.dueDate) : 0) < 0,
-    );
-    const upcoming = active.filter((r) => {
-        const n = typeof daysUntil === "function" ? daysUntil(r.dueDate) : 0;
-        return n >= 0 && n <= 7;
+        const d = new Date(r.dueDate);
+        return d.getFullYear() === _calY && d.getMonth() === _calM;
+    });
+
+    const filtered = _calCatFilter === "all"
+        ? allRems
+        : allRems.filter((r) => r.category === _calCatFilter);
+
+    // ── Total & Completed (already working)
+    const done = filtered.filter((r) => r.status === "completed").length;
+
+    // ── Pending: from reminder_history status column directly
+    const pending = filtered.filter((r) => r.status === "pending").length;
+
+    // ── Categories: distinct category_id, no duplicates
+    const categoryCount = new Set(filtered.map((r) => r.category)).size;
+
+    // ── Cost: sum by distinct reminder_id to avoid counting same reminder twice
+    //    (one reminder can appear multiple times in history for different dates)
+    const seenIds = new Set();
+    let totalCost = 0;
+    filtered.forEach((r) => {
+        if (!seenIds.has(r.reminder_id)) {
+            seenIds.add(r.reminder_id);
+            totalCost += parseFloat(r.cost || 0);
+        }
     });
 
     const stats = [
-        { num: filtered.length, lbl: "Total", color: "#a78bfa" },
-        { num: active.length, lbl: "Active", color: "#14b8a6" },
-        { num: upcoming.length, lbl: "This Week", color: "#f59e0b" },
-        { num: overdue.length, lbl: "Overdue", color: "#f43f5e" },
-        { num: done.length, lbl: "Done", color: "#10b981" },
+        { num: filtered.length,            lbl: "Total",      color: "#a78bfa" },
+        { num: pending,                    lbl: "Pending",    color: "#f43f5e" },
+        { num: done,                       lbl: "Completed",  color: "#10b981" },
+        { num: categoryCount,              lbl: "Categories", color: "#14b8a6" },
+        { num: "£" + totalCost.toFixed(2), lbl: "Cost",       color: "#f59e0b" },
     ];
+
     const row = document.getElementById("cal-stats-row");
     row.innerHTML = stats
         .map(
@@ -2444,6 +2445,43 @@ function expandCat(k) {
 // ============================================================
 // ANALYTICS CHARTS
 // ============================================================
+
+function renderActivityLog() {
+    const acts = [{
+            icon: 'ri-check-line',
+            bg: 'rgba(16,185,129,.12)',
+            col: '#10b981',
+            title: 'Completed Reminder',
+            desc: 'Marked "Gym Membership Renewal" as complete',
+            time: 'Today at 14:32'
+        },
+        {
+            icon: 'ri-add-circle-line',
+            bg: 'rgba(20,184,166,.12)',
+            col: '#14b8a6',
+            title: 'Created New Reminder',
+            desc: 'Added "Passport Renewal" to Travel category',
+            time: 'Today at 10:15'
+        },
+        {
+            icon: 'ri-share-line',
+            bg: 'rgba(167,139,250,.12)',
+            col: '#a78bfa',
+            title: 'Shared Reminder',
+            desc: "Shared \"Mum's Birthday\" via WhatsApp with 5 people",
+            time: 'Yesterday at 16:45'
+        },
+        {
+            icon: 'ri-pencil-line',
+            bg: 'rgba(245,158,11,.12)',
+            col: '#f59e0b',
+            title: 'Updated Reminder',
+            desc: 'Modified "Car Insurance Renewal" Date',
+            time: '2 days ago'
+        },
+    ];
+    document.getElementById('activity-log').innerHTML = acts.map(a => `<div class="act-item" style="display:flex;align-items:flex-start;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:${a.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="${a.icon}" style="color:${a.col}"></i></div><div><div style="font-size:.85rem;font-weight:600;color:#f1f5f9">${a.title}</div><div style="font-size:.77rem;color:#64748b;margin-top:2px">${a.desc}</div><div style="font-size:.72rem;color:#475569;margin-top:4px"><i class="ri-time-line"></i> ${a.time}</div></div></div>`).join('');
+}
 let charts = {};
 
 function initCharts() {
@@ -2747,30 +2785,30 @@ function clearNotifs() {
     });
 }
 
-function submitFeedback(e) {
-    e.preventDefault();
-    const t = document.getElementById("fb-type").value;
-    const s = document.getElementById("fb-subject").value.trim();
-    const m = document.getElementById("fb-msg").value.trim();
-    if (!t) {
-        toast("Please select a feedback type", "error");
-        return;
-    }
-    if (s.length < 5) {
-        toast("Subject must be at least 5 characters", "error");
-        return;
-    }
-    if (m.length < 10) {
-        toast("Message must be at least 10 characters", "error");
-        return;
-    }
-    toast(
-        "Feedback submitted! Thank you for helping improve D-Remind 🎉",
-        "success",
-    );
-    e.target.reset();
-    document.getElementById("fb-len").textContent = "0";
-}
+// function submitFeedback(e) {
+//     e.preventDefault();
+//     const t = document.getElementById("fb-type").value;
+//     const s = document.getElementById("fb-subject").value.trim();
+//     const m = document.getElementById("fb-msg").value.trim();
+//     if (!t) {
+//         toast("Please select a feedback type", "error");
+//         return;
+//     }
+//     if (s.length < 5) {
+//         toast("Subject must be at least 5 characters", "error");
+//         return;
+//     }
+//     if (m.length < 10) {
+//         toast("Message must be at least 10 characters", "error");
+//         return;
+//     }
+//     toast(
+//         "Feedback submitted! Thank you for helping improve D-Remind 🎉",
+//         "success",
+//     );
+//     e.target.reset();
+//     document.getElementById("fb-len").textContent = "0";
+// }
 
 function selPri(btn) {
     btn.closest('[style*="flex"]')
@@ -2827,21 +2865,107 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Modal Open
+
+// function openReminderModal() {
+//     const modal = document.getElementById('reminder-modal');
+//     modal.style.display = 'flex';
+
+//     const catSelect = document.getElementById('r-cat');
+
+//     // 🔥 destroy old TomSelect
+//     if (catSelect.tomselect) {
+//         catSelect.tomselect.destroy();
+//     }
+
+//     // 🔥 clear options
+//     catSelect.innerHTML = '<option value="">Select category...</option>';
+
+//     // 🔥 populate categories
+//     Object.entries(CATS).forEach(([id, cat]) => {
+//         const option = document.createElement('option');
+//         option.value = id;
+//         option.textContent = cat.name;
+//         catSelect.appendChild(option);
+//     });
+
+//     // 🔥 TomSelect init
+//     const categorySelect = new TomSelect('#r-cat', {
+//         create: false,
+//         placeholder: 'Search category...',
+//         sortField: { field: 'text', direction: 'asc' }
+//     });
+
+//     // 🔥 move error div inside ts-wrapper
+//     const wrapper = document.querySelector('#r-cat').parentElement;
+//     if (wrapper && wrapper.classList.contains('ts-wrapper')) {
+//         wrapper.appendChild(document.getElementById('err-rem-category_id'));
+//     }
+
+//     // 🔥 clear error on change
+//     categorySelect.on('change', function () {
+//         document.getElementById('err-rem-category_id').innerText = '';
+//         updateSubs();
+//     });
+
+//     // 🔥 reset sub
+//     const sub = document.getElementById('r-sub');
+//     sub.innerHTML = '<option value="">Select category first...</option>';
+//     sub.disabled = true;
+
+//     // 🔥 clear all errors
+//     document.querySelectorAll('#reminder-modal .error-text')
+//         .forEach(el => el.innerText = '');
+
+//     // 🔥 EDIT MODE — populate fields
+//     if (editingId) {
+//         const r = getRems().find(x => String(x.id) === String(editingId));
+//         if (r) {
+//             // update modal title
+//             document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
+//             document.getElementById('create-btn-txt').textContent = 'Save Changes';
+
+//             // set category in TomSelect
+//             categorySelect.setValue(String(r.category));
+
+//             // populate subcategories then select the right one
+//             updateSubs();
+//             setTimeout(() => {
+//                 document.getElementById('r-sub').value = r.subcategory || '';
+//             }, 100);
+
+//             // populate other fields
+//             document.getElementById('r-title').value    = r.title || '';
+//             document.getElementById('r-date').value     = r.end_reminder_date || '';
+//             document.getElementById('r-time').value     = r.dueTime || '09:00';
+//             document.getElementById('r-desc').value     = r.description || '';
+//             document.getElementById('desc-len').textContent = (r.description || '').length;
+//             document.getElementById('r-provider').value = r.provider || '';
+//             document.getElementById('r-cost').value     = r.cost || '';
+//             document.getElementById('r-freq').value     = r.frequency || '';
+
+//             // show optional fields if they have values
+//             if (r.provider || r.cost || r.frequency) {
+//                 document.getElementById('opt-fields').style.display = 'block';
+//             }
+//         }
+//     } else {
+//         // 🔥 CREATE MODE
+//         document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
+//         document.getElementById('create-btn-txt').textContent = 'Create Reminder';
+//         document.getElementById('rem-form').reset();
+//         document.getElementById('desc-len').textContent = '0';
+//         document.getElementById('opt-fields').style.display = 'none';
+//     }
+// }
+
 function openReminderModal() {
     const modal = document.getElementById('reminder-modal');
     modal.style.display = 'flex';
 
     const catSelect = document.getElementById('r-cat');
+    if (catSelect.tomselect) catSelect.tomselect.destroy();
 
-    // 🔥 destroy old TomSelect
-    if (catSelect.tomselect) {
-        catSelect.tomselect.destroy();
-    }
-
-    // 🔥 clear options
     catSelect.innerHTML = '<option value="">Select category...</option>';
-
-    // 🔥 populate categories
     Object.entries(CATS).forEach(([id, cat]) => {
         const option = document.createElement('option');
         option.value = id;
@@ -2849,70 +2973,69 @@ function openReminderModal() {
         catSelect.appendChild(option);
     });
 
-    // 🔥 TomSelect init
     const categorySelect = new TomSelect('#r-cat', {
         create: false,
         placeholder: 'Search category...',
         sortField: { field: 'text', direction: 'asc' }
     });
 
-    // 🔥 move error div inside ts-wrapper
     const wrapper = document.querySelector('#r-cat').parentElement;
     if (wrapper && wrapper.classList.contains('ts-wrapper')) {
         wrapper.appendChild(document.getElementById('err-rem-category_id'));
     }
 
-    // 🔥 clear error on change
     categorySelect.on('change', function () {
         document.getElementById('err-rem-category_id').innerText = '';
         updateSubs();
     });
 
-    // 🔥 reset sub
     const sub = document.getElementById('r-sub');
     sub.innerHTML = '<option value="">Select category first...</option>';
     sub.disabled = true;
 
-    // 🔥 clear all errors
     document.querySelectorAll('#reminder-modal .error-text')
         .forEach(el => el.innerText = '');
 
-    // 🔥 EDIT MODE — populate fields
     if (editingId) {
-        const r = getRems().find(x => String(x.id) === String(editingId));
-        if (r) {
-            // update modal title
-            document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
-            document.getElementById('create-btn-txt').textContent = 'Save Changes';
+        // ── look in reminders first, then fall back to calendar histories
+        let r = typeof getRems === 'function'
+            ? getRems().find(x => String(x.id) === String(editingId))
+            : null;
 
-            // set category in TomSelect
+        if (!r && Array.isArray(window.CALENDAR_HISTORIES)) {
+            r = window.CALENDAR_HISTORIES.find(
+                x => String(x.reminder_id) === String(editingId)
+            );
+        }
+
+        if (r) {
+            document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
+            document.getElementById('create-btn-txt').textContent   = 'Save Changes';
+
+            // set category — this also triggers updateSubs() via the 'change' listener
             categorySelect.setValue(String(r.category));
 
-            // populate subcategories then select the right one
-            updateSubs();
+            // wait for TomSelect + updateSubs() to finish, then set subcategory
             setTimeout(() => {
                 document.getElementById('r-sub').value = r.subcategory || '';
-            }, 100);
+            }, 150);
 
-            // populate other fields
-            document.getElementById('r-title').value    = r.title || '';
-            document.getElementById('r-date').value     = r.end_reminder_date || '';
-            document.getElementById('r-time').value     = r.dueTime || '09:00';
-            document.getElementById('r-desc').value     = r.description || '';
-            document.getElementById('desc-len').textContent = (r.description || '').length;
-            document.getElementById('r-provider').value = r.provider || '';
-            document.getElementById('r-cost').value     = r.cost || '';
-            document.getElementById('r-freq').value     = r.frequency || '';
+            document.getElementById('r-title').value    = r.title              || '';
+            document.getElementById('r-date').value     = r.end_reminder_date  || '';
+            document.getElementById('r-time').value     = r.dueTime            || '09:00';
+            document.getElementById('r-desc').value     = r.description        || '';
+            document.getElementById('desc-len').textContent = (r.description   || '').length;
+            document.getElementById('r-provider').value = r.provider           || '';
+            document.getElementById('r-cost').value     = r.cost               || '';
+            document.getElementById('r-freq').value     = r.frequency          || '';
 
-            // show optional fields if they have values
             if (r.provider || r.cost || r.frequency) {
                 document.getElementById('opt-fields').style.display = 'block';
             }
         }
     } else {
-        // 🔥 CREATE MODE
         document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
-        document.getElementById('create-btn-txt').textContent = 'Create Reminder';
+        document.getElementById('create-btn-txt').textContent   = 'Create Reminder';
         document.getElementById('rem-form').reset();
         document.getElementById('desc-len').textContent = '0';
         document.getElementById('opt-fields').style.display = 'none';
@@ -2947,3 +3070,5 @@ document.addEventListener("keydown", function (e) {
         closeReminderModal();
     }
 });
+
+

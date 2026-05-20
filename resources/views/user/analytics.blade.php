@@ -76,7 +76,7 @@
         <div class="stat-card">
             <div style="width:40px;height:40px;border-radius:11px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;margin-bottom:10px"><i class="ri-wallet-3-line" style="color:#f59e0b;font-size:1.1rem"></i></div>
             <div class="font-jakarta" style="font-size:1.5rem;font-weight:800;color:#f59e0b">£{{ number_format($totalCost, 2) }}</div>
-
+            <div style="font-size:.72rem;color:#64748b;margin-top:3px;font-weight:600">Total Cost</div>
         </div>
     </div>
     <div class="g2" style="margin-bottom:16px">
@@ -128,6 +128,13 @@
                 <tbody id="cat-perf-table"></tbody>
             </table>
         </div>
+    </div>
+    <div class="card" style="padding:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Recent Activity</h3>
+            <button onclick="window.location.href='user-reminders'" class="btn btn-ghost btn-sm">View All <i class="ri-arrow-right-line"></i></button>
+        </div>
+        <div id="activity-log" style="display:flex;flex-direction:column;gap:8px"></div>
     </div>
 
 </section>
