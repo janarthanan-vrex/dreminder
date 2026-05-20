@@ -1294,67 +1294,13 @@ function saveSubcategory() {
 // CALENDAR V2 — ADVANCED
 // ═══════════════════════════════════════════════════════
 
-const CAL_CATS = {
-    "special-days": {
-        name: "Special Days",
-        color: "#f59e0b",
-        bg: "rgba(245,158,11,.15)",
-        icon: "ri-cake-3-line",
-    },
-    home: {
-        name: "Home",
-        color: "#14b8a6",
-        bg: "rgba(20,184,166,.15)",
-        icon: "ri-home-4-line",
-    },
-    insurance: {
-        name: "Insurance",
-        color: "#f43f5e",
-        bg: "rgba(244,63,94,.15)",
-        icon: "ri-shield-star-line",
-    },
-    "tv-telephone-mobile": {
-        name: "TV / Tel",
-        color: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        icon: "ri-smartphone-line",
-    },
-    "motor-vehicle": {
-        name: "Motor Vehicle",
-        color: "#a78bfa",
-        bg: "rgba(167,139,250,.15)",
-        icon: "ri-car-line",
-    },
-    travel: {
-        name: "Travel",
-        color: "#ec4899",
-        bg: "rgba(236,72,153,.15)",
-        icon: "ri-flight-takeoff-line",
-    },
-    subscriptions: {
-        name: "Subscriptions",
-        color: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        icon: "ri-refresh-line",
-    },
-    "pet-care": {
-        name: "Pet Care",
-        color: "#10b981",
-        bg: "rgba(16,185,129,.15)",
-        icon: "ri-footprint-line",
-    },
-    health: {
-        name: "Health",
-        color: "#10b981",
-        bg: "rgba(16,185,129,.15)",
-        icon: "ri-heart-pulse-line",
-    },
+const CAL_CATS = window.CALENDAR_CATS || {
     others: {
-        name: "Others",
-        color: "#94a3b8",
-        bg: "rgba(148,163,184,.12)",
-        icon: "ri-more-2-line",
-    },
+        name:  'Others',
+        color: '#94a3b8',
+        bg:    'rgba(148,163,184,.12)',
+        icon:  'ri-more-2-line',
+    }
 };
 
 const CAL_MONTHS = [
@@ -1474,14 +1420,19 @@ function calGoToday() {
 
 // ── Category filter
 function _buildCatFilter() {
-    const bar = document.getElementById("cat-filter-bar");
-    // Keep "All" button, append cats
+    const bar = document.getElementById('cat-filter-bar');
+    if (!bar) return;
+
+    // Clear existing buttons except "All"
+    bar.querySelectorAll('[data-cat]:not([data-cat="all"])').forEach(b => b.remove());
+
+    // Append one button per DB category
     Object.entries(CAL_CATS).forEach(([k, c]) => {
-        const btn = document.createElement("button");
-        btn.className = "cat-legend-item";
-        btn.dataset.cat = k;
-        btn.onclick = () => calSetCatFilter(k, btn);
-        btn.innerHTML = `<div class="cat-legend-dot" style="background:${c.color}"></div> ${c.name}`;
+        const btn = document.createElement('button');
+        btn.className    = 'cat-legend-item';
+        btn.dataset.cat  = k;
+        btn.onclick      = () => calSetCatFilter(k, btn);
+        btn.innerHTML    = `<div class="cat-legend-dot" style="background:${c.color}"></div> ${c.name}`;
         bar.appendChild(btn);
     });
 }
@@ -1497,22 +1448,31 @@ function calSetCatFilter(cat, btn) {
     _renderStats();
 }
 
-// ── Get reminders (filtered)
+// ── Get reminders for calendar (uses history data, falls back to DB_REMINDERS)
+function _getCalRems() {
+    // Prefer history-based data injected from calenderView()
+    if (window.CALENDAR_HISTORIES && window.CALENDAR_HISTORIES.length > 0) {
+        return window.CALENDAR_HISTORIES.filter(r => r.dueDate); // exclude null dates
+    }
+    // Fallback to existing reminders array (reminder_date on reminder itself)
+    return typeof getRems === 'function' ? getRems() : [];
+}
+
 function _getRems(y, m) {
-    let rems = typeof getRems === "function" ? getRems() : [];
+    let rems = _getCalRems();
     rems = rems.filter((r) => {
         const d = new Date(r.dueDate);
         return d.getFullYear() === y && d.getMonth() === m;
     });
-    if (_calCatFilter !== "all")
+    if (_calCatFilter !== 'all')
         rems = rems.filter((r) => r.category === _calCatFilter);
     return rems;
 }
 
 function _getRemsDate(ds) {
-    let rems = typeof getRems === "function" ? getRems() : [];
+    let rems = _getCalRems();
     rems = rems.filter((r) => r.dueDate === ds);
-    if (_calCatFilter !== "all")
+    if (_calCatFilter !== 'all')
         rems = rems.filter((r) => r.category === _calCatFilter);
     return rems;
 }
@@ -1642,7 +1602,8 @@ function _selectDay(d) {
     document.getElementById("sel-day-add-btn").style.display = "flex";
 
     // Get all rems for this day (unfiltered for display)
-    let rems = typeof getRems === "function" ? getRems() : [];
+    // let rems = typeof getRems === "function" ? getRems() : [];
+    let rems = _getCalRems().filter((r) => r.dueDate === ds);
     rems = rems.filter((r) => r.dueDate === ds);
 
     const ev = document.getElementById("sel-day-events-v2");
@@ -1745,12 +1706,16 @@ function _renderMonthEvents() {
 
 // ── Stats
 function _renderStats() {
-    const allRems = (typeof getRems === "function" ? getRems() : []).filter(
-        (r) => {
-            const d = new Date(r.dueDate);
-            return d.getFullYear() === _calY && d.getMonth() === _calM;
-        },
-    );
+    // const allRems = (typeof getRems === "function" ? getRems() : []).filter(
+    //     (r) => {
+    //         const d = new Date(r.dueDate);
+    //         return d.getFullYear() === _calY && d.getMonth() === _calM;
+    //     },
+    // );
+    const allRems = _getCalRems().filter((r) => {
+    const d = new Date(r.dueDate);
+    return d.getFullYear() === _calY && d.getMonth() === _calM;
+});
     const filtered =
         _calCatFilter === "all"
             ? allRems
@@ -2657,9 +2622,16 @@ function initCharts() {
         });
 }
 
-const originalAnalyticsData = JSON.parse(JSON.stringify(analyticsData));
+const originalAnalyticsData =
+    typeof analyticsData !== "undefined"
+        ? JSON.parse(JSON.stringify(analyticsData))
+        : null;
 
 function setPeriod(btn, days) {
+
+    if (typeof analyticsData === "undefined") {
+        return;
+    }
 
     document
         .querySelectorAll(".period-btn")

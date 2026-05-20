@@ -231,9 +231,8 @@ Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->n
 Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
 Route::get('/user-transaction', [UserController::class, 'userTransaction'])->name('user.transactions');
 
-Route::get('/user-calendar', function () {
-    return view('user.calendar');
-});
+
+
 Route::get('/user-reminder-history', function () {
     return view('user.reminder-history');
 });
@@ -243,6 +242,7 @@ Route::get('/user-category', [UserController::class, 'userCategory'])->name('use
 Route::post('/store-subcategory', [UserController::class, 'storeSubCategory'])->name('user.store.subcategory');
 Route::delete('/user/delete-subcategory/{id}', [UserController::class, 'deleteSubcategory'])->name('user.delete.subcategory');
 Route::put('/user/update-subcategory/{id}', [UserController::class, 'updateSubcategory'])->name('user.update.subcategory');
+Route::get('/user-calendar',[UserController::class, 'calenderView'])->name('user.calenderview');
 
 
 Route::get('/user-create-reminder', function () {
