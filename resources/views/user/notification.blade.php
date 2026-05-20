@@ -1,7 +1,110 @@
 @extends('user.layouts.app')
 @section('content')
 
-<section id="page-notifications" class="">
+<style>
+    .tabs-header { position: relative; }
+
+    .tab-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-size: .85rem;
+        font-weight: 600;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        transition: all .3s;
+        position: relative;
+    }
+
+    .tab-btn:hover {
+        color: #94a3b8;
+        background: rgba(255,255,255,.02);
+    }
+
+    .tab-btn.active {
+        color: #f1f5f9;
+        border-bottom-color: #7c3aed;
+    }
+
+    .tab-btn i { font-size: 1rem; }
+
+    .tab-content { animation: fadeIn 0.3s ease-in-out; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Notification items ── */
+    .notif-item {
+        padding: 14px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.02);
+        border: 1px solid rgba(255,255,255,.06);
+        transition: all .3s;
+        position: relative;
+    }
+
+    .notif-item:hover {
+        background: rgba(255,255,255,.04);
+        border-color: rgba(255,255,255,.1);
+    }
+
+    .notif-item.unread {
+        background: rgba(124,58,237,.05);
+        border-color: rgba(124,58,237,.2);
+    }
+
+    .notif-item.unread::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 60%;
+        background: #7c3aed;
+        border-radius: 0 4px 4px 0;
+    }
+
+    .notif-item.removing {
+        opacity: 0;
+        transform: translateX(-20px);
+        transition: all .3s;
+    }
+
+    /* ── Category icon dot ── */
+    .cat-dot {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: .95rem;
+    }
+
+    /* ── Empty state ── */
+    .notif-empty-state {
+        text-align: center;
+        padding: 60px 0;
+    }
+
+    .notif-empty-state i {
+        font-size: 3.5rem;
+        color: rgba(255,255,255,.1);
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
+
+<section id="page-notifications">
+
     <div style="margin-bottom:16px">
         <h2 class="font-jakarta" style="font-size:1.3rem;font-weight:800;color:#f1f5f9">Notifications</h2>
         <p style="font-size:.82rem;color:#64748b;margin-top:3px">Manage notification preferences and view your notification history</p>
@@ -9,563 +112,543 @@
 
     <!-- TABS -->
     <div class="tabs-container" style="margin-bottom:20px">
+
         <div class="tabs-header" style="display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:20px">
+
             <button class="tab-btn active" onclick="switchTab('settings')" data-tab="settings">
                 <i class="ri-settings-3-line"></i>
                 <span>Settings</span>
             </button>
+
             <button class="tab-btn" onclick="switchTab('history')" data-tab="history">
                 <i class="ri-history-line"></i>
                 <span>History</span>
-                <span class="badge-count" style="background:#7c3aed;color:#fff !important;font-size:.65rem;padding:2px 6px;border-radius:10px;font-weight:700;margin-left:4px">3</span>
+                @if($unreadCount > 0)
+                <span class="badge-count"
+                    style="background:#7c3aed;color:#fff;font-size:.65rem;padding:2px 6px;border-radius:10px;font-weight:700;margin-left:4px"
+                    id="tab-unread-badge">
+                    {{ $unreadCount }}
+                </span>
+                @else
+                <span class="badge-count"
+                    style="background:#7c3aed;color:#fff;font-size:.65rem;padding:2px 6px;border-radius:10px;font-weight:700;margin-left:4px;display:none"
+                    id="tab-unread-badge">
+                    0
+                </span>
+                @endif
             </button>
+
         </div>
 
-        <!-- TAB 1: SETTINGS -->
+        <!-- ════════════════════════════════════════
+             TAB 1: SETTINGS
+        ════════════════════════════════════════ -->
         <div class="tab-content active" id="tab-settings">
-            <div class="g2" style="margin-bottom:16px">
-                <div class="card" style="padding:18px">
-                    <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">Notification Channels</h3>
-                    <p style="font-size:.78rem;color:#64748b;margin-bottom:14px">Enable or disable notification methods</p>
-                    <div style="display:flex;flex-direction:column;gap:10px">
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <div class="cat-ico" style="width:36px;height:36px;background:rgba(20,184,166,.12)"><i class="ri-mail-line" style="color:#2dd4bf;font-size:.95rem"></i></div>
-                                <div>
-                                    <div style="font-size:.85rem;font-weight:600;color:#94a3b8">Email</div>
-                                    <div style="font-size:.73rem;color:#64748b">kishore@example.com</div>
+
+            <form id="notification-form">
+
+                <div class="g2" style="margin-bottom:16px">
+
+                    <!-- CHANNELS -->
+                    <div class="card" style="padding:18px">
+
+                        <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">
+                            Notification Channels
+                        </h3>
+
+                        <p style="font-size:.78rem;color:#64748b;margin-bottom:14px">
+                            Enable or disable notification methods
+                        </p>
+
+                        <div style="display:flex;flex-direction:column;gap:10px">
+
+                            <!-- EMAIL -->
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <div class="cat-ico" style="width:36px;height:36px;background:rgba(20,184,166,.12)">
+                                        <i class="ri-mail-line" style="color:#2dd4bf;font-size:.95rem"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:.85rem;font-weight:600;color:#94a3b8">Email</div>
+                                        <div style="font-size:.73rem;color:#64748b">{{ auth()->user()->email }}</div>
+                                    </div>
                                 </div>
+                                <!-- EMAIL -->
+<label style="cursor:pointer">
+    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1"
+        {{ $settings->email_notify ? 'checked' : '' }}>
+    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
+        onclick="this.classList.toggle('on');
+                 document.getElementById('email_notify').checked = this.classList.contains('on')">
+    </button>
+</label>
                             </div>
-                            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+
+                            <!-- PUSH -->
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                                <div style="display:flex;align-items:center;gap:10px">
+                                    <div class="cat-ico" style="width:36px;height:36px;background:rgba(124,58,237,.15)">
+                                        <i class="ri-notification-3-line" style="color:#a78bfa;font-size:.95rem"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:.85rem;font-weight:600;color:#94a3b8">Push Notifications</div>
+                                        <div style="font-size:.73rem;color:#64748b">Browser &amp; mobile app</div>
+                                    </div>
+                                </div>
+                                <label style="cursor:pointer">
+    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1"
+        {{ $settings->push_notify ? 'checked' : '' }}>
+    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
+        onclick="this.classList.toggle('on');
+                 document.getElementById('push_notify').checked = this.classList.contains('on')">
+    </button>
+</label>
+                            </div>
+
                         </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <div class="cat-ico" style="width:36px;height:36px;background:rgba(16,185,129,.12)"><i class="ri-message-2-line" style="color:#10b981;font-size:.95rem"></i></div>
+                    </div>
+
+                    <!-- ALERT TIMINGS -->
+                    <div class="card" style="padding:18px">
+
+                        <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">
+                            Alert Timing
+                        </h3>
+
+                        <p style="font-size:.78rem;color:#64748b;margin-bottom:14px">
+                            When to receive notifications before Dates
+                        </p>
+
+                        <div style="display:flex;flex-direction:column;gap:6px">
+
+                            @foreach([
+                                ['before_30_days', '30 days before', 'Early planning alert'],
+                                ['before_7_days',  '7 days before',  'One week reminder'],
+                                ['before_3_days',  '3 days before',  'Important alert'],
+                                ['before_1_day',   '1 day before',   'Final reminder'],
+                                ['on_day',         'On the day',     'Date notification'],
+                            ] as [$name, $label, $sub])
+                            <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
+                                <input type="checkbox"
+                                    {{ $settings->$name ? 'checked' : '' }}
+                                    name="{{ $name }}"
+                                    value="1"
+                                    style="accent-color:#7c3aed;width:15px;height:15px">
                                 <div>
-                                    <div style="font-size:.85rem;font-weight:600;color:#94a3b8">SMS</div>
-                                    <div style="font-size:.73rem;color:#64748b">+44 7700 900123</div>
+                                    <div style="font-size:.85rem;font-weight:500;color:#94a3b8">{{ $label }}</div>
+                                    <div style="font-size:.72rem;color:#64748b">{{ $sub }}</div>
                                 </div>
-                            </div>
-                            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+                            </label>
+                            @endforeach
+
                         </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <div class="cat-ico" style="width:36px;height:36px;background:rgba(124,58,237,.15)"><i class="ri-notification-3-line" style="color:#a78bfa;font-size:.95rem"></i></div>
-                                <div>
-                                    <div style="font-size:.85rem;font-weight:600;color:#94a3b8">Push Notifications</div>
-                                    <div style="font-size:.73rem;color:#64748b">Browser & mobile app</div>
-                                </div>
-                            </div>
-                            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+                    </div>
+
+                </div>
+
+                <!-- QUIET HOURS -->
+                <div class="card" style="padding:18px;margin-bottom:16px">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+                        <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Quiet Hours</h3>
+                        <input type="hidden" name="quit_hours" id="quit_hours" value="{{ $settings->quit_hours ? 1 : 0 }}">
+                        <button type="button"
+                            class="toggle {{ $settings->quit_hours ? 'on' : '' }}"
+                            id="quiet-toggle"
+                            onclick="
+                                this.classList.toggle('on');
+                                const isOn = this.classList.contains('on');
+                                document.getElementById('quit_hours').value = isOn ? 1 : 0;
+                                document.getElementById('quiet-cfg').style.display = isOn ? 'grid' : 'none';
+                            ">
+                        </button>
+                    </div>
+                    <p style="font-size:.78rem;color:#64748b;margin-bottom:10px">Suppress all notifications during these hours</p>
+                    <div id="quiet-cfg" class="g2" style="display:{{ $settings->quit_hours ? 'grid' : 'none' }}">
+                        <div>
+                            <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">Start Time</label>
+                            <input class="inp" type="time" name="start_time" id="start_time"
+                                value="{{ $settings->start_time ?? '' }}">
                         </div>
-                        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <div class="cat-ico" style="width:36px;height:36px;background:rgba(37,211,102,.12)"><i class="ri-whatsapp-line" style="color:#25D366;font-size:.95rem"></i></div>
-                                <div>
-                                    <div style="font-size:.85rem;font-weight:600;color:#94a3b8">WhatsApp</div>
-                                    <div style="font-size:.73rem;color:#64748b">+44 7700 900123</div>
-                                </div>
-                            </div>
-                            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+                        <div>
+                            <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">End Time</label>
+                            <input class="inp" type="time" name="end_time" id="end_time"
+                                value="{{ $settings->end_time ?? '' }}">
                         </div>
                     </div>
                 </div>
-                <div class="card" style="padding:18px">
-                    <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">Alert Timing</h3>
-                    <p style="font-size:.78rem;color:#64748b;margin-bottom:14px">When to receive notifications before Dates</p>
-                    <div style="display:flex;flex-direction:column;gap:6px">
-                        <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)"><input type="checkbox" checked style="accent-color:#7c3aed;width:15px;height:15px">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:500;color:#94a3b8">30 days before</div>
-                                <div style="font-size:.72rem;color:#64748b">Early planning alert</div>
-                            </div>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)"><input type="checkbox" checked style="accent-color:#7c3aed;width:15px;height:15px">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:500;color:#94a3b8">7 days before</div>
-                                <div style="font-size:.72rem;color:#64748b">One week reminder</div>
-                            </div>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)"><input type="checkbox" checked style="accent-color:#7c3aed;width:15px;height:15px">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:500;color:#94a3b8">3 days before</div>
-                                <div style="font-size:.72rem;color:#64748b">Important alert</div>
-                            </div>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)"><input type="checkbox" checked style="accent-color:#7c3aed;width:15px;height:15px">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:500;color:#94a3b8">1 day before</div>
-                                <div style="font-size:.72rem;color:#64748b">Final reminder</div>
-                            </div>
-                        </label>
-                        <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)"><input type="checkbox" style="accent-color:#7c3aed;width:15px;height:15px">
-                            <div>
-                                <div style="font-size:.85rem;font-weight:500;color:#94a3b8">On the day</div>
-                                <div style="font-size:.72rem;color:#64748b">Date notification</div>
-                            </div>
-                        </label>
+
+                <!-- INFO BOX -->
+                <div class="card" style="padding:18px;margin-bottom:16px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2)">
+                    <div style="display:flex;align-items:flex-start;gap:12px">
+                        <div style="width:40px;height:40px;border-radius:12px;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                            <i class="ri-information-line" style="color:#a78bfa;font-size:1.1rem"></i>
+                        </div>
+                        <div>
+                            <h4 style="font-size:.87rem;font-weight:700;color:#f1f5f9;margin-bottom:6px">Delivery &amp; Reliability</h4>
+                            <ul style="font-size:.78rem;color:#94a3b8;line-height:1.7;padding-left:18px">
+                                <li>Email notifications are sent instantly but may take 1–5 minutes to arrive</li>
+                                <li>Push notifications work on devices with the DRemind app installed</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card" style="padding:18px;margin-bottom:16px">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-                    <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Quiet Hours</h3>
-                    <button class="toggle" id="quiet-toggle" onclick="this.classList.toggle('on');document.getElementById('quiet-cfg').style.display=this.classList.contains('on')?'grid':'none'"></button>
+
+                <!-- BUTTONS -->
+                <div style="display:flex;gap:10px;justify-content:flex-end">
+                    <button type="button" class="btn btn-ghost" onclick="toast('Settings reset to default','info')">
+                        <i class="ri-refresh-line"></i> Reset
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="ri-save-line"></i> Save Preferences
+                    </button>
                 </div>
-                <p style="font-size:.78rem;color:#64748b;margin-bottom:10px">Suppress all notifications during these hours</p>
-                <div id="quiet-cfg" class="g2" style="display:none">
-                    <div><label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">Start Time</label><input class="inp" type="time" value="22:00"></div>
-                    <div><label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">End Time</label><input class="inp" type="time" value="08:00"></div>
-                </div>
-            </div>
-            <div class="card" style="padding:18px;margin-bottom:16px;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2)">
-                <div style="display:flex;align-items:flex-start;gap:12px">
-                    <div style="width:40px;height:40px;border-radius:12px;background:rgba(124,58,237,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                        <i class="ri-information-line" style="color:#a78bfa;font-size:1.1rem"></i>
-                    </div>
-                    <div>
-                        <h4 style="font-size:.87rem;font-weight:700;color:#f1f5f9;margin-bottom:6px">Delivery & Reliability</h4>
-                        <ul style="font-size:.78rem;color:#94a3b8;line-height:1.7;padding-left:18px">
-                            <li>Email notifications are sent instantly but may take 1-5 minutes to arrive</li>
-                            <li>SMS delivery typically takes 5-30 seconds depending on your carrier</li>
-                            <li>WhatsApp messages require an active internet connection</li>
-                            <li>Push notifications work on devices with the DRemind app installed</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div style="display:flex;gap:10px;justify-content:flex-end">
-                <button class="btn btn-ghost" onclick="toast('Settings reset to default','info')"><i class="ri-refresh-line"></i> Reset</button>
-                <button class="btn btn-primary" onclick="toast('Notification preferences saved!','success')"><i class="ri-save-line"></i> Save Preferences</button>
-            </div>
+
+            </form>
+
         </div>
 
-        <!-- TAB 2: HISTORY -->
+        <!-- ════════════════════════════════════════
+             TAB 2: HISTORY (real DB data)
+        ════════════════════════════════════════ -->
         <div class="tab-content" id="tab-history" style="display:none">
+
+            <!-- Toolbar -->
             <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+
                 <div class="search-box" style="flex:1;min-width:200px">
                     <i class="ri-search-line" style="color:#64748b;font-size:.9rem"></i>
-                    <input id="notif-search" placeholder="Search notifications…" style="font-size:.85rem;color:inherit" oninput="filterNotifications()">
+                    <input id="notif-search" placeholder="Search notifications…"
+                        style="font-size:.85rem;color:inherit"
+                        oninput="filterNotifications()">
                 </div>
-                <select class="inp" style="width:auto;min-width:140px" id="notif-type" onchange="filterNotifications()">
-                    <option value="all">All Types</option>
-                    <option value="reminder">Reminders</option>
-                    <option value="system">System</option>
-                    <option value="shared">Shared</option>
-                    <option value="completed">Completed</option>
-                </select>
+
                 <select class="inp" style="width:auto;min-width:140px" id="notif-filter" onchange="filterNotifications()">
-                    <option value="all">All Time</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
+                    <option value="all">All</option>
                     <option value="unread">Unread Only</option>
+                    <option value="read">Read Only</option>
                 </select>
-                <button class="btn btn-ghost btn-sm" onclick="markAllRead()" title="Mark all as read">
+
+                <button class="btn btn-ghost btn-sm" onclick="markAllReadAjax()">
                     <i class="ri-check-double-line"></i> Mark All Read
                 </button>
+
             </div>
 
+            <!-- Count row -->
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
                 <span style="font-size:.75rem;color:#64748b;font-weight:600">
-                    <span id="notif-count">0</span> notifications
-                    <span id="unread-count" style="color:#f59e0b"></span>
+                    <span id="notif-count">{{ $activities->count() }}</span> notifications
+                    <span id="unread-label" style="color:#f59e0b">
+                        @if($unreadCount > 0)({{ $unreadCount }} unread)@endif
+                    </span>
                 </span>
-                <button class="btn btn-ghost btn-sm" onclick="clearAllNotifications()">
+                <button class="btn btn-ghost btn-sm" onclick="clearAllAjax()">
                     <i class="ri-delete-bin-line"></i> Clear All
                 </button>
             </div>
 
+            <!-- Notification list -->
             <div id="notif-list" style="display:flex;flex-direction:column;gap:8px">
-                <!-- Unread Notifications -->
-                <div class="notif-item unread" data-type="reminder" data-date="today">
+
+                @forelse($activities as $activity)
+
+                @php
+                    $isUnread = !$activity['is_seen'];
+                    $cat      = $activity['category'];
+                    $reminder = $activity['reminder'];
+
+                    // derive an icon color & bg from the category data
+                    $catIcon  = $cat['icon']  ?? 'ri-bell-line';
+                    $catColor = $cat['color'] ?? '#94a3b8';
+                    $catBg    = 'rgba(' . implode(',', sscanf($catColor, '#%02x%02x%02x')) . ',.12)';
+                    $catName  = $cat['name']  ?? 'System';
+                @endphp
+
+                <div class="notif-item {{ $isUnread ? 'unread' : '' }}"
+                     data-id="{{ $activity['id'] }}"
+                     data-seen="{{ $activity['is_seen'] }}">
+
                     <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-alarm-line" style="color:#f59e0b"></i>
+
+                        <!-- Category icon -->
+                        <div class="cat-dot" style="background:{{ $catBg }}">
+                            <i class="{{ $catIcon }}" style="color:{{ $catColor }}"></i>
                         </div>
+
+                        <!-- Body -->
                         <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#f1f5f9">Car Insurance Due Soon</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">Your car insurance renewal is due in 3 days (Apr 19, 2026)</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 2 hours ago
-                                <span style="margin:0 6px">•</span>
-                                <span style="color:#f59e0b">via Email & SMS</span>
+
+                            @if($reminder)
+                            <div style="font-size:.87rem;font-weight:600;color:{{ $isUnread ? '#f1f5f9' : '#94a3b8' }}">
+                                {{ $reminder['title'] }}
                             </div>
+                            @endif
+
+                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">
+                                {{ $activity['description'] }}
+                            </div>
+
+                            <div style="font-size:.72rem;color:#475569;margin-top:4px;display:flex;align-items:center;gap:6px">
+                                <i class="ri-time-line"></i>
+                                {{ $activity['created_at'] }}
+                                @if($catName !== 'System')
+                                <span style="margin:0 2px">•</span>
+                                <span style="color:{{ $catColor }}">{{ $catName }}</span>
+                                @endif
+                            </div>
+
                         </div>
+
+                        <!-- Actions -->
                         <div style="display:flex;gap:4px;flex-shrink:0">
-                            <button class="btn btn-ghost btn-xs" onclick="markAsRead(this)" title="Mark as read">
+
+                            @if($isUnread)
+                            <button class="btn btn-ghost btn-xs"
+                                onclick="markReadAjax({{ $activity['id'] }}, this)"
+                                title="Mark as read">
                                 <i class="ri-check-line"></i>
                             </button>
-                            <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
+                            @endif
+
+                            <button class="btn btn-ghost btn-xs"
+                                onclick="deleteNotifAjax({{ $activity['id'] }}, this)"
+                                title="Delete">
                                 <i class="ri-delete-bin-line"></i>
                             </button>
+
                         </div>
+
                     </div>
+
                 </div>
 
-                <div class="notif-item unread" data-type="reminder" data-date="today">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-error-warning-line" style="color:#ef4444"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#f1f5f9">Overdue: Netflix Subscription</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">Your Netflix subscription was due yesterday (Apr 15, 2026)</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 5 hours ago
-                                <span style="margin:0 6px">•</span>
-                                <span style="color:#ef4444">via All Channels</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:4px;flex-shrink:0">
-                            <button class="btn btn-ghost btn-xs" onclick="markAsRead(this)" title="Mark as read">
-                                <i class="ri-check-line"></i>
-                            </button>
-                            <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                        </div>
+                @empty
+
+                <div class="notif-empty-state" id="notif-empty-initial">
+                    <i class="ri-notification-off-line"></i>
+                    <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#94a3b8;margin-bottom:6px">
+                        No Notifications
                     </div>
+                    <div style="font-size:.83rem;color:#64748b">You're all caught up!</div>
                 </div>
 
-                <div class="notif-item unread" data-type="reminder" data-date="today">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-notification-badge-line" style="color:#a78bfa"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#f1f5f9">Upcoming: MOT Due in 7 Days</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">Your vehicle MOT is due on Apr 23, 2026. Book your appointment soon.</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 1 day ago
-                                <span style="margin:0 6px">•</span>
-                                <span style="color:#a78bfa">via Email</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;gap:4px;flex-shrink:0">
-                            <button class="btn btn-ghost btn-xs" onclick="markAsRead(this)" title="Mark as read">
-                                <i class="ri-check-line"></i>
-                            </button>
-                            <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                                <i class="ri-delete-bin-line"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
 
-                <!-- Read Notifications -->
-                <div class="notif-item" data-type="completed" data-date="today">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-check-double-line" style="color:#10b981"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#94a3b8">Reminder Completed</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">You marked "Gym Membership Renewal" as complete</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 1 day ago
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="notif-item" data-type="shared" data-date="week">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(20,184,166,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-share-line" style="color:#2dd4bf"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#94a3b8">Reminder Shared</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">You shared "Mum's Birthday" with 5 people</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 2 days ago
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="notif-item" data-type="system" data-date="week">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(6,182,212,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-shield-check-line" style="color:#06b6d4"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#94a3b8">Account Security Update</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">Your password was successfully changed from a new device</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 3 days ago
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="notif-item" data-type="reminder" data-date="week">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-calendar-check-line" style="color:#10b981"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#94a3b8">Reminder Created</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">You created a new reminder: "Dentist Appointment"</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 5 days ago
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="notif-item" data-type="system" data-date="month">
-                    <div style="display:flex;align-items:flex-start;gap:10px">
-                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(124,58,237,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="ri-vip-crown-line" style="color:#a78bfa"></i>
-                        </div>
-                        <div style="flex:1">
-                            <div style="font-size:.87rem;font-weight:600;color:#94a3b8">Subscription Renewed</div>
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">Your DRemind annual membership has been renewed. Thank you!</div>
-                            <div style="font-size:.72rem;color:#475569;margin-top:4px">
-                                <i class="ri-time-line"></i> 1 week ago
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost btn-xs" onclick="deleteNotification(this)" title="Delete">
-                            <i class="ri-delete-bin-line"></i>
-                        </button>
-                    </div>
-                </div>
             </div>
 
-            <!-- Empty State -->
-            <div id="notif-empty" style="display:none;text-align:center;padding:60px 0">
-                <div style="font-size:3.5rem;color:rgba(255,255,255,.1);margin-bottom:10px">
-                    <i class="ri-notification-off-line"></i>
+            <!-- JS-driven empty state (shown when all filtered/deleted) -->
+            <div id="notif-empty" style="display:none" class="notif-empty-state">
+                <i class="ri-notification-off-line"></i>
+                <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#94a3b8;margin-bottom:6px">
+                    No Notifications
                 </div>
-                <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#94a3b8;margin-bottom:6px">No Notifications</div>
                 <div style="font-size:.83rem;color:#64748b">You're all caught up!</div>
             </div>
+
         </div>
+
     </div>
 </section>
 
-<style>
-/* Tab Styles */
-.tabs-header {
-    position: relative;
-}
-.tab-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    border: none;
-    background: transparent;
-    color: #64748b;
-    font-size: .85rem;
-    font-weight: 600;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    transition: all .3s;
-    position: relative;
-}
-.tab-btn:hover {
-    color: #94a3b8;
-    background: rgba(255,255,255,.02);
-}
-.tab-btn.active {
-    color: #f1f5f9;
-    border-bottom-color: #7c3aed;
-}
-.tab-btn i {
-    font-size: 1rem;
-}
-.tab-content {
-    animation: fadeIn 0.3s ease-in-out;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Notification Item Styles */
-.notif-item {
-    padding: 14px;
-    border-radius: 12px;
-    background: rgba(255,255,255,.02);
-    border: 1px solid rgba(255,255,255,.06);
-    transition: all .3s;
-}
-.notif-item:hover {
-    background: rgba(255,255,255,.04);
-    border-color: rgba(255,255,255,.1);
-}
-.notif-item.unread {
-    background: rgba(124,58,237,.05);
-    border-color: rgba(124,58,237,.2);
-}
-.notif-item.unread::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 4px;
-    height: 60%;
-    background: #7c3aed;
-    border-radius: 0 4px 4px 0;
-}
-.notif-item {
-    position: relative;
-}
-</style>
-
 <script>
-// Tab Switching
+const CSRF = document.querySelector('meta[name="csrf-token"]').content;
+
+/* ─── Tab switching ──────────────────────────────────── */
 function switchTab(tabName) {
-    // Remove active class from all tabs
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => {
+        c.style.display = 'none';
+        c.classList.remove('active');
     });
-    document.querySelectorAll('.tab-content').forEach(content => {
-        content.style.display = 'none';
-        content.classList.remove('active');
-    });
-
-    // Add active class to selected tab
     document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    document.getElementById(`tab-${tabName}`).style.display = 'block';
-    document.getElementById(`tab-${tabName}`).classList.add('active');
-
-    // Update count if switching to history
-    if (tabName === 'history') {
-        updateNotificationCount();
-    }
+    const el = document.getElementById('tab-' + tabName);
+    el.style.display = 'block';
+    el.classList.add('active');
+    if (tabName === 'history') refreshCounts();
 }
 
-// Filter Notifications
-function filterNotifications() {
-    const searchVal = document.getElementById('notif-search').value.toLowerCase();
-    const typeVal = document.getElementById('notif-type').value;
-    const filterVal = document.getElementById('notif-filter').value;
-    const items = document.querySelectorAll('#notif-list .notif-item');
-    
-    let visibleCount = 0;
-    let unreadCount = 0;
+/* ─── Counts ─────────────────────────────────────────── */
+function refreshCounts() {
+    const items    = document.querySelectorAll('#notif-list .notif-item');
+    const visible  = [...items].filter(i => i.style.display !== 'none');
+    const unread   = visible.filter(i => i.classList.contains('unread'));
 
-    items.forEach(item => {
-        const text = item.textContent.toLowerCase();
-        const type = item.dataset.type;
-        const date = item.dataset.date;
+    document.getElementById('notif-count').textContent   = visible.length;
+    document.getElementById('unread-label').textContent  = unread.length > 0 ? `(${unread.length} unread)` : '';
+
+    const badge = document.getElementById('tab-unread-badge');
+    if (badge) {
+        badge.textContent    = unread.length;
+        badge.style.display  = unread.length > 0 ? 'inline-block' : 'none';
+    }
+
+    // show/hide empty state
+    const anyVisible = visible.length > 0;
+    document.getElementById('notif-empty').style.display     = anyVisible ? 'none' : 'block';
+    document.getElementById('notif-list').style.display      = anyVisible ? 'flex'  : 'none';
+    const initial = document.getElementById('notif-empty-initial');
+    if (initial) initial.style.display = 'none';
+}
+
+/* ─── Filter ─────────────────────────────────────────── */
+function filterNotifications() {
+    const q      = document.getElementById('notif-search').value.toLowerCase();
+    const filter = document.getElementById('notif-filter').value;
+
+    document.querySelectorAll('#notif-list .notif-item').forEach(item => {
+        const text     = item.textContent.toLowerCase();
         const isUnread = item.classList.contains('unread');
 
         let show = true;
-
-        // Search filter
-        if (searchVal && !text.includes(searchVal)) show = false;
-
-        // Type filter
-        if (typeVal !== 'all' && type !== typeVal) show = false;
-
-        // Date filter
-        if (filterVal === 'unread' && !isUnread) show = false;
-        if (filterVal !== 'all' && filterVal !== 'unread' && date !== filterVal) show = false;
+        if (q && !text.includes(q))            show = false;
+        if (filter === 'unread' && !isUnread)  show = false;
+        if (filter === 'read'   &&  isUnread)  show = false;
 
         item.style.display = show ? 'block' : 'none';
-        if (show) {
-            visibleCount++;
-            if (isUnread) unreadCount++;
-        }
     });
 
-    document.getElementById('notif-count').textContent = visibleCount;
-    document.getElementById('unread-count').textContent = unreadCount > 0 ? `(${unreadCount} unread)` : '';
-    document.getElementById('notif-empty').style.display = visibleCount === 0 ? 'block' : 'none';
-    document.getElementById('notif-list').style.display = visibleCount === 0 ? 'none' : 'flex';
+    refreshCounts();
 }
 
-// Update Notification Count
-function updateNotificationCount() {
-    const items = document.querySelectorAll('#notif-list .notif-item');
-    const unreadItems = document.querySelectorAll('#notif-list .notif-item.unread');
-    
-    document.getElementById('notif-count').textContent = items.length;
-    document.getElementById('unread-count').textContent = unreadItems.length > 0 ? `(${unreadItems.length} unread)` : '';
-    
-    // Update badge on tab
-    const badge = document.querySelector('[data-tab="history"] .badge-count');
-    if (badge) {
-        badge.textContent = unreadItems.length;
-        badge.style.display = unreadItems.length > 0 ? 'inline-block' : 'none';
+/* ─── Mark single as read ────────────────────────────── */
+async function markReadAjax(id, btn) {
+    try {
+        const res    = await fetch(`/notifications/${id}/mark-read`, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        const result = await res.json();
+        if (!res.ok) { toast(result.message, 'error'); return; }
+
+        const item = btn.closest('.notif-item');
+        item.classList.remove('unread');
+        item.dataset.seen = '1';
+        // update title color
+        const title = item.querySelector('[style*="font-weight:600"]');
+        if (title) title.style.color = '#94a3b8';
+        // remove the mark-read button
+        btn.remove();
+        refreshCounts();
+        toast(result.message, 'success');
+
+    } catch (err) {
+        console.error(err);
+        toast('Something went wrong', 'error');
     }
 }
 
-// Mark as Read
-function markAsRead(btn) {
-    const item = btn.closest('.notif-item');
-    item.classList.remove('unread');
-    btn.remove();
-    updateNotificationCount();
-    toast('Notification marked as read', 'success');
+/* ─── Mark ALL as read ───────────────────────────────── */
+async function markAllReadAjax() {
+    try {
+        const res    = await fetch('/notifications/mark-all-read', {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        const result = await res.json();
+        if (!res.ok) { toast(result.message, 'error'); return; }
+
+        document.querySelectorAll('#notif-list .notif-item.unread').forEach(item => {
+            item.classList.remove('unread');
+            item.dataset.seen = '1';
+            const title = item.querySelector('[style*="font-weight:600"]');
+            if (title) title.style.color = '#94a3b8';
+            // remove per-item read button
+            const readBtn = item.querySelector('[onclick*="markReadAjax"]');
+            if (readBtn) readBtn.remove();
+        });
+        refreshCounts();
+        toast(result.message, 'success');
+
+    } catch (err) {
+        console.error(err);
+        toast('Something went wrong', 'error');
+    }
 }
 
-// Mark All Read
-function markAllRead() {
-    const unreadItems = document.querySelectorAll('#notif-list .notif-item.unread');
-    unreadItems.forEach(item => {
-        item.classList.remove('unread');
-        const readBtn = item.querySelector('[onclick*="markAsRead"]');
-        if (readBtn) readBtn.remove();
-    });
-    updateNotificationCount();
-    toast('All notifications marked as read', 'success');
+/* ─── Delete single ──────────────────────────────────── */
+async function deleteNotifAjax(id, btn) {
+    try {
+        const res    = await fetch(`/notifications/${id}/delete`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        const result = await res.json();
+        if (!res.ok) { toast(result.message, 'error'); return; }
+
+        const item = btn.closest('.notif-item');
+        item.classList.add('removing');
+        setTimeout(() => { item.remove(); refreshCounts(); }, 300);
+        toast(result.message, 'info');
+
+    } catch (err) {
+        console.error(err);
+        toast('Something went wrong', 'error');
+    }
 }
 
-// Delete Notification
-function deleteNotification(btn) {
-    const item = btn.closest('.notif-item');
-    item.style.opacity = '0';
-    item.style.transform = 'translateX(-20px)';
-    setTimeout(() => {
-        item.remove();
-        updateNotificationCount();
-        filterNotifications();
-    }, 300);
-    toast('Notification deleted', 'info');
+/* ─── Clear ALL ──────────────────────────────────────── */
+async function clearAllAjax() {
+    if (!confirm('Clear all notifications? This cannot be undone.')) return;
+    try {
+        const res    = await fetch('/notifications/clear-all', {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        const result = await res.json();
+        if (!res.ok) { toast(result.message, 'error'); return; }
+
+        const items = document.querySelectorAll('#notif-list .notif-item');
+        items.forEach((item, i) => {
+            setTimeout(() => {
+                item.classList.add('removing');
+                setTimeout(() => item.remove(), 300);
+            }, i * 40);
+        });
+        setTimeout(() => { refreshCounts(); location.reload(); }, items.length * 40 + 350);
+        toast(result.message, 'success');
+
+    } catch (err) {
+        console.error(err);
+        toast('Something went wrong', 'error');
+    }
 }
 
-// Clear All Notifications
-function clearAllNotifications() {
-    if (!confirm('Are you sure you want to clear all notifications? This cannot be undone.')) return;
-    
-    const items = document.querySelectorAll('#notif-list .notif-item');
-    items.forEach((item, index) => {
-        setTimeout(() => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateX(-20px)';
-            setTimeout(() => item.remove(), 300);
-        }, index * 50);
-    });
-    
-    setTimeout(() => {
-        updateNotificationCount();
-        filterNotifications();
-        toast('All notifications cleared', 'success');
-    }, items.length * 50 + 400);
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    updateNotificationCount();
+/* ─── Settings form ──────────────────────────────────── */
+document.getElementById('notification-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const fd   = new FormData(this);
+    const data = {
+        email_notify:   fd.has('email_notify')  ? 1 : 0,
+        push_notify:    fd.has('push_notify')   ? 1 : 0,
+        before_30_days: fd.has('before_30_days') ? 1 : 0,
+        before_7_days:  fd.has('before_7_days')  ? 1 : 0,
+        before_3_days:  fd.has('before_3_days')  ? 1 : 0,
+        before_1_day:   fd.has('before_1_day')   ? 1 : 0,
+        on_day:         fd.has('on_day')          ? 1 : 0,
+        quit_hours:     parseInt(fd.get('quit_hours') ?? 0),
+        start_time:     fd.get('start_time') ?? null,
+        end_time:       fd.get('end_time')   ?? null,
+    };
+    try {
+        const res    = await fetch('/notification-settings/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
+    } catch (err) {
+        console.error(err);
+        toast('Server error', 'error');
+    }
 });
+
+/* ─── Boot ───────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', refreshCounts);
 </script>
 
 @endsection

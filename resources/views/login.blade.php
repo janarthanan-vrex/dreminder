@@ -1,20 +1,40 @@
-
 @extends('layouts.app')
 @section('content')
 <style>
-    .o2{display: none !important;}
-    input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important; /* your bg color */
+  .o2 {
+    display: none !important;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px #0f172a inset !important;
+    /* your bg color */
     box-shadow: 0 0 0 1000px #0f172a inset !important;
-    -webkit-text-fill-color: #e5e7eb !important; /* your text color */
+    -webkit-text-fill-color: #e5e7eb !important;
+    /* your text color */
     transition: background-color 5000s ease-in-out 0s;
-}
+  }
 </style>
 
-<script>tailwind.config={theme:{extend:{colors:{primary:'#7c3aed',secondary:'#06b6d4',accent:'#10b981',dark:'#030014'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#7c3aed',
+          secondary: '#06b6d4',
+          accent: '#10b981',
+          dark: '#030014'
+        },
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  }
+</script>
 
 <div class="auth-wrap-dark section-dark min-h-screen relative overflow-hidden">
   <div class="gradient-blob w-[600px] h-[600px] bg-primary top-[-20%] left-[-15%]"></div>
@@ -42,7 +62,7 @@ input:-webkit-autofill:active {
       <div>
         <div class="flex items-center justify-between mb-2">
           <label class="auth-label" style="margin-bottom:0">Password</label>
-          <a href="forgot-password" class="text-xs text-purple-400 hover:text-purple-300 transition">Forgot password?</a>
+          <a href="{{ route('forgotpassword.page') }}" class="text-xs text-purple-400 hover:text-purple-300 transition">Forgot password?</a>
         </div>
         <div class="auth-input-icon" style="position:relative">
           <i class="ri-lock-line auth-icon"></i>
@@ -58,7 +78,7 @@ input:-webkit-autofill:active {
       <button type="button" class="auth-submit-dark" id="loginBtn"><i class="ri-login-box-line mr-2"></i>Sign In</button>
     </form>
 
-    <p class="text-center text-sm text-white/35 mt-6">Don't have an account? <a href="register" class="text-purple-400 font-bold hover:text-purple-300 transition">Sign up </a></p>
+    <p class="text-center text-sm text-white/35 mt-6">Don't have an account? <a href="{{route('registerpage')}}" class="text-purple-400 font-bold hover:text-purple-300 transition">Sign up </a></p>
 
     <div id="forgotPanel" class="hidden mt-5 p-4 rounded-2xl" style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2)">
       <h4 class="font-bold text-sm text-white mb-2"><i class="ri-lock-unlock-line mr-2 text-purple-400"></i>Reset Password</h4>
@@ -74,36 +94,184 @@ input:-webkit-autofill:active {
 
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
+
+@include('user.layouts.firebase_setup')
+
+
 <script>
-document.getElementById('togglePwd')?.addEventListener('click',function(){
-  const inp=document.getElementById('loginPwd');const isT=inp.type==='text';inp.type=isT?'password':'text';
-  this.innerHTML=isT?'<i class="ri-eye-line"></i>':'<i class="ri-eye-off-line"></i>';
-});
-document.getElementById('forgotLink')?.addEventListener('click',function(e){e.preventDefault();document.getElementById('forgotPanel').classList.toggle('hidden')});
-document.getElementById('sendResetBtn')?.addEventListener('click',function(){
-  const em=document.getElementById('resetEmail').value;if(!em||!em.includes('@'))return;
-  this.innerHTML='<i class="ri-loader-4-line ri-spin"></i>';
-  setTimeout(()=>{document.getElementById('resetOk').classList.remove('hidden');this.style.display='none'},1500);
-});
-document.getElementById('loginBtn')?.addEventListener('click',function(){
-  const email=document.getElementById('loginEmail').value,pwd=document.getElementById('loginPwd').value;let ok=true;
-  document.getElementById('emailErr').classList.remove('show');document.getElementById('pwdErr').classList.remove('show');
-  if(!email||!email.includes('@')){document.getElementById('emailErr').classList.add('show');ok=false}
-  if(!pwd||pwd.length<6){document.getElementById('pwdErr').classList.add('show');ok=false}
-  if(!ok)return;this.innerHTML='<i class="ri-loader-4-line ri-spin mr-2"></i>Signing in...';this.disabled=true;
-  setTimeout(()=>{this.innerHTML='<i class="ri-check-line mr-2"></i>Signed In!';this.style.background='linear-gradient(135deg,#10b981,#059669)'},1800);
-  setTimeout(() => {
-      window.location.href = 'user-dashboard'; // or 'dashboard.html'
-    }, 1000);
-});
-// Simple particle BG for auth page
-(function(){
-  const c=document.getElementById('authParticleC');if(!c)return;
-  const ctx=c.getContext('2d');let pts=[];
-  function rz(){c.width=innerWidth;c.height=innerHeight;pts=[];for(let i=0;i<60;i++){pts.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,s:Math.random()*2+1,a:Math.random()*.3+.05,h:[265,190,155][~~(Math.random()*3)]})}}
-  rz();window.addEventListener('resize',rz);
-  (function anim(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<-10)p.x=c.width+10;if(p.x>c.width+10)p.x=-10;if(p.y<-10)p.y=c.height+10;if(p.y>c.height+10)p.y=-10;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fillStyle=`hsla(${p.h},75%,60%,${p.a})`;ctx.fill()});requestAnimationFrame(anim)})();
-})();
+  document.getElementById('togglePwd')?.addEventListener('click', function() {
+    const inp = document.getElementById('loginPwd');
+    const isT = inp.type === 'text';
+    inp.type = isT ? 'password' : 'text';
+    this.innerHTML = isT ? '<i class="ri-eye-line"></i>' : '<i class="ri-eye-off-line"></i>';
+  });
+
+  document.getElementById('forgotLink')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('forgotPanel').classList.toggle('hidden')
+  });
+
+  document.getElementById('sendResetBtn')?.addEventListener('click', function() {
+    const em = document.getElementById('resetEmail').value;
+    if (!em || !em.includes('@')) return;
+    this.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>';
+    setTimeout(() => {
+      document.getElementById('resetOk').classList.remove('hidden');
+      this.style.display = 'none'
+    }, 1500);
+  });
+
+
+  // ✅ UPDATED LOGIN FUNCTION
+  document.getElementById('loginBtn')?.addEventListener('click', async function() {
+
+    const email = document.getElementById('loginEmail').value;
+    const pwd = document.getElementById('loginPwd').value;
+    const remember = document.getElementById('rememberMe').checked;
+
+    let ok = true;
+
+    document.getElementById('emailErr').classList.remove('show');
+    document.getElementById('pwdErr').classList.remove('show');
+
+    if (!email || !email.includes('@')) {
+      document.getElementById('emailErr').classList.add('show');
+      ok = false;
+    }
+
+    if (!pwd || pwd.length < 6) {
+      document.getElementById('pwdErr').classList.add('show');
+      ok = false;
+    }
+
+    if (!ok) return;
+
+    this.innerHTML = '<i class="ri-loader-4-line ri-spin mr-2"></i>Signing in...';
+    this.disabled = true;
+
+    try {
+
+    const permission = await Notification.requestPermission();
+
+if (permission !== "granted") {
+  console.log("Permission not granted");
+  return;
+}
+
+      const token = await messaging.getToken({
+        vapidKey: "BIkREF621bG6cSbBAo2Xn4VO6APwEyJ-mvnMDVm_5jsG8XLGFNpz2mLCDiP3FX8zmWfvUewvBO2Rvw8Iq0U_tkg"
+      });
+
+      let res = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+          email: email,
+          password: pwd,
+          remember: remember,
+          fcm_token: token
+        })
+      });
+
+      let data = await res.json();
+
+      // 🔴 BACKEND ERROR HANDLING
+      if (!data.status) {
+
+        if (data.message === "User not found") {
+          document.getElementById('emailErr').innerText = data.message;
+          document.getElementById('emailErr').classList.add('show');
+        } else if (data.message === "Password is incorrect") {
+          document.getElementById('pwdErr').innerText = data.message;
+          document.getElementById('pwdErr').classList.add('show');
+        } else if (data.message === "User is inactive") {
+          document.getElementById('emailErr').innerText = data.message;
+          document.getElementById('emailErr').classList.add('show');
+        }
+
+        this.innerHTML = '<i class="ri-login-box-line mr-2"></i>Sign In';
+        this.disabled = false;
+        return;
+      }
+
+      // ✅ SUCCESS UI (UNCHANGED STYLE)
+      this.innerHTML = '<i class="ri-check-line mr-2"></i>Signed In!';
+      this.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+
+
+
+      setTimeout(() => {
+        window.location.href = 'user-dashboard';
+      }, 800);
+
+    } catch (err) {
+      console.log(err);
+      this.innerHTML = '<i class="ri-login-box-line mr-2"></i>Sign In';
+      this.disabled = false;
+    }
+
+  });
+
+
+  // ✅ PARTICLE BACKGROUND (UNCHANGED)
+  (function() {
+    const c = document.getElementById('authParticleC');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    let pts = [];
+
+    function rz() {
+      c.width = innerWidth;
+      c.height = innerHeight;
+      pts = [];
+      for (let i = 0; i < 60; i++) {
+        pts.push({
+          x: Math.random() * c.width,
+          y: Math.random() * c.height,
+          vx: (Math.random() - .5) * .4,
+          vy: (Math.random() - .5) * .4,
+          s: Math.random() * 2 + 1,
+          a: Math.random() * .3 + .05,
+          h: [265, 190, 155][~~(Math.random() * 3)]
+        })
+      }
+    }
+    rz();
+    window.addEventListener('resize', rz);
+
+    (function anim() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      pts.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -10) p.x = c.width + 10;
+        if (p.x > c.width + 10) p.x = -10;
+        if (p.y < -10) p.y = c.height + 10;
+        if (p.y > c.height + 10) p.y = -10;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.h},75%,60%,${p.a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(anim)
+    })();
+  })();
 </script>
+
+<script>
+document.getElementById('loginEmail')?.addEventListener('input', function () {
+  document.getElementById('emailErr')?.classList.remove('show');
+});
+
+document.getElementById('loginPwd')?.addEventListener('input', function () {
+  document.getElementById('pwdErr')?.classList.remove('show');
+});
+</script>
+
+
 
 @endsection

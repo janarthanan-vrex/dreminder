@@ -4,114 +4,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>D-Remind — Winngoo</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="{{ asset('/assets/css/user.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 
-<style>
-  /* ─── Page Loader Overlay ─── */
-  #page-loader {
-    position: fixed;
-    inset: 0;
-    background: #f7f5f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+
+
+    <style>
+        .error-text {
+            display: block;
+            color: #f43f5e;
+            font-size: .72rem;
+            margin-top: 4px;
+        }
+
+        /* ─── Page Loader Overlay ─── */
+        #page-loader {
+            position: fixed;
+            inset: 0;
+            background: #f7f5f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
                 visibility 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #page-loader.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+        }
 
-  /* ─── Loader Card ─── */
-  #loader-card {
-    width: 380px;
-    max-width: 90vw;
-    border-radius: 24px;
-    overflow: hidden;
-    transform: translateY(0);
-    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  #page-loader.hidden #loader-card {
-    transform: translateY(-12px);
-  }
+        #page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
-  /* ─── Accent bar ─── */
-  .accent-bar {
-    height: 3px;
-    background: linear-gradient(90deg, #7c3aed, #a855f7, #e879f9, #c084fc);
-    background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
-  }
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
+        /* ─── Loader Card ─── */
+        #loader-card {
+            width: 380px;
+            max-width: 90vw;
+            border-radius: 24px;
+            overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-  /* ─── Canvas Stage ─── */
-  #loader-stage {
-    position: relative;
-    width: 100%;
-    height: 280px;
-    overflow: hidden;
-  }
-  #loader-stage canvas {
-    position: absolute;
-    inset: 0;
-    width: 100% !important;
-    height: 100% !important;
-  }
+        #page-loader.hidden #loader-card {
+            transform: translateY(-12px);
+        }
+
+        /* ─── Accent bar ─── */
+        .accent-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #e879f9, #c084fc);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ─── Canvas Stage ─── */
+        #loader-stage {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        #loader-stage canvas {
+            position: absolute;
+            inset: 0;
+            width: 100% !important;
+            height: 100% !important;
+        }
 
 
-  /* ─── Progress dots ─── */
-  .dots {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    margin-top: 12px;
-  }
-  .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #c4b5fd;
-    animation: pulse-dot 1.4s ease-in-out infinite;
-  }
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes pulse-dot {
-    0%, 80%, 100% { transform: scale(1); background: #c4b5fd; }
-    40%            { transform: scale(1.5); background: #7c3aed; }
-  }
+        /* ─── Progress dots ─── */
+        .dots {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 12px;
+        }
 
-</style>
-   
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #c4b5fd;
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
 
-<style>
-    /* PRELOADER */
-    #loader{position:fixed;inset:0;z-index:999;background:#030014;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
-    #loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
-    .loader-ring{width:50px;height:50px;border:3px solid rgba(124,58,237,.15);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite}
-    @keyframes spin{to{transform:rotate(360deg)}}
-</style>
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(1);
+                background: #c4b5fd;
+            }
+
+            40% {
+                transform: scale(1.5);
+                background: #7c3aed;
+            }
+        }
+    </style>
+
+
+    <style>
+        /* PRELOADER */
+        #loader {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: #030014;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity .6s, visibility .6s
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none
+        }
+
+        .loader-ring {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(124, 58, 237, .15);
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: spin .8s linear infinite
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+    </style>
 
 
 </head>
 
 <body>
 
+    @php
+    use App\Models\Category;
+    use App\Models\SubCategory;
+
+    $user = Auth::user();
+
+    $categories = Category::with([
+    'subcategories' => function ($query) use ($user) {
+
+    $query->where('status', 'Active')
+    ->where(function ($q) use ($user) {
+
+    $q->where('role', 'admin')
+    ->orWhere(function ($subQ) use ($user) {
+
+    $subQ->where('role', 'user')
+    ->where('created_by', $user->id);
+    });
+    });
+    }
+    ])
+    ->where('status', 'Active')
+    ->get();
+
+    @endphp
+
     <!-- LOADER START -->
-    <div id="loader">
+    <!-- <div id="loader">
         <img src="{{ asset('assets/images/common/loader.gif') }}" alt="">
+    </div> -->
+
+    <div id="loader">
+        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" type="module"></script>
+        <dotlottie-wc src="https://lottie.host/9e89873a-1424-4d8a-85de-8eaf04ba6f2a/x6B0SnIuaY.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
     <!-- <section id="page-loader" role="status" aria-label="Loading RemindMe">
@@ -240,30 +337,101 @@
             <div style="margin-bottom:14px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Parent Category <span style="color:#f43f5e">*</span></label>
                 <select class="inp" id="sub-cat-parent">
+
                     <option value="">Select parent category…</option>
-                    <option value="special-days">Special Days</option>
-                    <option value="home">Home</option>
-                    <option value="insurance">Insurance</option>
-                    <option value="motor-vehicle">Motor Vehicle</option>
-                    <option value="subscriptions">Subscriptions</option>
-                    <option value="health">Health</option>
-                    <option value="travel">Travel</option>
-                    <option value="pet-care">Pet Care</option>
-                    <option value="tv-telephone-mobile">TV, Tel & Mobile</option>
-                    <option value="others">Others</option>
+
+                    @foreach($categories as $category)
+
+                    <option value="{{ $category->id }}">
+
+                        {{ $category->name }}
+
+                    </option>
+
+                    @endforeach
+
                 </select>
+                <div class="error-text" id="err-category_id"></div>
             </div>
             <div style="margin-bottom:14px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Subcategory Name <span style="color:#f43f5e">*</span></label>
                 <input class="inp" id="sub-cat-name" placeholder="Enter name (3–50 characters)" maxlength="50">
+                <div class="error-text" id="err-name"></div>
+
             </div>
             <div style="margin-bottom:18px">
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Description (Optional)</label>
                 <input class="inp" id="sub-cat-desc" placeholder="Brief description…" maxlength="100">
+                <div class="error-text" id="err-description"></div>
             </div>
             <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-ghost" onclick="closeModal('add-sub-modal')">Cancel</button><button class="btn btn-primary" onclick="saveSubcat()"><i class="ri-check-line"></i> Add Subcategory</button></div>
         </div>
     </div>
+
+    <!-- Edit Subcategory Modal -->
+    <div class="modal-bg" id="edit-sub-modal">
+        <div class="modal-box" style="max-width:500px">
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+                <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9;display:flex;align-items:center;gap:8px">
+                    <i class="ri-pencil-line" style="color:#2dd4bf"></i> Edit Subcategory
+                </h3>
+
+                <button onclick="closeModal('edit-sub-modal')" class="btn btn-icon btn-ghost btn-sm">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+
+            <input type="hidden" id="edit-sub-id">
+
+            <div style="margin-bottom:14px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Parent Category
+                </label>
+
+                <select class="inp" id="edit-sub-parent">
+                    @foreach($categories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+
+                <div class="error-text" id="edit-err-category_id"></div>
+            </div>
+
+            <div style="margin-bottom:14px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Subcategory Name
+                </label>
+
+                <input class="inp" id="edit-sub-name" maxlength="50">
+
+                <div class="error-text" id="edit-err-name"></div>
+            </div>
+
+            <div style="margin-bottom:18px">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
+                    Description
+                </label>
+
+                <input class="inp" id="edit-sub-desc" maxlength="100">
+
+                <div class="error-text" id="edit-err-description"></div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeModal('edit-sub-modal')">Cancel</button>
+
+                <button class="btn btn-primary" onclick="updateSubcategory()">
+                    <i class="ri-check-line"></i> Update Subcategory
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
 
     <!-- Support Modal -->
     <div class="modal-bg" id="support-modal">
@@ -328,10 +496,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="rem-form" onsubmit="submitReminder(event)">
+                <form id="rem-form" onsubmit="return false;">
                     <div style="margin-bottom:18px">
                         <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Title <span style="color:#f43f5e">*</span></label>
-                        <input class="inp" id="r-title" placeholder="e.g. Car Insurance Renewal" maxlength="100">
+                        <input class="inp" id="r-title" maxlength="35" placeholder="e.g. Car Insurance Renewal" maxlength="100">
+                        <div class="error-text" id="err-title"></div>
                         <div style="font-size:.72rem;color:#475569;margin-top:4px">3–100 characters</div>
                     </div>
                     <div class="g2" style="margin-bottom:18px">
@@ -340,44 +509,53 @@
                             <select class="inp" id="r-cat" onchange="updateSubs()">
                                 <option value="">Select category…</option>
                             </select>
+                            <div class="error-text" id="err-rem-category_id"></div>
                         </div>
+
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Subcategory <span style="color:#f43f5e">*</span></label>
                             <div style="display:flex;gap:6px;align-items:center">
                                 <select class="inp" id="r-sub" disabled style="flex:1">
                                     <option value="">Select category first…</option>
                                 </select>
+
                                 <button type="button" onclick="openSubPopup()"
                                     style="width:34px;height:34px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#a78bfa;cursor:pointer">
                                     <i class="ri-add-line"></i>
                                 </button>
                             </div>
+                            <div class="error-text" id="err-subcategory_name"></div>
                         </div>
                     </div>
                     <div class="g2" style="margin-bottom:18px">
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e">*</span></label>
-                            <input class="inp" type="date" id="r-date">
+                            <input class="inp" type="date" id="r-date" min="{{ date('Y-m-d') }}">
+                            <div class="error-text" id="err-end_reminder_date"></div>
                         </div>
                         <div>
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Time <span style="color:#f43f5e">*</span></label>
                             <input class="inp" type="time" id="r-time" value="09:00">
+                            <div class="error-text" id="err-reminder_time"></div>
                         </div>
                     </div>
                     <div style="margin-bottom:18px">
                         <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Description <span style="color:#64748b;font-weight:400;text-transform:none">(Optional · max 200 chars)</span></label>
                         <textarea class="inp" id="r-desc" rows="3" maxlength="200" placeholder="Brief notes…" oninput="document.getElementById('desc-len').textContent=this.value.length" style="resize:vertical"></textarea>
+                        <div class="error-text" id="err-description"></div>
                         <div style="font-size:.72rem;color:#475569;margin-top:4px"><span id="desc-len">0</span>/200</div>
                     </div>
                     <div id="opt-fields" style="display:none">
                         <div class="g2" style="margin-bottom:18px">
                             <div>
                                 <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Provider</label>
-                                <input class="inp" id="r-provider" placeholder="e.g. AA Insurance" maxlength="50">
+                                <input class="inp" id="r-provider" maxlength="45" placeholder="e.g. AA Insurance" maxlength="50">
+                                <div class="error-text" id="err-provider"></div>
                             </div>
                             <div>
                                 <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Cost (£)</label>
                                 <input class="inp" type="number" id="r-cost" placeholder="0.00" min="0" step="0.01">
+                                <div class="error-text" id="err-cost"></div>
                             </div>
                         </div>
                         <div style="margin-bottom:18px">
@@ -389,6 +567,7 @@
                                 <option>Half-Yearly</option>
                                 <option>Annually</option>
                             </select>
+                            <div class="error-text" id="err-payment_frequency"></div>
                         </div>
                         <!-- <div style="margin-bottom:18px">
                             <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Theme</label>
@@ -406,7 +585,10 @@
                         <button type="button" class="btn btn-ghost" onclick="closeReminderModal()">
                             <i class="ri-close-line"></i> Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary" id="create-btn">
+                        <button type="button"
+                            class="btn btn-primary"
+                            id="create-btn"
+                            onclick="submitReminder()">
                             <i class="ri-check-line"></i> <span id="create-btn-txt">Create Reminder</span>
                         </button>
                     </div>
@@ -427,17 +609,17 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Sub-category Create Modal -->
     <div id="sub-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
-        
+
         <div style="width:320px;background:#0f172a;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
-            
+
             <h3 style="font-size:.9rem;font-weight:700;color:#fff !important;margin-bottom:10px">
                 Add Subcategory
             </h3>
 
-            <input id="new-sub-input" placeholder="Enter subcategory..."
+            <input id="new-sub-input" maxlength="45" placeholder="Enter subcategory..."
                 style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
                     background:rgba(255,255,255,.05);color:#fff;font-size:.8rem">
 
@@ -453,7 +635,7 @@
         const typeSelect = document.getElementById('r-type');
         const customInput = document.getElementById('r-custom');
 
-        typeSelect.addEventListener('change', function () {
+        typeSelect.addEventListener('change', function() {
             if (this.value === 'custom') {
                 customInput.style.display = 'block';
                 customInput.focus();
@@ -488,24 +670,204 @@
     </style>
 
     <style>
-       .modal-overlay {position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: rgba(0, 0, 0, 0.75);backdrop-filter: blur(4px);z-index: 9999;display: flex;align-items: center;justify-content: center;padding: 20px;animation: fadeIn 0.2s ease;}
-        .modal-container {background: #1e293b;border-radius: 12px;width: 100%;max-height: 90vh;overflow-y: auto;box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);animation: slideUp 0.3s ease;}
-        .modal-header {display: flex;justify-content: space-between;align-items: flex-start;padding: 24px 24px 16px;border-bottom: 1px solid rgba(255, 255, 255, 0.06);position: sticky;top: 0;background: #1e293b;z-index: 1;}
-        .modal-close {background: rgba(255, 255, 255, 0.05);border: 1px solid rgba(255, 255, 255, 0.1);color: #94a3b8;width: 32px; height: 32px;border-radius: 6px;display: flex;align-items: center;justify-content: center;cursor: pointer;transition: all 0.2s;flex-shrink: 0;}
-        .modal-close:hover {background: rgba(255, 255, 255, 0.1);color: #f1f5f9;}
-        .modal-body {padding: 24px;}
-        .light .modal-overlay {background: rgba(0, 0, 0, 0.45);}
-        .light .modal-container {background: #ffffff;box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);}
-        .light .modal-header {background: #ffffff;border-bottom: 1px solid rgba(0, 0, 0, 0.08);}
-        .light .modal-close {background: rgba(0, 0, 0, 0.05);border: 1px solid rgba(0, 0, 0, 0.1);color: #475569;}
-        .light .modal-close:hover {background: rgba(0, 0, 0, 0.08);color: #0f172a;}
-        @keyframes fadeIn {from { opacity: 0; }to   { opacity: 1; }}
-        @keyframes slideUp {from { opacity: 0; transform: translateY(20px); }to   { opacity: 1; transform: translateY(0); }}
-        @media (max-width: 640px) {.modal-container { max-height: 95vh; }.modal-header, .modal-body { padding: 16px; }}
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-container {
+            background: #1e293b;
+            border-radius: 12px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            background: #1e293b;
+            z-index: 1;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f1f5f9;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .light .modal-overlay {
+            background: rgba(0, 0, 0, 0.45);
+        }
+
+        .light .modal-container {
+            background: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .light .modal-header {
+            background: #ffffff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .light .modal-close {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #475569;
+        }
+
+        .light .modal-close:hover {
+            background: rgba(0, 0, 0, 0.08);
+            color: #0f172a;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .modal-container {
+                max-height: 95vh;
+            }
+
+            .modal-header,
+            .modal-body {
+                padding: 16px;
+            }
+        }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-messaging-compat.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
+
+@php
+
+$cats = $categories->mapWithKeys(function ($category) use ($user) {
+
+    return [
+        $category->id => [
+            'id' => $category->id,
+            'name' => $category->name,
+            'icon' => $category->icon,
+            'bg' => $category->color,
+
+            'subs' => $category->subcategories
+                ->where('status', 'Active')
+                ->filter(function ($sub) use ($user) {
+
+                    // Show all admin subcategories
+                    if ($sub->role === 'admin') {
+                        return true;
+                    }
+
+                    // Show only logged-in user's subcategories
+                    if (
+                        $sub->role === 'user' &&
+                        $sub->created_by == $user?->id
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                ->map(function ($sub) {
+
+                    return [
+                        'id' => $sub->id,
+                        'name' => $sub->name,
+                        'description' => $sub->description,
+                    ];
+                })
+                ->values()
+                ->toArray()
+        ]
+    ];
+
+})->toArray();
+
+@endphp
+<script>
+window.CATS = @json($cats);
+</script>
+
+    <script>
+        new TomSelect("#sub-cat-parent", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            placeholder: "Search category..."
+        });
+
+        new TomSelect("#edit-sub-parent", {
+            create: false,
+            sortField: {
+                field: "text",
+                direction: "asc"
+            },
+            placeholder: "Search category..."
+        });
+    </script>
 
     <script src="{{ asset('assets/js/user.js') }}"></script>
-    <!-- <script src="{{ asset('assets/js/loader.js') }}"></script> -->
+
 </body>
 
 </html>

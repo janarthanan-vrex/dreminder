@@ -136,9 +136,13 @@
                 </div>
 
                 <div class="invoice-meta">
-                    <h3 id="invoiceNumber">INV-0000</h3>
-                    <p id="invoiceMeta">Invoice date · --</p>
-                    <div id="invoiceStatus"></div>
+                    <h3>INV-2024-1847</h3>
+                    <p>Invoice date · January 15, 2024</p>
+                    <div>
+                        <span class="status-badge completed">
+                            <span class="status-dot"></span>Paid
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -146,15 +150,15 @@
                 <div class="info-grid">
                     <div class="info-box">
                         <div class="label">Bill To</div>
-                        <div class="main" id="billName">Customer Name</div>
-                        <div class="sub" id="billEmail">customer@email.com</div>
+                        <div class="main">Rajesh Kumar</div>
+                        <div class="sub">rajesh.kumar@gmail.com</div>
                         <div class="sub">Chennai, Tamil Nadu, India</div>
                     </div>
 
                     <div class="info-box">
                         <div class="label">Invoice Details</div>
-                        <div class="sub">Transaction ID: <span class="main" id="txnIdText" style="font-size:.84rem;font-weight:700"></span></div>
-                        <div class="sub">Order Ref: <span class="main" id="orderRefText" style="font-size:.84rem;font-weight:700"></span></div>
+                        <div class="sub">Transaction ID: <span class="main" style="font-size:.84rem;font-weight:700">TXN-2024-1847</span></div>
+                        <div class="sub">Order Ref: <span class="main" style="font-size:.84rem;font-weight:700">ORD-2024-5623</span></div>
                         <div class="sub">Payment Method: Card</div>
                         <div class="sub">Currency: GBP</div>
                     </div>
@@ -168,11 +172,36 @@
                                 <th>Description</th>
                                 <th class="text-right">Qty</th>
                                 <th class="text-right">Unit</th>
-                                <th class="text-right">Tax</th>
+                                <th class="text-right">VAT</th>
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
-                        <tbody id="itemsTableBody"></tbody>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Premium Annual Subscription Plan</td>
+                                <td class="text-right">1</td>
+                                <td class="text-right">£199.00</td>
+                                <td class="text-right">18%</td>
+                                <td class="text-right">£199.00</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Additional Storage (500GB)</td>
+                                <td class="text-right">1</td>
+                                <td class="text-right">£49.00</td>
+                                <td class="text-right">18%</td>
+                                <td class="text-right">£49.00</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Priority Support Package</td>
+                                <td class="text-right">1</td>
+                                <td class="text-right">£29.00</td>
+                                <td class="text-right">18%</td>
+                                <td class="text-right">£29.00</td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
 
@@ -190,19 +219,19 @@
                         <div class="totals-list">
                             <div class="totals-item">
                                 <span>Subtotal</span>
-                                <strong id="subtotalText">£0.00</strong>
+                                <strong>£277.00</strong>
                             </div>
                             <div class="totals-item">
                                 <span>Discount</span>
-                                <strong id="discountText">£0.00</strong>
+                                <strong>£0.00</strong>
                             </div>
                             <div class="totals-item">
                                 <span>VAT(18%)</span>
-                                <strong id="taxText">£0.00</strong>
+                                <strong>£49.86</strong>
                             </div>
                             <div class="totals-item grand">
                                 <span>Total Due</span>
-                                <span id="grandTotalText">£0.00</span>
+                                <span>£326.86</span>
                             </div>
                         </div>
                     </div>
@@ -211,56 +240,5 @@
         </div>
     </div>
 
-<script>
-(function(){
-    const q = new URLSearchParams(window.location.search);
-
-    const txnId = q.get('txn_id') || 'TXN-0000';
-    const orderRef = q.get('order_ref') || 'ORD-0000';
-    const customerName = q.get('customer_name') || 'Customer Name';
-    const customerEmail = q.get('customer_email') || 'customer@example.com';
-    const amount = parseFloat(q.get('amount') || '0');
-    const status = q.get('status') || 'pending';
-    const date = q.get('date') || '—';
-
-    let items = [];
-    try{items = JSON.parse(q.get('items') || '[]');}
-    catch(e){items = [];}
-    if(!Array.isArray(items) || !items.length){items = ['Basic Plan'];}
-
-    const invoiceNumber = 'INV-' + txnId.replace('TXN-', '');
-    const subtotal = amount;
-    const discount = 0;
-    const tax = +(subtotal * 0.18).toFixed(2);
-    const grandTotal = +(subtotal + tax - discount).toFixed(2);
-    const unitPrice = items.length ? subtotal / items.length : subtotal;
-
-    document.getElementById('invoiceNumber').textContent = invoiceNumber;
-    document.getElementById('invoiceMeta').textContent = `Invoice date · ${date}`;
-    document.getElementById('billName').textContent = customerName;
-    document.getElementById('billEmail').textContent = customerEmail;
-    document.getElementById('txnIdText').textContent = txnId;
-    document.getElementById('orderRefText').textContent = orderRef;
-    document.getElementById('subtotalText').textContent = `£${subtotal.toFixed(2)}`;
-    document.getElementById('discountText').textContent = `£${discount.toFixed(2)}`;
-    document.getElementById('taxText').textContent = `£${tax.toFixed(2)}`;
-    document.getElementById('grandTotalText').textContent = `£${grandTotal.toFixed(2)}`;
-
-    document.getElementById('invoiceStatus').innerHTML = status === 'completed'
-        ? `<span class="status-badge completed"><span class="status-dot"></span>Paid</span>`
-        : `<span class="status-badge pending"><span class="status-dot"></span>Pending</span>`;
-
-    document.getElementById('itemsTableBody').innerHTML = items.map((item, i) => `
-        <tr>
-            <td>${i + 1}</td>
-            <td>${item}</td>
-            <td class="text-right">1</td>
-            <td class="text-right">£${unitPrice.toFixed(2)}</td>
-            <td class="text-right">18%</td>
-            <td class="text-right">£${unitPrice.toFixed(2)}</td>
-        </tr>
-    `).join('');
-})();
-</script>
 </body>
 </html>
