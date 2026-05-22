@@ -614,6 +614,7 @@
         </form>
     </div>
 </div>
+@include('user.layouts.firebase_setup')
 
 <script>
     window.CALENDAR_HISTORIES = @json($histories);

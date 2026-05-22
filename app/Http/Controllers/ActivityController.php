@@ -265,10 +265,14 @@ class ActivityController extends Controller
         ));
     }
 
-    public function userFeedback(Request $request){
-        
-        return view("user.feedback");
-    }
+   public function userFeedback(Request $request)
+{
+    $feedbacks = Feedback::where('user_id', auth()->id())
+        ->latest()
+        ->get();
+
+    return view('user.feedback', compact('feedbacks'));
+}
 
     public function storeFeedback(Request $request)
     {

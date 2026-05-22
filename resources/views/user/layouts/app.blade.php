@@ -549,7 +549,7 @@
                         <div class="g2" style="margin-bottom:18px">
                             <div>
                                 <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Provider</label>
-                                <input class="inp" id="r-provider" maxlength="45" placeholder="e.g. AA Insurance" maxlength="50">
+                                <input class="inp" id="r-provider" maxlength="45" placeholder="e.g. AA Insurance">
                                 <div class="error-text" id="err-provider"></div>
                             </div>
                             <div>
@@ -601,7 +601,7 @@
     <div id="sub-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
         <div style="width:320px;background:#0f172a;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
             <h3 style="font-size:.9rem;font-weight:700;color:#fff !important;margin-bottom:10px">Add Subcategory</h3>
-            <input id="new-sub-input" placeholder="Enter subcategory..."
+            <input id="new-sub-input" maxlength="40" placeholder="Enter subcategory..."
                 style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:.8rem">
             <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
                 <button onclick="closeSubPopup()" class="btn btn-ghost btn-sm">Cancel</button>

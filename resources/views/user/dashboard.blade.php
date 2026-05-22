@@ -487,6 +487,7 @@
             <button class="btn btn-ghost" onclick="go('features')"><i class="ri-folder-line"></i> Category</button>
         </div>
     </div> -->
+    <div id="toast-area"></div>
 </section>
 
 @include('user.layouts.firebase_setup')
@@ -498,6 +499,7 @@
 
             if (permission !== "granted") {
                 console.log("Permission denied");
+               showErrorToast("Please allow notifications for this site.");
                 return;
             }
 
@@ -566,6 +568,43 @@
         done: {{ $completedReminders }},
         today: {{ $todayReminders }}
     };
+</script>
+
+<script>
+function showErrorToast(message) {
+
+    const toast = document.createElement("div");
+
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(244,63,94,.15);
+        border: 1px solid rgba(244,63,94,.3);
+        color: #f43f5e;
+        padding: 14px 18px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 6px 18px rgba(0,0,0,.15);
+        z-index: 9999;
+        transition: all .3s ease;
+    `;
+
+    toast.innerText = message;
+
+    document.getElementById("toast-area").appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateX(50px)";
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+
+    }, 3000);
+}
+
 </script>
 
 @endsection

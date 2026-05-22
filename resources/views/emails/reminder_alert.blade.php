@@ -1,117 +1,811 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reminder Alert</title>
+    <title>RemindMe — Premium Email Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f1f5f9; color: #1e293b; }
-        .wrapper { max-width: 560px; margin: 32px auto; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.08); }
-        .header { background: linear-gradient(135deg, #7c3aed, #0d9488); padding: 32px 32px 24px; text-align: center; }
-        .header .bell { font-size: 2.5rem; margin-bottom: 10px; }
-        .header h1 { color: #fff; font-size: 1.3rem; font-weight: 700; letter-spacing: -.01em; }
-        .header p { color: rgba(255,255,255,.75); font-size: .85rem; margin-top: 5px; }
-        .body { padding: 28px 32px; }
-        .greeting { font-size: 1rem; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
-        .intro { font-size: .88rem; color: #64748b; line-height: 1.6; margin-bottom: 22px; }
-        .reminder-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 22px; }
-        .reminder-card .label { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #94a3b8; margin-bottom: 3px; }
-        .reminder-card .value { font-size: .9rem; font-weight: 600; color: #1e293b; margin-bottom: 12px; }
-        .reminder-card .value:last-child { margin-bottom: 0; }
-        .reminder-card .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .72rem; font-weight: 700; background: rgba(124,58,237,.1); color: #7c3aed; border: 1px solid rgba(124,58,237,.2); }
-        .cta { text-align: center; margin-bottom: 22px; }
-        .cta a { display: inline-block; background: linear-gradient(135deg, #7c3aed, #0d9488); color: #fff; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-size: .88rem; font-weight: 700; }
-        .divider { border: none; border-top: 1px solid #e2e8f0; margin: 20px 0; }
-        .footer { padding: 0 32px 28px; text-align: center; font-size: .75rem; color: #94a3b8; line-height: 1.7; }
-        .footer a { color: #7c3aed; text-decoration: none; }
+        /* ─── Reset & Base ─────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-text-size-adjust: 100%
+        }
+
+        body {
+            background: #EFEDE8;
+            font-family: 'DM Sans', sans-serif;
+            color: #1A1916;
+            min-height: 100vh;
+        }
+
+        /* ─── Template Stage ────────────────────────────────────────── */
+        .stage {
+            background: #EFEDE8;
+            min-height: calc(100vh - 56px);
+            padding: 40px 20px 60px;
+        }
+
+        .stage-label {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .stage-label h2 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: #A09D96;
+        }
+
+        .stage-label p {
+            font-size: 11.5px;
+            color: #B8B3AA;
+            margin-top: 3px
+        }
+
+        /* Variant tabs */
+        .variant-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 28px;
+        }
+
+        .vtab {
+            border: 1px solid #D5D0C8;
+            background: #FAFAF7;
+            color: #8C8980;
+            padding: 6px 20px;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .16s;
+            letter-spacing: .2px;
+        }
+
+        .vtab:hover {
+            background: #F0EDE7;
+            color: #1A1916
+        }
+
+        .vtab.active {
+            background: #1A1916;
+            color: #FAF9F6;
+            border-color: #1A1916
+        }
+
+        .variant {
+            display: none
+        }
+
+        .variant.active {
+            display: block
+        }
+
+        /* ─── EMAIL CARD SHELL ──────────────────────────────────────── */
+        .em {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 1px 2px rgba(30, 28, 20, .06),
+                0 4px 12px rgba(30, 28, 20, .07),
+                0 20px 50px rgba(30, 28, 20, .1);
+        }
+
+        /* Accent top stripe */
+        .em-stripe {
+            height: 4px
+        }
+
+        .stripe-rose {
+            background: linear-gradient(90deg, #BE123C, #E11D48, #F43F5E)
+        }
+
+        /* ─── SECTION A — Clean Variant (Option A) ───────────────────── */
+
+        /* Hero block */
+        .em-hero {
+            padding: 30px 48px 36px;
+            text-align: center
+        }
+
+        .em-hero.left {
+            text-align: left
+        }
+
+        .icon-ring {
+            width: 200px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 10px 0 20px 0;
+        }
+
+        .icon-ring img {
+            width: 100%;
+        }
+
+        .em-eyebrow {
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .eyebrow-blue {
+            color: #3B82F6
+        }
+
+        .eyebrow-amber {
+            color: #D97706
+        }
+
+        .eyebrow-green {
+            color: #16A34A
+        }
+
+        .eyebrow-rose {
+            color: #E11D48
+        }
+
+        .em-h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 34px;
+            line-height: 1.15;
+            color: #1A1916;
+            margin-bottom: 12px;
+            letter-spacing: -.4px;
+        }
+
+        .em-h1 em {
+            font-style: italic
+        }
+
+        .em-sub {
+            font-size: 14.5px;
+            color: #6B6860;
+            line-height: 1.65;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .em-sub.left-align {
+            margin: 0
+        }
+
+        /* Divider */
+        .em-divider {
+            height: 1px;
+            background: #F0EDE8;
+            margin: 0 48px
+        }
+
+        /* Body block */
+        .em-body {
+            padding: 32px 48px
+        }
+
+        .body-p {
+            font-size: 14px;
+            color: #4A4740;
+            line-height: 1.7;
+            margin-bottom: 22px
+        }
+
+        .body-p strong {
+            color: #1A1916;
+            font-weight: 600
+        }
+
+
+        /* ─── Notice / Alert Box ─────────────────────────── */
+        .notice {
+            border-radius: 10px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .notice.amber {
+            background: #FFFBEB;
+            border: 1px solid #FDE68A
+        }
+
+        .notice.red {
+            background: #FFF1F2;
+            border: 1px solid #FECDD3
+        }
+
+        .notice.blue {
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE
+        }
+
+        .notice.green {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0
+        }
+
+        .notice-icon {
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        .notice-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-bottom: 3px
+        }
+
+        .notice.amber .notice-title {
+            color: #92400E
+        }
+
+        .notice.red .notice-title {
+            color: #9F1239
+        }
+
+        .notice.blue .notice-title {
+            color: #1E40AF
+        }
+
+        .notice.green .notice-title {
+            color: #15803D
+        }
+
+        .notice-text {
+            font-size: 12px;
+            line-height: 1.55
+        }
+
+        .notice.amber .notice-text {
+            color: #78350F
+        }
+
+        .notice.red .notice-text {
+            color: #881337
+        }
+
+        .notice.blue .notice-text {
+            color: #1E3A8A
+        }
+
+        .notice.green .notice-text {
+            color: #14532D
+        }
+
+        /* ─── Buttons ─────────────────────────────────────── */
+        .btn-row {
+            text-align: center;
+            margin-bottom: 16px
+        }
+
+        .btn-row.left {
+            text-align: left
+        }
+
+        .em-btn {
+            display: inline-block;
+            padding: 14px 36px;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: .2px;
+            transition: all .2s;
+        }
+
+        .em-btn.blue {
+            background: #1D4ED8;
+            color: #fff
+        }
+
+        .em-btn.amber {
+            background: #B45309;
+            color: #fff
+        }
+
+        .em-btn.green {
+            background: #15803D;
+            color: #fff
+        }
+
+        .em-btn.rose {
+            background: #BE123C;
+            color: #fff
+        }
+
+        .em-btn.slate {
+            background: #1E293B;
+            color: #fff
+        }
+
+        .em-btn-ghost {
+            display: inline-block;
+            padding: 10px 24px;
+            border-radius: 100px;
+            border: 1.5px solid #E0DDD6;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #6B6860;
+            text-decoration: none;
+        }
+
+        /* Small button group */
+        .btn-sm-group {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px
+        }
+
+        /* ─── Details Card ────────────────────────────────── */
+        .detail-card {
+            background: #FAFAF7;
+            border: 1px solid #E8E5DF;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 22px;
+        }
+
+        .detail-card-head {
+            padding: 10px 18px;
+            background: #F5F3EF;
+            border-bottom: 1px solid #E8E5DF;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #9C9890;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid #F0EDE8;
+        }
+
+        .detail-grid:last-child {
+            border-bottom: none
+        }
+
+        .detail-cell {
+            padding: 14px 18px
+        }
+
+        .detail-cell+.detail-cell {
+            border-left: 1px solid #F0EDE8
+        }
+
+        .detail-cell-full {
+            padding: 14px 18px;
+            border-bottom: 1px solid #F0EDE8
+        }
+
+        .detail-cell-full:last-child {
+            border-bottom: none
+        }
+
+        .d-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: #A09D96;
+            letter-spacing: .3px;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase
+        }
+
+        .d-value {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #1A1916;
+            display: flex;
+            align-items: center;
+            gap: 6px
+        }
+
+        .d-value.accent-blue {
+            color: #1D4ED8
+        }
+
+        .d-value.accent-green {
+            color: #15803D;
+            font-size: 15px;
+            font-weight: 700
+        }
+
+        .d-value.accent-amber {
+            color: #B45309
+        }
+
+        .d-value.muted {
+            color: #6B6860;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 1.5
+        }
+
+        /* ─── Urgency Badge ───────────────────────────────── */
+        .urgency {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 100px;
+            padding: 5px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .urgency.green {
+            background: #F0FDF4;
+            border: 1px solid #BBF7D0;
+            color: #15803D
+        }
+
+        .urgency.amber {
+            background: #FFFBEB;
+            border: 1px solid #FDE68A;
+            color: #B45309
+        }
+
+        .urgency.red {
+            background: #FFF1F2;
+            border: 1px solid #FECDD3;
+            color: #BE123C
+        }
+
+        /* ─── Time banner ─────────────────────────────────── */
+        .time-strip {
+            display: flex;
+            border-top: 1px solid #F0EDE8;
+            border-bottom: 1px solid #F0EDE8;
+            background: #FAFAF7;
+        }
+
+        .time-cell {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center
+        }
+
+        .time-cell+.time-cell {
+            border-left: 1px solid #F0EDE8
+        }
+
+        .t-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #A09D96;
+            display: block;
+            margin-bottom: 5px
+        }
+
+        .t-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1A1916;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px
+        }
+
+        /* ─── Category pill ───────────────────────────────── */
+        .cat-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border-radius: 100px;
+            padding: 3px 12px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .cat-pill.health {
+            background: #F0FDF4;
+            color: #15803D;
+            border: 1px solid #BBF7D0
+        }
+
+        .cat-pill.insurance {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE
+        }
+
+        .cat-pill.finance {
+            background: #FFFBEB;
+            color: #B45309;
+            border: 1px solid #FDE68A
+        }
+
+        /* OR text */
+        .or-row {
+            text-align: center;
+            font-size: 12px;
+            color: #B8B3AA;
+            padding: 4px 0 16px;
+            font-weight: 500
+        }
+
+
+        /* ─── Footer strip ────────────────────────────────── */
+        .em-footer {
+            padding: 20px 48px;
+            background: #FAFAF7;
+            border-top: 1px solid #F0EDE8;
+            text-align: center;
+        }
+
+        .em-footer p {
+            font-size: 11.5px;
+            color: #B8B3AA;
+            line-height: 1.6
+        }
+
+        .em-footer a {
+            color: #9C9890;
+            text-decoration: underline
+        }
+
+        .em-footer strong {
+            color: #9C9890
+        }
+
+        .em-bottom-stripe {
+            height: 3px;
+            opacity: .5
+        }
+
+        /* ─── Responsive ──────────────────────────────────── */
+        @media(max-width:640px) {
+
+            .em-hero,
+            .em-body,
+            .em-band {
+                padding-left: 24px;
+                padding-right: 24px
+            }
+
+            .em-divider {
+                margin: 0 24px
+            }
+
+            .expiry-bar {
+                padding: 12px 24px
+            }
+
+            .info-strip {
+                padding: 0 24px;
+                flex-direction: column
+            }
+
+            .info-item+.info-item {
+                border-left: none;
+                border-top: 1px solid #F0EDE8
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr
+            }
+
+            .detail-cell+.detail-cell {
+                border-left: none;
+                border-top: 1px solid #F0EDE8
+            }
+
+            .time-strip {
+                flex-direction: column
+            }
+
+            .time-cell+.time-cell {
+                border-left: none;
+                border-top: 1px solid #F0EDE8
+            }
+
+            .em-footer {
+                padding: 16px 24px
+            }
+
+            .otp-d {
+                width: 44px;
+                height: 56px;
+                font-size: 22px
+            }
+
+            .em-h1,
+            .band-h1 {
+                font-size: 26px
+            }
+
+            .amount-value {
+                font-size: 32px
+            }
+
+            .countdown-num {
+                font-size: 50px
+            }
+
+            .btn-sm-group {
+                flex-direction: column;
+                align-items: center
+            }
+
+            .em-band {
+                padding-top: 28px;
+                padding-bottom: 24px
+            }
+        }
     </style>
 </head>
+
 <body>
-    <div class="wrapper">
 
-        <!-- Header -->
-        <div class="header">
-            <div class="bell">🔔</div>
-            <h1>Reminder Alert</h1>
-            <p>You have an upcoming reminder that needs your attention</p>
-        </div>
+    <div id="page-reminder" class="page active">
+        <div class="stage">
+            <div id="reminder-v1" class="variant active">
+                <div class="em">
+                    <div class="em-stripe stripe-rose"></div>
 
-        <!-- Body -->
-        <div class="body">
+                    <div class="em-hero">
+                        <div style="text-align:center;margin-bottom:20px">
+                            <span class="cat-pill health">
+                                <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                                </svg>
+                               {{ $reminder->title ?? '' }}
+                            </span>
+                        </div>
+                        <div class="icon-ring rose">
+                            <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="">
+                        </div>
+                        <h1 class="em-h1">Annual Medical <br><em>Checkup</em></h1>
+                        <p class="em-sub">Hi <strong style="color:#4A4740">Arun Kumar</strong> —  {{ $reminder->title ?? '' }} reminder is due today.</p>
+                    </div>
 
-            <div class="greeting">Hi {{ $user->first_name ?? 'there' }},</div>
-            <p class="intro">
-                This is your scheduled reminder from <strong>Winngoo</strong>.
-                Please review the details below and take any necessary action.
-            </p>
+                    <div class="time-strip">
+                        <div class="time-cell">
+                            <span class="t-label">Due Date</span>
+                            <span class="t-value">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#6B6860" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                                {{ \Carbon\Carbon::parse($reminder->reminder_date)->format('d M Y') }}
 
-            <!-- Reminder Card -->
-            <div class="reminder-card">
+                            </span>
+                        </div>
+                        <div class="time-cell">
+                            <span class="t-label">Scheduled Time</span>
+                            <span class="t-value">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#6B6860" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                                {{ \Carbon\Carbon::parse($reminder->reminder_time)->format('h:i A') }}
 
-                <div class="label">Reminder Title</div>
-                <div class="value">{{ $reminder->title }}</div>
+                            </span>
+                        </div>
+                    </div>
 
-                <div class="label">Category</div>
-                <div class="value">
-                    {{ $category->name ?? 'N/A' }}
-                    @if($reminder->subcategory)
-                        &rarr; {{ $reminder->subcategory->name }}
+                    <div class="em-body">
+                        <div class="detail-card">
+                            <div style="padding:12px 18px;border-bottom:1px solid #F0EDE8;display:flex;align-items:center;justify-content:space-between">
+                                <div>
+                                    <span class="d-label">Subcategory</span>
+                                    <span class="d-value" style="font-size:13.5px">@if($reminder->subcategory)
+                        &rarr; {{ $reminder->subcategory->name ?? '' }}
                     @endif
+</span>
+                                </div>
+                                <div style="text-align:right">
+                                    <span class="d-label" style="text-align:right">Time Remaining</span>
+                                    <span class="d-value accent-green" style="justify-content:flex-end;font-size:13px">Today</span>
+                                </div>
+                            </div>
+                            <div style="padding:13px 18px;border-bottom:1px solid #F0EDE8">
+                                <span class="d-label">Provider </span>
+                                <span class="d-value">
+                                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#6B6860" stroke-width="2">
+                                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                        <polyline points="9 22 9 12 15 12 15 22" />
+                                    </svg>
+                                    {{ $reminder->provider ?? '' }}
+                                </span>
+                            </div>
+                            <div style="padding:13px 18px;border-bottom:1px solid #F0EDE8">
+                                <span class="d-label">Amount Summary</span>
+                                <span class="d-value accent-green" style="font-size:15px;font-weight:700">&#8377;£{{ number_format($reminder->cost, 2) }}</span>
+                            </div>
+                            <div style="padding:13px 18px">
+                                <span class="d-label">Important Notes</span>
+                                <span class="d-value muted">Bring all previous reports. Fasting required for blood work — no food or drink (except water) for 8 hours before appointment.</span>
+                            </div>
+                        </div>
+
+                        <div class="btn-row" style="margin-bottom:12px">
+                            <a href="user-reminders?id=r_1776753237139_1c7dh3" class="em-btn rose">
+                                View Reminder <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:-2px">
+                                    <path d="M5 12h14m-7-7 7 7-7 7" />
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="btn-sm-group">
+                        </div>
+                    </div>
+
+                    <div class="em-footer">
+                        <p style="margin-top:4px">&copy; 2026 Winngoo infotech. All rights reserved</p>
+                    </div>
+                    <div class="em-stripe stripe-rose em-bottom-stripe"></div>
                 </div>
-
-                <div class="label">Due Date &amp; Time</div>
-                <div class="value">
-                    {{ \Carbon\Carbon::parse($reminder->reminder_date)->format('d M Y') }}
-                    at
-                    {{ \Carbon\Carbon::parse($reminder->reminder_time)->format('h:i A') }}
-                </div>
-
-                @if($reminder->provider)
-                <div class="label">Provider</div>
-                <div class="value">{{ $reminder->provider }}</div>
-                @endif
-
-                @if($reminder->cost)
-                <div class="label">Cost</div>
-                <div class="value">£{{ number_format($reminder->cost, 2) }}
-                    @if($reminder->payment_frequency)
-                        <span style="font-weight:400;color:#64748b;font-size:.82rem">/ {{ $reminder->payment_frequency }}</span>
-                    @endif
-                </div>
-                @endif
-
-                @if($reminder->description)
-                <div class="label">Notes</div>
-                <div class="value" style="font-weight:400;color:#475569;font-size:.85rem">{{ $reminder->description }}</div>
-                @endif
-
-                <div class="label" style="margin-top:4px">Status</div>
-                <div class="value"><span class="badge">Active</span></div>
-
-            </div>
-
-            <!-- CTA -->
-            <div class="cta">
-                <a href="{{ config('app.url') }}/reminders">View My Reminders</a>
-            </div>
-
-            <hr class="divider">
-
-            <p style="font-size:.82rem;color:#64748b;line-height:1.6;text-align:center">
-                You're receiving this because you enabled email notifications in your
-                <a href="{{ config('app.url') }}/notifications" style="color:#7c3aed">notification settings</a>.
-                You can update or disable alerts at any time.
-            </p>
+            </div><!-- /reminder-v1 -->
 
         </div>
+    </div><!-- /page-reminder -->
 
-        <!-- Footer -->
-        <div class="footer">
-            &copy; {{ date('Y') }} Winngoo. All rights reserved.<br>
-            <a href="{{ config('app.url') }}">winngoo.com</a>
-        </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get('id');
 
-    </div>
+        if (id) {
+            viewDetail(id);
+        }
+    </script>
+    <script>
+        // ── Page switching ──────────────────────────────────────────────
+        function show(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-' + id).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // ── Variant switching ───────────────────────────────────────────
+        function switchVariant(page, num, btn) {
+            const variants = document.querySelectorAll('#page-' + page + ' .variant');
+            variants.forEach(v => v.classList.remove('active'));
+            document.getElementById(page + '-v' + num).classList.add('active');
+            btn.closest('.variant-tabs').querySelectorAll('.vtab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
 </body>
+
 </html>

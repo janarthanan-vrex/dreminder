@@ -308,7 +308,7 @@ class UserController extends Controller
                     'provider' => $r->provider,
                     'cost' => $r->cost,
                     'frequency' => $r->payment_frequency,
-                    'status' => $r->status,
+                    'status' => $r->reminder_status,
                     'createdAt' => $r->created_at,
                 ];
             });

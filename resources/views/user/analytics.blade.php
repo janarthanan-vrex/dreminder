@@ -129,7 +129,7 @@
             </table>
         </div>
     </div>
-    <div class="card" style="padding:18px">
+    <div class="card hidden" style="padding:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
             <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Recent Activity</h3>
             <button onclick="window.location.href='user-reminders'" class="btn btn-ghost btn-sm">View All <i class="ri-arrow-right-line"></i></button>
@@ -138,6 +138,7 @@
     </div>
 
 </section>
+@include('user.layouts.firebase_setup')
 
 <script>
     window.analyticsData = {

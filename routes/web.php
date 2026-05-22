@@ -8,6 +8,7 @@ use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\PagesController;
 use App\Models\Activity;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 
@@ -100,6 +101,11 @@ Route::get('/terms', function () {
     return view('terms');
 });
 
+// web.php
+
+Route::post('/contact-send',[PagesController::class,'send'])->name('contact.send');
+
+//user panel without middleware
 
 Route::get('/login', [AuthController::class, 'loginpage'])->name('loginpage');
 Route::get('/register', [AuthController::class, 'registerpage'])->name('registerpage');
@@ -117,8 +123,43 @@ Route::post('/store-forgot-password', [AuthController::class, 'storeForgotPasswo
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
 Route::post('/user/reset-password', [AuthController::class, 'resetPassword'])->name('user.reset-password');
 
+//user panel with middleware
 
 
+Route::middleware('auth')->group(function () {
+
+
+Route::get('/user-dashboard', [UserController::class, 'userDashboard'])->name('user.dashboard');
+Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
+Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
+Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
+Route::get('/user-transaction', [UserController::class, 'userTransaction'])->name('user.transactions');
+
+Route::get('/user-category', [UserController::class, 'userCategory'])->name('user.category');
+Route::post('/store-subcategory', [UserController::class, 'storeSubCategory'])->name('user.store.subcategory');
+Route::delete('/user/delete-subcategory/{id}', [UserController::class, 'deleteSubcategory'])->name('user.delete.subcategory');
+Route::put('/user/update-subcategory/{id}', [UserController::class, 'updateSubcategory'])->name('user.update.subcategory');
+Route::get('/user-calendar',[UserController::class, 'calenderView'])->name('user.calenderview');
+
+Route::get('/user-feedback',[ActivityController::class,'userFeedback'])->name('user.feedback');
+Route::post('/feedback/store', [ActivityController::class, 'storeFeedback'])->name('feedback.store');
+
+Route::get('/user-notification',[ActivityController::class,'userNotifications'])->name('user.notifications');
+Route::post('/notification-settings/update',[ActivityController::class, 'updateOrCreate'])->name('notificcation.settings.update');
+Route::post('/notifications/{id}/mark-read', [ActivityController::class, 'markNotificationRead']);
+Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'deleteNotification']);
+Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
+Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
+Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
+
+Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
+Route::get('/user-remindrs', [ReminderController::class, 'userReminders'])->name('user.reminders');
+Route::delete('/delete-reminder/{id}', [ReminderController::class, 'deleteReminder'])->name('user.reminder.delete');
+Route::put('/update-reminder/{id}', [ReminderController::class, 'update']);
+
+});
+
+//
 Route::get('/test', function () {
     return view('test');
 });
@@ -225,11 +266,7 @@ Route::get('/admin-cms-privacy', function () {
 
 // User
 
-Route::get('/user-dashboard', [UserController::class, 'userDashboard'])->name('user.dashboard');
-Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
-Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
-Route::post('/change-password', [UserController::class, 'changePassword'])->name('user.change.password');
-Route::get('/user-transaction', [UserController::class, 'userTransaction'])->name('user.transactions');
+
 
 
 
@@ -238,11 +275,7 @@ Route::get('/user-reminder-history', function () {
 });
 // Route::get('/user-category', function () {return view('user.category');});
 
-Route::get('/user-category', [UserController::class, 'userCategory'])->name('user.category');
-Route::post('/store-subcategory', [UserController::class, 'storeSubCategory'])->name('user.store.subcategory');
-Route::delete('/user/delete-subcategory/{id}', [UserController::class, 'deleteSubcategory'])->name('user.delete.subcategory');
-Route::put('/user/update-subcategory/{id}', [UserController::class, 'updateSubcategory'])->name('user.update.subcategory');
-Route::get('/user-calendar',[UserController::class, 'calenderView'])->name('user.calenderview');
+
 
 
 Route::get('/user-create-reminder', function () {
@@ -252,8 +285,8 @@ Route::get('/user-create-reminder', function () {
 //     return view('user.feedback');
 // });
 
-Route::get('/user-feedback',[ActivityController::class,'userFeedback'])->name('user.feedback');
-Route::post('/feedback/store', [ActivityController::class, 'storeFeedback'])->name('feedback.store');
+
+
 Route::get('/user-help', function () {
     return view('user.help');
 });
@@ -262,13 +295,7 @@ Route::get('/user-membership', function () {
 });
 
 
-Route::get('/user-notification',[ActivityController::class,'userNotifications'])->name('user.notifications');
-Route::post('/notification-settings/update',[ActivityController::class, 'updateOrCreate'])->name('notificcation.settings.update');
-Route::post('/notifications/{id}/mark-read', [ActivityController::class, 'markNotificationRead']);
-Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'deleteNotification']);
-Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
-Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
-Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
+
     
 Route::get('/user-templates', function () {
     return view('user.templates');
@@ -285,10 +312,7 @@ Route::get('/loader', function () {
 });
 
 //reminder routes
-Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
-Route::get('/user-remindrs', [ReminderController::class, 'userReminders'])->name('user.reminders');
-Route::delete('/delete-reminder/{id}', [ReminderController::class, 'deleteReminder'])->name('user.reminder.delete');
-Route::put('/update-reminder/{id}', [ReminderController::class, 'update']);
+
 
 
 Route::get('/transaction-invoice', function () {

@@ -225,53 +225,52 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label class="auth-label">First Name <span class="text-red-400">*</span></label>
-                <input type="text" placeholder="Enter Your First Name" class="auth-input" required>
+                <input type="text" name="first_name" id="first_name" placeholder="Enter Your First Name" class="auth-input">
+<div id="err-first_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
               <div>
                 <label class="auth-label">Last Name <span class="text-red-400">*</span></label>
-                <input type="text" placeholder="Enter Your Last Name" class="auth-input" required>
+              <input type="text" name="last_name" id="last_name" placeholder="Enter Your Last Name" class="auth-input">
+<div id="err-last_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
             </div>
             
             <div>
               <label class="auth-label">Email Address <span class="text-red-400">*</span></label>
-              <input type="email" placeholder="Enter Your Email" class="auth-input" required>
+              <input type="email" name="email" id="email" placeholder="Enter Your Email" class="auth-input">
+<div id="err-email" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Phone Number <span class="text-white/25 text-xs">(optional)</span></label>
-              <input type="tel" placeholder="+44 020 0000 0000" class="auth-input">
+              <input type="tel" name="phone" id="phone" placeholder="+44 020 0000 0000" class="auth-input">
+<div id="err-phone" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Subject <span class="text-red-400">*</span></label>
-              <select class="select-dark" required>
-                <option value="">Select a topic...</option>
-                <option>General Enquiry</option>
-                <option>Technical Support</option>
-                <option>Billing &amp; Plans</option>
-                <option>Feature Request</option>
-                <option>Partnership Opportunity</option>
-                <option>Press &amp; Media</option>
-              </select>
+             <input type="text" name="subject" id="subject" placeholder="Enter Your Subject" class="auth-input">
+<div id="err-subject" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Message <span class="text-red-400">*</span></label>
-              <textarea placeholder="Tell us how we can help you..." class="textarea-dark" rows="5" required></textarea>
+              <textarea name="message" id="message" placeholder="Tell us how we can help you..." class="textarea-dark" rows="5"></textarea>
+<div id="err-message" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
-            <div class="flex items-start gap-3">
+            <!-- <div class="flex items-start gap-3">
               <input type="checkbox" id="privacyChk" style="accent-color:#7c3aed;margin-top:3px" required>
               <label for="privacyChk" class="text-xs text-white/35 leading-relaxed">
                 I agree to the <a href="privacy" class="text-purple-400 hover:text-purple-300 transition">Privacy Policy</a> and consent to being contacted regarding my enquiry.
               </label>
-            </div>
+            </div> -->
             
             <button type="button" id="submitBtn" class="auth-submit-dark">
               <i class="ri-send-plane-line mr-2"></i>Send Message
             </button>
           </form>
+
         </div>
       </div>
       
@@ -363,54 +362,144 @@
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
 <script>
+
 setActivePage('contact');
 
-// Form submission handler
-document.getElementById('submitBtn')?.addEventListener('click', function() {
-  const form = document.getElementById('contactForm');
-  const chk = document.getElementById('privacyChk');
-  const btn = this;
-  
-  // Validate form
-  if (!form.checkValidity()) {
-    form.reportValidity();
-    return;
-  }
-  
-  // Check privacy checkbox
-  if (!chk.checked) {
-    chk.style.outline = '2px solid #f87171';
-    chk.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    return;
-  }
-  
-  chk.style.outline = '';
-  
-  // Show loading state
-  btn.innerHTML = '<i class="ri-loader-4-line ri-spin mr-2"></i>Sending...';
-  btn.disabled = true;
-  
-  // Simulate sending (replace with actual API call)
-  setTimeout(() => {
-    btn.innerHTML = '<i class="ri-check-line mr-2"></i>Sent Successfully!';
-    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
-    
-    // Show success toast
-    const toast = document.getElementById('successToast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
-    
-    // Reset form
-    form.reset();
-    
-    // Reset button after 3 seconds
-    setTimeout(() => {
-      btn.innerHTML = '<i class="ri-send-plane-line mr-2"></i>Send Message';
-      btn.style.background = '';
-      btn.disabled = false;
-    }, 3000);
-  }, 1800);
+const form = document.getElementById('contactForm');
+const btn = document.getElementById('submitBtn');
+
+function clearErrors() {
+
+    document.querySelectorAll('[id^="err-"]').forEach(el => {
+
+        el.innerHTML = '';
+        el.classList.add('hidden');
+
+    });
+
+}
+
+// 🔥 hide error while typing
+['first_name','last_name','email','phone','subject','message']
+.forEach(id => {
+
+    document.getElementById(id)?.addEventListener('input', () => {
+
+        document.getElementById('err-' + id)
+            ?.classList.add('hidden');
+
+    });
+
 });
+
+btn?.addEventListener('click', async () => {
+
+    clearErrors();
+
+    btn.disabled = true;
+
+    btn.innerHTML =
+        '<i class="ri-loader-4-line ri-spin mr-2"></i>Sending...';
+
+    try {
+
+        const response = await fetch(
+            "{{ route('contact.send') }}",
+            {
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+
+                body: JSON.stringify({
+
+                    first_name :
+                        document.getElementById('first_name').value,
+
+                    last_name :
+                        document.getElementById('last_name').value,
+
+                    email :
+                        document.getElementById('email').value,
+
+                    phone :
+                        document.getElementById('phone').value,
+
+                    subject :
+                        document.getElementById('subject').value,
+
+                    message :
+                        document.getElementById('message').value,
+
+                })
+
+            }
+        );
+
+        const data = await response.json();
+
+        // 🔥 validation error
+        if (!response.ok) {
+
+            Object.keys(data.errors).forEach(field => {
+
+                const err =
+                    document.getElementById('err-' + field);
+
+                err.innerHTML = data.errors[field][0];
+
+                err.classList.remove('hidden');
+
+            });
+
+            return;
+
+        }
+
+        // ✅ success ui
+        btn.innerHTML =
+            '<i class="ri-check-line mr-2"></i>Sent Successfully!';
+
+        btn.style.background =
+            'linear-gradient(135deg,#10b981,#059669)';
+
+        const toast =
+            document.getElementById('successToast');
+
+        toast.classList.add('show');
+
+        form.reset();
+
+        setTimeout(() => {
+
+            toast.classList.remove('show');
+
+        }, 4000);
+
+    } catch (err) {
+
+        console.log(err);
+
+    } finally {
+
+        setTimeout(() => {
+
+            btn.disabled = false;
+
+            btn.innerHTML =
+                '<i class="ri-send-plane-line mr-2"></i>Send Message';
+
+            btn.style.background = '';
+
+        }, 3000);
+
+    }
+
+});
+
 </script>
 
 @endsection

@@ -9,8 +9,6 @@ window.addEventListener("load", () => {
 // ============================================================
 const CATS = window.PAGE_CATS || window.CATS || {};
 
-
-
 const TEMPLATES = [
     {
         id: "car-ins",
@@ -587,7 +585,7 @@ function initDashChart() {
 function remCardHTML(r, compact = false) {
     const cat = CATS[r.category] || {
         name: r.category,
-        icon: r.icon || 'ri-alarm-line',
+        icon: r.icon || "ri-alarm-line",
         color: r.color || "#94a3b8",
         bg: "rgba(148,163,184,.12)",
     };
@@ -607,9 +605,10 @@ ${r.reminder_status === "completed" ? doneBadge : dp}
 ${
     !compact
         ? `<div style="display:flex;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
-            ${r.reminder_status !== 'completed' 
-                ? `<button class="btn btn-ghost btn-xs" onclick="editReminder('${r.id}')" title="Edit"><i class="ri-pencil-line"></i></button>` 
-                : ''
+            ${
+                r.reminder_status !== "completed"
+                    ? `<button class="btn btn-ghost btn-xs" onclick="editReminder('${r.id}')" title="Edit"><i class="ri-pencil-line"></i></button>`
+                    : ""
             }
             <button class="btn btn-danger btn-xs" onclick="deleteRem('${r.id}')" title="Delete"><i class="ri-delete-bin-line"></i></button>
            </div>`
@@ -637,11 +636,15 @@ function gridCardHTML(r) {
 ${r.cost ? `<div style="font-weight:700;font-size:.85rem;color:#f1f5f9;margin-bottom:12px">£${r.cost}${r.frequency ? " / " + r.frequency : ""}</div>` : ""}
 <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
 
-${r.reminder_status !== 'completed' ? `
+${
+    r.reminder_status !== "completed"
+        ? `
 <button class="btn btn-ghost btn-xs" style="flex:1;justify-content:center" onclick="editReminder('${r.id}')">
     <i class="ri-pencil-line"></i> Edit
 </button>
-` : ''}
+`
+        : ""
+}
 
 
 <button class="btn btn-danger btn-xs" onclick="deleteRem('${r.id}')"><i class="ri-delete-bin-line"></i></button>
@@ -733,10 +736,15 @@ async function deleteRem(id) {
 function editReminder(id) {
     editingId = id;
     // Try to find the reminder in the main reminders store
-    let r = typeof getRems === 'function' ? getRems().find((x) => String(x.id) === String(id)) : null;
+    let r =
+        typeof getRems === "function"
+            ? getRems().find((x) => String(x.id) === String(id))
+            : null;
     // Fallback: if not found and calendar histories are available, find by reminder_id
     if (!r && Array.isArray(window.CALENDAR_HISTORIES)) {
-        r = window.CALENDAR_HISTORIES.find((x) => String(x.reminder_id) === String(id));
+        r = window.CALENDAR_HISTORIES.find(
+            (x) => String(x.reminder_id) === String(id),
+        );
     }
     if (!r) return;
     document.getElementById("r-title").value = r.title || "";
@@ -848,7 +856,7 @@ function loadReminders() {
     const countLabel = document.getElementById("rem-count-label");
 
     if (countLabel) {
-        countLabel.textContent = `${active.length} active · ${all.length} total`;
+        countLabel.textContent = ` ${all.length} Total Reminders `;
     }
     const rl = document.getElementById("rem-list"),
         rg = document.getElementById("rem-grid"),
@@ -1007,74 +1015,76 @@ function updateSubs() {
 }
 
 async function submitReminder() {
-
     // 🔥 CLEAR ERRORS
-    document.querySelectorAll('.error-text').forEach(el => el.innerText = '');
+    document
+        .querySelectorAll(".error-text")
+        .forEach((el) => (el.innerText = ""));
 
-    const btn     = document.getElementById('create-btn');
-    const btnText = document.getElementById('create-btn-txt');
+    const btn = document.getElementById("create-btn");
+    const btnText = document.getElementById("create-btn-txt");
 
     const data = {
-        title:             document.getElementById('r-title').value.trim(),
-        category_id:       document.getElementById('r-cat').value,
-        subcategory_name:  document.getElementById('r-sub').value,
-        end_reminder_date:     document.getElementById('r-date').value,
-        reminder_time:     document.getElementById('r-time').value,
-        description:       document.getElementById('r-desc').value.trim(),
-        provider:          document.getElementById('r-provider').value.trim(),
-        cost:              document.getElementById('r-cost').value,
-        payment_frequency: document.getElementById('r-freq').value,
+        title: document.getElementById("r-title").value.trim(),
+        category_id: document.getElementById("r-cat").value,
+        subcategory_name: document.getElementById("r-sub").value,
+        end_reminder_date: document.getElementById("r-date").value,
+        reminder_time: document.getElementById("r-time").value,
+        description: document.getElementById("r-desc").value.trim(),
+        provider: document.getElementById("r-provider").value.trim(),
+        cost: document.getElementById("r-cost").value,
+        payment_frequency: document.getElementById("r-freq").value,
     };
 
     // 🔥 decide URL and method
     const isEdit = !!editingId;
-    const url    = isEdit ? `/update-reminder/${editingId}` : '/store-reminder';
-    const method = isEdit ? 'PUT' : 'POST';
+    const url = isEdit ? `/update-reminder/${editingId}` : "/store-reminder";
+    const method = isEdit ? "PUT" : "POST";
 
-    btn.disabled   = true;
-    btnText.innerText = isEdit ? 'Saving...' : 'Creating...';
+    btn.disabled = true;
+    btnText.innerText = isEdit ? "Saving..." : "Creating...";
 
     try {
         const res = await fetch(url, {
             method,
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         });
 
         const result = await res.json();
 
         // 🔴 VALIDATION ERRORS
         if (res.status === 422) {
-            const fieldIdMap = { category_id: 'err-rem-category_id' };
-            Object.keys(result.errors).forEach(field => {
-                const elId = fieldIdMap[field] || ('err-' + field);
-                const el   = document.getElementById(elId);
+            const fieldIdMap = { category_id: "err-rem-category_id" };
+            Object.keys(result.errors).forEach((field) => {
+                const elId = fieldIdMap[field] || "err-" + field;
+                const el = document.getElementById(elId);
                 if (el) {
-                    el.innerText       = result.errors[field][0];
-                    el.style.display   = 'block';
+                    el.innerText = result.errors[field][0];
+                    el.style.display = "block";
                 }
             });
-            btn.disabled      = false;
-            btnText.innerText = isEdit ? 'Save Changes' : 'Create Reminder';
+            btn.disabled = false;
+            btnText.innerText = isEdit ? "Save Changes" : "Create Reminder";
             return;
         }
 
         // ✅ SUCCESS
-        toast(result.message, 'success');
+        toast(result.message, "success");
         closeReminderModal();
         setTimeout(() => location.reload(), 1500);
-
     } catch (err) {
         console.log(err);
-        toast('Something went wrong', 'error');
+        toast("Something went wrong", "error");
     }
 
-    btn.disabled      = false;
-    btnText.innerText = isEdit ? 'Save Changes' : 'Create Reminder';
+    btn.disabled = false;
+    btnText.innerText = isEdit ? "Save Changes" : "Create Reminder";
 }
 
 // 🔥 FORM SUBMIT BIND
@@ -1101,7 +1111,6 @@ function clearReminderError(inputId, errorId, eventType = "input") {
 clearReminderError("r-title", "err-title");
 
 clearReminderError("r-sub", "err-subcategory_name", "change");
-
 
 clearReminderError("r-date", "err-end_reminder_date", "change");
 
@@ -1230,11 +1239,11 @@ function saveSubcategory() {
 
 const CAL_CATS = window.CALENDAR_CATS || {
     others: {
-        name:  'Others',
-        color: '#94a3b8',
-        bg:    'rgba(148,163,184,.12)',
-        icon:  'ri-more-2-line',
-    }
+        name: "Others",
+        color: "#94a3b8",
+        bg: "rgba(148,163,184,.12)",
+        icon: "ri-more-2-line",
+    },
 };
 
 const CAL_MONTHS = [
@@ -1354,19 +1363,21 @@ function calGoToday() {
 
 // ── Category filter
 function _buildCatFilter() {
-    const bar = document.getElementById('cat-filter-bar');
+    const bar = document.getElementById("cat-filter-bar");
     if (!bar) return;
 
     // Clear existing buttons except "All"
-    bar.querySelectorAll('[data-cat]:not([data-cat="all"])').forEach(b => b.remove());
+    bar.querySelectorAll('[data-cat]:not([data-cat="all"])').forEach((b) =>
+        b.remove(),
+    );
 
     // Append one button per DB category
     Object.entries(CAL_CATS).forEach(([k, c]) => {
-        const btn = document.createElement('button');
-        btn.className    = 'cat-legend-item';
-        btn.dataset.cat  = k;
-        btn.onclick      = () => calSetCatFilter(k, btn);
-        btn.innerHTML    = `<div class="cat-legend-dot" style="background:${c.color}"></div> ${c.name}`;
+        const btn = document.createElement("button");
+        btn.className = "cat-legend-item";
+        btn.dataset.cat = k;
+        btn.onclick = () => calSetCatFilter(k, btn);
+        btn.innerHTML = `<div class="cat-legend-dot" style="background:${c.color}"></div> ${c.name}`;
         bar.appendChild(btn);
     });
 }
@@ -1383,15 +1394,15 @@ function calSetCatFilter(cat, btn) {
 }
 
 function toggleCats() {
-    const bar = document.getElementById('cat-filter-bar');
-    const toggle = document.getElementById('cat-toggle');
+    const bar = document.getElementById("cat-filter-bar");
+    const toggle = document.getElementById("cat-toggle");
 
-    bar.classList.toggle('expanded');
+    bar.classList.toggle("expanded");
 
-    if (bar.classList.contains('expanded')) {
-        toggle.innerText = 'Show Less';
+    if (bar.classList.contains("expanded")) {
+        toggle.innerText = "Show Less";
     } else {
-        toggle.innerText = 'Show More';
+        toggle.innerText = "Show More";
     }
 }
 
@@ -1399,10 +1410,10 @@ function toggleCats() {
 function _getCalRems() {
     // Prefer history-based data injected from calenderView()
     if (window.CALENDAR_HISTORIES && window.CALENDAR_HISTORIES.length > 0) {
-        return window.CALENDAR_HISTORIES.filter(r => r.dueDate); // exclude null dates
+        return window.CALENDAR_HISTORIES.filter((r) => r.dueDate); // exclude null dates
     }
     // Fallback to existing reminders array (reminder_date on reminder itself)
-    return typeof getRems === 'function' ? getRems() : [];
+    return typeof getRems === "function" ? getRems() : [];
 }
 
 function _getRems(y, m) {
@@ -1411,7 +1422,7 @@ function _getRems(y, m) {
         const d = new Date(r.dueDate);
         return d.getFullYear() === y && d.getMonth() === m;
     });
-    if (_calCatFilter !== 'all')
+    if (_calCatFilter !== "all")
         rems = rems.filter((r) => r.category === _calCatFilter);
     return rems;
 }
@@ -1419,7 +1430,7 @@ function _getRems(y, m) {
 function _getRemsDate(ds) {
     let rems = _getCalRems();
     rems = rems.filter((r) => r.dueDate === ds);
-    if (_calCatFilter !== 'all')
+    if (_calCatFilter !== "all")
         rems = rems.filter((r) => r.category === _calCatFilter);
     return rems;
 }
@@ -1597,9 +1608,19 @@ function _selectDay(d) {
                 ${pill}
             </div>
             ${r.provider ? `<div style="font-size:.72rem;color:#64748b;margin-top:6px;display:flex;align-items:center;gap:4px"><i class="ri-building-line"></i> ${r.provider}${r.cost ? " · £" + r.cost : ""}</div>` : ""}
-            <div style="display:flex;gap:5px;margin-top:8px">
-                <button class="btn btn-ghost btn-xs" onclick="editReminder('${r.reminder_id}')" style="padding:4px 8px !important;font-size:.7rem"><i class="ri-pencil-line"></i> Edit</button>
-            </div>
+           ${
+               r.reminder_status !== "completed"
+                   ? `
+<div style="display:flex;gap:5px;margin-top:8px">
+    <button class="btn btn-ghost btn-xs"
+        onclick="editReminder('${r.reminder_id}')"
+        style="padding:4px 8px !important;font-size:.7rem">
+        <i class="ri-pencil-line"></i> Edit
+    </button>
+</div>
+`
+                   : ""
+           }
         </div>`;
         })
         .join("");
@@ -1633,12 +1654,12 @@ function _renderMonthEvents() {
                                   ? daysUntil(r.dueDate)
                                   : 0;
                           return n < 0
-    ? '<span class="pill-urgent" style="font-size:.58rem">Overdue</span>'
-    : n === 0
-        ? '<span class="pill-urgent" style="font-size:.58rem">Today</span>'
-        : n <= 7
-            ? `<span class="pill-soon" style="font-size:.58rem">In ${n}d</span>`
-            : `<span class="pill-ok" style="font-size:.58rem">In ${n}d</span>`;
+                              ? '<span class="pill-urgent" style="font-size:.58rem">Overdue</span>'
+                              : n === 0
+                                ? '<span class="pill-urgent" style="font-size:.58rem">Today</span>'
+                                : n <= 7
+                                  ? `<span class="pill-soon" style="font-size:.58rem">In ${n}d</span>`
+                                  : `<span class="pill-ok" style="font-size:.58rem">In ${n}d</span>`;
                       })();
             const dayNum = parseInt(r.dueDate.split("-")[2]);
             return `<div class="month-ev-item" onclick="_selectDay(${dayNum})">
@@ -1706,9 +1727,10 @@ function _renderStats() {
         return d.getFullYear() === _calY && d.getMonth() === _calM;
     });
 
-    const filtered = _calCatFilter === "all"
-        ? allRems
-        : allRems.filter((r) => r.category === _calCatFilter);
+    const filtered =
+        _calCatFilter === "all"
+            ? allRems
+            : allRems.filter((r) => r.category === _calCatFilter);
 
     // ── Total & Completed (already working)
     const done = filtered.filter((r) => r.status === "completed").length;
@@ -1731,11 +1753,11 @@ function _renderStats() {
     });
 
     const stats = [
-        { num: filtered.length,            lbl: "Total",      color: "#a78bfa" },
-        { num: pending,                    lbl: "Pending",    color: "#f43f5e" },
-        { num: done,                       lbl: "Completed",  color: "#10b981" },
-        { num: categoryCount,              lbl: "Categories", color: "#14b8a6" },
-        { num: "£" + totalCost.toFixed(2), lbl: "Cost",       color: "#f59e0b" },
+        { num: filtered.length, lbl: "Total", color: "#a78bfa" },
+        { num: pending, lbl: "Pending", color: "#f43f5e" },
+        { num: done, lbl: "Completed", color: "#10b981" },
+        { num: categoryCount, lbl: "Categories", color: "#14b8a6" },
+        { num: "£" + totalCost.toFixed(2), lbl: "Cost", color: "#f59e0b" },
     ];
 
     const row = document.getElementById("cal-stats-row");
@@ -1959,75 +1981,7 @@ function useTemplate(id) {
 // CATEGORIES
 // ============================================================
 
-// function renderCategories() {
-//     updateCustomSubUI();
-//     const rems = getRems();
-//     let mostUsed = '—';
-//     let maxC = 0;
-//     Object.entries(CATS).forEach(([k]) => {
-//         const cnt = rems.filter(r => r.category === k).length;
-//         if (cnt > maxC) {
-//             maxC = cnt;
-//             mostUsed = CATS[k].name;
-//         }
-//     });
-//     document.getElementById('most-used-cat').textContent = mostUsed;
-//     const grid = document.getElementById('cat-grid');
-//     grid.innerHTML = '';
-//     Object.entries(CATS).forEach(([k, c]) => {
-//         const count = rems.filter(r => r.category === k).length;
-//         const total = Math.max(rems.length, 1);
-//         const pct = Math.min((count / total) * 100 * 5, 100);
-//         const div = document.createElement('div');
-//         div.className = 'cat-card';
-//         div.onclick = () => expandCat(k);
-//         div.innerHTML = `<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
-// <div style="display:flex;align-items:center;gap:10px">
-// <div class="cat-ico" style="background:${c.bg}"><i class="${c.icon}" style="color:${c.color}"></i></div>
-// <div><div class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">${c.name}</div><div style="font-size:.72rem;color:#64748b">${c.subs.length+(customSubs.filter(cs=>cs.parent===k).length)} subcategories</div></div>
-// </div>
-// <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();document.getElementById('sub-cat-parent').value='${k}';openModal('add-sub-modal')"><i class="ri-add-line"></i></button>
-// </div>
-// <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:.73rem;color:#64748b">Reminders</span><span style="font-weight:700;font-size:.87rem;color:#f1f5f9">${count}</span></div>
-// <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>`;
-//         grid.appendChild(div);
-//     });
-// }
 
-// function renderCategories() {
-//     updateCustomSubUI();
-//     const rems = getRems();
-//     let mostUsed = '—';
-//     let maxC = 0;
-//     Object.entries(CATS).forEach(([k]) => {
-//     const cnt = rems.filter(r => String(r.category) === String(k)).length;
-//         if (cnt > maxC) {
-//             maxC = cnt;
-//             mostUsed = CATS[k].name;
-//         }
-//     });
-//     document.getElementById('most-used-cat').textContent = mostUsed;
-//     const grid = document.getElementById('cat-grid');
-//     grid.innerHTML = '';
-//     Object.entries(CATS).forEach(([k, c]) => {
-//         const count = rems.filter(r => r.category === k).length;
-//         const total = Math.max(rems.length, 1);
-//         const pct = Math.min((count / total) * 100 * 5, 100);
-//         const div = document.createElement('div');
-//         div.className = 'cat-card';
-//         div.onclick = () => expandCat(k);
-//         div.innerHTML = `<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
-// <div style="display:flex;align-items:center;gap:10px">
-// <div class="cat-ico" style="background:${c.bg}"><i class="${c.icon}" style="color:${c.color}"></i></div>
-// <div><div class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">${c.name}</div><div style="font-size:.72rem;color:#64748b">${c.subs.length+(customSubs.filter(cs=>cs.parent===k).length)} subcategories</div></div>
-// </div>
-// <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();document.getElementById('sub-cat-parent').value='${k}';openModal('add-sub-modal')"><i class="ri-add-line"></i></button>
-// </div>
-// <div style="background:${c.bg};border-radius:10px;padding:2px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:.73rem;color:#64748b">Reminders</span><span style="background: #fff;padding: 0 8px;border-radius: 50%;font-weight:700;font-size:.87rem;color:#f1f5f9">${count}</span></div>
-// <div class="prog-track hidden"><div class="prog-fill" style="width:${pct}%"></div></div>`;
-//         grid.appendChild(div);
-//     });
-// }
 
 function renderCategories() {
     console.log("[Category] renderCategories start", {
@@ -2442,59 +2396,94 @@ function expandCat(k) {
     openModal("detail-modal");
 }
 
+// function expandCat(k) {
+//     const c = CATS[k];
+//     if (!c) return;
+//     const rems = getRems().filter((r) => String(r.category) === String(k));
+//     const html =
+//         rems.length === 0
+//             ? '<div style="text-align:center;padding:24px;color:#475569;font-size:.82rem">No reminders in this category</div>'
+//             : rems
+//                   .map((r) => {
+//                       // ✅ check reminder_status first, then fall back to duePill
+//                       const dp =
+//                           r.reminder_status === "cnompleted"
+//                               ? '<span class="pill-done" style="font-size:.65rem">Completedfdf</span>'
+//                               : duePill(r.dueDate);
+//                       return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:6px">
+//                           <div style="flex:1">
+//                               <div style="font-size:.87rem;font-weight:600;color:#94a3b8">${r.title}</div>
+//                               <div style="font-size:.75rem;color:#64748b">${r.subcategory}${r.dueDate ? " · " + fmtDate(r.dueDate) : ""}</div>
+//                           </div>
+//                           ${dp}
+//                       </div>`;
+//                   })
+//                   .join("");
+//     document.getElementById("detail-content").innerHTML =
+//         `<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+//             <div class="cat-ico" style="background:${c.bg}"><i class="${c.icon}" style="color:${c.color}"></i></div>
+//             <div>
+//                 <div class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9">${c.name}</div>
+//                 <div style="font-size:.77rem;color:#64748b">${rems.length} reminder${rems.length !== 1 ? "s" : ""}</div>
+//             </div>
+//         </div>${html}<div style="margin-top:14px"></div>`;
+//     openModal("detail-modal");
+// }
+
 // ============================================================
 // ANALYTICS CHARTS
 // ============================================================
 
 function renderActivityLog() {
-    const acts = [{
-            icon: 'ri-check-line',
-            bg: 'rgba(16,185,129,.12)',
-            col: '#10b981',
-            title: 'Completed Reminder',
+    const acts = [
+        {
+            icon: "ri-check-line",
+            bg: "rgba(16,185,129,.12)",
+            col: "#10b981",
+            title: "Completed Reminder",
             desc: 'Marked "Gym Membership Renewal" as complete',
-            time: 'Today at 14:32'
+            time: "Today at 14:32",
         },
         {
-            icon: 'ri-add-circle-line',
-            bg: 'rgba(20,184,166,.12)',
-            col: '#14b8a6',
-            title: 'Created New Reminder',
+            icon: "ri-add-circle-line",
+            bg: "rgba(20,184,166,.12)",
+            col: "#14b8a6",
+            title: "Created New Reminder",
             desc: 'Added "Passport Renewal" to Travel category',
-            time: 'Today at 10:15'
+            time: "Today at 10:15",
         },
         {
-            icon: 'ri-share-line',
-            bg: 'rgba(167,139,250,.12)',
-            col: '#a78bfa',
-            title: 'Shared Reminder',
-            desc: "Shared \"Mum's Birthday\" via WhatsApp with 5 people",
-            time: 'Yesterday at 16:45'
+            icon: "ri-share-line",
+            bg: "rgba(167,139,250,.12)",
+            col: "#a78bfa",
+            title: "Shared Reminder",
+            desc: 'Shared "Mum\'s Birthday" via WhatsApp with 5 people',
+            time: "Yesterday at 16:45",
         },
         {
-            icon: 'ri-pencil-line',
-            bg: 'rgba(245,158,11,.12)',
-            col: '#f59e0b',
-            title: 'Updated Reminder',
+            icon: "ri-pencil-line",
+            bg: "rgba(245,158,11,.12)",
+            col: "#f59e0b",
+            title: "Updated Reminder",
             desc: 'Modified "Car Insurance Renewal" Date',
-            time: '2 days ago'
+            time: "2 days ago",
         },
     ];
-    document.getElementById('activity-log').innerHTML = acts.map(a => `<div class="act-item" style="display:flex;align-items:flex-start;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:${a.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="${a.icon}" style="color:${a.col}"></i></div><div><div style="font-size:.85rem;font-weight:600;color:#f1f5f9">${a.title}</div><div style="font-size:.77rem;color:#64748b;margin-top:2px">${a.desc}</div><div style="font-size:.72rem;color:#475569;margin-top:4px"><i class="ri-time-line"></i> ${a.time}</div></div></div>`).join('');
+    document.getElementById("activity-log").innerHTML = acts
+        .map(
+            (a) =>
+                `<div class="act-item" style="display:flex;align-items:flex-start;gap:10px"><div style="width:34px;height:34px;border-radius:10px;background:${a.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="${a.icon}" style="color:${a.col}"></i></div><div><div style="font-size:.85rem;font-weight:600;color:#f1f5f9">${a.title}</div><div style="font-size:.77rem;color:#64748b;margin-top:2px">${a.desc}</div><div style="font-size:.72rem;color:#475569;margin-top:4px"><i class="ri-time-line"></i> ${a.time}</div></div></div>`,
+        )
+        .join("");
 }
 let charts = {};
 
 function initCharts() {
-
     const isDark = document.documentElement.classList.contains("dark");
 
-    const tc = isDark
-        ? "rgba(255,255,255,.3)"
-        : "rgba(0,0,0,.4)";
+    const tc = isDark ? "rgba(255,255,255,.3)" : "rgba(0,0,0,.4)";
 
-    const gc = isDark
-        ? "rgba(255,255,255,.05)"
-        : "rgba(0,0,0,.05)";
+    const gc = isDark ? "rgba(255,255,255,.05)" : "rgba(0,0,0,.05)";
 
     Object.values(charts).forEach((c) => {
         try {
@@ -2577,18 +2566,20 @@ function initCharts() {
             type: "doughnut",
             data: {
                 labels: analyticsData.categoryLabels,
-                datasets: [{
-                    data: analyticsData.categoryTotals,
-                    backgroundColor: [
-                        "#14b8a6",
-                        "#f43f5e",
-                        "#a78bfa",
-                        "#10b981",
-                        "#f59e0b",
-                        "#94a3b8",
-                    ],
-                    borderWidth: 0,
-                }],
+                datasets: [
+                    {
+                        data: analyticsData.categoryTotals,
+                        backgroundColor: [
+                            "#14b8a6",
+                            "#f43f5e",
+                            "#a78bfa",
+                            "#10b981",
+                            "#f59e0b",
+                            "#94a3b8",
+                        ],
+                        borderWidth: 0,
+                    },
+                ],
             },
             options: {
                 plugins: {
@@ -2612,11 +2603,13 @@ function initCharts() {
             type: "doughnut",
             data: {
                 labels: ["Completed", "Pending"],
-                datasets: [{
-                    data: analyticsData.completionChart,
-                    backgroundColor: ["#10b981", "#f43f5e"],
-                    borderWidth: 0,
-                }],
+                datasets: [
+                    {
+                        data: analyticsData.completionChart,
+                        backgroundColor: ["#10b981", "#f43f5e"],
+                        borderWidth: 0,
+                    },
+                ],
             },
             options: {
                 plugins: {
@@ -2640,15 +2633,27 @@ function initCharts() {
             type: "bar",
             data: {
                 labels: [
-                    "Jan","Feb","Mar","Apr","May","Jun",
-                    "Jul","Aug","Sep","Oct","Nov","Dec"
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
                 ],
-                datasets: [{
-                    label: "£",
-                    data: analyticsData.monthlySpending,
-                    backgroundColor: "rgba(124,58,237,.7)",
-                    borderRadius: 6,
-                }],
+                datasets: [
+                    {
+                        label: "£",
+                        data: analyticsData.monthlySpending,
+                        backgroundColor: "rgba(124,58,237,.7)",
+                        borderRadius: 6,
+                    },
+                ],
             },
             options: baseOpts({
                 plugins: {
@@ -2666,7 +2671,6 @@ const originalAnalyticsData =
         : null;
 
 function setPeriod(btn, days) {
-
     if (typeof analyticsData === "undefined") {
         return;
     }
@@ -2677,8 +2681,7 @@ function setPeriod(btn, days) {
 
     btn.classList.add("active");
 
-    window.location.href =
-        `/user-analytics?days=${days}`;
+    window.location.href = `/user-analytics?days=${days}`;
 }
 
 // ============================================================
@@ -2785,31 +2788,38 @@ function clearNotifs() {
     });
 }
 
-// function submitFeedback(e) {
-//     e.preventDefault();
-//     const t = document.getElementById("fb-type").value;
-//     const s = document.getElementById("fb-subject").value.trim();
-//     const m = document.getElementById("fb-msg").value.trim();
-//     if (!t) {
-//         toast("Please select a feedback type", "error");
-//         return;
-//     }
-//     if (s.length < 5) {
-//         toast("Subject must be at least 5 characters", "error");
-//         return;
-//     }
-//     if (m.length < 10) {
-//         toast("Message must be at least 10 characters", "error");
-//         return;
-//     }
-//     toast(
-//         "Feedback submitted! Thank you for helping improve D-Remind 🎉",
-//         "success",
-//     );
-//     e.target.reset();
-//     document.getElementById("fb-len").textContent = "0";
-// }
+// function clearNotifs() {
 
+//     confirm_act("Clear all notifications?", () => {
+
+//         const notifList = document.getElementById("notif-list");
+
+//         if (notifList) {
+
+//             notifList.innerHTML =
+//                 '<div style="text-align:center;padding:24px;color:#475569;font-size:.83rem">No notifications</div>';
+
+//         }
+
+//         // 🔥 hide count
+//         const notifCount = document.getElementById("notif-count");
+
+//         if (notifCount) {
+//             notifCount.remove();
+//         }
+
+//         // 🔥 hide red dot
+//         const notifDot = document.querySelector("#notif-dot");
+
+//         if (notifDot) {
+//             notifDot.remove();
+//         }
+
+//         toast("All notifications cleared","success");
+
+//     });
+
+// }
 function selPri(btn) {
     btn.closest('[style*="flex"]')
         .querySelectorAll(".pri-btn")
@@ -2959,101 +2969,110 @@ document.addEventListener("DOMContentLoaded", () => {
 // }
 
 function openReminderModal() {
-    const modal = document.getElementById('reminder-modal');
-    modal.style.display = 'flex';
+    const modal = document.getElementById("reminder-modal");
+    modal.style.display = "flex";
 
-    const catSelect = document.getElementById('r-cat');
+    const catSelect = document.getElementById("r-cat");
     if (catSelect.tomselect) catSelect.tomselect.destroy();
 
     catSelect.innerHTML = '<option value="">Select category...</option>';
     Object.entries(CATS).forEach(([id, cat]) => {
-        const option = document.createElement('option');
+        const option = document.createElement("option");
         option.value = id;
         option.textContent = cat.name;
         catSelect.appendChild(option);
     });
 
-    const categorySelect = new TomSelect('#r-cat', {
+    const categorySelect = new TomSelect("#r-cat", {
         create: false,
-        placeholder: 'Search category...',
-        sortField: { field: 'text', direction: 'asc' }
+        placeholder: "Search category...",
+        sortField: { field: "text", direction: "asc" },
     });
 
-    const wrapper = document.querySelector('#r-cat').parentElement;
-    if (wrapper && wrapper.classList.contains('ts-wrapper')) {
-        wrapper.appendChild(document.getElementById('err-rem-category_id'));
+    const wrapper = document.querySelector("#r-cat").parentElement;
+    if (wrapper && wrapper.classList.contains("ts-wrapper")) {
+        wrapper.appendChild(document.getElementById("err-rem-category_id"));
     }
 
-    categorySelect.on('change', function () {
-        document.getElementById('err-rem-category_id').innerText = '';
+    categorySelect.on("change", function () {
+        document.getElementById("err-rem-category_id").innerText = "";
         updateSubs();
     });
 
-    const sub = document.getElementById('r-sub');
+    const sub = document.getElementById("r-sub");
     sub.innerHTML = '<option value="">Select category first...</option>';
     sub.disabled = true;
 
-    document.querySelectorAll('#reminder-modal .error-text')
-        .forEach(el => el.innerText = '');
+    document
+        .querySelectorAll("#reminder-modal .error-text")
+        .forEach((el) => (el.innerText = ""));
 
     if (editingId) {
         // ── look in reminders first, then fall back to calendar histories
-        let r = typeof getRems === 'function'
-            ? getRems().find(x => String(x.id) === String(editingId))
-            : null;
+        let r =
+            typeof getRems === "function"
+                ? getRems().find((x) => String(x.id) === String(editingId))
+                : null;
 
         if (!r && Array.isArray(window.CALENDAR_HISTORIES)) {
             r = window.CALENDAR_HISTORIES.find(
-                x => String(x.reminder_id) === String(editingId)
+                (x) => String(x.reminder_id) === String(editingId),
             );
         }
 
         if (r) {
-            document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
-            document.getElementById('create-btn-txt').textContent   = 'Save Changes';
+            document.querySelector("#reminder-modal h2").textContent =
+                "Edit Reminder";
+            document.getElementById("create-btn-txt").textContent =
+                "Save Changes";
 
             // set category — this also triggers updateSubs() via the 'change' listener
             categorySelect.setValue(String(r.category));
 
             // wait for TomSelect + updateSubs() to finish, then set subcategory
             setTimeout(() => {
-                document.getElementById('r-sub').value = r.subcategory || '';
+                document.getElementById("r-sub").value = r.subcategory || "";
             }, 150);
 
-            document.getElementById('r-title').value    = r.title              || '';
-            document.getElementById('r-date').value     = r.end_reminder_date  || '';
-            document.getElementById('r-time').value     = r.dueTime            || '09:00';
-            document.getElementById('r-desc').value     = r.description        || '';
-            document.getElementById('desc-len').textContent = (r.description   || '').length;
-            document.getElementById('r-provider').value = r.provider           || '';
-            document.getElementById('r-cost').value     = r.cost               || '';
-            document.getElementById('r-freq').value     = r.frequency          || '';
+            document.getElementById("r-title").value = r.title || "";
+            document.getElementById("r-date").value = r.end_reminder_date || "";
+            document.getElementById("r-time").value = r.dueTime || "09:00";
+            document.getElementById("r-desc").value = r.description || "";
+            document.getElementById("desc-len").textContent = (
+                r.description || ""
+            ).length;
+            document.getElementById("r-provider").value = r.provider || "";
+            document.getElementById("r-cost").value = r.cost || "";
+            document.getElementById("r-freq").value = r.frequency || "";
 
             if (r.provider || r.cost || r.frequency) {
-                document.getElementById('opt-fields').style.display = 'block';
+                document.getElementById("opt-fields").style.display = "block";
             }
         }
     } else {
-        document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
-        document.getElementById('create-btn-txt').textContent   = 'Create Reminder';
-        document.getElementById('rem-form').reset();
-        document.getElementById('desc-len').textContent = '0';
-        document.getElementById('opt-fields').style.display = 'none';
+        document.querySelector("#reminder-modal h2").textContent =
+            "Create New Reminder";
+        document.getElementById("create-btn-txt").textContent =
+            "Create Reminder";
+        document.getElementById("rem-form").reset();
+        document.getElementById("desc-len").textContent = "0";
+        document.getElementById("opt-fields").style.display = "none";
     }
 }
 
 // Modal Close
 function closeReminderModal() {
-    document.getElementById('reminder-modal').style.display = 'none';
-    document.body.style.overflow = '';
-    document.getElementById('rem-form').reset();
-    document.getElementById('desc-len').textContent = '0';
+    document.getElementById("reminder-modal").style.display = "none";
+    document.body.style.overflow = "";
+    document.getElementById("rem-form").reset();
+    document.getElementById("desc-len").textContent = "0";
 
     // 🔥 reset editing state
     editingId = null;
-    document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
-    document.getElementById('create-btn-txt').textContent = 'Create Reminder';
-    document.getElementById('opt-fields').style.display = 'none';
+    document.querySelector("#reminder-modal h2").textContent =
+        "Create New Reminder";
+    document.getElementById("create-btn-txt").textContent = "Create Reminder";
+    document.getElementById("opt-fields").style.display = "none";
 }
 
 // Close on outside click
@@ -3070,5 +3089,3 @@ document.addEventListener("keydown", function (e) {
         closeReminderModal();
     }
 });
-
-

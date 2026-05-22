@@ -154,6 +154,7 @@
     </div>
 
 </section>
+@include('user.layouts.firebase_setup')
 
 <script>
     function handleAvatar(event) {

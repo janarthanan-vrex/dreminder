@@ -14,6 +14,7 @@ class Feedback extends Model
         'subject',
         'priority',
         'message',
+        'feedback_status',
         'admin_reply',
         'is_receive',
     ];
