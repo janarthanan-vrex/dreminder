@@ -68,6 +68,11 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
 
   <div class="glass-strong" style="border-radius:24px;padding:32px" id="resetForm">
     <div style="display:flex;flex-direction:column;gap:20px">
+
+      {{-- Hidden fields --}}
+      <input type="hidden" id="resetToken" value="{{ $token }}">
+      <input type="hidden" id="resetEmail" value="{{ $email }}">
+
       <div>
         <label class="auth-label">New Password</label>
         <div class="input-wrap">
@@ -81,16 +86,9 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
           <div class="seg" id="s3"></div><div class="seg" id="s4"></div><div class="seg" id="s5"></div>
         </div>
         <p id="strengthLabel" style="font-size:.68rem;color:rgba(255,255,255,.25);margin-top:4px">Password strength</p>
+        <div class="form-err" id="newPwdErr"></div>
       </div>
-      <!-- Requirements -->
-      <!-- <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:7px">
-        <p style="font-size:.7rem;font-weight:600;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Requirements</p>
-        <div class="req-item" id="r1"><i class="ri-checkbox-blank-circle-line"></i> Minimum 8 characters</div>
-        <div class="req-item" id="r2"><i class="ri-checkbox-blank-circle-line"></i> At least one uppercase letter</div>
-        <div class="req-item" id="r3"><i class="ri-checkbox-blank-circle-line"></i> At least one lowercase letter</div>
-        <div class="req-item" id="r4"><i class="ri-checkbox-blank-circle-line"></i> At least one number</div>
-        <div class="req-item" id="r5"><i class="ri-checkbox-blank-circle-line"></i> At least one special character</div>
-      </div> -->
+
       <div>
         <label class="auth-label">Confirm New Password</label>
         <div class="input-wrap">
@@ -98,8 +96,11 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
           <input type="password" id="confirmPwd" class="auth-input" placeholder="Re-enter new password" required>
           <button type="button" class="toggle-pwd" id="toggleConfirm"><i class="ri-eye-line"></i></button>
         </div>
-        <div class="form-err" id="matchErr">Passwords do not match.</div>
+        <div class="form-err" id="matchErr"></div>
       </div>
+
+      <div class="form-err" id="tokenErr"></div>
+
       <button type="button" class="btn-primary" id="resetBtn">
         <i class="ri-shield-check-line"></i> Update Password
       </button>
@@ -113,7 +114,7 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
     </div>
     <h3 style="font-size:1.2rem;font-weight:900;margin-bottom:8px">Password Updated!</h3>
     <p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:24px">Your admin password has been successfully changed. You can now log in with your new credentials.</p>
-    <a href="admin-login" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:12px;font-weight:700;font-size:.875rem;color:#fff;background:linear-gradient(135deg,#7c3aed,#6d28d9);text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+    <a href="{{ route('admin.login') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:12px;font-weight:700;font-size:.875rem;color:#fff;background:linear-gradient(135deg,#7c3aed,#6d28d9);text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
       <i class="ri-login-box-line"></i> Go to Login
     </a>
   </div>
@@ -122,44 +123,164 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
 </div>
 
 <script>
-// Toggle passwords
-['toggleNew','toggleConfirm'].forEach((id,i)=>{
-  document.getElementById(id)?.addEventListener('click',function(){
-    const inp=document.getElementById(i===0?'newPwd':'confirmPwd');const t=inp.type==='text';
-    inp.type=t?'password':'text';this.innerHTML=t?'<i class="ri-eye-line"></i>':'<i class="ri-eye-off-line"></i>';
+// ── Toggle password visibility ────────────────────────────────────────────────
+['toggleNew', 'toggleConfirm'].forEach((id, i) => {
+  document.getElementById(id)?.addEventListener('click', function () {
+    const inp  = document.getElementById(i === 0 ? 'newPwd' : 'confirmPwd');
+    const isText = inp.type === 'text';
+    inp.type     = isText ? 'password' : 'text';
+    this.innerHTML = isText ? '<i class="ri-eye-line"></i>' : '<i class="ri-eye-off-line"></i>';
   });
 });
-// Strength checker
-const colors=['#ef4444','#f97316','#eab308','#22c55e','#10b981'];
-const labels=['Very weak','Weak','Fair','Strong','Very strong'];
-document.getElementById('newPwd')?.addEventListener('input',function(){
-  const v=this.value;
-  let score=0;
-  const checks={r1:v.length>=8,r2:/[A-Z]/.test(v),r3:/[a-z]/.test(v),r4:/[0-9]/.test(v),r5:/[^A-Za-z0-9]/.test(v)};
-  Object.entries(checks).forEach(([id,ok])=>{
-    const el=document.getElementById(id);if(!el)return;
-    el.classList.toggle('ok',ok);
-    el.innerHTML=`<i class="${ok?'ri-checkbox-circle-line':'ri-checkbox-blank-circle-line'}"></i> ${el.textContent.trim().split(' ').slice(1).join(' ')}`;
-    if(ok)score++;
+
+// ── Password strength ─────────────────────────────────────────────────────────
+const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#10b981'];
+const labels = ['Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'];
+
+document.getElementById('newPwd')?.addEventListener('input', function () {
+  hideErr('newPwdErr');
+
+  const v = this.value;
+  let score = 0;
+
+  // Score purely from value — no dependency on commented-out DOM elements
+  if (v.length >= 8)          score++;
+  if (/[A-Z]/.test(v))        score++;
+  if (/[a-z]/.test(v))        score++;
+  if (/[0-9]/.test(v))        score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+
+  // Update 5 bar segments
+  for (let i = 1; i <= 5; i++) {
+    const seg = document.getElementById('s' + i);
+    if (seg) seg.style.background = i <= score ? colors[score - 1] : 'rgba(255,255,255,.08)';
+  }
+
+  // Update label
+  const lbl = document.getElementById('strengthLabel');
+  if (v.length === 0) {
+    lbl.textContent = 'Password strength';
+    lbl.style.color = 'rgba(255,255,255,.25)';
+  } else {
+    lbl.textContent = 'Strength: ' + labels[score - 1];
+    lbl.style.color = colors[score - 1];
+  }
+});
+
+// ── Hide confirm error on typing ──────────────────────────────────────────────
+document.getElementById('confirmPwd')?.addEventListener('input', () => hideErr('matchErr'));
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+document.getElementById('resetBtn')?.addEventListener('click', function () {
+  const token   = document.getElementById('resetToken').value;
+  const email   = document.getElementById('resetEmail').value;
+  const pwd     = document.getElementById('newPwd').value;
+  const confirm = document.getElementById('confirmPwd').value;
+  let valid     = true;
+
+  hideErr('newPwdErr');
+  hideErr('matchErr');
+  hideErr('tokenErr');
+
+  // ── Client-side validation ────────────────────────────────────────────────
+  if (pwd.length < 8) {
+    showErr('newPwdErr', 'Password must be at least 8 characters.'); valid = false;
+  } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/.test(pwd)) {
+    showErr('newPwdErr', 'Must contain uppercase, lowercase, number and special character.'); valid = false;
+  }
+  if (pwd !== confirm) {
+    showErr('matchErr', 'Passwords do not match.'); valid = false;
+  }
+  if (!valid) return;
+
+  // ── Loading state ─────────────────────────────────────────────────────────
+  const btn     = this;
+  btn.innerHTML = '<i class="ri-loader-4-line" style="animation:spin .7s linear infinite"></i> Updating...';
+  btn.disabled  = true;
+
+  // ── POST to backend ───────────────────────────────────────────────────────
+  fetch('{{ route("admin.reset-password") }}', {
+    method:  'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept':       'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}',
+    },
+    body: JSON.stringify({
+      token:                     token,
+      email:                     email,
+      new_password:              pwd,
+      new_password_confirmation: confirm,
+    }),
+  })
+  .then(res => res.json().then(data => ({ status: res.status, data })))
+  .then(({ data }) => {
+    if (data.status) {
+      // ✅ Success
+      document.getElementById('resetForm').style.display    = 'none';
+      document.getElementById('successBlock').style.display = 'block';
+      setTimeout(() => { window.location.href = '{{ route("admin.login") }}'; }, 2500);
+    } else {
+      // ❌ Field errors from backend
+      btn.innerHTML = '<i class="ri-shield-check-line"></i> Update Password';
+      btn.disabled  = false;
+
+      if (data.errors) {
+        if (data.errors.new_password)              showErr('newPwdErr', data.errors.new_password[0]);
+        if (data.errors.new_password_confirmation) showErr('matchErr',  data.errors.new_password_confirmation[0]);
+        if (data.errors.token)                     showErr('tokenErr',  data.errors.token[0]);
+        if (data.errors.email)                     showErr('tokenErr',  data.errors.email[0]);
+      }
+      if (data.message) showErr('tokenErr', data.message);
+    }
+  })
+  .catch(() => {
+    btn.innerHTML = '<i class="ri-shield-check-line"></i> Update Password';
+    btn.disabled  = false;
+    showErr('tokenErr', 'Network error. Please try again.');
   });
-  for(let i=1;i<=5;i++){const s=document.getElementById('s'+i);if(s)s.style.background=i<=score?colors[score-1]:'rgba(255,255,255,.08)'}
-  document.getElementById('strengthLabel').textContent='Strength: '+(labels[score-1]||'Very weak');
-  document.getElementById('strengthLabel').style.color=score>0?colors[score-1]:'rgba(255,255,255,.25)';
 });
-document.getElementById('resetBtn')?.addEventListener('click',function(){
-  const p=document.getElementById('newPwd').value,c=document.getElementById('confirmPwd').value;
-  document.getElementById('matchErr').classList.remove('show');
-  if(p!==c){document.getElementById('matchErr').classList.add('show');return}
-  if(p.length<8)return;
-  this.innerHTML='<i class="ri-loader-4-line" style="animation:spin .7s linear infinite"></i> Updating...';
-  this.disabled=true;
-  setTimeout(()=>{document.getElementById('resetForm').style.display='none';document.getElementById('successBlock').style.display='block'},1600);
-});
-(function(){const c=document.getElementById('pC');if(!c)return;const ctx=c.getContext('2d');let pts=[];
-function rz(){c.width=innerWidth;c.height=innerHeight;pts=[];for(let i=0;i<40;i++)pts.push({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,s:Math.random()*1.5+.5,a:Math.random()*.15+.03,h:[265,155][~~(Math.random()*2)]})}
-rz();window.addEventListener('resize',rz);
-(function draw(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,Math.PI*2);ctx.fillStyle=`hsla(${p.h},75%,65%,${p.a})`;ctx.fill()});requestAnimationFrame(draw)})()})();
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showErr(id, msg) {
+  const el     = document.getElementById(id);
+  el.innerHTML = '<i class="ri-error-warning-line"></i>&nbsp;' + msg;
+  el.classList.add('show');
+}
+function hideErr(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// ── Particles ─────────────────────────────────────────────────────────────────
+(function () {
+  const c = document.getElementById('pC'); if (!c) return;
+  const ctx = c.getContext('2d'); let pts = [];
+  function rz() {
+    c.width = innerWidth; c.height = innerHeight; pts = [];
+    for (let i = 0; i < 40; i++) pts.push({
+      x:  Math.random() * c.width,
+      y:  Math.random() * c.height,
+      vx: (Math.random() - .5) * .3,
+      vy: (Math.random() - .5) * .3,
+      s:  Math.random() * 1.5 + .5,
+      a:  Math.random() * .15 + .03,
+      h:  [265, 155][~~(Math.random() * 2)]
+    });
+  }
+  rz(); window.addEventListener('resize', rz);
+  (function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = c.width;  if (p.x > c.width)  p.x = 0;
+      if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
+      ctx.fillStyle = `hsla(${p.h},75%,65%,${p.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
 </script>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<style>@keyframes spin { to { transform: rotate(360deg) } }</style>
 </body>
 </html>

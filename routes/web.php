@@ -169,21 +169,19 @@ Route::get('/invoice', function () {
 
 
 // Admin
-Route::get('/admin-login', function () {
-    return view('admin.admin-login');
-});
-Route::get('/admin-forgot-password', function () {
-    return view('admin.admin-forgot-password');
-});
+// Route::get('/admin-login', function () {
+//     return view('admin.admin-login');
+// });
+
+
+
 Route::get('/admin-reset-password', function () {
     return view('admin.admin-reset-password');
 });
 
 
 // Admin
-Route::get('/admin-dashboard', function () {
-    return view('admin.dashboard');
-});
+
 Route::get('/admin-layout', function () {
     return view('admin.layout');
 });
@@ -226,10 +224,10 @@ Route::get('/admin-transactions', function () {
 Route::get('/admin-feedback', function () {
     return view('admin.feedback');
 });
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/admin-dashboard');
-})->name('logout');
+// Route::post('/logout', function () {
+//     Auth::logout();
+//     return redirect('/admin-dashboard');
+// })->name('logout');
 
 // Admin CMS
 Route::get('/admin-pricing', function () {

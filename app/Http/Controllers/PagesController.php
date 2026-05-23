@@ -13,7 +13,7 @@ class PagesController extends Controller
             'first_name' => 'required|string|max:100',
             'last_name'  => 'required|string|max:100',
             'email'      => 'required|email',
-            'phone'      => 'nullable|string|max:20',
+            'phone' => 'nullable|numeric|digits_between:5,10',
             'subject'    => 'required|string|max:200',
             'message'    => 'required|string|min:10',
         ]);

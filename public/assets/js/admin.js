@@ -806,9 +806,9 @@ function _applyTheme(isDark) {
     }
 })();
 
-function handleLogout() {
-    if (confirm("Logout from admin panel?")) toast("Logged out", "success");
-}
+// function handleLogout() {
+//     if (confirm("Logout from admin panel?")) toast("Logged out", "success");
+// }
 
 /* ══════════════════════════════════════════
 MODALS

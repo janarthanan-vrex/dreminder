@@ -39,7 +39,20 @@
         <a class="nav-item" href="admin-audit"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
         <a class="nav-item" href="admin-feedback"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
 
-        <a class="nav-item" style="color:var(--red)" onclick="handleLogout()"><i class="ri-logout-box-r-line"></i><span class="nav-lbl">Logout</span></a>
+<form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">
+    @csrf
+</form>
+
+<a class="nav-item" style="color:var(--red)" onclick="handleLogout()">
+    <i class="ri-logout-box-r-line"></i>
+    <span class="nav-lbl">Logout</span>
+</a>
+
+<script>
+    function handleLogout() {
+        document.getElementById('logoutForm').submit();
+    }
+</script>
 
     </nav>
     <div class="sb-user">
