@@ -1976,11 +1976,20 @@ TRANSACTIONS
 
 // Demo data – replace with your API response later if needed
 // ── Place this BEFORE the pagination state block ──
-const ADMIN_TXNS = [
-    { id:1, txn_id:'TXN-1001', tnx_order: 'ORD-1001', user_name:'Kishore Rex',  user_email:'kishore@example.com', plan_name:'Pro Plan',        order_ref:'ORD-2001', amount:49.00, status:'completed', method:'Card',        date:'29 Apr 2026', items:['Pro Plan Subscription'] },
-    { id:2, txn_id:'TXN-1002', tnx_order: 'ORD-1002', user_name:'Asha Kumar',   user_email:'asha@example.com',    plan_name:'Basic Plan',       order_ref:'ORD-2002', amount:19.00, status:'pending',   method:'UPI',         date:'28 Apr 2026', items:['Basic Plan Subscription'] },
-    { id:3, txn_id:'TXN-1003', tnx_order: 'ORD-1003', user_name:'Rahul S',      user_email:'rahul@example.com',   plan_name:'Enterprise Plan',  order_ref:'ORD-2003', amount:99.00, status:'refunded',  method:'Net Banking', date:'27 Apr 2026', items:['Enterprise Plan Subscription'] }
-];
+// const ADMIN_TXNS = [
+//     { id:1, txn_id:'TXN-1001', tnx_order: 'ORD-1001', user_name:'Kishore Rex',  user_email:'kishore@example.com', plan_name:'Pro Plan',        order_ref:'ORD-2001', amount:49.00, status:'completed', method:'Card',        date:'29 Apr 2026', items:['Pro Plan Subscription'] },
+//     { id:2, txn_id:'TXN-1002', tnx_order: 'ORD-1002', user_name:'Asha Kumar',   user_email:'asha@example.com',    plan_name:'Basic Plan',       order_ref:'ORD-2002', amount:19.00, status:'pending',   method:'UPI',         date:'28 Apr 2026', items:['Basic Plan Subscription'] },
+//     { id:3, txn_id:'TXN-1003', tnx_order: 'ORD-1003', user_name:'Rahul S',      user_email:'rahul@example.com',   plan_name:'Enterprise Plan',  order_ref:'ORD-2003', amount:99.00, status:'refunded',  method:'Net Banking', date:'27 Apr 2026', items:['Enterprise Plan Subscription'] }
+// ];
+// window.TRANSACTIONS = ADMIN_TXNS;
+
+// let txnFiltered   = [...ADMIN_TXNS];
+// let txnPageNum    = 1;
+// let txnPerPage    = 10;
+// let currentTxnId  = null;
+
+const ADMIN_TXNS = window.ADMIN_TXNS || [];
+
 window.TRANSACTIONS = ADMIN_TXNS;
 
 let txnFiltered   = [...ADMIN_TXNS];
@@ -2015,6 +2024,7 @@ function renderTxnStats(data) {
 }
 
 // Main table render
+
 function renderTransactions() {
     const data       = txnFiltered;
     const totalPages = Math.max(1, Math.ceil(data.length / txnPerPage));
@@ -2032,9 +2042,15 @@ function renderTransactions() {
     if (showingEl) showingEl.textContent = slice.length;
     if (totalEl)   totalEl.textContent   = data.length;
 
-    tbody.innerHTML = slice.map(function (t) {
+    tbody.innerHTML = slice.map(function (t,index) {
+          const serialNo = start + index + 1;
         return `
             <tr>
+              <td>
+            <span style="font-weight:600">
+                ${serialNo}
+            </span>
+        </td>
                 <td>
                     <span class="mono" style="font-size:.73rem;color:var(--purple)">
                         ${t.txn_id}

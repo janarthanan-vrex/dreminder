@@ -64,6 +64,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                         <th>S.No</th>
                         <th>Txn ID</th>
                         <th>Order ID</th>
                         <th class="hide-mobile">User</th>
@@ -87,4 +88,7 @@
         </div>
     </div>
 </section>
+<script>
+    window.ADMIN_TXNS = @json($transactions);
+</script>
 @endsection

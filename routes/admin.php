@@ -2,6 +2,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ManagementController;
 
 Route::get('/admin-login', function () {
 
@@ -25,3 +26,5 @@ Route::post('forgot-password',[AdminController::class, 'storeForgotPassword'])->
 Route::get('/reset-password/{token}', [AdminController::class, 'showAdminResetForm'])->name('admin.password.reset');
 Route::post('/admin/reset-password', [AdminController::class, 'adminResetPassword'])->name('admin.reset-password');
 Route::get('/admin-dashboard',[AdminController::class,'adminDashboard'])->name('admin.dashboard');
+
+Route::get('/admin-transactions',[ManagementController::class,'transactionPage'])->name('admin.transaction');

@@ -218,9 +218,7 @@ Route::get('/admin-audit', function () {
 Route::get('/admin-notifications', function () {
     return view('admin.notifications');
 });
-Route::get('/admin-transactions', function () {
-    return view('admin.transactions');
-});
+
 Route::get('/admin-feedback', function () {
     return view('admin.feedback');
 });
