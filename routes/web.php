@@ -194,9 +194,7 @@ Route::get('/admin-reminders', function () {
 Route::get('/admin-calendar', function () {
     return view('admin.calendar');
 });
-Route::get('/admin-category', function () {
-    return view('admin.category');
-});
+
 Route::get('/admin-staff', function () {
     return view('admin.staff');
 });

@@ -1,7 +1,8 @@
-window.addEventListener('load',()=>{
-  setTimeout(()=>{document.getElementById('loader').classList.add('hidden')},800);
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("loader").classList.add("hidden");
+    }, 800);
 });
-
 
 /* ══════════════════════════════════════════
 DATA
@@ -20,7 +21,13 @@ const ROLES_DATA = [
         name: "Manager",
         color: "#0d9488",
         desc: "Manage users and content",
-        perms: ["users.read", "users.write", "reminders.read", "reminders.write", "analytics.read"],
+        perms: [
+            "users.read",
+            "users.write",
+            "reminders.read",
+            "reminders.write",
+            "analytics.read",
+        ],
         count: 2,
     },
     {
@@ -58,8 +65,16 @@ const ALL_PERMS = [
     { key: "reminders.delete", label: "Delete Reminders", group: "Reminders" },
     { key: "analytics.read", label: "View Analytics", group: "Analytics" },
     { key: "analytics.export", label: "Export Analytics", group: "Analytics" },
-    { key: "notifications.send", label: "Send Notifications", group: "Notifications" },
-    { key: "notifications.manage", label: "Manage Notifications", group: "Notifications" },
+    {
+        key: "notifications.send",
+        label: "Send Notifications",
+        group: "Notifications",
+    },
+    {
+        key: "notifications.manage",
+        label: "Manage Notifications",
+        group: "Notifications",
+    },
     { key: "staff.manage", label: "Manage Staff", group: "Team" },
     { key: "roles.manage", label: "Manage Roles", group: "Team" },
     { key: "settings.read", label: "View Settings", group: "System" },
@@ -83,7 +98,16 @@ const NAMES = [
     "Sophia Martinez",
 ];
 const INITS = ["KR", "SJ", "MC", "EW", "JB", "OD", "WT", "SM"];
-const COLORS_U = ["#7c3aed", "#0d9488", "#f59e0b", "#10b981", "#f43f5e", "#06b6d4", "#ec4899", "#a78bfa"];
+const COLORS_U = [
+    "#7c3aed",
+    "#0d9488",
+    "#f59e0b",
+    "#10b981",
+    "#f43f5e",
+    "#06b6d4",
+    "#ec4899",
+    "#a78bfa",
+];
 
 const USERS_DATA = Array.from({ length: 28 }, (_, i) => ({
     id: i + 1,
@@ -92,11 +116,14 @@ const USERS_DATA = Array.from({ length: 28 }, (_, i) => ({
     plan: ["Basic Annual", "Basic Annual", "Pro", "Free"][i % 4],
     rems: Math.floor(Math.random() * 60 + 2),
     status: i === 5 ? "suspended" : "active",
-    joined: new Date(Date.now() - Math.random() * 3e7).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    }),
+    joined: new Date(Date.now() - Math.random() * 3e7).toLocaleDateString(
+        "en-GB",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        },
+    ),
     phone: "+44 7700 9" + String(10000 + i).slice(1),
     initials: INITS[i % 8],
     color: COLORS_U[i % 8],
@@ -223,7 +250,12 @@ const REMINDERS_DATA = Array.from({ length: 30 }, (_, i) => ({
     user: USERS_DATA[i % USERS_DATA.length],
     category: REM_CATS[i % REM_CATS.length],
     due: new Date(Date.now() + (i - 8) * 86400000 * 2),
-    status: i === 3 || i === 8 || i === 15 ? "overdue" : i % 3 === 0 ? "completed" : "active",
+    status:
+        i === 3 || i === 8 || i === 15
+            ? "overdue"
+            : i % 3 === 0
+              ? "completed"
+              : "active",
     notes: "Auto-reminder set by user. Notification via Email & SMS.",
     created: new Date(Date.now() - i * 86400000 * 5),
     priority: ["low", "medium", "high"][i % 3],
@@ -240,162 +272,39 @@ const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
     method: ["Visa •••• 4242", "Mastercard •••• 8888", "PayPal"][i % 3],
 }));
 
-const CATS_DATA = [
-    {
-        id: 1,
-        name: "Insurance",
-        icon: "ri-shield-star-line",
-        color: "#f43f5e",
-        bg: "rgba(244,63,94,.12)",
-        desc: "Policies, renewals and coverage reminders",
-        total: 421,
-        subcategories: [
-            { id: 101, name: "Car Insurance", total: 110 },
-            { id: 102, name: "Health Insurance", total: 95 },
-            { id: 103, name: "Home Insurance", total: 88 }
-        ]
-    },
-    {
-        id: 2,
-        name: "Subscriptions",
-        icon: "ri-refresh-line",
-        color: "#10b981",
-        bg: "rgba(16,185,129,.12)",
-        desc: "Recurring digital and monthly plans",
-        total: 678,
-        subcategories: [
-            { id: 201, name: "Netflix", total: 120 },
-            { id: 202, name: "Amazon Prime", total: 98 },
-            { id: 203, name: "Spotify", total: 74 }
-        ]
-    },
-    {
-        id: 3,
-        name: "Motor Vehicle",
-        icon: "ri-car-line",
-        color: "#a78bfa",
-        bg: "rgba(167,139,250,.12)",
-        desc: "Vehicle documents and servicing reminders",
-        total: 543,
-        subcategories: [
-            { id: 301, name: "Road Tax", total: 132 },
-            { id: 302, name: "MOT", total: 104 },
-            { id: 303, name: "Service", total: 88 }
-        ]
-    },
-    {
-        id: 4,
-        name: "Utilities",
-        icon: "ri-lightbulb-line",
-        color: "#f59e0b",
-        bg: "rgba(245,158,11,.12)",
-        desc: "Monthly household bills and services",
-        total: 389,
-        subcategories: [
-            { id: 401, name: "Electricity", total: 140 },
-            { id: 402, name: "Water", total: 110 },
-            { id: 403, name: "Gas", total: 95 }
-        ]
-    },
-    {
-        id: 5,
-        name: "Banking",
-        icon: "ri-bank-line",
-        color: "#3b82f6",
-        bg: "rgba(59,130,246,.12)",
-        desc: "Loans, EMIs and account alerts",
-        total: 512,
-        subcategories: [
-            { id: 501, name: "Home Loan", total: 180 },
-            { id: 502, name: "Personal Loan", total: 120 },
-            { id: 503, name: "Credit Card", total: 150 }
-        ]
-    },
-    {
-        id: 6,
-        name: "Education",
-        icon: "ri-book-open-line",
-        color: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        desc: "Fees, courses and academic reminders",
-        total: 267,
-        subcategories: [
-            { id: 601, name: "School Fees", total: 90 },
-            { id: 602, name: "Online Courses", total: 75 },
-            { id: 603, name: "Exams", total: 60 }
-        ]
-    },
-    {
-        id: 7,
-        name: "Healthcare",
-        icon: "ri-heart-pulse-line",
-        color: "#ef4444",
-        bg: "rgba(239,68,68,.12)",
-        desc: "Medical checkups and appointments",
-        total: 344,
-        subcategories: [
-            { id: 701, name: "Doctor Visits", total: 120 },
-            { id: 702, name: "Medicines", total: 95 },
-            { id: 703, name: "Lab Tests", total: 80 }
-        ]
-    },
-    {
-        id: 8,
-        name: "Travel",
-        icon: "ri-flight-takeoff-line",
-        color: "#06b6d4",
-        bg: "rgba(6,182,212,.12)",
-        desc: "Trips, bookings and travel plans",
-        total: 298,
-        subcategories: [
-            { id: 801, name: "Flights", total: 110 },
-            { id: 802, name: "Hotels", total: 95 },
-            { id: 803, name: "Bus/Train", total: 70 }
-        ]
-    },
-    {
-        id: 9,
-        name: "Shopping",
-        icon: "ri-shopping-bag-line",
-        color: "#ec4899",
-        bg: "rgba(236,72,153,.12)",
-        desc: "Online and offline purchases",
-        total: 621,
-        subcategories: [
-            { id: 901, name: "Electronics", total: 210 },
-            { id: 902, name: "Clothing", total: 180 },
-            { id: 903, name: "Groceries", total: 150 }
-        ]
-    },
-    {
-        id: 10,
-        name: "Entertainment",
-        icon: "ri-film-line",
-        color: "#8b5cf6",
-        bg: "rgba(139,92,246,.12)",
-        desc: "Movies, events and fun activities",
-        total: 255,
-        subcategories: [
-            { id: 1001, name: "Movies", total: 100 },
-            { id: 1002, name: "Events", total: 80 },
-            { id: 1003, name: "Games", total: 60 }
-        ]
-    },
-    {
-        id: 11,
-        name: "Fitness",
-        icon: "ri-run-line",
-        color: "#22c55e",
-        bg: "rgba(34,197,94,.12)",
-        desc: "Workout and wellness tracking",
-        total: 189,
-        subcategories: [
-            { id: 1101, name: "Gym", total: 70 },
-            { id: 1102, name: "Yoga", total: 55 },
-            { id: 1103, name: "Diet Plans", total: 45 }
-        ]
-    }
-];
+// const CATS_DATA = [
+//     {
+//         id: 1,
+//         name: "Insurance",
+//         icon: "ri-shield-star-line",
+//         color: "#f43f5e",
+//         bg: "rgba(244,63,94,.12)",
+//         desc: "Policies, renewals and coverage reminders",
+//         total: 421,
+//         subcategories: [
+//             { id: 101, name: "Car Insurance", total: 110 },
+//             { id: 102, name: "Health Insurance", total: 95 },
+//             { id: 103, name: "Home Insurance", total: 88 }
+//         ]
+//     },
+//     {
+//         id: 2,
+//         name: "Subscriptions",
+//         icon: "ri-refresh-line",
+//         color: "#10b981",
+//         bg: "rgba(16,185,129,.12)",
+//         desc: "Recurring digital and monthly plans",
+//         total: 678,
+//         subcategories: [
+//             { id: 201, name: "Netflix", total: 120 },
+//             { id: 202, name: "Amazon Prime", total: 98 },
+//             { id: 203, name: "Spotify", total: 74 }
+//         ]
+//     },
+
+// ];
+
+const CATS_DATA = window.CATS_DATA || [];
 
 const AUDIT_DATA = [
     {
@@ -637,8 +546,12 @@ function buildPagination(containerId, cur, totalPages, fnName) {
     var start = Math.max(1, cur - 2),
         end = Math.min(totalPages, start + 4);
     if (start > 1) {
-        h += '<button class="btn btn-ghost btn-xs" onclick="' + fnName + '(1)">1</button>';
-        if (start > 2) h += '<span style="color:var(--text4);padding:0 2px">…</span>';
+        h +=
+            '<button class="btn btn-ghost btn-xs" onclick="' +
+            fnName +
+            '(1)">1</button>';
+        if (start > 2)
+            h += '<span style="color:var(--text4);padding:0 2px">…</span>';
     }
     for (var i = start; i <= end; i++)
         h +=
@@ -652,7 +565,8 @@ function buildPagination(containerId, cur, totalPages, fnName) {
             i +
             "</button>";
     if (end < totalPages) {
-        if (end < totalPages - 1) h += '<span style="color:var(--text4);padding:0 2px">…</span>';
+        if (end < totalPages - 1)
+            h += '<span style="color:var(--text4);padding:0 2px">…</span>';
         h +=
             '<button class="btn btn-ghost btn-xs" onclick="' +
             fnName +
@@ -728,7 +642,9 @@ THEME & SIDEBAR
 var sbCollapsed = false;
 function toggleSidebar() {
     sbCollapsed = !sbCollapsed;
-    document.getElementById("sidebar").classList.toggle("collapsed", sbCollapsed);
+    document
+        .getElementById("sidebar")
+        .classList.toggle("collapsed", sbCollapsed);
 }
 function openMobile() {
     document.getElementById("sidebar").classList.add("mobile-open");
@@ -750,11 +666,11 @@ function toggleTheme(event) {
 
     const btn = document.getElementById("theme-toggle-btn");
     const rect = btn?.getBoundingClientRect();
-    const x = rect ? rect.left + rect.width  / 2 : window.innerWidth  / 2;
-    const y = rect ? rect.top  + rect.height / 2 : window.innerHeight / 2;
+    const x = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const y = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
     const endRadius = Math.hypot(
-        Math.max(x, window.innerWidth  - x),
-        Math.max(y, window.innerHeight - y)
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y),
     );
 
     const transition = document.startViewTransition(() => {
@@ -775,7 +691,7 @@ function toggleTheme(event) {
                     ? "::view-transition-new(root)"
                     : "::view-transition-old(root)",
                 fill: "both",
-            }
+            },
         );
     });
 
@@ -786,7 +702,7 @@ function toggleTheme(event) {
 }
 
 function _applyTheme(isDark) {
-    document.documentElement.classList.toggle("dark",  isDark);
+    document.documentElement.classList.toggle("dark", isDark);
     document.documentElement.classList.toggle("light", !isDark);
     localStorage.setItem("theme", isDark ? "dark" : "light");
     document.getElementById("theme-icon").className = isDark
@@ -846,7 +762,8 @@ function openDrawer(html) {
     document.getElementById("drawer-overlay").style.pointerEvents = "all";
 }
 function closeDrawer() {
-    document.getElementById("detail-drawer").style.transform = "translateX(100%)";
+    document.getElementById("detail-drawer").style.transform =
+        "translateX(100%)";
     document.getElementById("drawer-overlay").style.opacity = "0";
     document.getElementById("drawer-overlay").style.pointerEvents = "none";
 }
@@ -885,7 +802,8 @@ function toast(msg, type, dur) {
     var c = styles[type] || styles.info;
     var el = document.createElement("div");
     el.className = "toast";
-    el.style.cssText = "background:" + c.bg + ";border-color:" + c.bd + ";color:" + c.col;
+    el.style.cssText =
+        "background:" + c.bg + ";border-color:" + c.bd + ";color:" + c.col;
     el.innerHTML =
         '<i class="' +
         c.ico +
@@ -894,7 +812,8 @@ function toast(msg, type, dur) {
         '</span><button onclick="this.closest(\'.toast\').remove()" style="background:none;border:none;color:inherit;cursor:pointer;opacity:.6;font-size:.95rem;padding:0"><i class="ri-close-line"></i></button>';
     document.getElementById("toast-area").appendChild(el);
     setTimeout(function () {
-        el.style.cssText += ";opacity:0;transform:translateX(60px);transition:all .3s";
+        el.style.cssText +=
+            ";opacity:0;transform:translateX(60px);transition:all .3s";
         setTimeout(function () {
             el.remove();
         }, 300);
@@ -905,9 +824,11 @@ function toast(msg, type, dur) {
 TABS
 ══════════════════════════════════════════ */
 function swTab(group, name, btn) {
-    document.querySelectorAll('[id^="' + group + '-tab-"]').forEach(function (p) {
-        p.classList.remove("active");
-    });
+    document
+        .querySelectorAll('[id^="' + group + '-tab-"]')
+        .forEach(function (p) {
+            p.classList.remove("active");
+        });
     var el = document.getElementById(group + "-tab-" + name);
     if (el) el.classList.add("active");
     if (btn) {
@@ -945,7 +866,11 @@ function renderRecentUsers() {
                 '</div><div style="font-size:.7rem;color:var(--text3)">' +
                 u.email +
                 '</div></div><span class="badge badge-' +
-                (u.plan === "Pro" ? "purple" : u.plan === "Free" ? "slate" : "teal") +
+                (u.plan === "Pro"
+                    ? "purple"
+                    : u.plan === "Free"
+                      ? "slate"
+                      : "teal") +
                 '" style="font-size:.6rem">' +
                 u.plan +
                 "</span></div>"
@@ -996,8 +921,14 @@ function initDashCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10, family: "DM Sans" } } },
-            y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10, family: "DM Sans" } } },
+            x: {
+                grid: { color: gc },
+                ticks: { color: tc, font: { size: 10, family: "DM Sans" } },
+            },
+            y: {
+                grid: { color: gc },
+                ticks: { color: tc, font: { size: 10, family: "DM Sans" } },
+            },
         },
     };
     var ug = document.getElementById("user-growth-chart");
@@ -1046,20 +977,28 @@ function initAnalytics() {
     var isDark = document.documentElement.classList.contains("dark");
     var tc = isDark ? "rgba(255,255,255,.3)" : "rgba(0,0,0,.4)";
     var gc = isDark ? "var(--ctrl-bg)" : "rgba(0,0,0,.05)";
-    ["an-reg-chart", "an-cat-chart", "an-rev-chart", "an-plan-chart"].forEach(function (id) {
-        var c = charts[id];
-        if (c)
-            try {
-                c.destroy();
-            } catch (e) {}
-    });
+    ["an-reg-chart", "an-cat-chart", "an-rev-chart", "an-plan-chart"].forEach(
+        function (id) {
+            var c = charts[id];
+            if (c)
+                try {
+                    c.destroy();
+                } catch (e) {}
+        },
+    );
     var opts = {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-            x: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
-            y: { grid: { color: gc }, ticks: { color: tc, font: { size: 10 } } },
+            x: {
+                grid: { color: gc },
+                ticks: { color: tc, font: { size: 10 } },
+            },
+            y: {
+                grid: { color: gc },
+                ticks: { color: tc, font: { size: 10 } },
+            },
         },
     };
     var reg = document.getElementById("an-reg-chart");
@@ -1083,7 +1022,10 @@ function initAnalytics() {
                 ],
                 datasets: [
                     {
-                        data: [45, 72, 91, 110, 88, 124, 145, 132, 160, 178, 210, 229],
+                        data: [
+                            45, 72, 91, 110, 88, 124, 145, 132, 160, 178, 210,
+                            229,
+                        ],
                         backgroundColor: "rgba(124,58,237,.7)",
                         borderRadius: 4,
                         borderSkipped: false,
@@ -1097,11 +1039,25 @@ function initAnalytics() {
         charts["an-cat-chart"] = new Chart(cat, {
             type: "doughnut",
             data: {
-                labels: ["Subscriptions", "Motor", "Insurance", "Health", "Special Days", "Others"],
+                labels: [
+                    "Subscriptions",
+                    "Motor",
+                    "Insurance",
+                    "Health",
+                    "Special Days",
+                    "Others",
+                ],
                 datasets: [
                     {
                         data: [678, 543, 421, 231, 312, 174],
-                        backgroundColor: ["#10b981", "#a78bfa", "#f43f5e", "#06b6d4", "#f59e0b", "#94a3b8"],
+                        backgroundColor: [
+                            "#10b981",
+                            "#a78bfa",
+                            "#f43f5e",
+                            "#06b6d4",
+                            "#f59e0b",
+                            "#94a3b8",
+                        ],
                         borderWidth: 0,
                         hoverOffset: 8,
                     },
@@ -1114,7 +1070,11 @@ function initAnalytics() {
                 plugins: {
                     legend: {
                         position: "right",
-                        labels: { color: tc, font: { size: 11, family: "DM Sans" }, boxWidth: 12 },
+                        labels: {
+                            color: tc,
+                            font: { size: 11, family: "DM Sans" },
+                            boxWidth: 12,
+                        },
                     },
                 },
             },
@@ -1161,7 +1121,11 @@ function initAnalytics() {
                 plugins: {
                     legend: {
                         position: "right",
-                        labels: { color: tc, font: { size: 11, family: "DM Sans" }, boxWidth: 12 },
+                        labels: {
+                            color: tc,
+                            font: { size: 11, family: "DM Sans" },
+                            boxWidth: 12,
+                        },
                     },
                 },
             },
@@ -1180,7 +1144,12 @@ function renderUsers() {
     document.getElementById("users-total").textContent = data.length;
     document.getElementById("users-tbody").innerHTML = slice
         .map(function (u) {
-            var planBadge = u.plan === "Pro" ? "purple" : u.plan === "Free" ? "slate" : "teal";
+            var planBadge =
+                u.plan === "Pro"
+                    ? "purple"
+                    : u.plan === "Free"
+                      ? "slate"
+                      : "teal";
             return (
                 "<tr>" +
                 '<td><input type="checkbox" class="user-cb" style="accent-color:var(--purple);width:13px;height:13px;cursor:pointer"></td>' +
@@ -1232,7 +1201,12 @@ function renderUsers() {
             );
         })
         .join("");
-    buildPagination("users-pagination", usersPageNum, totalPages, "setUsersPage");
+    buildPagination(
+        "users-pagination",
+        usersPageNum,
+        totalPages,
+        "setUsersPage",
+    );
 }
 
 function setUsersPage(p) {
@@ -1241,10 +1215,13 @@ function setUsersPage(p) {
 }
 
 function filterUsers(q) {
-    if (q === undefined) q = (document.getElementById("users-search-inp") || {}).value || "";
+    if (q === undefined)
+        q = (document.getElementById("users-search-inp") || {}).value || "";
     q = q.toLowerCase();
-    var statusF = (document.getElementById("users-status-filter") || {}).value || "all";
-    var planF = (document.getElementById("users-plan-filter") || {}).value || "all";
+    var statusF =
+        (document.getElementById("users-status-filter") || {}).value || "all";
+    var planF =
+        (document.getElementById("users-plan-filter") || {}).value || "all";
     usersFiltered = USERS_DATA.filter(function (u) {
         var matchQ = (u.name + u.email + u.plan).toLowerCase().includes(q);
         var matchS = statusF === "all" || u.status === statusF;
@@ -1261,7 +1238,10 @@ function toggleUserStatus(id) {
     });
     if (!u) return;
     u.status = u.status === "active" ? "suspended" : "active";
-    toast("User " + (u.status === "active" ? "activated" : "suspended"), "success");
+    toast(
+        "User " + (u.status === "active" ? "activated" : "suspended"),
+        "success",
+    );
     renderUsers();
 }
 
@@ -1320,7 +1300,11 @@ function addUser() {
         plan: document.getElementById("au-plan").value,
         rems: 0,
         status: document.getElementById("au-status").value,
-        joined: new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }),
+        joined: new Date().toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+        }),
         phone: document.getElementById("au-phone").value,
         initials: (fn[0] + (ln[0] || "")).toUpperCase(),
         color: COLORS_U[newId % 8],
@@ -1349,7 +1333,11 @@ function openUserDrawer(id) {
             '</div><div style="font-size:.75rem;color:var(--text3)">' +
             u.email +
             '</div><div style="margin-top:8px;display:flex;gap:6px;justify-content:center"><span class="badge badge-' +
-            (u.plan === "Pro" ? "purple" : u.plan === "Free" ? "slate" : "teal") +
+            (u.plan === "Pro"
+                ? "purple"
+                : u.plan === "Free"
+                  ? "slate"
+                  : "teal") +
             '">' +
             u.plan +
             '</span><span class="badge badge-' +
@@ -1379,7 +1367,7 @@ function openUserDrawer(id) {
             ');closeDrawer()"><i class="ri-pause-line"></i> ' +
             (u.status === "active" ? "Suspend" : "Activate") +
             " Account</button>" +
-            "</div>"
+            "</div>",
     );
 }
 
@@ -1401,7 +1389,8 @@ function renderStaff(data) {
         return s.status === "inactive";
     }).length;
     if (document.getElementById("staff-count-total"))
-        document.getElementById("staff-count-total").textContent = staffData.length;
+        document.getElementById("staff-count-total").textContent =
+            staffData.length;
     if (document.getElementById("staff-count-active"))
         document.getElementById("staff-count-active").textContent = act;
     if (document.getElementById("staff-count-inactive"))
@@ -1415,12 +1404,18 @@ function renderStaff(data) {
             var permBadges = perms
                 .slice(0, 2)
                 .map(function (p) {
-                    return '<span class="chip" style="font-size:.6rem">' + p + "</span>";
+                    return (
+                        '<span class="chip" style="font-size:.6rem">' +
+                        p +
+                        "</span>"
+                    );
                 })
                 .join("");
             var morePerms =
                 perms.length > 2
-                    ? '<span class="chip" style="font-size:.6rem">+' + (perms.length - 2) + "</span>"
+                    ? '<span class="chip" style="font-size:.6rem">+' +
+                      (perms.length - 2) +
+                      "</span>"
                     : "";
             return (
                 "<tr>" +
@@ -1472,7 +1467,12 @@ function renderStaff(data) {
             );
         })
         .join("");
-    buildPagination("staff-pagination", staffPageNum, totalPages, "setStaffPage");
+    buildPagination(
+        "staff-pagination",
+        staffPageNum,
+        totalPages,
+        "setStaffPage",
+    );
 }
 
 function setStaffPage(p) {
@@ -1482,7 +1482,9 @@ function setStaffPage(p) {
 
 function filterStaff(q) {
     staffFiltered = staffData.filter(function (s) {
-        return (s.name + s.email + s.role).toLowerCase().includes(q.toLowerCase());
+        return (s.name + s.email + s.role)
+            .toLowerCase()
+            .includes(q.toLowerCase());
     });
     staffPageNum = 1;
     renderStaff();
@@ -1557,7 +1559,9 @@ function openEditStaff(id) {
 }
 
 function saveEditStaff() {
-    var id = parseInt(document.getElementById("es-id").value) || document.getElementById("es-id").value;
+    var id =
+        parseInt(document.getElementById("es-id").value) ||
+        document.getElementById("es-id").value;
     var s = staffData.find(function (x) {
         return x.id == id;
     });
@@ -1629,10 +1633,9 @@ function openStaffDrawer(id) {
             s.name +
             "?',function(){removeStaff(" +
             s.id +
-            ');closeDrawer()})"><i class="ri-delete-bin-line"></i> Remove</button></div>'
+            ');closeDrawer()})"><i class="ri-delete-bin-line"></i> Remove</button></div>',
     );
 }
-
 
 /* ══════════════════════════════════════════
 ROLES
@@ -1640,7 +1643,11 @@ ROLES
 function renderRoles() {
     var list = document.getElementById("roles-list");
     list.innerHTML = ROLES_DATA.map(function (r) {
-        var permBadges = (r.perms.includes("all") ? ALL_PERMS.slice(0, 4) : r.perms.slice(0, 4))
+        var permBadges = (
+            r.perms.includes("all")
+                ? ALL_PERMS.slice(0, 4)
+                : r.perms.slice(0, 4)
+        )
             .map(function (p) {
                 return (
                     '<span class="chip" style="font-size:.58rem">' +
@@ -1651,7 +1658,9 @@ function renderRoles() {
             .join("");
         var more =
             r.perms.length > 4
-                ? '<span class="chip" style="font-size:.58rem">+' + (r.perms.length - 4) + " more</span>"
+                ? '<span class="chip" style="font-size:.58rem">+' +
+                  (r.perms.length - 4) +
+                  " more</span>"
                 : "";
         return (
             '<div class="role-card ' +
@@ -1659,7 +1668,9 @@ function renderRoles() {
             '" onclick="selectRole(\'' +
             r.id +
             "',this)\">" +
-            '<button class="role-edit-btn" onclick="openEditRole(\'' + r.id + '\', event)"><i class="ri-edit-line"></i></button>' +
+            '<button class="role-edit-btn" onclick="openEditRole(\'' +
+            r.id +
+            '\', event)"><i class="ri-edit-line"></i></button>' +
             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:9px;background:' +
             r.color +
             '22;display:flex;align-items:center;justify-content:center"><i class="ri-key-2-line" style="color:' +
@@ -1764,7 +1775,8 @@ function renderPermTable() {
                 p.group +
                 "</div></td>" +
                 ROLES_DATA.map(function (r) {
-                    var has = r.perms.includes("all") || r.perms.includes(p.key);
+                    var has =
+                        r.perms.includes("all") || r.perms.includes(p.key);
                     return (
                         '<td style="text-align:center"><i class="ri-' +
                         (has ? "check" : "minus") +
@@ -1813,7 +1825,9 @@ function createRole() {
         return;
     }
     var desc = document.getElementById("new-role-desc").value.trim();
-    var perms = Array.from(document.querySelectorAll("#new-role-perms input:checked")).map(function (i) {
+    var perms = Array.from(
+        document.querySelectorAll("#new-role-perms input:checked"),
+    ).map(function (i) {
         return i.value;
     });
     ROLES_DATA.push({
@@ -1839,7 +1853,7 @@ function populateStaffRoles() {
             }).join("");
 }
 
-var selectedEditRoleColor = '';
+var selectedEditRoleColor = "";
 
 /* ══════════════════════════════════════════
 REMINDERS
@@ -1907,9 +1921,12 @@ function setRemPage(p) {
 function filterReminders(q) {
     if (q === undefined) q = "";
     q = q.toLowerCase();
-    var statusF = (document.getElementById("rem-status-filter") || {}).value || "all";
+    var statusF =
+        (document.getElementById("rem-status-filter") || {}).value || "all";
     remFiltered = REMINDERS_DATA.filter(function (r) {
-        var matchQ = (r.title + r.user.name + r.category).toLowerCase().includes(q);
+        var matchQ = (r.title + r.user.name + r.category)
+            .toLowerCase()
+            .includes(q);
         var matchS = statusF === "all" || r.status === statusF;
         return matchQ && matchS;
     });
@@ -1922,7 +1939,11 @@ function openViewReminder(id) {
         return x.id === id;
     });
     if (!r) return;
-    var due = r.due.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    var due = r.due.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+    });
     var created = r.created.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
@@ -1944,12 +1965,20 @@ function openViewReminder(id) {
         due +
         "</span></div>" +
         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
-        (r.status === "active" ? "teal" : r.status === "completed" ? "green" : "red") +
+        (r.status === "active"
+            ? "teal"
+            : r.status === "completed"
+              ? "green"
+              : "red") +
         '">' +
         r.status +
         "</span></div>" +
         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Priority</span><span class="badge badge-' +
-        (r.priority === "high" ? "red" : r.priority === "medium" ? "amber" : "slate") +
+        (r.priority === "high"
+            ? "red"
+            : r.priority === "medium"
+              ? "amber"
+              : "slate") +
         '">' +
         r.priority +
         "</span></div>" +
@@ -1992,59 +2021,60 @@ const ADMIN_TXNS = window.ADMIN_TXNS || [];
 
 window.TRANSACTIONS = ADMIN_TXNS;
 
-let txnFiltered   = [...ADMIN_TXNS];
-let txnPageNum    = 1;
-let txnPerPage    = 10;
-let currentTxnId  = null;
+let txnFiltered = [...ADMIN_TXNS];
+let txnPageNum = 1;
+let txnPerPage = 10;
+let currentTxnId = null;
 
 // Badge color helper
 function getBadgeClass(status) {
-    if (status === 'completed') return 'green';
-    if (status === 'pending')   return 'amber';
-    if (status === 'refunded')  return 'red';
-    return 'slate';
+    if (status === "successful") return "green";
+    if (status === "pending") return "amber";
+    if (status === "refunded") return "red";
+    return "slate";
 }
 
 // Top stats pills under heading
 function renderTxnStats(data) {
-    const total     = data.length;
-    const completed = data.filter(t => t.status === 'completed').length;
-    const pending   = data.filter(t => t.status === 'pending').length;
-    const refunded  = data.filter(t => t.status === 'refunded').length;
+    const total = data.length;
+    const completed = data.filter((t) => t.status === "successful").length;
+    // const pending   = data.filter(t => t.status === 'pending').length;
+    const failed = data.filter((t) => t.status === "failed").length;
 
-    const elTotal     = document.getElementById('stats-total-count');
-    const elCompleted = document.getElementById('stats-completed-count');
-    const elPending   = document.getElementById('stats-pending-count');
-    const elRefunded  = document.getElementById('stats-refunded-count');
+    const elTotal = document.getElementById("stats-total-count");
+    const elCompleted = document.getElementById("stats-completed-count");
+    // const elPending   = document.getElementById('stats-pending-count');
+    const elRefunded = document.getElementById("stats-refunded-count");
 
-    if (elTotal)     elTotal.textContent     = total;
+    if (elTotal) elTotal.textContent = total;
     if (elCompleted) elCompleted.textContent = completed;
-    if (elPending)   elPending.textContent   = pending;
-    if (elRefunded)  elRefunded.textContent  = refunded;
+    // if (elPending)   elPending.textContent   = pending;
+    if (elRefunded) elRefunded.textContent = failed;
 }
 
 // Main table render
 
 function renderTransactions() {
-    const data       = txnFiltered;
+    const data = txnFiltered;
     const totalPages = Math.max(1, Math.ceil(data.length / txnPerPage));
     if (txnPageNum > totalPages) txnPageNum = totalPages;
 
     const start = (txnPageNum - 1) * txnPerPage;
     const slice = data.slice(start, start + txnPerPage);
 
-    const tbody = document.getElementById('txn-tbody');
+    const tbody = document.getElementById("txn-tbody");
     if (!tbody) return;
 
-    const showingEl = document.getElementById('txn-showing');
-    const totalEl   = document.getElementById('txn-total');
+    const showingEl = document.getElementById("txn-showing");
+    const totalEl = document.getElementById("txn-total");
 
     if (showingEl) showingEl.textContent = slice.length;
-    if (totalEl)   totalEl.textContent   = data.length;
+    if (totalEl) totalEl.textContent = data.length;
 
-    tbody.innerHTML = slice.map(function (t,index) {
-          const serialNo = start + index + 1;
-        return `
+    tbody.innerHTML = slice
+        .map(function (t, index) {
+            const serialNo = start + index + 1;
+            return `
             <tr>
               <td>
             <span style="font-weight:600">
@@ -2078,11 +2108,15 @@ function renderTransactions() {
                     </span>
                 </td>
 
-                <td>
-                    <span class="badge badge-${getBadgeClass(t.status)}">
-                        ${t.status.charAt(0).toUpperCase() + t.status.slice(1)}
-                    </span>
-                </td>
+               <td>
+    <span class="badge badge-${getBadgeClass(t.status)}">
+        ${
+            t.status === "successful"
+                ? "Paid"
+                : t.status.charAt(0).toUpperCase() + t.status.slice(1)
+        }
+    </span>
+</td>
 
                 <td class="hide-mobile" style="font-size:.75rem;color:var(--text3)">
                     ${t.date}
@@ -2100,7 +2134,8 @@ function renderTransactions() {
                 </td>
             </tr>
         `;
-    }).join('');
+        })
+        .join("");
 
     renderTxnStats(data);
     buildTxnPagination(totalPages);
@@ -2108,19 +2143,19 @@ function renderTransactions() {
 
 // Pagination controls specific to transactions
 function buildTxnPagination(totalPages) {
-    const wrap = document.getElementById('txn-pagination');
+    const wrap = document.getElementById("txn-pagination");
     if (!wrap) return;
 
     if (totalPages <= 1) {
-        wrap.innerHTML = '';
+        wrap.innerHTML = "";
         return;
     }
 
-    let html = '';
+    let html = "";
 
     html += `
         <button class="btn btn-ghost btn-xs"
-                ${txnPageNum === 1 ? 'disabled' : ''}
+                ${txnPageNum === 1 ? "disabled" : ""}
                 onclick="setTxnPage(${txnPageNum - 1})">
             Prev
         </button>
@@ -2128,7 +2163,7 @@ function buildTxnPagination(totalPages) {
 
     for (let i = 1; i <= totalPages; i++) {
         html += `
-            <button class="btn btn-ghost btn-xs ${i === txnPageNum ? 'active' : ''}"
+            <button class="btn btn-ghost btn-xs ${i === txnPageNum ? "active" : ""}"
                     onclick="setTxnPage(${i})">
                 ${i}
             </button>
@@ -2137,7 +2172,7 @@ function buildTxnPagination(totalPages) {
 
     html += `
         <button class="btn btn-ghost btn-xs"
-                ${txnPageNum === totalPages ? 'disabled' : ''}
+                ${txnPageNum === totalPages ? "disabled" : ""}
                 onclick="setTxnPage(${txnPageNum + 1})">
             Next
         </button>
@@ -2153,12 +2188,15 @@ function setTxnPage(page) {
 
 // Search + filter
 function filterTxn() {
-    const q       = (document.getElementById('txn-search-input')?.value || '')
-                        .toLowerCase()
-                        .trim();
-    const statusF = document.getElementById('txn-status-filter')?.value || 'all';
+    const q = (document.getElementById("txn-search-input")?.value || "")
+        .toLowerCase()
+        .trim();
+    const statusF =
+        document.getElementById("txn-status-filter")?.value || "all";
 
     txnFiltered = ADMIN_TXNS.filter(function (t) {
+        const searchableStatus = t.status === "successful" ? "paid" : t.status;
+
         const haystack = [
             t.txn_id,
             t.txn_order,
@@ -2166,11 +2204,12 @@ function filterTxn() {
             t.user_email,
             t.plan_name,
             t.order_ref,
-            t.status
-        ].join(' ').toLowerCase();
-
+            searchableStatus,
+        ]
+            .join(" ")
+            .toLowerCase();
         const matchQ = haystack.includes(q);
-        const matchS = statusF === 'all' || t.status === statusF;
+        const matchS = statusF === "all" || t.status === statusF;
 
         return matchQ && matchS;
     });
@@ -2186,7 +2225,7 @@ function openViewTxn(txnId) {
     });
 
     if (!t) {
-        toast('Transaction not found', 'error');
+        toast("Transaction not found", "error");
         return;
     }
 
@@ -2241,93 +2280,125 @@ function openViewTxn(txnId) {
         </div>
     `;
 
-    const el = document.getElementById('txn-modal-content');
+    const el = document.getElementById("txn-modal-content");
     if (el) el.innerHTML = content;
 
-    openModal('view-txn-modal');
+    openModal("view-txn-modal");
 }
 
 // Modal footer button
 function downloadCurrentTxnInvoice() {
     if (!currentTxnId) {
-        toast('No transaction selected', 'error');
+        toast("No transaction selected", "error");
         return;
     }
     openAdminInvoicePopup(currentTxnId);
 }
 
 // Opens invoice popup window
+// function openAdminInvoicePopup(txnId) {
+//     const txn = ADMIN_TXNS.find(item => item.txn_id === txnId);
+
+//     if (!txn) {
+//         toast('Transaction not found', 'error');
+//         return;
+//     }
+
+//     const params = new URLSearchParams({
+//         txn_id:         txn.txn_id,
+//         txn_order:         txn.txn_order,
+//         order_ref:      txn.order_ref,
+//         customer_name:  txn.user_name,
+//         customer_email: txn.user_email,
+//         items:          JSON.stringify(txn.items || [txn.plan_name]),
+//         amount:         txn.amount,
+//         status:         txn.status,
+//         date:           txn.date,
+//         method:         txn.method
+//     });
+
+//     window.open(
+//         `transaction-invoice?${params.toString()}`,
+//         'adminInvoicePopup',
+//         'width=980,height=760,top=40,left=120,resizable=yes,scrollbars=yes'
+//     );
+// }
+
 function openAdminInvoicePopup(txnId) {
-    const txn = ADMIN_TXNS.find(item => item.txn_id === txnId);
+    const txn = ADMIN_TXNS.find((item) => item.txn_id === txnId);
 
     if (!txn) {
-        toast('Transaction not found', 'error');
+        toast("Transaction not found", "error");
         return;
     }
 
-    const params = new URLSearchParams({
-        txn_id:         txn.txn_id,
-        txn_order:         txn.txn_order,
-        order_ref:      txn.order_ref,
-        customer_name:  txn.user_name,
-        customer_email: txn.user_email,
-        items:          JSON.stringify(txn.items || [txn.plan_name]),
-        amount:         txn.amount,
-        status:         txn.status,
-        date:           txn.date,
-        method:         txn.method
-    });
+    if (!txn.invoice_path) {
+        toast("Invoice file not found", "error");
+        return;
+    }
+
+    const invoiceUrl = `/${txn.invoice_path}`;
 
     window.open(
-        `transaction-invoice?${params.toString()}`,
-        'adminInvoicePopup',
-        'width=980,height=760,top=40,left=120,resizable=yes,scrollbars=yes'
+        invoiceUrl,
+        "adminInvoicePopup",
+        "width=980,height=760,top=40,left=120,resizable=yes,scrollbars=yes",
     );
 }
 
 // Export CSV
 function exportTransactionsCSV() {
-    const headers = ['Txn ID', 'User', 'Email', 'Plan', 'Order Ref', 'Amount', 'Status', 'Method', 'Date'];
+    const headers = [
+        "S.no",
+        "Txn ID",
+        "Order Id",
+        "User",
+        "Email",
+        "Plan",
+        "Amount",
+        "Status",
+        "Method",
+        "Date",
+    ];
 
-    const rows = ADMIN_TXNS.map(t => [
+    const rows = ADMIN_TXNS.map((t, index) => [
+        index + 1, // Serial Number
         t.txn_id,
-        t.txn_order,
+        t.tnx_order,
         t.user_name,
         t.user_email,
         t.plan_name,
-        t.order_ref,
         t.amount,
         t.status,
         t.method,
-        t.date
+        t.date,
     ]);
 
     const csv = [headers, ...rows]
-        .map(row =>
-            row.map(value =>
-                `"${String(value).replace(/"/g, '""')}"`
-            ).join(',')
+        .map((row) =>
+            row
+                .map((value) => `"${String(value).replace(/"/g, '""')}"`)
+                .join(","),
         )
-        .join('\n');
+        .join("\n");
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = 'transactions.csv';
+    link.download = "transactions.csv";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    toast('Transactions exported', 'success');
+    toast("Transactions exported", "success");
 }
 
 // Initial render when page is active
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
     // If you are using router with gop(), it already calls renderTransactions()
     // when page-transactions is active; calling again is safe.
     renderTransactions();
 });
-
 
 /* ══════════════════════════════════════════
 CATEGORIES
@@ -2335,123 +2406,198 @@ CATEGORIES
 
 function renderCategoryStats() {
     var totalCategories = CATS_DATA.length;
-    var totalSubcategories = CATS_DATA.reduce(function(sum, c) {
+    var totalSubcategories = CATS_DATA.reduce(function (sum, c) {
         return sum + c.subcategories.length;
     }, 0);
 
-    var topCategory = CATS_DATA.reduce(function(max, c) {
+    var topCategory = CATS_DATA.reduce(function (max, c) {
         return c.total > max.total ? c : max;
     }, CATS_DATA[0]);
 
-    document.getElementById("stat-total-categories").textContent = totalCategories;
-    document.getElementById("stat-total-subcategories").textContent = totalSubcategories;
-    document.getElementById("stat-top-category").textContent = topCategory.name + " (" + topCategory.total + ")";
+    document.getElementById("stat-total-categories").textContent =
+        totalCategories;
+    document.getElementById("stat-total-subcategories").textContent =
+        totalSubcategories;
+    document.getElementById("stat-top-category").textContent =
+        topCategory.name + " (" + topCategory.total + ")";
 }
 
 function renderAdminCategories() {
     renderCategoryStats();
 
-    document.getElementById("admin-cat-grid").innerHTML = CATS_DATA.map(function(c) {
-        var previewSubs = c.subcategories.slice(0, 3).map(function(s) {
-            return '<span class="chip" style="font-size:.65rem">' + s.name + '</span>';
-        }).join("");
+    document.getElementById("admin-cat-grid").innerHTML = CATS_DATA.map(
+        function (c) {
+            var previewSubs = c.subcategories
+                .slice(0, 3)
+                .map(function (s) {
+                    return (
+                        '<span class="chip" style="font-size:.65rem">' +
+                        s.name +
+                        "</span>"
+                    );
+                })
+                .join("");
 
-        var moreCount = c.subcategories.length > 3
-            ? '<span class="chip" style="font-size:.65rem">+' + (c.subcategories.length - 3) + ' more</span>'
-            : '';
+            var moreCount =
+                c.subcategories.length > 3
+                    ? '<span class="chip" style="font-size:.65rem">+' +
+                      (c.subcategories.length - 3) +
+                      " more</span>"
+                    : "";
 
-        return (
-            '<div class="card" style="padding:16px;cursor:pointer;transition:.2s ease" onclick="openCategoryDetail(' + c.id + ')">' +
+            return (
+                '<div class="card" style="padding:16px;cursor:pointer;transition:.2s ease" onclick="openCategoryDetail(' +
+                c.id +
+                ')">' +
                 '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px">' +
-                    '<div style="display:flex;align-items:center;gap:10px">' +
-                        '<div style="width:44px;height:44px;border-radius:12px;background:' + c.bg + ';display:flex;align-items:center;justify-content:center">' +
-                            '<i class="' + c.icon + '" style="color:' + c.color + ';font-size:1.1rem"></i>' +
-                        '</div>' +
-                        '<div>' +
-                            '<div style="font-weight:800;font-size:.92rem;color:var(--text)">' + c.name + '</div>' +
-                            '<div style="font-size:.72rem;color:var(--text3);margin-top:2px">' + c.desc + '</div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' + c.id + ')">' +
-                        '<i class="ri-pencil-line"></i>' +
-                    '</button>' +
-                '</div>' +
-
+                '<div style="display:flex;align-items:center;gap:10px">' +
+                '<div style="width:44px;height:44px;border-radius:12px;background:' +
+                c.bg +
+                ';display:flex;align-items:center;justify-content:center">' +
+                '<i class="' +
+                c.icon +
+                '" style="color:' +
+                c.color +
+                ';font-size:1.1rem"></i>' +
+                "</div>" +
+                "<div>" +
+                '<div style="font-weight:800;font-size:.92rem;color:var(--text)">' +
+                c.name +
+                "</div>" +
+                '<div style="font-size:.72rem;color:var(--text3);margin-top:2px">' +
+                c.desc +
+                "</div>" +
+                "</div>" +
+                "</div>" +
+                '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
+                c.id +
+                ')">' +
+                '<i class="ri-pencil-line"></i>' +
+                "</button>" +
+                "</div>" +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
-                    '<span class="badge badge-teal">' + c.subcategories.length + ' subcategories</span>' +
-                    '<span class="badge badge-purple">' + c.total.toLocaleString() + ' reminders</span>' +
-                '</div>' +
-
+                '<span class="badge badge-teal">' +
+                c.subcategories.length +
+                " subcategories</span>" +
+                '<span class="badge badge-purple">' +
+                c.total.toLocaleString() +
+                " reminders</span>" +
+                "</div>" +
                 '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-                    '<span style="font-size:.72rem;color:var(--text3)">Usage</span>' +
-                    '<span style="font-size:.72rem;font-weight:700;color:var(--text)">' + c.total.toLocaleString() + '</span>' +
-                '</div>' +
-
+                '<span style="font-size:.72rem;color:var(--text3)">Usage</span>' +
+                '<span style="font-size:.72rem;font-weight:700;color:var(--text)">' +
+                c.total.toLocaleString() +
+                "</span>" +
+                "</div>" +
                 '<div class="prog-track" style="margin-bottom:12px">' +
-                    '<div class="prog-fill" style="width:' + Math.min((c.total / 700) * 100, 100).toFixed(0) + '%;background:' + c.color + '"></div>' +
-                '</div>' +
-
+                '<div class="prog-fill" style="width:' +
+                Math.min((c.total / 700) * 100, 100).toFixed(0) +
+                "%;background:" +
+                c.color +
+                '"></div>' +
+                "</div>" +
                 '<div style="font-size:.68rem;color:var(--text3);margin-bottom:7px">Subcategory Preview</div>' +
-                '<div style="display:flex;gap:6px;flex-wrap:wrap">' + previewSubs + moreCount + '</div>' +
-            '</div>'
-        );
-    }).join("");
+                '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
+                previewSubs +
+                moreCount +
+                "</div>" +
+                "</div>"
+            );
+        },
+    ).join("");
 }
 
 function openCategoryDetail(categoryId) {
-    var c = CATS_DATA.find(function(x) { return x.id === categoryId; });
+    var c = CATS_DATA.find(function (x) {
+        return x.id === categoryId;
+    });
     if (!c) return;
 
-    var subsHtml = c.subcategories.map(function(s) {
-        return (
-            '<div class="card" style="padding:12px;border-radius:12px;background:var(--row-bg);border:1px solid var(--border2)">' +
+    var subsHtml = c.subcategories
+        .map(function (s) {
+            return (
+                '<div class="card" style="padding:12px;border-radius:12px;background:var(--row-bg);border:1px solid var(--border2)">' +
                 '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
-                    '<div>' +
-                        '<div style="font-size:.86rem;font-weight:700;color:var(--text)">' + s.name + '</div>' +
-                        '<div style="font-size:.72rem;color:var(--text3);margin-top:2px">' + (s.total || 0) + ' reminders</div>' +
-                    '</div>' +
-                    '<div style="display:flex;gap:6px">' +
-                        '<button class="btn btn-ghost btn-xs" onclick="openEditSubcategory(' + c.id + ',' + s.id + ')">' +
-                            '<i class="ri-pencil-line"></i>' +
-                        '</button>' +
-                        '<button class="btn btn-danger btn-xs" onclick="deleteSubcategory(' + c.id + ',' + s.id + ')">' +
-                            '<i class="ri-delete-bin-line"></i>' +
-                        '</button>' +
-                    '</div>' +
-                '</div>' +
-            '</div>'
-        );
-    }).join("");
+                "<div>" +
+                '<div style="font-size:.86rem;font-weight:700;color:var(--text)">' +
+                s.name +
+                "</div>" +
+                '<div style="font-size:.72rem;color:var(--text3);margin-top:2px">' +
+                (s.total || 0) +
+                " reminders</div>" +
+                "</div>" +
+                '<div style="display:flex;gap:6px">' +
+                '<button class="btn btn-ghost btn-xs" onclick="openEditSubcategory(' +
+                c.id +
+                "," +
+                s.id +
+                ')">' +
+                '<i class="ri-pencil-line"></i>' +
+                "</button>" +
+                '<button class="btn btn-danger btn-xs" onclick="deleteSubcategory(' +
+                c.id +
+                "," +
+                s.id +
+                ')">' +
+                '<i class="ri-delete-bin-line"></i>' +
+                "</button>" +
+                "</div>" +
+                "</div>" +
+                "</div>"
+            );
+        })
+        .join("");
 
     document.getElementById("category-detail-content").innerHTML =
         '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap">' +
-            '<div style="display:flex;align-items:center;gap:12px">' +
-                '<div style="width:54px;height:54px;border-radius:14px;background:' + c.bg + ';display:flex;align-items:center;justify-content:center">' +
-                    '<i class="' + c.icon + '" style="color:' + c.color + ';font-size:1.35rem"></i>' +
-                '</div>' +
-                '<div>' +
-                    '<div style="font-size:1rem;font-weight:800;color:var(--text)">' + c.name + '</div>' +
-                    '<div style="font-size:.76rem;color:var(--text3);margin-top:3px">' + c.desc + '</div>' +
-                '</div>' +
-            '</div>' +
-            '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-                '<button class="btn btn-ghost btn-sm" onclick="openEditCategory(' + c.id + ')"><i class="ri-pencil-line"></i> Edit</button>' +
-                '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' + c.id + ');closeModal(\'category-detail-modal\');openModal(\'add-subcategory-modal\')"><i class="ri-node-tree"></i> Add Subcategory</button>' +
-            '</div>' +
-        '</div>' +
-
+        '<div style="display:flex;align-items:center;gap:12px">' +
+        '<div style="width:54px;height:54px;border-radius:14px;background:' +
+        c.bg +
+        ';display:flex;align-items:center;justify-content:center">' +
+        '<i class="' +
+        c.icon +
+        '" style="color:' +
+        c.color +
+        ';font-size:1.35rem"></i>' +
+        "</div>" +
+        "<div>" +
+        '<div style="font-size:1rem;font-weight:800;color:var(--text)">' +
+        c.name +
+        "</div>" +
+        '<div style="font-size:.76rem;color:var(--text3);margin-top:3px">' +
+        c.desc +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn btn-ghost btn-sm" onclick="openEditCategory(' +
+        c.id +
+        ')"><i class="ri-pencil-line"></i> Edit</button>' +
+        '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
+        c.id +
+        ");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>" +
+        "</div>" +
+        "</div>" +
         '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px">' +
-            '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Category</div><div style="font-weight:800;color:var(--text);margin-top:4px">' + c.name + '</div></div>' +
-            '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Subcategories</div><div style="font-weight:800;color:var(--text);margin-top:4px">' + c.subcategories.length + '</div></div>' +
-            '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Usage</div><div style="font-weight:800;color:var(--text);margin-top:4px">' + c.total.toLocaleString() + '</div></div>' +
-        '</div>' +
-
+        '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Category</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        c.name +
+        "</div></div>" +
+        '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Subcategories</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        c.subcategories.length +
+        "</div></div>" +
+        '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Usage</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        c.total.toLocaleString() +
+        "</div></div>" +
+        "</div>" +
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
-            '<div style="font-size:.84rem;font-weight:700;color:var(--text)">Subcategories</div>' +
-            '<span class="badge badge-purple">' + c.subcategories.length + ' items</span>' +
-        '</div>' +
-
-        '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">' + subsHtml + '</div>';
+        '<div style="font-size:.84rem;font-weight:700;color:var(--text)">Subcategories</div>' +
+        '<span class="badge badge-purple">' +
+        c.subcategories.length +
+        " items</span>" +
+        "</div>" +
+        '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">' +
+        subsHtml +
+        "</div>";
 
     openModal("category-detail-modal");
 }
@@ -2459,8 +2605,8 @@ function openCategoryDetail(categoryId) {
 function populateSubcategoryParents() {
     var sel = document.getElementById("subcategory-parent");
     if (!sel) return;
-    sel.innerHTML = CATS_DATA.map(function(c) {
-        return '<option value="' + c.id + '">' + c.name + '</option>';
+    sel.innerHTML = CATS_DATA.map(function (c) {
+        return '<option value="' + c.id + '">' + c.name + "</option>";
     }).join("");
 }
 
@@ -2469,41 +2615,42 @@ function prefillSubcategoryParent(categoryId) {
     document.getElementById("subcategory-parent").value = categoryId;
 }
 
-function createSubcategory() {
-    var parentId = parseInt(document.getElementById("subcategory-parent").value);
-    var name = document.getElementById("subcategory-name").value.trim();
-    var desc = document.getElementById("subcategory-desc").value.trim();
+// function createSubcategory() {
+//     var parentId = parseInt(document.getElementById("subcategory-parent").value);
+//     var name = document.getElementById("subcategory-name").value.trim();
+//     var desc = document.getElementById("subcategory-desc").value.trim();
 
-    if (!name) {
-        toast("Subcategory name is required", "error");
-        return;
-    }
+//     if (!name) {
+//         toast("Subcategory name is required", "error");
+//         return;
+//     }
 
-    var category = CATS_DATA.find(function(c) { return c.id === parentId; });
-    if (!category) {
-        toast("Parent category not found", "error");
-        return;
-    }
+//     var category = CATS_DATA.find(function(c) { return c.id === parentId; });
+//     if (!category) {
+//         toast("Parent category not found", "error");
+//         return;
+//     }
 
-    category.subcategories.push({
-        id: Date.now(),
-        name: name,
-        desc: desc,
-        total: 0
-    });
+//     category.subcategories.push({
+//         id: Date.now(),
+//         name: name,
+//         desc: desc,
+//         total: 0
+//     });
 
-    toast("Subcategory created!", "success");
-    closeModal("add-subcategory-modal");
-    renderAdminCategories();
-    openCategoryDetail(category.id);
+//     toast("Subcategory created!", "success");
+//     closeModal("add-subcategory-modal");
+//     renderAdminCategories();
+//     openCategoryDetail(category.id);
 
-    document.getElementById("subcategory-name").value = "";
-    document.getElementById("subcategory-desc").value = "";
-}
+//     document.getElementById("subcategory-name").value = "";
+//     document.getElementById("subcategory-desc").value = "";
+// }
 
 function createCategory() {
     var name = document.getElementById("cat-name").value.trim();
-    var icon = document.getElementById("cat-icon").value.trim() || "ri-folder-line";
+    var icon =
+        document.getElementById("cat-icon").value.trim() || "ri-folder-line";
     var color = document.getElementById("cat-color").value || "#7c3aed";
     var desc = document.getElementById("cat-desc").value.trim();
 
@@ -2520,7 +2667,7 @@ function createCategory() {
         bg: hexToRgba(color, 0.12),
         desc: desc || "New category",
         total: 0,
-        subcategories: []
+        subcategories: [],
     });
 
     toast("Category created!", "success");
@@ -2536,11 +2683,11 @@ function hexToRgba(hex, alpha) {
     var r = parseInt(hex.slice(1, 3), 16);
     var g = parseInt(hex.slice(3, 5), 16);
     var b = parseInt(hex.slice(5, 7), 16);
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
 }
 
 function openEditCategory(categoryId) {
-    var c = CATS_DATA.find(function(item) {
+    var c = CATS_DATA.find(function (item) {
         return item.id === categoryId;
     });
 
@@ -2560,7 +2707,7 @@ function openEditCategory(categoryId) {
 
 function saveCategoryEdit() {
     var id = parseInt(document.getElementById("edit-cat-id").value);
-    var c = CATS_DATA.find(function(item) {
+    var c = CATS_DATA.find(function (item) {
         return item.id === id;
     });
 
@@ -2591,7 +2738,7 @@ function saveCategoryEdit() {
 }
 
 function openEditSubcategory(categoryId, subId) {
-    var parent = CATS_DATA.find(function(c) {
+    var parent = CATS_DATA.find(function (c) {
         return c.id === categoryId;
     });
 
@@ -2600,7 +2747,7 @@ function openEditSubcategory(categoryId, subId) {
         return;
     }
 
-    var sub = parent.subcategories.find(function(s) {
+    var sub = parent.subcategories.find(function (s) {
         return s.id === subId;
     });
 
@@ -2610,8 +2757,8 @@ function openEditSubcategory(categoryId, subId) {
     }
 
     var sel = document.getElementById("edit-sub-parent");
-    sel.innerHTML = CATS_DATA.map(function(c) {
-        return '<option value="' + c.id + '">' + c.name + '</option>';
+    sel.innerHTML = CATS_DATA.map(function (c) {
+        return '<option value="' + c.id + '">' + c.name + "</option>";
     }).join("");
 
     document.getElementById("edit-sub-id").value = sub.id;
@@ -2625,8 +2772,12 @@ function openEditSubcategory(categoryId, subId) {
 
 function saveSubcategoryEdit() {
     var subId = parseInt(document.getElementById("edit-sub-id").value);
-    var oldParentId = parseInt(document.getElementById("edit-sub-old-parent-id").value);
-    var newParentId = parseInt(document.getElementById("edit-sub-parent").value);
+    var oldParentId = parseInt(
+        document.getElementById("edit-sub-old-parent-id").value,
+    );
+    var newParentId = parseInt(
+        document.getElementById("edit-sub-parent").value,
+    );
     var name = document.getElementById("edit-sub-name").value.trim();
     var desc = document.getElementById("edit-sub-desc").value.trim();
 
@@ -2635,11 +2786,11 @@ function saveSubcategoryEdit() {
         return;
     }
 
-    var oldParent = CATS_DATA.find(function(c) {
+    var oldParent = CATS_DATA.find(function (c) {
         return c.id === oldParentId;
     });
 
-    var newParent = CATS_DATA.find(function(c) {
+    var newParent = CATS_DATA.find(function (c) {
         return c.id === newParentId;
     });
 
@@ -2648,7 +2799,7 @@ function saveSubcategoryEdit() {
         return;
     }
 
-    var subIndex = oldParent.subcategories.findIndex(function(s) {
+    var subIndex = oldParent.subcategories.findIndex(function (s) {
         return s.id === subId;
     });
 
@@ -2676,10 +2827,12 @@ function saveSubcategoryEdit() {
 }
 
 function deleteSubcategory(categoryId, subId) {
-    var category = CATS_DATA.find(function(c) { return c.id === categoryId; });
+    var category = CATS_DATA.find(function (c) {
+        return c.id === categoryId;
+    });
     if (!category) return;
 
-    category.subcategories = category.subcategories.filter(function(s) {
+    category.subcategories = category.subcategories.filter(function (s) {
         return s.id !== subId;
     });
 
@@ -2743,7 +2896,9 @@ function renderNotifications() {
         .map(function (n) {
             return (
                 '<div class="act-item" style="' +
-                (n.unread ? "background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.2)" : "") +
+                (n.unread
+                    ? "background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.2)"
+                    : "") +
                 '">' +
                 '<div style="width:36px;height:36px;border-radius:10px;background:' +
                 n.bg +
@@ -2805,7 +2960,12 @@ function renderAudit() {
             );
         })
         .join("");
-    buildPagination("audit-pagination", auditPageNum, totalPages, "setAuditPage");
+    buildPagination(
+        "audit-pagination",
+        auditPageNum,
+        totalPages,
+        "setAuditPage",
+    );
 }
 
 function setAuditPage(p) {
@@ -2816,7 +2976,8 @@ function setAuditPage(p) {
 function filterAudit(q) {
     if (q === undefined) q = "";
     q = q.toLowerCase();
-    var actionF = (document.getElementById("audit-action-filter") || {}).value || "all";
+    var actionF =
+        (document.getElementById("audit-action-filter") || {}).value || "all";
     auditFiltered = AUDIT_DATA.filter(function (a) {
         var matchQ = (a.action + a.detail + a.actor).toLowerCase().includes(q);
         var matchA = actionF === "all" || a.type === actionF;
@@ -2834,9 +2995,11 @@ var currentFilteredData = [];
 
 function renderFeedback() {
     var fbFiltered = FEEDBACK_DATA;
-    var typeF = (document.getElementById("fb-type-filter") || {}).value || "all";
-    var statusF = (document.getElementById("fb-status-filter") || {}).value || "all";
-    
+    var typeF =
+        (document.getElementById("fb-type-filter") || {}).value || "all";
+    var statusF =
+        (document.getElementById("fb-status-filter") || {}).value || "all";
+
     if (typeF !== "all")
         fbFiltered = fbFiltered.filter(function (f) {
             return f.type === typeF;
@@ -2845,13 +3008,15 @@ function renderFeedback() {
         fbFiltered = fbFiltered.filter(function (f) {
             return f.status === statusF;
         });
-    
+
     currentFilteredData = fbFiltered;
-    
+
     document.getElementById("feedback-list").innerHTML = fbFiltered
         .map(function (f, index) {
             return (
-                '<div class="act-item" data-feedback-index="' + index + '" style="' +
+                '<div class="act-item" data-feedback-index="' +
+                index +
+                '" style="' +
                 (f.status === "open"
                     ? "border-color:rgba(244,63,94,.25);background:rgba(244,63,94,.04)"
                     : "") +
@@ -2866,12 +3031,22 @@ function renderFeedback() {
                 '<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px"><span style="font-size:.84rem;font-weight:600;color:var(--text)">' +
                 f.user +
                 '</span><span class="badge badge-' +
-                (f.type === "bug" ? "red" : f.type === "feature" ? "amber" : "green") +
+                (f.type === "bug"
+                    ? "red"
+                    : f.type === "feature"
+                      ? "amber"
+                      : "green") +
                 '" style="font-size:.6rem">' +
                 f.type +
                 '</span><span class="badge badge-' +
-                (f.status === "open" ? "red" : f.status === "pending" ? "amber" : "green") +
-                '" style="font-size:.6rem" data-status-badge="' + index + '">' +
+                (f.status === "open"
+                    ? "red"
+                    : f.status === "pending"
+                      ? "amber"
+                      : "green") +
+                '" style="font-size:.6rem" data-status-badge="' +
+                index +
+                '">' +
                 f.status +
                 '</span></div><div style="font-size:.79rem;color:var(--text3)">' +
                 f.msg +
@@ -2893,24 +3068,37 @@ function filterFeedback() {
 function openReplyModal(index) {
     currentFeedbackIndex = index;
     var feedback = currentFilteredData[index];
-    
+
     // Populate display fields
     document.getElementById("display-name").textContent = feedback.user || "-";
-    document.getElementById("display-email").textContent = feedback.email || "-";
-    document.getElementById("display-phone").textContent = feedback.phone || "-";
-    document.getElementById("display-subject").textContent = feedback.subject || "No Subject";
-    document.getElementById("display-category").textContent = feedback.category || "-";
-    document.getElementById("display-message").textContent = feedback.msg || "-";
-    
+    document.getElementById("display-email").textContent =
+        feedback.email || "-";
+    document.getElementById("display-phone").textContent =
+        feedback.phone || "-";
+    document.getElementById("display-subject").textContent =
+        feedback.subject || "No Subject";
+    document.getElementById("display-category").textContent =
+        feedback.category || "-";
+    document.getElementById("display-message").textContent =
+        feedback.msg || "-";
+
     // Display type badge
-    var typeBadgeColor = feedback.type === "bug" ? "red" : feedback.type === "feature" ? "amber" : "green";
-    document.getElementById("display-type-badge").innerHTML = 
-        '<span class="badge badge-' + typeBadgeColor + '" style="font-size:.7rem">' + 
-        (feedback.type || "-") + '</span>';
-    
+    var typeBadgeColor =
+        feedback.type === "bug"
+            ? "red"
+            : feedback.type === "feature"
+              ? "amber"
+              : "green";
+    document.getElementById("display-type-badge").innerHTML =
+        '<span class="badge badge-' +
+        typeBadgeColor +
+        '" style="font-size:.7rem">' +
+        (feedback.type || "-") +
+        "</span>";
+
     // Clear previous message
     document.getElementById("reply-message").value = "";
-    
+
     // Show modal
     document.getElementById("replyMailModal").style.display = "flex";
 }
@@ -2922,22 +3110,22 @@ function closeReplyModal() {
 }
 
 // Handle form submission
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("replyMailForm");
     if (form) {
-        form.addEventListener("submit", function(e) {
+        form.addEventListener("submit", function (e) {
             e.preventDefault();
-            
+
             var message = document.getElementById("reply-message").value;
-            
+
             if (!message.trim()) {
                 toast("Please enter a reply message", "error");
                 return;
             }
-            
+
             // Get current feedback data
             var feedback = currentFilteredData[currentFeedbackIndex];
-            
+
             // Prepare reply data
             var replyData = {
                 name: feedback.user,
@@ -2947,28 +3135,33 @@ document.addEventListener("DOMContentLoaded", function() {
                 subject: feedback.subject,
                 category: feedback.category,
                 userMessage: feedback.msg,
-                adminReply: message
+                adminReply: message,
             };
-            
+
             console.log("Reply Data:", replyData);
-            
+
             // Update status to resolved in the original data
             // Find the original feedback in FEEDBACK_DATA
             for (var i = 0; i < FEEDBACK_DATA.length; i++) {
-                if (FEEDBACK_DATA[i].user === feedback.user && 
-                    FEEDBACK_DATA[i].msg === feedback.msg && 
-                    FEEDBACK_DATA[i].time === feedback.time) {
+                if (
+                    FEEDBACK_DATA[i].user === feedback.user &&
+                    FEEDBACK_DATA[i].msg === feedback.msg &&
+                    FEEDBACK_DATA[i].time === feedback.time
+                ) {
                     FEEDBACK_DATA[i].status = "resolved";
                     break;
                 }
             }
-            
+
             // Show success message
-            toast("Reply sent successfully! Status updated to resolved.", "success");
-            
+            toast(
+                "Reply sent successfully! Status updated to resolved.",
+                "success",
+            );
+
             // Close modal
             closeReplyModal();
-            
+
             // Re-render feedback list to show updated status
             renderFeedback();
         });
@@ -2976,7 +3169,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 // Close modal when clicking outside
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
     var modal = document.getElementById("replyMailModal");
     if (e.target === modal) {
         closeReplyModal();
@@ -2984,7 +3177,7 @@ document.addEventListener("click", function(e) {
 });
 
 // Close modal with ESC key
-document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
         closeReplyModal();
     }
@@ -3046,11 +3239,31 @@ SETTINGS
 ══════════════════════════════════════════ */
 function initSettings() {
     var flags = [
-        { label: "User Registration", desc: "Allow new users to sign up", on: true },
-        { label: "Email Notifications", desc: "System sends email alerts", on: true },
-        { label: "SMS Notifications", desc: "Twilio SMS gateway active", on: true },
-        { label: "WhatsApp Integration", desc: "WhatsApp Business API", on: true },
-        { label: "Analytics Tracking", desc: "Collect usage analytics", on: false },
+        {
+            label: "User Registration",
+            desc: "Allow new users to sign up",
+            on: true,
+        },
+        {
+            label: "Email Notifications",
+            desc: "System sends email alerts",
+            on: true,
+        },
+        {
+            label: "SMS Notifications",
+            desc: "Twilio SMS gateway active",
+            on: true,
+        },
+        {
+            label: "WhatsApp Integration",
+            desc: "WhatsApp Business API",
+            on: true,
+        },
+        {
+            label: "Analytics Tracking",
+            desc: "Collect usage analytics",
+            on: false,
+        },
         { label: "Referral Program", desc: "User referral rewards", on: false },
     ];
     var el = document.getElementById("feature-flags");

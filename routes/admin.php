@@ -28,3 +28,8 @@ Route::post('/admin/reset-password', [AdminController::class, 'adminResetPasswor
 Route::get('/admin-dashboard',[AdminController::class,'adminDashboard'])->name('admin.dashboard');
 
 Route::get('/admin-transactions',[ManagementController::class,'transactionPage'])->name('admin.transaction');
+
+
+Route::get('/admin-category',[ManagementController::class,'adminCategory'])->name('admin.category');
+Route::post('/admin/category/store', [ManagementController::class, 'storeCategory'])->name('admin.category.store');
+Route::post('/admin/subcategory/store',[ManagementController::class,'storeSubcategory'])->name('admin.subcategory.store');

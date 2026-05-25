@@ -61,5 +61,11 @@
          class="grid grid-cols-[repeat(auto-fill,minmax(280px,1fr))] gap-[14px]">
     </div>
 </section>
+<script>
+    window.CATS_DATA = @json($categories);
+</script>
+
+
+
 
 @endsection

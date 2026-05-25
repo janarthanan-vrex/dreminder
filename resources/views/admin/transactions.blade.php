@@ -24,19 +24,19 @@
         <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
             <div class="w-2 h-2 bg-green-500 rounded-full"></div>
             <span class="text-sm text-gray-600">
-                Completed: <strong class="text-green-600" id="stats-completed-count">0</strong>
+                Paid: <strong class="text-green-600" id="stats-completed-count">0</strong>
             </span>
         </div>
-        <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
+        <!-- <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
             <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
             <span class="text-sm text-gray-600">
-                Pending: <strong class="text-amber-600" id="stats-pending-count">0</strong>
+                Failed: <strong class="text-amber-600" id="stats-pending-count">0</strong>
             </span>
-        </div>
+        </div> -->
         <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-gray-100">
             <div class="w-2 h-2 bg-red-500 rounded-full"></div>
             <span class="text-sm text-gray-600">
-                Refunded: <strong class="text-red-600" id="stats-refunded-count">0</strong>
+                Failed: <strong class="text-red-600" id="stats-refunded-count">0</strong>
             </span>
         </div>
     </div>
@@ -53,9 +53,9 @@
 
                 <select class="inp" style="width:auto;min-width:130px" id="txn-status-filter" onchange="filterTxn()">
                     <option value="all">All Status</option>
-                    <option value="completed">Completed</option>
-                    <option value="pending">Pending</option>
-                    <option value="refunded">Refunded</option>
+                    <option value="successful">Paid</option>
+                    <option value="failed">Failed</option>
+                    
                 </select>
             </div>
         </div>

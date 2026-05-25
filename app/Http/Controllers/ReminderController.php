@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Activity;
 use App\Models\ReminderHistory;
+use Illuminate\Validation\Rule;
 
 
 class ReminderController extends Controller
@@ -292,6 +293,11 @@ class ReminderController extends Controller
 
     public function store(Request $request)
     {
+    $category = Category::find($request->category_id);
+
+    $isSpecialCategory = $category &&
+        in_array(strtolower($category->name), ['Special Day', 'Others']);
+
         $request->validate(
             [
                 'title'             => 'required|string|min:3|max:100',
@@ -302,7 +308,12 @@ class ReminderController extends Controller
                 'description'       => 'nullable|string|max:200',
                 'provider'          => 'nullable|string|max:100',
                 'cost'              => 'nullable|numeric|min:0',
-                'payment_frequency' => 'nullable|string|max:50',
+                'payment_frequency' => [
+                Rule::requiredIf(!$isSpecialCategory),
+                'nullable',
+                'string',
+                'max:50'
+            ],
             ],
             [
                 'category_id.required'             => 'Category name is required.',
@@ -337,11 +348,7 @@ class ReminderController extends Controller
             ], 422);
         }
 
-        $category = Category::findOrFail($request->category_id);
-
-// ✅ If category is "Special Day" or "Others", force these fields to null
-$isSpecialCategory = in_array(strtolower($category->name), ['special day', 'others']);
-
+       
 $provider         = $isSpecialCategory ? null : $request->provider;
 $cost             = $isSpecialCategory ? null : $request->cost;
 $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;

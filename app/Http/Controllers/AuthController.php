@@ -124,14 +124,20 @@ class AuthController extends Controller
     }
 
 
-   
+
 
     public function store(Request $request)
     {
         $request->validate([
             'firstName'       => 'required|string|max:100',
             'lastName'        => 'required|string|max:100',
-            'email'           => 'required|email|unique:users,email|max:255',
+            'email' => [
+                'required',
+                'email:rfc,dns',
+                'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',
+                'unique:users,email',
+                'max:255'
+            ],
             'password'        => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
             'confirmPassword' => 'required|same:password',
             'terms'           => 'accepted',
@@ -153,6 +159,7 @@ class AuthController extends Controller
             'email.required'           => 'Email address is required.',
             'email.email'              => 'Please enter a valid email address.',
             'email.unique'             => 'This email is already registered.',
+            'email.regex' => 'Please enter a valid email domain.',
             'password.required'        => 'Password is required.',
             'password.min'             => 'Password must be at least 8 characters.',
             'password.regex'           => 'Password must contain uppercase, lowercase and a number.',
@@ -466,118 +473,117 @@ class AuthController extends Controller
     }
 
     public function showResetForm($token, Request $request)
-{
-    $reset = DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->where('role', 'user')
-        ->first();
+    {
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('role', 'user')
+            ->first();
 
-    // Check token exists
-    if (!$reset) {
-        return redirect()
-            ->route('forgotpassword.page')
-            ->with('error', 'Invalid reset link');
+        // Check token exists
+        if (!$reset) {
+            return redirect()
+                ->route('forgotpassword.page')
+                ->with('error', 'Invalid reset link');
+        }
+
+        // Check token match
+        if (!hash_equals($reset->token, $token)) {
+            return redirect()
+                ->route('forgotpassword.page')
+                ->with('error', 'Invalid reset token');
+        }
+
+        // Check token expiry (60 minutes)
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+
+            // Optional: delete expired token
+            DB::table('password_reset_tokens')
+                ->where('email', $request->email)
+                ->delete();
+
+            return redirect()
+                ->route('forgotpassword.page')
+                ->with('error', 'Reset link expired');
+        }
+
+        return view('reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
     }
 
-    // Check token match
-    if (!hash_equals($reset->token, $token)) {
-        return redirect()
-            ->route('forgotpassword.page')
-            ->with('error', 'Invalid reset token');
-    }
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'token' => ['required'],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
+        ], [
+            'new_password.required' => 'New password is required',
+            'new_password.min' => 'Password must be at least 8 characters',
+            'new_password.confirmed' => 'Passwords do not match',
+            'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
+        ]);
 
-    // Check token expiry (60 minutes)
-    if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-        // Optional: delete expired token
+
+        // Find reset record
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('role', 'user') // 👈 change role
+            ->first();
+
+        if (!$reset) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid reset request'
+            ], 400);
+        }
+
+        if (!hash_equals($reset->token, $request->token)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Invalid or expired token'
+            ], 400);
+        }
+
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Token expired'
+            ], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
         DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->delete();
 
-        return redirect()
-            ->route('forgotpassword.page')
-            ->with('error', 'Reset link expired');
-    }
-
-    return view('reset-password', [
-        'token' => $token,
-        'email' => $request->email
-    ]);
-}
-
-    public function resetPassword(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'email' => ['required', 'email'],
-        'token' => ['required'],
-        'new_password' => [
-            'required',
-            'min:8',
-            'confirmed',
-            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
-            ],
-            ], [
-                'new_password.required' => 'New password is required',
-                'new_password.min' => 'Password must be at least 8 characters',
-                'new_password.confirmed' => 'Passwords do not match',
-                'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
-                ]);
-                
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => false,
-                        'errors' => $validator->errors()
-                        ], 422);
-                        }
-                        
-                       
-    // Find reset record
-    $reset = DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->where('role', 'user') // 👈 change role
-        ->first();
-
-    if (!$reset) {
         return response()->json([
-            'status' => false,
-            'message' => 'Invalid reset request'
-        ], 400);
+            'status' => true,
+            'message' => 'Password reset successful'
+        ]);
     }
-
-    if (!hash_equals($reset->token, $request->token)) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Invalid or expired token'
-        ], 400);
-    }
-
-    if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Token expired'
-        ], 400);
-    }
-
-    $user = User::where('email', $request->email)->first();
-
-    if (!$user) {
-        return response()->json([
-            'status' => false,
-            'message' => 'User not found'
-        ], 404);
-    }
-
-    $user->password = Hash::make($request->new_password);
-    $user->save();
-
-    DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->delete();
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Password reset successful'
-    ]);
-}
-
 }

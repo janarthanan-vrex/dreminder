@@ -826,10 +826,21 @@
       if (!ln) { showFieldError('lastName', 'Last name is required.');    valid = false; }
       else hideFieldError('lastName');
 
-      var emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!em)               { showFieldError('email', 'Email address is required.');       valid = false; }
-      else if (!emailRx.test(em)) { showFieldError('email', 'Please enter a valid email.'); valid = false; }
-      else hideFieldError('email');
+      // var emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // if (!em)               { showFieldError('email', 'Email address is required.');       valid = false; }
+      // else if (!emailRx.test(em)) { showFieldError('email', 'Please enter a valid email.'); valid = false; }
+      // else hideFieldError('email');
+      const emailRx = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+if (!em) {
+    showFieldError('email', 'Email address is required.');
+    valid = false;
+} else if (!emailRx.test(em)) {
+    showFieldError('email', 'Please enter a valid email.');
+    valid = false;
+} else {
+    hideFieldError('email');
+}
 
       var pwRx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
       if (!pw)             { showFieldError('password', 'Password is required.');           valid = false; }
@@ -996,6 +1007,10 @@
   var applyCouponBtn = document.getElementById('applyCoupon');
   var couponInput    = document.getElementById('couponInput');
   var couponMessage  = document.getElementById('couponMessage');
+  couponInput.addEventListener('input', function () {
+    couponMessage.textContent = '';
+    couponMessage.style.display = 'none';
+});
 
   if (applyCouponBtn) {
     applyCouponBtn.addEventListener('click', function() {
