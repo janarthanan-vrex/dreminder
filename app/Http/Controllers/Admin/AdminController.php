@@ -11,12 +11,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
     public function loginPage(Request $request)
     {
         return view('admin.admin-login');
+    }
+    public function adminProfile(Request $request){
+         $admin = Auth::guard('admin')->user();
+       
+        return view('admin.profile',compact('admin'));
     }
 
     // public function adminLogin(Request $request)
@@ -77,7 +83,7 @@ class AdminController extends Controller
 
     public function adminLogin(Request $request)
     {
-// dd($request->all());
+
         // ── Validation ───────────────────────────────────────────────────────
         $validator = \Validator::make($request->all(), [
             'name'     => 'required|string',
@@ -312,6 +318,104 @@ public function showAdminResetForm($token, Request $request)
     return response()->json([
         'status' => true,
         'message' => 'Password reset successful'
+    ]);
+}
+
+public function updateProfile(Request $request)
+{
+   
+    $request->validate([
+        'name'          => 'required|string|max:255',
+        'phone' => 'nullable|digits_between:10,15',
+        'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+    ]);
+
+    $admin = Auth::guard('admin')->user();
+
+    $data = [
+        'name'  => $request->name,
+        'phone' => $request->phone,
+    ];
+
+    // Image Upload
+    if ($request->hasFile('profile_image')) {
+
+        // Delete old image
+        if ($admin->profile_image &&
+            File::exists(public_path('profile/' . $admin->profile_image))) {
+
+            File::delete(public_path('profile/' . $admin->profile_image));
+        }
+
+        $image = $request->file('profile_image');
+
+        $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+        $image->move(public_path('profile'), $imageName);
+
+        $data['profile_image'] = $imageName;
+    }
+
+    $admin->update($data);
+
+   return response()->json([
+    'status' => true,
+    'message' => 'Profile updated successfully'
+]);
+}
+
+public function changePassword(Request $request)
+{
+    $admin = Auth::guard('admin')->user();
+
+    $request->validate([
+        'current_password' => 'required',
+        'new_password' => [
+            'required',
+            'min:8',
+            'regex:/[A-Z]/',
+            'regex:/[a-z]/',
+            'regex:/[0-9]/',
+            'regex:/[@$!%*#?&]/'
+        ],
+        'confirm_password' => 'required|same:new_password'
+    ],[
+        'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
+        'confirm_password.same' => 'Confirm password does not match'
+    ]);
+
+    // Current Password Check
+    if(!Hash::check($request->current_password,$admin->password)){
+
+        return response()->json([
+            'status' => false,
+            'errors' => [
+                'current_password' => ['Current password is incorrect']
+            ]
+        ],422);
+
+    }
+
+    // Same Password Check
+    if(Hash::check($request->new_password,$admin->password)){
+
+        return response()->json([
+            'status' => false,
+            'errors' => [
+                'new_password' => ['New password must be different from current password']
+            ]
+        ],422);
+
+    }
+
+    // Update Password
+    $admin->update([
+        'password' => Hash::make($request->new_password)
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Password updated successfully'
     ]);
 }
 

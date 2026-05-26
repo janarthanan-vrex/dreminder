@@ -2,6 +2,11 @@
     <div class="logo-txt lbl logoo" style="display:flex;align-items:center;gap:8px;overflow:hidden;white-space:nowrap">
         <img style="width: stretch; padding: 15px 26px 0px 0px;" src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="">
     </div>
+    @php
+    use App\Models\Admin;
+    $admin=Auth::guard('admin')->user();
+
+    @endphp
     <nav class="sb-nav">
         
         <div class="sb-section">Overview</div>
@@ -12,8 +17,8 @@
         <a class="nav-item" href="admin-users"><i class="ri-group-line"></i><span class="nav-lbl">Users</span><span class="nav-badge">3</span></a>
         <a class="nav-item" href="admin-reminders"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
         <a class="nav-item" href="admin-calendar"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
-        <a class="nav-item" href="admin-transactions"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
-        <a class="nav-item" href="admin-category"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
+        <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
+        <a class="nav-item" href="{{route('admin.category')}}"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
         <a class="nav-item" href="admin-notifications"><i class="ri-notification-3-line"></i><span class="nav-lbl">Notifications</span><span class="nav-badge">5</span></a>
 
         <div class="sb-section">Pricing</div>
@@ -49,21 +54,70 @@
 </a>
 
 <script>
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
     function handleLogout() {
-        document.getElementById('logoutForm').submit();
+
+        // Set message
+        document.getElementById('confirm-msg').innerText =
+            "Are you sure you want to logout?";
+
+        // Change button text
+        document.getElementById('confirm-ok-btn').innerHTML =
+            '<i class="ri-logout-box-r-line"></i> Yes, Logout';
+
+        // Open modal
+        openModal('confirm-modal');
+
+        // Confirm action
+        document.getElementById('confirm-ok-btn').onclick = function () {
+            document.getElementById('logoutForm').submit();
+        };
     }
 </script>
 
     </nav>
-    <div class="sb-user">
-        <a class="sb-user-row" href="admin-profile">
-            <div class="sb-avatar">SA</div>
-            <div class="sb-user-info">
-                <div class="sb-user-name">Super Admin</div>
-                <div class="sb-user-role">System Administrator</div>
+   <div class="sb-user">
+
+    <a class="sb-user-row" href="{{ url('admin-profile') }}">
+
+        @if($admin->profile_image)
+
+            <img
+                src="{{ asset('profile/'.$admin->profile_image) }}"
+                class="sb-avatar"
+                style="object-fit:cover"
+            >
+
+        @else
+
+            <div class="sb-avatar">
+                {{ strtoupper(substr($admin->name,0,2)) }}
             </div>
-</a>
-    </div>
+
+        @endif
+
+        <div class="sb-user-info">
+
+            <div class="sb-user-name">
+                {{ $admin->name }}
+            </div>
+
+            <div class="sb-user-role">
+                System Administrator
+            </div>
+
+        </div>
+
+    </a>
+
+</div>
 </aside>
 <script>
     function setActiveNav() {

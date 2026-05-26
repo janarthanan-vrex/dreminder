@@ -22,6 +22,7 @@ class Admin extends Authenticatable
         'city',
         'postal_code',
         'country',
+        'profile_image'
         
     ];
 

@@ -223,6 +223,7 @@ class UserController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
+    
     public function userTransaction(Request $request)
     {
         $user = Auth::user();

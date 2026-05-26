@@ -1,6 +1,14 @@
 @extends('admin.layouts.app')
 @section('content')
 <!-- ═══ USERS ═══ -->
+ <style>
+.err{
+    color:red;
+    font-size:12px;
+    margin-top:4px;
+    display:block;
+}
+</style>
 <section id="page-users" class="page active">
     <div
         style="
@@ -10,8 +18,7 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 10px;
-        "
-    >
+        ">
         <div>
             <h2 class="font-jakarta" style="font-size: 1.3rem; font-weight: 800">
                 User Management
@@ -32,20 +39,19 @@
     <div class="card" style="padding: 14px; margin-bottom: 14px">
         <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
             <div class="search-box" style="flex: 1; min-width: 200px">
-                <i class="ri-search-line" style="color: var(--text3); font-size: 0.85rem"></i
-                ><input
+                <i class="ri-search-line" style="color: var(--text3); font-size: 0.85rem"></i><input
                     placeholder="Search users…"
                     oninput="filterUsers(this.value)"
-                    id="users-search-inp"
-                />
+                    id="users-search-inp" />
             </div>
             <select
                 class="inp"
                 style="width: auto; min-width: 130px"
                 id="users-status-filter"
-                onchange="filterUsers()"
-            >
+                onchange="filterUsers()">
                 <option value="all">All Status</option>
+
+
                 <option value="active">Active</option>
                 <option value="suspended">Suspended</option>
             </select>
@@ -53,12 +59,14 @@
                 class="inp"
                 style="width: auto; min-width: 130px"
                 id="users-plan-filter"
-                onchange="filterUsers()"
-            >
+                onchange="filterUsers()">
                 <option value="all">All Plans</option>
-                <option value="Basic Annual">Basic Annual</option>
-                <option value="Pro">Pro</option>
-                <option value="Free">Free</option>
+                @foreach($plans as $plan)
+                <option value="{{ $plan->plan_name }}">
+                    {{ $plan->plan_name }}
+                </option>
+                @endforeach
+
             </select>
         </div>
     </div>
@@ -67,18 +75,7 @@
             <table class="data-table" id="users-table">
                 <thead>
                     <tr>
-                        <th style="width: 38px">
-                            <input
-                                type="checkbox"
-                                style="
-                                    accent-color: var(--purple);
-                                    width: 13px;
-                                    height: 13px;
-                                    cursor: pointer;
-                                "
-                                onchange="toggleAllCB(this,'user-cb')"
-                            />
-                        </th>
+                        <th style="width: 38px">S.No</th>
                         <th>User</th>
                         <th class="hide-mobile">Plan</th>
                         <th class="hide-mobile">Reminders</th>
@@ -99,4 +96,45 @@
         </div>
     </div>
 </section>
+
+<script>
+    window.USERS_DATA = @json($users);
+</script>
+
+<script>
+    function deleteUser(id) {
+
+        openConfirm('Delete this user? This cannot be undone.', function() {
+            const deleteUrl = "{{ route('admin.users.delete', ':id') }}";
+            fetch(deleteUrl.replace(':id', id), {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status) {
+                        toast(data.message, 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500)
+                        // Remove from array
+                        USERS_DATA = USERS_DATA.filter(u => u.id !== id);
+                        usersFiltered = usersFiltered.filter(u => u.id !== id);
+                        renderUsers();
+
+                    }
+
+                })
+                .catch(err => {
+                    console.log(err);
+                    toast('Something went wrong', 'error');
+                });
+
+        });
+
+    }
+</script>
 @endsection

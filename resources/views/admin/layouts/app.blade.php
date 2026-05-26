@@ -51,6 +51,7 @@
             }
         }
     </style>
+
 </head>
 
 <body>
@@ -85,6 +86,17 @@
     <!-- ═══════════════════════════════════
      MODALS
 ═══════════════════════════════════ -->
+
+    @php
+    use App\Models\Category;
+    use App\Models\PlanPrice;
+    $categories = Category::where('status', 'Active')
+    ->orderBy('name')
+    ->get();
+    $Plans = PlanPrice::where('status', 'Active')
+    ->get();
+
+    @endphp
 
     <!-- ADD USER -->
     <div class="modal-bg" id="add-user-modal">
@@ -161,30 +173,49 @@
             <input type="hidden" id="eu-id" />
             <div class="g2" style="margin-bottom: 14px">
                 <div>
-                    <label class="label">Full Name <span style="color: var(--red)">*</span></label><input class="inp" id="eu-name" placeholder="Full name" />
+                    <label class="label">First Name <span style="color: var(--red)">*</span></label>
+                    <input class="inp" id="eu-first_name" placeholder="First name" />
+                    <small class="err" id="eu-first_name-error"></small>
+
                 </div>
                 <div>
-                    <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="eu-email" type="email" placeholder="Email" />
+                    <label class="label">Last Name <span style="color: var(--red)">*</span></label>
+                   <input class="inp" id="eu-last_name" placeholder="Last name" />
+                    <small class="err" id="eu-last_name-error"></small>
                 </div>
+                
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
-                    <label class="label">Plan</label><select class="inp" id="eu-plan">
-                        <option>Basic Annual</option>
-                        <option>Pro</option>
-                        <option>Free</option>
-                    </select>
+                    <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="eu-email" type="email" readonly placeholder="Email" />
                 </div>
+                <div>
+                    <label class="label">Plan</label><select class="inp" id="eu-plan">
+                        @foreach($plans as $plan)
+                        <option value="{{ $plan->plan_name }}"
+                            {{ old('plan_name') == $plan->plan_name ? 'selected' : '' }}>
+                            {{ $plan->plan_name }}
+                        </option>
+                        @endforeach
+
+                    </select>
+                    <small class="err" id="eu-plan-error"></small>
+                </div>
+                
                 <div>
                     <label class="label">Status</label><select class="inp" id="eu-status">
                         <option value="active">Active</option>
                         <option value="suspended">Suspended</option>
                     </select>
+                    <small class="err" id="eu-status-error"></small>
                 </div>
+                <div style="margin-bottom: 18px">
+                <label class="label">Phone</label>
+                <input class="inp" id="eu-phone" placeholder="+44 7700 000000" />
+                <small class="err" id="eu-phone-error"></small>
             </div>
-            <div style="margin-bottom: 18px">
-                <label class="label">Phone</label><input class="inp" id="eu-phone" placeholder="+44 7700 000000" />
             </div>
+            
             <div style="display: flex; gap: 8px; justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('edit-user-modal')">Cancel</button>
                 <button class="btn btn-primary btn-sm" onclick="saveEditUser()">
@@ -494,7 +525,7 @@
                 <input class="inp" id="category-name" placeholder="e.g. Fitness" oninput="clearError('name')">
                 <small id="error-name" style="color:red"></small>
 
-                
+
             </div>
 
             <div class="g2" style="margin-bottom:14px">
@@ -662,17 +693,17 @@
                 <select class="inp" id="subcategory-parent" onchange="clearSubError('category_id')">
                     <option value="">Select Category</option>
                     @foreach($categories as $category)
-    <option value="{{ $category['id'] }}">
-        {{ $category['name'] }}
-    </option>
-@endforeach
+                    <option value="{{ $category->id }}">
+                        {{ $category->name }}
+                    </option>
+                    @endforeach
                 </select>
-               <small id="error-category_id" style="color:red;display:block;margin-top:4px"></small>
+                <small id="error-category_id" style="color:red;display:block;margin-top:4px"></small>
             </div>
 
             <div style="margin-bottom:14px">
                 <label class="label">Subcategory Name <span style="color:var(--red)">*</span></label>
-                <input class="inp" id="subcategory-name" placeholder="e.g. Car Insurance"  oninput="clearSubError('name')" />
+                <input class="inp" id="subcategory-name" placeholder="e.g. Car Insurance" oninput="clearSubError('name')" />
                 <small id="error-subname" style="color:red;display:block;margin-top:4px"></small>
             </div>
 
@@ -690,85 +721,84 @@
         </div>
     </div>
 
-   <script>
+    <script>
+        function clearSubError(field) {
 
-function clearSubError(field){
-
-    const map = {
-        category_id : 'error-category_id',
-        name        : 'error-subname'
-    };
-
-    const el = document.getElementById(map[field]);
-
-    if(el){
-        el.innerHTML = '';
-    }
-}
-
-async function createSubcategory(){
-
-    const map = {
-        category_id : 'error-category_id',
-        name        : 'error-subname'
-    };
-
-    ['category_id','name'].forEach(field => {
-
-        const el = document.getElementById(map[field]);
-
-        if(el){
-            el.innerHTML = '';
-        }
-    });
-
-    const response = await fetch("{{ route('admin.subcategory.store') }}",{
-
-        method:'POST',
-
-        headers:{
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'X-CSRF-TOKEN':document
-                .querySelector('meta[name="csrf-token"]')
-                .content
-        },
-
-        body:JSON.stringify({
-
-            category_id:document.getElementById('subcategory-parent').value,
-
-            name:document.getElementById('subcategory-name').value,
-
-            description:document.getElementById('subcategory-desc').value
-        })
-    });
-
-    const data = await response.json();
-
-    if(!response.ok){
-
-        Object.keys(data.errors).forEach(field => {
+            const map = {
+                category_id: 'error-category_id',
+                name: 'error-subname'
+            };
 
             const el = document.getElementById(map[field]);
 
-            if(el){
-                el.innerHTML = data.errors[field][0];
+            if (el) {
+                el.innerHTML = '';
             }
-        });
+        }
 
-        return;
-    }
+        async function createSubcategory() {
 
-    toast(data.message,'success');
+            const map = {
+                category_id: 'error-category_id',
+                name: 'error-subname'
+            };
 
-    closeModal('add-subcategory-modal');
+            ['category_id', 'name'].forEach(field => {
 
-    document.getElementById('subcategory-parent').value = '';
-    document.getElementById('subcategory-name').value = '';
-    document.getElementById('subcategory-desc').value = '';
-}
-</script>
+                const el = document.getElementById(map[field]);
+
+                if (el) {
+                    el.innerHTML = '';
+                }
+            });
+
+            const response = await fetch("{{ route('admin.subcategory.store') }}", {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        .content
+                },
+
+                body: JSON.stringify({
+
+                    category_id: document.getElementById('subcategory-parent').value,
+
+                    name: document.getElementById('subcategory-name').value,
+
+                    description: document.getElementById('subcategory-desc').value
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+
+                Object.keys(data.errors).forEach(field => {
+
+                    const el = document.getElementById(map[field]);
+
+                    if (el) {
+                        el.innerHTML = data.errors[field][0];
+                    }
+                });
+
+                return;
+            }
+
+            toast(data.message, 'success');
+
+            closeModal('add-subcategory-modal');
+
+            document.getElementById('subcategory-parent').value = '';
+            document.getElementById('subcategory-name').value = '';
+            document.getElementById('subcategory-desc').value = '';
+        }
+    </script>
 
     <!-- EDIT CATEGORY -->
     <div class="modal-bg z-[9999]" id="edit-category-modal">
@@ -972,6 +1002,23 @@ async function createSubcategory(){
             }
         });
     </script>
+    <script>
+
+['eu-first_name','eu-last_name','eu-phone','eu-plan','eu-status'].forEach(function(id){
+
+    document.getElementById(id).addEventListener('input',function(){
+
+        let error=document.getElementById(id+'-error');
+
+        if(error){
+            error.innerText='';
+        }
+
+    });
+
+});
+
+</script>
 
 </body>
 

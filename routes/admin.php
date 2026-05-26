@@ -26,8 +26,17 @@ Route::post('forgot-password',[AdminController::class, 'storeForgotPassword'])->
 Route::get('/reset-password/{token}', [AdminController::class, 'showAdminResetForm'])->name('admin.password.reset');
 Route::post('/admin/reset-password', [AdminController::class, 'adminResetPassword'])->name('admin.reset-password');
 Route::get('/admin-dashboard',[AdminController::class,'adminDashboard'])->name('admin.dashboard');
+Route::get('/admin-profile',[AdminController::class,'adminProfile'])->name('admin.profile');
+Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
+Route::post('/admin/change-password',[AdminController::class,'changePassword'])->name('admin.change.password');
 
 Route::get('/admin-transactions',[ManagementController::class,'transactionPage'])->name('admin.transaction');
+
+
+Route::get('/admin-users',[ManagementController::class,'userManagement'])->name('admin.usermanagement');
+Route::delete('/admin/users/{id}',[ManagementController::class,'deleteUser'])->name('admin.users.delete');
+Route::post('/admin/users/status',[ManagementController::class,'toggleUserStatus'])->name('admin.users.status');
+Route::post('/admin/users/update',[ManagementController::class,'updateUser'])->name('admin.users.update');
 
 
 Route::get('/admin-category',[ManagementController::class,'adminCategory'])->name('admin.category');

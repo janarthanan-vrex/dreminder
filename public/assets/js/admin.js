@@ -109,25 +109,27 @@ const COLORS_U = [
     "#a78bfa",
 ];
 
-const USERS_DATA = Array.from({ length: 28 }, (_, i) => ({
-    id: i + 1,
-    name: NAMES[i % 8],
-    email: "user" + (i + 1) + "@example.com",
-    plan: ["Basic Annual", "Basic Annual", "Pro", "Free"][i % 4],
-    rems: Math.floor(Math.random() * 60 + 2),
-    status: i === 5 ? "suspended" : "active",
-    joined: new Date(Date.now() - Math.random() * 3e7).toLocaleDateString(
-        "en-GB",
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        },
-    ),
-    phone: "+44 7700 9" + String(10000 + i).slice(1),
-    initials: INITS[i % 8],
-    color: COLORS_U[i % 8],
-}));
+// const USERS_DATA = Array.from({ length: 28 }, (_, i) => ({
+//     id: i + 1,
+//     name: NAMES[i % 8],
+//     email: "user" + (i + 1) + "@example.com",
+//     plan: ["Basic Annual", "Basic Annual", "Pro", "Free"][i % 4],
+//     rems: Math.floor(Math.random() * 60 + 2),
+//     status: i === 5 ? "suspended" : "active",
+//     joined: new Date(Date.now() - Math.random() * 3e7).toLocaleDateString(
+//         "en-GB",
+//         {
+//             day: "2-digit",
+//             month: "short",
+//             year: "numeric",
+//         },
+//     ),
+//     phone: "+44 7700 9" + String(10000 + i).slice(1),
+//     initials: INITS[i % 8],
+//     color: COLORS_U[i % 8],
+// }));
+
+let USERS_DATA = window.USERS_DATA || [];
 
 const STAFF_DATA = [
     {
@@ -849,23 +851,38 @@ function initDash() {
     renderSysHealth();
     initDashCharts();
 }
-
 function renderRecentUsers() {
     var el = document.getElementById("recent-users-list");
+
+    if (!el) return;
+
     el.innerHTML = USERS_DATA.slice(0, 5)
         .map(function (u) {
             return (
-                '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)"><div class="avatar avatar-sm" style="background:' +
-                u.color +
-                "22;color:" +
-                u.color +
-                '">' +
-                u.initials +
-                '</div><div style="flex:1;min-width:0"><div style="font-size:.83rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
+                '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border2)">' +
+                // Avatar
+                (u.profile
+                    ? '<img src="' +
+                      u.profile +
+                      '" class="avatar avatar-sm" style="width:38px;height:38px;border-radius:10px;object-fit:cover">'
+                    : '<div class="avatar avatar-sm" style="background:' +
+                      u.color +
+                      "22;color:" +
+                      u.color +
+                      ';width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:600">' +
+                      u.initials +
+                      "</div>") +
+                // User Info
+                '<div style="flex:1;min-width:0">' +
+                '<div style="font-size:.83rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' +
                 u.name +
-                '</div><div style="font-size:.7rem;color:var(--text3)">' +
+                "</div>" +
+                '<div style="font-size:.7rem;color:var(--text3)">' +
                 u.email +
-                '</div></div><span class="badge badge-' +
+                "</div>" +
+                "</div>" +
+                // Plan Badge
+                '<span class="badge badge-' +
                 (u.plan === "Pro"
                     ? "purple"
                     : u.plan === "Free"
@@ -873,7 +890,8 @@ function renderRecentUsers() {
                       : "teal") +
                 '" style="font-size:.6rem">' +
                 u.plan +
-                "</span></div>"
+                "</span>" +
+                "</div>"
             );
         })
         .join("");
@@ -1143,7 +1161,7 @@ function renderUsers() {
     document.getElementById("users-showing").textContent = slice.length;
     document.getElementById("users-total").textContent = data.length;
     document.getElementById("users-tbody").innerHTML = slice
-        .map(function (u) {
+        .map(function (u, index) {
             var planBadge =
                 u.plan === "Pro"
                     ? "purple"
@@ -1152,15 +1170,23 @@ function renderUsers() {
                       : "teal";
             return (
                 "<tr>" +
-                '<td><input type="checkbox" class="user-cb" style="accent-color:var(--purple);width:13px;height:13px;cursor:pointer"></td>' +
-                '<td><div style="display:flex;align-items:center;gap:9px"><div class="avatar avatar-sm" style="background:' +
-                u.color +
-                "22;color:" +
-                u.color +
-                '">' +
-                u.initials +
-                '</div><div><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
-                u.name +
+                '<td style="font-weight:600;color:var(--text3)">' +
+                (start + index + 1) +
+                "</td>" +
+                '<td><div style="display:flex;align-items:center;gap:9px">' +
+                (u.profile
+                    ? '<img src="' +
+                      u.profile +
+                      '" class="avatar avatar-sm" style="width:38px;height:38px;border-radius:10px;object-fit:cover">'
+                    : '<div class="avatar avatar-sm" style="background:' +
+                      u.color +
+                      "22;color:" +
+                      u.color +
+                      ';width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:600">' +
+                      u.initials +
+                      "</div>") +
+                '<div><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
+                u.first_name + ' ' + u.last_name +
                 '</div><div style="font-size:.7rem;color:var(--text3)">' +
                 u.email +
                 "</div></div></div></td>" +
@@ -1187,6 +1213,7 @@ function renderUsers() {
                 '<button class="btn btn-ghost btn-xs" onclick="openEditUser(' +
                 u.id +
                 ')"><i class="ri-pencil-line"></i></button>' +
+
                 '<button class="btn btn-' +
                 (u.status === "active" ? "amber" : "success") +
                 ' btn-xs" onclick="toggleUserStatus(' +
@@ -1194,9 +1221,11 @@ function renderUsers() {
                 ')"><i class="ri-' +
                 (u.status === "active" ? "pause" : "play") +
                 '-line"></i></button>' +
-                '<button class="btn btn-danger btn-xs" onclick="openConfirm(\'Delete ' +
-                u.name +
-                "? This cannot be undone.',function(){toast('User deleted','error')})\"><i class=\"ri-delete-bin-line\"></i></button>" +
+
+                '<button class="btn btn-danger btn-xs" onclick="deleteUser(' +
+                u.id +
+                ')"><i class="ri-delete-bin-line"></i></button>' +
+
                 "</div></td></tr>"
             );
         })
@@ -1223,7 +1252,7 @@ function filterUsers(q) {
     var planF =
         (document.getElementById("users-plan-filter") || {}).value || "all";
     usersFiltered = USERS_DATA.filter(function (u) {
-        var matchQ = (u.name + u.email + u.plan).toLowerCase().includes(q);
+        var matchQ = (u.first_name + ' ' + u.last_name + ' ' + u.email + ' ' + u.plan).toLowerCase().includes(q);
         var matchS = statusF === "all" || u.status === statusF;
         var matchP = planF === "all" || u.plan === planF;
         return matchQ && matchS && matchP;
@@ -1232,17 +1261,49 @@ function filterUsers(q) {
     renderUsers();
 }
 
-function toggleUserStatus(id) {
-    var u = USERS_DATA.find(function (x) {
-        return x.id === id;
+// function toggleUserStatus(id) {
+//     var u = USERS_DATA.find(function (x) {
+//         return x.id === id;
+//     });
+//     if (!u) return;
+//     u.status = u.status === "active" ? "suspended" : "active";
+//     toast(
+//         "User " + (u.status === "active" ? "activated" : "suspended"),
+//         "success",
+//     );
+//     renderUsers();
+// }
+
+function toggleUserStatus(id){
+    fetch('/admin/users/status',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
+            'Accept':'application/json'
+        },
+        body:JSON.stringify({
+            id:id
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status){
+            var u=USERS_DATA.find(function(x){
+                return x.id===id;
+            });
+            if(u){
+                u.status=data.user_status;
+            }
+            toast(data.message,'success');
+            renderUsers();
+        }
+    })
+    .catch(err=>{
+        console.log(err);
+        toast('Something went wrong','error');
     });
-    if (!u) return;
-    u.status = u.status === "active" ? "suspended" : "active";
-    toast(
-        "User " + (u.status === "active" ? "activated" : "suspended"),
-        "success",
-    );
-    renderUsers();
+
 }
 
 function openEditUser(id) {
@@ -1251,7 +1312,8 @@ function openEditUser(id) {
     });
     if (!u) return;
     document.getElementById("eu-id").value = u.id;
-    document.getElementById("eu-name").value = u.name;
+    document.getElementById("eu-first_name").value = u.first_name;
+    document.getElementById("eu-last_name").value = u.last_name;
     document.getElementById("eu-email").value = u.email;
     document.getElementById("eu-phone").value = u.phone || "";
     document.getElementById("eu-plan").value = u.plan;
@@ -1259,29 +1321,123 @@ function openEditUser(id) {
     openModal("edit-user-modal");
 }
 
-function saveEditUser() {
-    var id = parseInt(document.getElementById("eu-id").value);
-    var u = USERS_DATA.find(function (x) {
-        return x.id === id;
+// function saveEditUser() {
+//     var id = parseInt(document.getElementById("eu-id").value);
+//     var u = USERS_DATA.find(function (x) {
+//         return x.id === id;
+//     });
+//     if (!u) return;
+//     u.name = document.getElementById("eu-name").value;
+//     u.email = document.getElementById("eu-email").value;
+//     u.plan = document.getElementById("eu-plan").value;
+//     u.status = document.getElementById("eu-status").value;
+//     u.phone = document.getElementById("eu-phone").value;
+//     var ini = u.name
+//         .split(" ")
+//         .map(function (w) {
+//             return w[0];
+//         })
+//         .join("")
+//         .toUpperCase()
+//         .slice(0, 2);
+//     u.initials = ini;
+//     toast("User updated!", "success");
+//     closeModal("edit-user-modal");
+//     renderUsers();
+// }
+
+function saveEditUser(){
+
+    document.querySelectorAll('.err').forEach(el=>{
+        el.innerText='';
     });
-    if (!u) return;
-    u.name = document.getElementById("eu-name").value;
-    u.email = document.getElementById("eu-email").value;
-    u.plan = document.getElementById("eu-plan").value;
-    u.status = document.getElementById("eu-status").value;
-    u.phone = document.getElementById("eu-phone").value;
-    var ini = u.name
-        .split(" ")
-        .map(function (w) {
-            return w[0];
-        })
-        .join("")
-        .toUpperCase()
-        .slice(0, 2);
-    u.initials = ini;
-    toast("User updated!", "success");
-    closeModal("edit-user-modal");
-    renderUsers();
+
+    let payload = {
+
+        id:document.getElementById("eu-id").value,
+
+        first_name:document.getElementById("eu-first_name").value,
+
+        last_name:document.getElementById("eu-last_name").value,
+
+        plan:document.getElementById("eu-plan").value,
+
+        status:document.getElementById("eu-status").value,
+
+        phone:document.getElementById("eu-phone").value
+
+    };
+
+    fetch('/admin/users/update',{
+
+        method:'POST',
+
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
+            'Accept':'application/json'
+        },
+
+        body:JSON.stringify(payload)
+
+    })
+    .then(async response=>{
+
+        const data = await response.json();
+
+        if(response.status===422){
+
+            Object.keys(data.errors).forEach(key=>{
+
+                let errorEl=document.getElementById('eu-'+key+'-error');
+
+                if(errorEl){
+                    errorEl.innerText=data.errors[key][0];
+                }
+
+            });
+
+            return;
+        }
+
+        if(data.status){
+
+            var u = USERS_DATA.find(x=>x.id==payload.id);
+
+            if(u){
+
+                u.name = payload.first_name+' '+payload.last_name;
+
+                u.phone = payload.phone;
+
+                u.plan = payload.plan;
+
+                u.status = payload.status;
+
+                u.initials = (
+                    payload.first_name.charAt(0) +
+                    payload.last_name.charAt(0)
+                ).toUpperCase();
+
+            }
+
+            toast(data.message,'success');
+
+            closeModal("edit-user-modal");
+            setTimeout(()=>{
+                location.reload();
+            },1500)
+
+            renderUsers();
+
+        }
+
+    })
+    .catch(err=>{
+        console.log(err);
+        toast('Something went wrong','error');
+    });
+
 }
 
 function addUser() {
@@ -1329,7 +1485,7 @@ function openUserDrawer(id) {
             ';margin:0 auto 10px">' +
             u.initials +
             '</div><div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
-            u.name +
+            u.first_name + ' ' + u.last_name +
             '</div><div style="font-size:.75rem;color:var(--text3)">' +
             u.email +
             '</div><div style="margin-top:8px;display:flex;gap:6px;justify-content:center"><span class="badge badge-' +

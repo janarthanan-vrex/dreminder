@@ -185,9 +185,9 @@ Route::get('/admin-reset-password', function () {
 Route::get('/admin-layout', function () {
     return view('admin.layout');
 });
-Route::get('/admin-users', function () {
-    return view('admin.users');
-});
+// Route::get('/admin-users', function () {
+//     return view('admin.users');
+// });
 Route::get('/admin-reminders', function () {
     return view('admin.reminders');
 });
@@ -207,9 +207,7 @@ Route::get('/admin-analytics', function () {
 Route::get('/admin-settings', function () {
     return view('admin.settings');
 });
-Route::get('/admin-profile', function () {
-    return view('admin.profile');
-});
+
 Route::get('/admin-audit', function () {
     return view('admin.audit');
 });

@@ -118,21 +118,25 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, .08);
         }
 
+        /* ── HEADER ── */
         .invoice-head {
             padding: 28px;
-            display: flex;
-            justify-content: space-between;
-            gap: 24px;
-            flex-wrap: wrap;
             border-bottom: 1px solid var(--line);
             background: linear-gradient(135deg, rgba(124, 58, 237, .06), rgba(13, 148, 136, .04));
         }
 
+        .head-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .head-table td {
+            vertical-align: top;
+            padding: 0;
+        }
+
         .brand {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 50%;
+            width: 55%;
         }
 
         .brand-mark {
@@ -210,15 +214,26 @@
             background: currentColor;
         }
 
+        /* ── BODY ── */
         .invoice-body {
             padding: 28px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 16px;
+        /* ── INFO GRID ── */
+        .info-grid-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px 0;
             margin-bottom: 20px;
+            table-layout: fixed;
+        }
+
+        .info-grid-table td {
+            vertical-align: top;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 16px;
         }
 
         .info-box {
@@ -251,6 +266,7 @@
             margin-top: 4px;
         }
 
+        /* ── ITEMS TABLE ── */
         .table-wrap {
             overflow: auto;
             border: 1px solid var(--line);
@@ -294,11 +310,21 @@
             text-align: right;
         }
 
-        .summary-row {
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 18px;
-            align-items: start;
+        /* ── SUMMARY ROW ── */
+        .summary-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px 0;
+            table-layout: fixed;
+        }
+
+        .summary-table td {
+            vertical-align: top;
+            padding: 0;
+        }
+
+        .summary-table .td-totals {
+            width: 320px;
         }
 
         .notes-box,
@@ -359,11 +385,6 @@
                 padding: 18px
             }
 
-            .info-grid,
-            .summary-row {
-                grid-template-columns: 1fr
-            }
-
             .invoice-meta {
                 text-align: left
             }
@@ -406,11 +427,11 @@
                 color: #475569 !important;
             }
 
-            .info-box,
+            .info-grid-table td,
             .notes-box,
             .totals-box,
             .table-wrap {
-                background: #fff;
+                background: var(--panel-2);
                 border: 1px solid #e5e7eb;
             }
         }
@@ -421,7 +442,7 @@
 <body>
     <div class="invoice-shell">
 
-        {{-- TOPBAR (optional for PDF, keep if needed) --}}
+        {{-- TOPBAR --}}
         <div class="topbar">
             <div class="topbar-title">
                 <h1>Invoice Preview</h1>
@@ -433,105 +454,91 @@
 
             {{-- HEADER --}}
             <div class="invoice-head">
+                <table class="head-table">
+                    <tr>
+                        <td class="brand">
+                            <div class="brand-mark">
+                                @php
+                                $path = public_path('assets/images/common/d-remind.png');
+                                $type = pathinfo($path, PATHINFO_EXTENSION);
+                                $data = file_get_contents($path);
+                                $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                                @endphp
+                                <img src="{{ $logo }}" alt="d-reminder-logo">
+                            </div>
+                            <div class="brand-info">
+                                <p>
+                                    123 Sample Street, Chennai, Tamil Nadu<br>
+                                    support@yourstore.com · +91 98765 43210
+                                </p>
+                            </div>
+                        </td>
 
-                <div class="brand">
-                    <div class="brand-mark">
-                        @php
-                        $path = public_path('assets/images/common/d-remind.png');
-                        $type = pathinfo($path, PATHINFO_EXTENSION);
-                        $data = file_get_contents($path);
-
-                        $logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
-                        @endphp
-
-                        <img src="{{ $logo }}" alt="d-reminder-logo">
-
-                    </div>
-
-                    <div class="brand-info">
-                        <p>
-                            123 Sample Street, Chennai, Tamil Nadu<br>
-                            support@yourstore.com · +91 98765 43210
-                        </p>
-                    </div>
-                </div>
-
-                <div class="invoice-meta">
-                    <h3>{{ $invoiceId ?? 'INV-0000' }}</h3>
-
-                    <p>
-                        Invoice date · {{ $issueDate ?? now()->format('d M Y') }}
-                    </p>
-
-                    <div>
-                        @if(($isPaid ?? false))
-                        <span class="status-badge completed">
-                            <span class="status-dot"></span>Paid
-                        </span>
-                        @else
-                        <span class="status-badge pending">
-                            <span class="status-dot"></span>Pending
-                        </span>
-                        @endif
-                    </div>
-                </div>
-
+                        <td class="invoice-meta">
+                            <h3>{{ $invoiceId ?? 'INV-0000' }}</h3>
+                            <p>Invoice date · {{ $issueDate ?? now()->format('d M Y') }}</p>
+                            <div>
+                                @if(($isPaid ?? false))
+                                <span class="status-badge completed">
+                                    <span class="status-dot"></span>Paid
+                                </span>
+                                @else
+                                <span class="status-badge pending">
+                                    <span class="status-dot"></span>Pending
+                                </span>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             {{-- BODY --}}
             <div class="invoice-body">
 
-                <div class="info-grid">
+                {{-- BILL TO | INVOICE DETAILS --}}
+                <table class="info-grid-table">
+                    <tr>
+                        <td class="info-box">
+                            <div class="label">Bill To</div>
+                            <div class="main">
+                                {{ trim((optional($user)->first_name ?? '') . ' ' . (optional($user)->last_name ?? '')) ?: 'Customer' }}
+                            </div>
+                            <div class="sub">
+                                {{ optional($user)->email ?? '-' }}
+                            </div>
+                            <div class="sub">
+                                {{ optional($user)->address1 ?? '' }}
+                                {{ optional($user)->address2 ?? '' }}
+                                {{ optional($user)->postcode ?? '' }}
+                            </div>
+                        </td>
 
-                    {{-- BILL TO --}}
-                    <div class="info-box">
-                        <div class="label">Bill To</div>
-
-                        <div class="main">
-                            {{ trim((optional($user)->first_name ?? '') . ' ' . (optional($user)->last_name ?? '')) ?: 'Customer' }}
-                        </div>
-
-                        <div class="sub">
-                            {{ optional($user)->email ?? '-' }}
-                        </div>
-
-                        <div class="sub">
-                            {{ optional($user)->address1 ?? '' }}
-                            {{ optional($user)->address2 ?? '' }}
-                            {{ optional($user)->postcode ?? '' }}
-                        </div>
-                    </div>
-
-                    {{-- INVOICE DETAILS --}}
-                    <div class="info-box">
-                        <div class="label">Invoice Details</div>
-
-                        <div class="sub">
-                            Transaction ID:
-                            <span class="main">
-                                {{ optional($payment)->stripe_payment_id ?? '-' }}
-                            </span>
-                        </div>
-
-                        <div class="sub">
-                            Order Ref:
-                            <span class="main">
-                                {{ $invoiceId ?? '-' }}
-                            </span>
-                        </div>
-
-                        <div class="sub">
-                            Payment Method:
-                            {{ ucfirst(optional($payment)->payment_mode ?? 'card') }}
-                        </div>
-
-                        <div class="sub">
-                            Currency:
-                            {{ optional($payment)->currency ?? 'GBP' }}
-                        </div>
-                    </div>
-
-                </div>
+                        <td class="info-box">
+                            <div class="label">Invoice Details</div>
+                            <div class="sub">
+                                Transaction ID:
+                                <span class="main">
+                                    {{ optional($payment)->stripe_payment_id ?? '-' }}
+                                </span>
+                            </div>
+                            <div class="sub">
+                                Order Ref:
+                                <span class="main">
+                                    {{ $invoiceId ?? '-' }}
+                                </span>
+                            </div>
+                            <div class="sub">
+                                Payment Method:
+                                {{ ucfirst(optional($payment)->payment_mode ?? 'card') }}
+                            </div>
+                            <div class="sub">
+                                Currency:
+                                {{ optional($payment)->currency ?? 'GBP' }}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
 
                 {{-- TABLE --}}
                 <div class="table-wrap">
@@ -546,89 +553,80 @@
                                 <th class="text-right">Total</th>
                             </tr>
                         </thead>
-
                         <tbody>
-
-                            {{-- SINGLE PLAN ITEM (safe) --}}
                             <tr>
                                 <td>1</td>
-
-                                <td>
-                                    {{ optional($plan)->plan_name ?? 'Subscription Plan' }}
-                                </td>
-
+                                <td>{{ optional($plan)->plan_name ?? 'Subscription Plan' }}</td>
                                 <td class="text-right">1</td>
-
                                 <td class="text-right">
                                     {{ $currencySymbol ?? '£' }}
                                     {{ number_format($basePrice ?? 0, 2) }}
                                 </td>
-
                                 <td class="text-right">
                                     {{ number_format($vatAmount ?? 0, 2) }}
                                 </td>
-
                                 <td class="text-right">
                                     {{ $currencySymbol ?? '£' }}
                                     {{ number_format($finalAmount ?? 0, 2) }}
                                 </td>
                             </tr>
-
                         </tbody>
                     </table>
                 </div>
 
                 {{-- SUMMARY --}}
-                <div class="summary-row">
-
-                    <div class="notes-box">
-                        <div class="label">Notes</div>
-                        <p>
-                            Thank you for your purchase. This invoice was generated automatically.
-                        </p>
-                    </div>
-
-                    <div class="totals-box">
-                        <div class="label">Amount Breakdown</div>
-
-                        <div class="totals-list">
-
-                            <div class="totals-item">
-                                <span>Subtotal</span>
-                                <strong>
-                                    {{ $currencySymbol ?? '£' }}
-                                    {{ number_format($basePrice ?? 0, 2) }}
-                                </strong>
+                <table class="summary-table">
+                    <tr>
+                        <td class="td-notes">
+                            <div class="notes-box">
+                                <div class="label">Notes</div>
+                                <p>
+                                    Thank you for your purchase. This invoice was generated automatically.
+                                </p>
                             </div>
+                        </td>
 
-                            <div class="totals-item">
-                                <span>Discount</span>
-                                <strong>
-                                    -{{ $currencySymbol ?? '£' }}
-                                    {{ number_format($discount ?? 0, 2) }}
-                                </strong>
+                        <td class="td-totals">
+                            <div class="totals-box">
+                                <div class="label">Amount Breakdown</div>
+
+                                <div class="totals-list">
+                                    <div class="totals-item">
+                                        <span>Subtotal</span>
+                                        <strong>
+                                            {{ $currencySymbol ?? '£' }}
+                                            {{ number_format($basePrice ?? 0, 2) }}
+                                        </strong>
+                                    </div>
+
+                                    <div class="totals-item">
+                                        <span>Discount</span>
+                                        <strong>
+                                            -{{ $currencySymbol ?? '£' }}
+                                            {{ number_format($discount ?? 0, 2) }}
+                                        </strong>
+                                    </div>
+
+                                    <div class="totals-item">
+                                        <span>VAT</span>
+                                        <strong>
+                                            {{ $currencySymbol ?? '£' }}
+                                            {{ number_format($vatAmount ?? 0, 2) }}
+                                        </strong>
+                                    </div>
+
+                                    <div class="totals-item grand">
+                                        <span>Total Due</span>
+                                        <span>
+                                            {{ $currencySymbol ?? '£' }}
+                                            {{ number_format($finalAmount ?? 0, 2) }}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="totals-item">
-                                <span>VAT</span>
-                                <strong>
-                                    {{ $currencySymbol ?? '£' }}
-                                    {{ number_format($vatAmount ?? 0, 2) }}
-                                </strong>
-                            </div>
-
-                            <div class="totals-item grand">
-                                <span>Total Due</span>
-                                <span>
-                                    {{ $currencySymbol ?? '£' }}
-                                    {{ number_format($finalAmount ?? 0, 2) }}
-                                </span>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </div>
+                        </td>
+                    </tr>
+                </table>
 
             </div>
         </div>
