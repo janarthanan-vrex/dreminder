@@ -123,6 +123,8 @@ class UserController extends Controller
             'last_name'  => 'required|string|max:50',
             'email'      => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'required|digits_between:10,15',
+            'address1' => 'required|string|max:100',
+            'address2' => 'nullable|string|max:100',
             'postcode' => [
                 'required',
                 'regex:/^(GIR 0AA|[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2})$/i'
@@ -160,6 +162,8 @@ class UserController extends Controller
         $user->email      = $request->email;
         $user->phone      = $request->phone;
         $user->postcode   = $request->postcode;
+        $user->address1      = $request->address1;
+        $user->address2      = $request->address2;
 
         $user->save();
 

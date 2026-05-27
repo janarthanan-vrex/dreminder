@@ -35,6 +35,7 @@ class User extends Authenticatable
         'country',
         'plan_id',
         'status',
+        'admin_created'
     ];
 
     /**

@@ -1440,35 +1440,86 @@ function saveEditUser(){
 
 }
 
-function addUser() {
-    var fn = document.getElementById("au-fname").value.trim();
-    var ln = document.getElementById("au-lname").value.trim();
-    var em = document.getElementById("au-email").value.trim();
-    if (!fn || !em) {
-        toast("Name and email are required", "error");
-        return;
-    }
-    var newId = USERS_DATA.length + 1;
-    USERS_DATA.push({
-        id: newId,
-        name: fn + " " + ln,
-        email: em,
-        plan: document.getElementById("au-plan").value,
-        rems: 0,
-        status: document.getElementById("au-status").value,
-        joined: new Date().toLocaleDateString("en-GB", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-        }),
-        phone: document.getElementById("au-phone").value,
-        initials: (fn[0] + (ln[0] || "")).toUpperCase(),
-        color: COLORS_U[newId % 8],
+function addUser(){
+
+     const btn=document.getElementById('create-user-btn');
+
+    // Disable Button
+    btn.disabled=true;
+    btn.innerHTML='<i class="ri-loader-4-line spinner"></i> Processing...';
+
+
+    document.querySelectorAll('.err').forEach(el=>{
+        el.innerText='';
     });
-    usersFiltered = [...USERS_DATA];
-    toast("User created!", "success");
-    closeModal("add-user-modal");
-    renderUsers();
+
+    let payload = {
+        first_name:document.getElementById('au-fname').value,
+        last_name:document.getElementById('au-lname').value,
+        email:document.getElementById('au-email').value,
+        postcode:document.getElementById('au-postcode').value,
+        phone:document.getElementById('au-phone').value,
+        plan:document.getElementById('au-plan').value,
+        status:document.getElementById('au-status').value,
+        address1:document.getElementById('address1').value
+    };
+    fetch('/admin/users/store',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
+            'Accept':'application/json'
+        },
+        body:JSON.stringify(payload)
+    })
+    .then(async response=>{
+        const data = await response.json();
+        if(response.status===422){
+            Object.keys(data.errors).forEach(key=>{
+                let map = {
+                    first_name:'au-fname',
+                    last_name:'au-lname',
+                    email:'au-email',
+                    postcode:'au-postcode',
+                    phone:'au-phone',
+                    plan:'au-plan',
+                    status:'au-status',
+                    address1:'address1'
+                };
+                let errorEl=document.getElementById(map[key]+'-error');
+                if(errorEl){
+                    errorEl.innerText=data.errors[key][0];
+                }
+            });
+             btn.disabled=false;
+        btn.innerHTML='<i class="ri-check-line"></i> Create User';
+            return;
+        }
+       if(data.status){
+
+    toast(data.message,'success');
+
+    closeModal('add-user-modal');
+
+    ['au-fname','au-lname','au-email','au-phone','address1'].forEach(id=>{
+        document.getElementById(id).value='';
+    });
+
+    setTimeout(()=>{
+        location.reload();
+    },1500);
+
+}
+
+    })
+    .catch(err=>{
+        console.log(err);
+        toast('Something went wrong','error');
+        // Reset Button
+        btn.disabled=false;
+        btn.innerHTML='<i class="ri-check-line"></i> Create User';
+    });
+
 }
 
 function openUserDrawer(id) {

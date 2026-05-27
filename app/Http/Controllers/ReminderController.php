@@ -291,13 +291,172 @@ class ReminderController extends Controller
     //     ]);
     // }
 
-    public function store(Request $request)
+//     public function store(Request $request)
+//     {
+//     $category = Category::find($request->category_id);
+
+//     $isSpecialCategory = $category &&
+//         in_array(strtolower($category->name), ['Special Day', 'Others']);
+
+//         $request->validate(
+//             [
+//                 'title'             => 'required|string|min:3|max:100',
+//                 'category_id'       => 'required|integer|exists:categories,id',
+//                 'subcategory_name'  => 'required|string|max:100',
+//                 'end_reminder_date' => 'required|date|after_or_equal:today',
+//                 'reminder_time'     => 'required',
+//                 'description'       => 'nullable|string|max:200',
+//                 'provider'          => 'nullable|string|max:100',
+//                 'cost'              => 'nullable|numeric|min:0',
+//                 'payment_frequency' => [
+//                 Rule::requiredIf(!$isSpecialCategory),
+//                 'nullable',
+//                 'string',
+//                 'max:50'
+//             ],
+//             ],
+//             [
+//                 'category_id.required'             => 'Category name is required.',
+//                 'category_id.exists'               => 'Selected category is invalid.',
+//                 'subcategory_name.required'        => 'Subcategory name is required.',
+//                 'end_reminder_date.required'       => 'End reminder date is required.',
+//                 'end_reminder_date.after_or_equal' => 'End reminder date cannot be in the past.',
+//                 'reminder_time.required'           => 'Reminder time is required.',
+//             ]
+//         );
+
+//         // =====================================================
+//         // CHECK PAST TIME FOR TODAY
+//         // =====================================================
+
+//         $selectedDateTime = Carbon::parse(
+//             $request->end_reminder_date . ' ' . $request->reminder_time
+//         );
+
+//         if (
+//             Carbon::parse($request->end_reminder_date)->isToday()
+//             && $selectedDateTime->lt(now())
+//         ) {
+
+//             return response()->json([
+//                 'status' => false,
+//                 'errors' => [
+//                     'reminder_time' => [
+//                         'Selected reminder time has already passed.'
+//                     ]
+//                 ]
+//             ], 422);
+//         }
+
+       
+// $provider         = $isSpecialCategory ? null : $request->provider;
+// $cost             = $isSpecialCategory ? null : $request->cost;
+// $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
+
+//         $subcategory = SubCategory::where('category_id', $request->category_id)
+//             ->whereRaw('LOWER(name) = ?', [strtolower($request->subcategory_name)])
+//             ->first();
+
+//         if (!$subcategory) {
+//             $subcategory = SubCategory::create([
+//                 'category_id' => $request->category_id,
+//                 'name'        => ucfirst($request->subcategory_name),
+//                 'description' => null,
+//                 'role'        => 'user',
+//                 'created_by'  => Auth::id(),
+//                 'status'      => 'Active',
+//             ]);
+//         }
+
+//         $endDate     = Carbon::parse($request->end_reminder_date);
+
+//         // ✅ KEY FIX: Carbon::today() = midnight 00:00:00
+//         // now() has current time (e.g. 12:31:32), so Carbon::create(..., 21) at 00:00:00
+//         // would be "less than" now() on the same day — wrongly jumping to next month.
+//         $today       = Carbon::today();
+//         $originalDay = $endDate->day;
+
+//         // Build safe reminderDate capped to current month's actual days
+//         $firstOfCurrentMonth = Carbon::create($today->year, $today->month, 1);
+//         $lastDay             = $firstOfCurrentMonth->daysInMonth;
+//         $reminderDate        = Carbon::create($today->year, $today->month, min($originalDay, $lastDay));
+
+//         // Both are now midnight — date-only comparison, no time mismatch
+//         if ($reminderDate->lt($today)) {
+//             $firstOfNextMonth = Carbon::create($today->year, $today->month, 1)->addMonth();
+//             $lastDay          = $firstOfNextMonth->daysInMonth;
+//             $reminderDate     = Carbon::create($firstOfNextMonth->year, $firstOfNextMonth->month, min($originalDay, $lastDay));
+//         }
+
+//         $reminder = Reminder::create([
+//             'user_id'           => Auth::id(),
+//             'category_id'       => $request->category_id,
+//             'subcategory_id'    => $subcategory->id,
+//             'title'             => ucfirst($request->title),
+//             'reminder_date'     => $reminderDate->toDateString(),
+//             'end_reminder_date' => $endDate->toDateString(),
+//             'reminder_time'     => $request->reminder_time,
+//             'description'       => $request->description,
+//             'provider'          => $provider,          
+//             'cost'              => $cost,               
+//             'payment_frequency' => $paymentFrequency,   
+//             'status'            => 'Active',
+//         ]);
+
+//        $frequency = strtolower($paymentFrequency ?? '');
+
+//         $monthsMap = [
+//             'monthly'     => 1,
+//             'quarterly'   => 3,
+//             'half-yearly' => 6,
+//             'annually'    => 12,
+//         ];
+
+//         $months  = $monthsMap[$frequency] ?? 0;
+//         $current = Carbon::parse($reminder->reminder_date);
+
+//         while ($current->lte($endDate)) {
+
+//             ReminderHistory::create([
+//                 'user_id'       => Auth::id(),
+//                 'reminder_id'   => $reminder->id,
+//                 'reminder_date' => $current->toDateString(),
+//                 'reminder_time' => $reminder->reminder_time,
+//                 'status'        => 'pending',
+//             ]);
+
+//             if ($months === 0) {
+//                 break;
+//             }
+
+//             // Add months from the 1st — prevents day overflow (May 31 + 1month = Jul 1 bug)
+//             $firstOfCurrentMonth = Carbon::create($current->year, $current->month, 1);
+//             $nextMonth           = $firstOfCurrentMonth->addMonths($months);
+//             $lastDay             = $nextMonth->daysInMonth;
+//             $current             = Carbon::create($nextMonth->year, $nextMonth->month, min($originalDay, $lastDay));
+//         }
+
+//         Activity::create([
+//             'user_id'          => Auth::id(),
+//             'reminder_id'      => $reminder->id,
+//             'description'      => 'Reminder created for category "' .
+//                 $category->name . '" and subcategory "' . $subcategory->name . '"',
+//             'is_auto_generate' => 0,
+//         ]);
+
+//         return response()->json([
+//             'status'  => true,
+//             'message' => 'Reminder created successfully',
+//         ]);
+//     }
+
+ public function store(Request $request)
     {
-    $category = Category::find($request->category_id);
+         $category = Category::find($request->category_id);
 
-    $isSpecialCategory = $category &&
-        in_array(strtolower($category->name), ['Special Day', 'Others']);
-
+        $isSpecialCategory = $category &&
+        in_array(strtolower($category->name), ['special day', 'others']);
+       
         $request->validate(
             [
                 'title'             => 'required|string|min:3|max:100',
@@ -308,7 +467,7 @@ class ReminderController extends Controller
                 'description'       => 'nullable|string|max:200',
                 'provider'          => 'nullable|string|max:100',
                 'cost'              => 'nullable|numeric|min:0',
-                'payment_frequency' => [
+                 'payment_frequency' => [
                 Rule::requiredIf(!$isSpecialCategory),
                 'nullable',
                 'string',
@@ -349,6 +508,7 @@ class ReminderController extends Controller
         }
 
        
+
 $provider         = $isSpecialCategory ? null : $request->provider;
 $cost             = $isSpecialCategory ? null : $request->cost;
 $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
@@ -370,9 +530,9 @@ $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
 
         $endDate     = Carbon::parse($request->end_reminder_date);
 
-        // ✅ KEY FIX: Carbon::today() = midnight 00:00:00
+        // âœ… KEY FIX: Carbon::today() = midnight 00:00:00
         // now() has current time (e.g. 12:31:32), so Carbon::create(..., 21) at 00:00:00
-        // would be "less than" now() on the same day — wrongly jumping to next month.
+        // would be "less than" now() on the same day â€” wrongly jumping to next month.
         $today       = Carbon::today();
         $originalDay = $endDate->day;
 
@@ -381,7 +541,7 @@ $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
         $lastDay             = $firstOfCurrentMonth->daysInMonth;
         $reminderDate        = Carbon::create($today->year, $today->month, min($originalDay, $lastDay));
 
-        // Both are now midnight — date-only comparison, no time mismatch
+        // Both are now midnight â€” date-only comparison, no time mismatch
         if ($reminderDate->lt($today)) {
             $firstOfNextMonth = Carbon::create($today->year, $today->month, 1)->addMonth();
             $lastDay          = $firstOfNextMonth->daysInMonth;
@@ -429,7 +589,7 @@ $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
                 break;
             }
 
-            // Add months from the 1st — prevents day overflow (May 31 + 1month = Jul 1 bug)
+            // Add months from the 1st â€” prevents day overflow (May 31 + 1month = Jul 1 bug)
             $firstOfCurrentMonth = Carbon::create($current->year, $current->month, 1);
             $nextMonth           = $firstOfCurrentMonth->addMonths($months);
             $lastDay             = $nextMonth->daysInMonth;
@@ -449,6 +609,7 @@ $paymentFrequency = $isSpecialCategory ? null : $request->payment_frequency;
             'message' => 'Reminder created successfully',
         ]);
     }
+
 
     public function deleteReminder($id)
     {

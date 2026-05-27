@@ -80,6 +80,21 @@
                 <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Phone</label><input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" class="inp" type="tel" id="p-phone" value="{{$user->phone ?? ''}}">
                     <div class="error-text" id="err-phone"></div>
                 </div>
+
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Address Line 1 <span style="color:#f43f5e">*</span></label><input class="inp" id="p-address1" maxlength="70"  value="{{ $user->address1 ?? '' }}">
+                    <div class="error-text" id="err-address1"></div>
+                </div>
+
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Address Line 2 </label><input class="inp" id="p-address2" maxlength="70"  value="{{ $user->address2 ?? '' }}">
+                    <div class="error-text" id="err-address2"></div>
+                </div>
+
+
+
+
+
+
+
                 <div class="g2">
                     <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Country</label>
                         <select class="inp" disabled>
@@ -199,8 +214,9 @@
         formData.append('last_name', document.getElementById('p-lname').value || '');
         formData.append('email', document.getElementById('p-email').value);
         formData.append('phone', document.getElementById('p-phone').value);
-        formData.append('postcode', document.querySelector('input[value="{{ $user->postcode ?? '
-            ' }}"]')?.value || '');
+         formData.append('address1', document.getElementById('p-address1').value);
+         formData.append('address2', document.getElementById('p-address2').value);
+        formData.append('postcode', document.querySelector('input[value="{{ $user->postcode ?? '' }}"]')?.value || '');
 
         const fileInput = document.getElementById('av-inp');
         if (fileInput.files[0]) {
@@ -299,6 +315,8 @@
     clearErrorOnInput('p-lname', 'err-last_name');
     clearErrorOnInput('p-email', 'err-email');
     clearErrorOnInput('p-phone', 'err-phone');
+    clearErrorOnInput('p-address1', 'err-address1');
+    clearErrorOnInput('p-address2', 'err-address2');
     clearErrorOnInput('p-postcode', 'err-postcode');
     clearErrorOnInput('current_password', 'err-current_password');
 clearErrorOnInput('new_password', 'err-new_password');

@@ -153,7 +153,7 @@ Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearA
 Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
 
 Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
-Route::get('/user-remindrs', [ReminderController::class, 'userReminders'])->name('user.reminders');
+Route::get('/user-reminders', [ReminderController::class, 'userReminders'])->name('user.reminders');
 Route::delete('/delete-reminder/{id}', [ReminderController::class, 'deleteReminder'])->name('user.reminder.delete');
 Route::put('/update-reminder/{id}', [ReminderController::class, 'update']);
 

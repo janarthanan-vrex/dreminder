@@ -53,6 +53,14 @@
     </style>
 
 </head>
+<style>
+.err{
+    color:red;
+    font-size:12px;
+    margin-top:4px;
+    display:block;
+}
+</style>
 
 <body>
     <!-- <div id="loader">
@@ -93,7 +101,7 @@
     $categories = Category::where('status', 'Active')
     ->orderBy('name')
     ->get();
-    $Plans = PlanPrice::where('status', 'Active')
+    $plans = PlanPrice::where('status', 'Active')
     ->get();
 
     @endphp
@@ -117,36 +125,73 @@
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
-                    <label class="label">First Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-fname" placeholder="John" />
+                    <label class="label">First Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-fname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="John" />
+                    <small class="err" id="au-fname-error"></small>
                 </div>
                 <div>
-                    <label class="label">Last Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-lname" placeholder="Smith" />
+                    <label class="label">Last Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-lname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="Smith" />
+                    <small class="err" id="au-lname-error"></small>
                 </div>
             </div>
+
             <div style="margin-bottom: 14px">
-                <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="john@example.com" />
+
+            <div>
+                     <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="john@example.com" />
+                     <small class="err" id="au-email-error"></small>
+                </div>
+                
             </div>
+
+
+
             <div class="g2" style="margin-bottom: 14px">
                 <div>
+                    <div>
                     <label class="label">Plan</label><select class="inp" id="au-plan">
-                        <option>Basic Annual</option>
-                        <option>Pro</option>
-                        <option>Free</option>
+                        @foreach($plans as $plan)
+                        <option value="{{ $plan->plan_name }}"
+                            {{ old('plan_name') == $plan->plan_name ? 'selected' : '' }}>
+                            {{ $plan->plan_name }}
+                        </option>
+                        @endforeach
                     </select>
+                    <small class="err" id="au-plan-error"></small>
+                </div>
+                </div>
+
+            <div>
+                     <label class="label">Post Code <span style="color: var(--red)">*</span></label><input class="inp" id="au-postcode"  type="text" maxlength="8" placeholder="Enter Post Code" />
+                     <small class="err" id="au-postcode-error"></small>
+                </div>
+                
+            </div>
+            
+
+
+
+            
+           
+            <div class="g2" style="margin-bottom: 14px">
+                <div>
+                    <label class="label">Phone <span style="color: var(--red)">*</span></label><input class="inp" id="au-phone" placeholder="+44 7700 000000" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                    <small class="err" id="au-phone-error"></small>
                 </div>
                 <div>
-                    <label class="label">Status</label><select class="inp" id="au-status">
+                    <label class="label">Status <span style="color: var(--red)">*</span></label><select class="inp" id="au-status">
                         <option value="active">Active</option>
                         <option value="suspended">Suspended</option>
                     </select>
+                    <small class="err" id="au-status-error"></small>
                 </div>
             </div>
             <div style="margin-bottom: 18px">
-                <label class="label">Phone</label><input class="inp" id="au-phone" placeholder="+44 7700 000000" />
+                <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" id="address1" placeholder="Enter Address"/>
+                <small class="err" id="address1-error"></small>
             </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('add-user-modal')">Cancel</button>
-                <button class="btn btn-primary btn-sm" onclick="addUser()">
+                <button class="btn btn-primary btn-sm"  id="create-user-btn" onclick="addUser()">
                     <i class="ri-check-line"></i> Create User
                 </button>
             </div>
@@ -1014,6 +1059,20 @@
             error.innerText='';
         }
 
+    });
+
+});
+
+</script>
+
+<script>
+
+['au-fname','au-lname','au-email','au-postcode','au-phone','au-plan','au-status','address1'].forEach(function(id){
+    document.getElementById(id).addEventListener('input',function(){
+        let error=document.getElementById(id+'-error');
+        if(error){
+            error.innerText='';
+        }
     });
 
 });

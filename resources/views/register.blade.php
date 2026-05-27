@@ -527,7 +527,7 @@
   </div>
   <div>
     <div class="font-bold">Payment successful!</div>
-    <div class="text-xs text-white/40">Redirecting to your dashboard...</div>
+    <div class="text-xs text-white/40">Redirecting to your login page...</div>
   </div>
 </div>
 

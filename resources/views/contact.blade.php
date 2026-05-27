@@ -159,9 +159,9 @@
   <div class="gradient-blob w-[400px] h-[400px] bg-secondary top-[-15%] right-[10%]"></div>
   <div class="max-w-[800px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb"><a href="index">Home</a><span class="sep">/</span><span>Contact</span></div>
-    <div class="badge bg-secondary/10 border border-secondary/20 text-cyan-300 mx-auto mb-6 w-fit reveal"><span class="w-2 h-2 rounded-full bg-secondary"></span> Get In Touch</div>
-    <h1 class="reveal">We'd love to <span class="grad-text">hear from you.</span></h1>
-    <p class="reveal" data-delay="1">Have a question, feedback, or just want to say hi? Our team typically responds within 24 hours.</p>
+    <div class="badge bg-secondary/10 border border-secondary/20 text-cyan-300 mx-auto mb-6 w-fit reveal"><span class="w-2 h-2 rounded-full bg-secondary"></span> Reach Out</div>
+    <h1 class="reveal">Share Your Query;<span class="grad-text">We’ll Respond</span></h1>
+    <p class="reveal" data-delay="1">Have a question, need assistance, or want to share feedback? Our team is available to support you with a prompt response.</p>
   </div>
 </section>
 
@@ -218,19 +218,19 @@
       <!-- RIGHT: Contact Form -->
       <div class="lg:col-span-2">
         <div class="glass-strong reveal-right !rounded-3xl p-8 md:p-10">
-          <h3 class="text-2xl font-bold text-white mb-2">Send us a message</h3>
-          <p class="text-sm text-white/40 mb-8">Fill out the form below and we'll get back to you within 24 hours.</p>
+          <h3 class="text-2xl font-bold text-white mb-2">Complete the Enquiry Form</h3>
+          <p class="text-sm text-white/40 mb-8">Let us know what you need assistance with, and our team will get back to you with the right support.</p>
           
           <form id="contactForm" class="flex flex-col gap-5" onsubmit="return false;">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label class="auth-label">First Name <span class="text-red-400">*</span></label>
-                <input type="text" name="first_name" id="first_name" placeholder="Enter Your First Name" class="auth-input">
+                <input type="text" name="first_name" id="first_name" placeholder="Enter Your First Name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
 <div id="err-first_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
               <div>
                 <label class="auth-label">Last Name <span class="text-red-400">*</span></label>
-              <input type="text" name="last_name" id="last_name" placeholder="Enter Your Last Name" class="auth-input">
+              <input type="text" name="last_name" id="last_name" placeholder="Enter Your Last Name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
 <div id="err-last_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
             </div>
@@ -242,14 +242,14 @@
             </div>
             
             <div>
-              <label class="auth-label">Phone Number <span class="text-white/25 text-xs">(optional)</span></label>
-              <input type="tel" name="phone" id="phone" placeholder="+44 020 0000 0000" class="auth-input">
+              <label class="auth-label">Phone Number <span class="text-red-400">*</span></label>
+              <input type="tel" name="phone" id="phone" placeholder="+44 020 0000 0000" class="auth-input" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
 <div id="err-phone" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Subject <span class="text-red-400">*</span></label>
-             <input type="text" name="subject" id="subject" placeholder="Enter Your Subject" class="auth-input">
+             <input type="text" name="subject" id="subject" placeholder="Enter Your Subject" class="auth-input"maxlength="50" >
 <div id="err-subject" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
@@ -267,7 +267,7 @@
             </div> -->
             
             <button type="button" id="submitBtn" class="auth-submit-dark">
-              <i class="ri-send-plane-line mr-2"></i>Send Message
+              <i class="ri-send-plane-line mr-2"></i>Submit Message
             </button>
           </form>
 
