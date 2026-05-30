@@ -246,22 +246,24 @@ const REM_CATS = [
     "TV, Tel & Mobile",
     "Travel",
 ];
-const REMINDERS_DATA = Array.from({ length: 30 }, (_, i) => ({
-    id: 1001 + i,
-    title: REM_TITLES[i % REM_TITLES.length],
-    user: USERS_DATA[i % USERS_DATA.length],
-    category: REM_CATS[i % REM_CATS.length],
-    due: new Date(Date.now() + (i - 8) * 86400000 * 2),
-    status:
-        i === 3 || i === 8 || i === 15
-            ? "overdue"
-            : i % 3 === 0
-              ? "completed"
-              : "active",
-    notes: "Auto-reminder set by user. Notification via Email & SMS.",
-    created: new Date(Date.now() - i * 86400000 * 5),
-    priority: ["low", "medium", "high"][i % 3],
-}));
+// const REMINDERS_DATA = Array.from({ length: 30 }, (_, i) => ({
+//     id: 1001 + i,
+//     title: REM_TITLES[i % REM_TITLES.length],
+//     user: USERS_DATA[i % USERS_DATA.length],
+//     category: REM_CATS[i % REM_CATS.length],
+//     due: new Date(Date.now() + (i - 8) * 86400000 * 2),
+//     status:
+//         i === 3 || i === 8 || i === 15
+//             ? "overdue"
+//             : i % 3 === 0
+//               ? "completed"
+//               : "active",
+//     notes: "Auto-reminder set by user. Notification via Email & SMS.",
+//     created: new Date(Date.now() - i * 86400000 * 5),
+//     priority: ["low", "medium", "high"][i % 3],
+// }));
+
+let REMINDERS_DATA = window.REMINDERS_DATA || [];
 
 const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
     id: 10000 + i,
@@ -419,81 +421,19 @@ const AUDIT_DATA = [
     },
 ];
 
-const FEEDBACK_DATA = [
-    {
-        type: "bug",
-        icon: "ri-bug-line",
-        col: "#f43f5e",
-        user: "Kishore Rex",
-        msg: "Push notifications not working on iOS 17",
-        status: "open",
-        time: "Apr 25",
-    },
-    {
-        type: "feature",
-        icon: "ri-lightbulb-line",
-        col: "#f59e0b",
-        user: "Sarah Johnson",
-        msg: "Add recurring reminder types like biweekly",
-        status: "pending",
-        time: "Apr 24",
-    },
-    {
-        type: "compliment",
-        icon: "ri-thumb-up-line",
-        col: "#10b981",
-        user: "Michael Chen",
-        msg: "Love the WhatsApp integration! Works perfectly.",
-        status: "resolved",
-        time: "Apr 22",
-    },
-    {
-        type: "bug",
-        icon: "ri-bug-line",
-        col: "#f43f5e",
-        user: "Emma Williams",
-        msg: "Calendar export not generating correct ICS file",
-        status: "open",
-        time: "Apr 21",
-    },
-    {
-        type: "feature",
-        icon: "ri-add-circle-line",
-        col: "#7c3aed",
-        user: "James Brown",
-        msg: "Could you add a family sharing feature?",
-        status: "pending",
-        time: "Apr 20",
-    },
-    {
-        type: "compliment",
-        icon: "ri-heart-line",
-        col: "#ec4899",
-        user: "Olivia Davis",
-        msg: "Best reminder app I've used. Clean design!",
-        status: "resolved",
-        time: "Apr 18",
-    },
-    {
-        type: "bug",
-        icon: "ri-bug-line",
-        col: "#f43f5e",
-        user: "William Taylor",
-        msg: "Date picker not showing on Safari 17",
-        status: "open",
-        time: "Apr 17",
-    },
-    {
-        type: "feature",
-        icon: "ri-lightbulb-line",
-        col: "#f59e0b",
-        user: "Sophia Martinez",
-        msg: "Dark mode option on mobile would be great",
-        status: "resolved",
-        time: "Apr 15",
-    },
-];
+// const FEEDBACK_DATA = [
+//     {
+//         type: "bug",
+//         icon: "ri-bug-line",
+//         col: "#f43f5e",
+//         user: "Kishore Rex",
+//         msg: "Push notifications not working on iOS 17",
+//         status: "open",
+//         time: "Apr 25",
+//     },
 
+// ];
+let FEEDBACK_DATA = window.FEEDBACK_DATA || [];
 const ROLE_COLORS = [
     "#7c3aed",
     "#0d9488",
@@ -898,13 +838,18 @@ function renderRecentUsers() {
 }
 
 function renderSysHealth() {
+    var el = document.getElementById("sys-health");
+
+    if (!el) return;
+
     var items = [
         { label: "API Response", val: 98, color: "#10b981", unit: "% uptime" },
         { label: "Email Delivery", val: 96, color: "#0d9488", unit: "% rate" },
         { label: "SMS Gateway", val: 99, color: "#7c3aed", unit: "% uptime" },
         { label: "Database", val: 100, color: "#10b981", unit: "% healthy" },
     ];
-    document.getElementById("sys-health").innerHTML = items
+
+    el.innerHTML = items
         .map(function (i) {
             return (
                 '<div><div style="display:flex;justify-content:space-between;font-size:.75rem;color:var(--text3);margin-bottom:4px"><span>' +
@@ -1186,7 +1131,9 @@ function renderUsers() {
                       u.initials +
                       "</div>") +
                 '<div><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
-                u.first_name + ' ' + u.last_name +
+                u.first_name +
+                " " +
+                u.last_name +
                 '</div><div style="font-size:.7rem;color:var(--text3)">' +
                 u.email +
                 "</div></div></div></td>" +
@@ -1213,7 +1160,6 @@ function renderUsers() {
                 '<button class="btn btn-ghost btn-xs" onclick="openEditUser(' +
                 u.id +
                 ')"><i class="ri-pencil-line"></i></button>' +
-
                 '<button class="btn btn-' +
                 (u.status === "active" ? "amber" : "success") +
                 ' btn-xs" onclick="toggleUserStatus(' +
@@ -1221,11 +1167,9 @@ function renderUsers() {
                 ')"><i class="ri-' +
                 (u.status === "active" ? "pause" : "play") +
                 '-line"></i></button>' +
-
                 '<button class="btn btn-danger btn-xs" onclick="deleteUser(' +
                 u.id +
                 ')"><i class="ri-delete-bin-line"></i></button>' +
-
                 "</div></td></tr>"
             );
         })
@@ -1252,7 +1196,17 @@ function filterUsers(q) {
     var planF =
         (document.getElementById("users-plan-filter") || {}).value || "all";
     usersFiltered = USERS_DATA.filter(function (u) {
-        var matchQ = (u.first_name + ' ' + u.last_name + ' ' + u.email + ' ' + u.plan).toLowerCase().includes(q);
+        var matchQ = (
+            u.first_name +
+            " " +
+            u.last_name +
+            " " +
+            u.email +
+            " " +
+            u.plan
+        )
+            .toLowerCase()
+            .includes(q);
         var matchS = statusF === "all" || u.status === statusF;
         var matchP = planF === "all" || u.plan === planF;
         return matchQ && matchS && matchP;
@@ -1274,36 +1228,36 @@ function filterUsers(q) {
 //     renderUsers();
 // }
 
-function toggleUserStatus(id){
-    fetch('/admin/users/status',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
-            'Accept':'application/json'
+function toggleUserStatus(id) {
+    fetch("/admin/users/status", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
         },
-        body:JSON.stringify({
-            id:id
-        })
+        body: JSON.stringify({
+            id: id,
+        }),
     })
-    .then(res=>res.json())
-    .then(data=>{
-        if(data.status){
-            var u=USERS_DATA.find(function(x){
-                return x.id===id;
-            });
-            if(u){
-                u.status=data.user_status;
+        .then((res) => res.json())
+        .then((data) => {
+            if (data.status) {
+                var u = USERS_DATA.find(function (x) {
+                    return x.id === id;
+                });
+                if (u) {
+                    u.status = data.user_status;
+                }
+                toast(data.message, "success");
+                renderUsers();
             }
-            toast(data.message,'success');
-            renderUsers();
-        }
-    })
-    .catch(err=>{
-        console.log(err);
-        toast('Something went wrong','error');
-    });
-
+        })
+        .catch((err) => {
+            console.log(err);
+            toast("Something went wrong", "error");
+        });
 }
 
 function openEditUser(id) {
@@ -1317,6 +1271,8 @@ function openEditUser(id) {
     document.getElementById("eu-email").value = u.email;
     document.getElementById("eu-phone").value = u.phone || "";
     document.getElementById("eu-plan").value = u.plan;
+    document.getElementById("eu-postcode").value = u.postcode;
+    document.getElementById("eu-address1").value = u.address1;
     document.getElementById("eu-status").value = u.status;
     openModal("edit-user-modal");
 }
@@ -1346,187 +1302,172 @@ function openEditUser(id) {
 //     renderUsers();
 // }
 
-function saveEditUser(){
-
-    document.querySelectorAll('.err').forEach(el=>{
-        el.innerText='';
+function saveEditUser() {
+    document.querySelectorAll(".err").forEach((el) => {
+        el.innerText = "";
     });
 
     let payload = {
-
-        id:document.getElementById("eu-id").value,
-
-        first_name:document.getElementById("eu-first_name").value,
-
-        last_name:document.getElementById("eu-last_name").value,
-
-        plan:document.getElementById("eu-plan").value,
-
-        status:document.getElementById("eu-status").value,
-
-        phone:document.getElementById("eu-phone").value
-
+        id: document.getElementById("eu-id").value,
+        first_name: document.getElementById("eu-first_name").value,
+        last_name: document.getElementById("eu-last_name").value,
+        plan: document.getElementById("eu-plan").value,
+        status: document.getElementById("eu-status").value,
+        phone: document.getElementById("eu-phone").value,
+        postcode: document.getElementById("eu-postcode").value,
+        address1: document.getElementById("eu-address1").value,
     };
 
-    fetch('/admin/users/update',{
+    fetch("/admin/users/update", {
+        method: "POST",
 
-        method:'POST',
-
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
-            'Accept':'application/json'
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
         },
 
-        body:JSON.stringify(payload)
-
+        body: JSON.stringify(payload),
     })
-    .then(async response=>{
+        .then(async (response) => {
+            const data = await response.json();
 
-        const data = await response.json();
+            if (response.status === 422) {
+                Object.keys(data.errors).forEach((key) => {
+                    let errorEl = document.getElementById(
+                        "eu-" + key + "-error",
+                    );
 
-        if(response.status===422){
+                    if (errorEl) {
+                        errorEl.innerText = data.errors[key][0];
+                    }
+                });
 
-            Object.keys(data.errors).forEach(key=>{
-
-                let errorEl=document.getElementById('eu-'+key+'-error');
-
-                if(errorEl){
-                    errorEl.innerText=data.errors[key][0];
-                }
-
-            });
-
-            return;
-        }
-
-        if(data.status){
-
-            var u = USERS_DATA.find(x=>x.id==payload.id);
-
-            if(u){
-
-                u.name = payload.first_name+' '+payload.last_name;
-
-                u.phone = payload.phone;
-
-                u.plan = payload.plan;
-
-                u.status = payload.status;
-
-                u.initials = (
-                    payload.first_name.charAt(0) +
-                    payload.last_name.charAt(0)
-                ).toUpperCase();
-
+                return;
             }
 
-            toast(data.message,'success');
+            if (data.status) {
+                var u = USERS_DATA.find((x) => x.id == payload.id);
 
-            closeModal("edit-user-modal");
-            setTimeout(()=>{
-                location.reload();
-            },1500)
+                if (u) {
+                    u.name = payload.first_name + " " + payload.last_name;
+                    u.phone = payload.phone;
+                    u.plan = payload.plan;
+                    u.postcode = payload.postcode;
+                    u.status = payload.status;
+                    u.initials = (
+                        payload.first_name.charAt(0) +
+                        payload.last_name.charAt(0)
+                    ).toUpperCase();
+                }
 
-            renderUsers();
+                toast(data.message, "success");
 
-        }
+                closeModal("edit-user-modal");
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
 
-    })
-    .catch(err=>{
-        console.log(err);
-        toast('Something went wrong','error');
-    });
-
+                renderUsers();
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            toast("Something went wrong", "error");
+        });
 }
 
-function addUser(){
-
-     const btn=document.getElementById('create-user-btn');
+function addUser() {
+    const btn = document.getElementById("create-user-btn");
 
     // Disable Button
-    btn.disabled=true;
-    btn.innerHTML='<i class="ri-loader-4-line spinner"></i> Processing...';
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line spinner"></i> Processing...';
 
-
-    document.querySelectorAll('.err').forEach(el=>{
-        el.innerText='';
+    document.querySelectorAll(".err").forEach((el) => {
+        el.innerText = "";
     });
 
     let payload = {
-        first_name:document.getElementById('au-fname').value,
-        last_name:document.getElementById('au-lname').value,
-        email:document.getElementById('au-email').value,
-        postcode:document.getElementById('au-postcode').value,
-        phone:document.getElementById('au-phone').value,
-        plan:document.getElementById('au-plan').value,
-        status:document.getElementById('au-status').value,
-        address1:document.getElementById('address1').value
+        first_name: document.getElementById("au-fname").value,
+        last_name: document.getElementById("au-lname").value,
+        email: document.getElementById("au-email").value,
+        postcode: document.getElementById("au-postcode").value,
+        phone: document.getElementById("au-phone").value,
+        plan: document.getElementById("au-plan").value,
+        status: document.getElementById("au-status").value,
+        address1: document.getElementById("address1").value,
     };
-    fetch('/admin/users/store',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
-            'Accept':'application/json'
+    fetch("/admin/users/store", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
         },
-        body:JSON.stringify(payload)
+        body: JSON.stringify(payload),
     })
-    .then(async response=>{
-        const data = await response.json();
-        if(response.status===422){
-            Object.keys(data.errors).forEach(key=>{
-                let map = {
-                    first_name:'au-fname',
-                    last_name:'au-lname',
-                    email:'au-email',
-                    postcode:'au-postcode',
-                    phone:'au-phone',
-                    plan:'au-plan',
-                    status:'au-status',
-                    address1:'address1'
-                };
-                let errorEl=document.getElementById(map[key]+'-error');
-                if(errorEl){
-                    errorEl.innerText=data.errors[key][0];
-                }
-            });
-             btn.disabled=false;
-        btn.innerHTML='<i class="ri-check-line"></i> Create User';
-            return;
-        }
-       if(data.status){
+        .then(async (response) => {
+            const data = await response.json();
+            if (response.status === 422) {
+                Object.keys(data.errors).forEach((key) => {
+                    let map = {
+                        first_name: "au-fname",
+                        last_name: "au-lname",
+                        email: "au-email",
+                        postcode: "au-postcode",
+                        phone: "au-phone",
+                        plan: "au-plan",
+                        status: "au-status",
+                        address1: "address1",
+                    };
+                    let errorEl = document.getElementById(map[key] + "-error");
+                    if (errorEl) {
+                        errorEl.innerText = data.errors[key][0];
+                    }
+                });
+                btn.disabled = false;
+                btn.innerHTML = '<i class="ri-check-line"></i> Create User';
+                return;
+            }
+            if (data.status) {
+                toast(data.message, "success");
 
-    toast(data.message,'success');
+                closeModal("add-user-modal");
 
-    closeModal('add-user-modal');
+                [
+                    "au-fname",
+                    "au-lname",
+                    "au-email",
+                    "au-phone",
+                    "address1",
+                ].forEach((id) => {
+                    document.getElementById(id).value = "";
+                });
 
-    ['au-fname','au-lname','au-email','au-phone','address1'].forEach(id=>{
-        document.getElementById(id).value='';
-    });
-
-    setTimeout(()=>{
-        location.reload();
-    },1500);
-
-}
-
-    })
-    .catch(err=>{
-        console.log(err);
-        toast('Something went wrong','error');
-        // Reset Button
-        btn.disabled=false;
-        btn.innerHTML='<i class="ri-check-line"></i> Create User';
-    });
-
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            toast("Something went wrong", "error");
+            // Reset Button
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ri-check-line"></i> Create User';
+        });
 }
 
 function openUserDrawer(id) {
     var u = USERS_DATA.find(function (x) {
         return x.id === id;
     });
+
     if (!u) return;
+
     openDrawer(
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">User Details</h2><button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ri-close-line"></i></button></div>' +
             '<div style="text-align:center;margin-bottom:20px"><div class="avatar avatar-lg" style="background:' +
@@ -1536,7 +1477,9 @@ function openUserDrawer(id) {
             ';margin:0 auto 10px">' +
             u.initials +
             '</div><div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
-            u.first_name + ' ' + u.last_name +
+            u.first_name +
+            " " +
+            u.last_name +
             '</div><div style="font-size:.75rem;color:var(--text3)">' +
             u.email +
             '</div><div style="margin-top:8px;display:flex;gap:6px;justify-content:center"><span class="badge badge-' +
@@ -1563,9 +1506,11 @@ function openUserDrawer(id) {
             (u.phone || "N/A") +
             "</span></div>" +
             '</div><div style="display:flex;flex-direction:column;gap:8px">' +
-            '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="toast(\'Email sent to ' +
-            u.name +
-            "','success')\"><i class=\"ri-mail-send-line\"></i> Send Email</button>" +
+            '<button id="verify-mail-btn-' +
+            u.id +
+            '" class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="sendVerifyMail(' +
+            u.id +
+            ')"><i class=\"ri-mail-send-line\"></i> Send Verification Mail</button>' +
             '<button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditUser(' +
             u.id +
             ')"><i class="ri-pencil-line"></i> Edit Profile</button>' +
@@ -2070,31 +2015,46 @@ function renderReminders() {
     var totalPages = Math.ceil(data.length / remPerPage);
     var start = (remPageNum - 1) * remPerPage;
     var slice = data.slice(start, start + remPerPage);
+
     document.getElementById("rem-showing").textContent = slice.length;
     document.getElementById("rem-total").textContent = data.length;
-    var catColors = { active: "teal", completed: "green", overdue: "red" };
+
+    var catColors = {
+        active: "teal",
+        completed: "green",
+        overdue: "red",
+    };
+
     document.getElementById("rem-tbody").innerHTML = slice
-        .map(function (r) {
-            var due = r.due.toLocaleDateString("en-GB", {
+        .map(function (r, index) {
+            var due = new Date(r.due).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
             });
+
             var u = r.user;
+
             return (
                 "<tr>" +
+                '<td style="font-weight:600;color:var(--text3)">' +
+                (start + index + 1) +
+                "</td>" +
                 '<td><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
                 r.title +
-                '</div><div style="font-size:.7rem;color:var(--text3)">#' +
-                r.id +
-                "</div></td>" +
-                '<td class="hide-mobile"><div style="display:flex;align-items:center;gap:7px"><div class="avatar avatar-sm" style="background:' +
-                u.color +
-                "22;color:" +
-                u.color +
-                '">' +
-                u.initials +
-                '</div><span style="font-size:.78rem;color:var(--text2)">' +
+                '<td class="hide-mobile"><div style="display:flex;align-items:center;gap:7px">' +
+                (u.profile
+                    ? '<img src="' +
+                      u.profile +
+                      '" style="width:32px;height:32px;border-radius:50%;object-fit:cover">'
+                    : '<div class="avatar avatar-sm" style="background:' +
+                      u.color +
+                      "22;color:" +
+                      u.color +
+                      '">' +
+                      u.initials +
+                      "</div>") +
+                '<span style="font-size:.78rem;color:var(--text2)">' +
                 u.name +
                 "</span></div></td>" +
                 '<td class="hide-mobile"><span class="badge badge-purple" style="font-size:.65rem">' +
@@ -2112,11 +2072,12 @@ function renderReminders() {
                 '<button class="btn btn-ghost btn-xs" onclick="openViewReminder(' +
                 r.id +
                 ')"><i class="ri-eye-line"></i></button>' +
-                "<button class=\"btn btn-danger btn-xs\" onclick=\"openConfirm('Delete this reminder?',function(){toast('Reminder deleted','error')})\"><i class=\"ri-delete-bin-line\"></i></button>" +
+            
                 "</div></td></tr>"
             );
         })
         .join("");
+
     buildPagination("rem-pagination", remPageNum, totalPages, "setRemPage");
 }
 
@@ -2141,88 +2102,176 @@ function filterReminders(q) {
     renderReminders();
 }
 
+// function openViewReminder(id) {
+//     var r = REMINDERS_DATA.find(function (x) {
+//         return x.id === id;
+//     });
+//     if (!r) return;
+//    var due = new Date(r.due).toLocaleDateString("en-GB", {
+//     day: "2-digit",
+//     month: "short",
+//     year: "numeric",
+// });
+//     var created =  new Date(r.due).toLocaleDateString("en-GB", {
+//         day: "2-digit",
+//         month: "short",
+//         year: "numeric",
+//     });
+//     document.getElementById("rem-modal-content").innerHTML =
+//         '<div style="display:flex;gap:10px;margin-bottom:16px"><div class="stat-ico" style="background:rgba(124,58,237,.15);margin:0"><i class="ri-alarm-line" style="color:var(--purple-light)"></i></div><div><div style="font-weight:700;font-size:.95rem;color:var(--text)">' +
+//         r.title +
+//         '</div><div style="font-size:.75rem;color:var(--text3)">#' +
+//         r.id +
+//         " · " +
+//         r.category +
+//         "</div></div></div>" +
+//         '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">User</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+//         r.user.name +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Date</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+//         due +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
+//         (r.status === "active"
+//             ? "teal"
+//             : r.status === "completed"
+//               ? "green"
+//               : "red") +
+//         '">' +
+//         r.status +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Priority</span><span class="badge badge-' +
+//         (r.priority === "high"
+//             ? "red"
+//             : r.priority === "medium"
+//               ? "amber"
+//               : "slate") +
+//         '">' +
+//         r.priority +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Created</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+//         created +
+//         "</span></div>" +
+//         "</div>" +
+//         '<div><label class="label">Notes</label><textarea class="inp" rows="2" style="resize:none">' +
+//         r.description +
+//         "</textarea></div>" +
+//         '<div style="margin-top:12px"><label class="label">Status</label><select class="inp"><option ' +
+//         (r.status === "active" ? "selected" : "") +
+//         ">active</option><option " +
+//         (r.status === "completed" ? "selected" : "") +
+//         ">completed</option><option " +
+//         (r.status === "overdue" ? "selected" : "") +
+//         ">overdue</option></select></div>";
+//     openModal("view-reminder-modal");
+// }
+
 function openViewReminder(id) {
+
     var r = REMINDERS_DATA.find(function (x) {
         return x.id === id;
     });
+
     if (!r) return;
-    var due = r.due.toLocaleDateString("en-GB", {
+
+    var due = new Date(r.due).toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
     });
-    var created = r.created.toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-    });
+
+    var created = r.created;
+
+    var endDate = r.end_reminder_date
+        ? new Date(r.end_reminder_date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+          })
+        : "N/A";
+
     document.getElementById("rem-modal-content").innerHTML =
-        '<div style="display:flex;gap:10px;margin-bottom:16px"><div class="stat-ico" style="background:rgba(124,58,237,.15);margin:0"><i class="ri-alarm-line" style="color:var(--purple-light)"></i></div><div><div style="font-weight:700;font-size:.95rem;color:var(--text)">' +
+
+        '<div style="display:flex;gap:10px;margin-bottom:16px">' +
+
+        '<div class="stat-ico" style="background:rgba(124,58,237,.15);margin:0">' +
+        '<i class="ri-alarm-line" style="color:var(--purple-light)"></i>' +
+        '</div>' +
+
+        '<div>' +
+
+        '<div style="font-weight:700;font-size:.95rem;color:var(--text)">' +
         r.title +
-        '</div><div style="font-size:.75rem;color:var(--text3)">#' +
-        r.id +
-        " · " +
-        r.category +
-        "</div></div></div>" +
+        '</div>' +
+
+        '<div style="font-size:.75rem;color:var(--text3)">' +
+        '#' + r.id + ' · ' + r.category +
+        '</div>' +
+
+        '</div></div>' +
+
         '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
-        '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">User</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
-        r.user.name +
-        "</span></div>" +
-        '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Date</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
-        due +
-        "</span></div>" +
-        '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
-        (r.status === "active"
-            ? "teal"
-            : r.status === "completed"
-              ? "green"
-              : "red") +
-        '">' +
-        r.status +
-        "</span></div>" +
-        '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Priority</span><span class="badge badge-' +
-        (r.priority === "high"
-            ? "red"
-            : r.priority === "medium"
-              ? "amber"
-              : "slate") +
-        '">' +
-        r.priority +
-        "</span></div>" +
-        '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Created</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
-        created +
-        "</span></div>" +
-        "</div>" +
-        '<div><label class="label">Notes</label><textarea class="inp" rows="2" style="resize:none">' +
-        r.notes +
-        "</textarea></div>" +
-        '<div style="margin-top:12px"><label class="label">Status</label><select class="inp"><option ' +
-        (r.status === "active" ? "selected" : "") +
-        ">active</option><option " +
-        (r.status === "completed" ? "selected" : "") +
-        ">completed</option><option " +
-        (r.status === "overdue" ? "selected" : "") +
-        ">overdue</option></select></div>";
+
+        rowItem("User", r.user.name) +
+
+        rowItem("Email", r.user.email || 'N/A') +
+
+        rowItem("Category", r.category) +
+
+        rowItem("Sub Category", r.subcategory || 'N/A') +
+
+        rowItem("Reminder Date", due) +
+
+        rowItem("End Reminder Date", endDate) +
+
+        rowItem("Reminder Time", r.reminder_time || 'N/A') +
+
+        rowItem("Provider", r.provider || 'N/A') +
+
+        rowItem("Cost", r.cost || '0') +
+
+        rowItem("Payment Frequency", r.payment_frequency || 'N/A') +
+
+        rowItem("Status", r.status || 'N/A') +
+
+        rowItem("Reminder Status", r.reminder_status || 'N/A') +
+
+        rowItem("Created", created) +
+
+        '</div>' +
+
+        '<div>' +
+        '<label class="label">Description</label>' +
+        '<textarea class="inp" rows="4" readonly style="resize:none">' +
+        (r.description || '') +
+        '</textarea>' +
+        '</div>';
+
     openModal("view-reminder-modal");
+}
+
+function rowItem(label, value){
+
+    return (
+        '<div style="display:flex;justify-content:space-between;gap:20px;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
+
+        '<span style="font-size:.78rem;color:var(--text3)">' +
+        label +
+        '</span>' +
+
+        '<span style="font-size:.82rem;font-weight:600;color:var(--text);text-align:right">' +
+        value +
+        '</span>' +
+
+        '</div>'
+    );
+
 }
 
 /* ══════════════════════════════════════════
 TRANSACTIONS
 ══════════════════════════════════════════ */
-
-// Demo data – replace with your API response later if needed
-// ── Place this BEFORE the pagination state block ──
-// const ADMIN_TXNS = [
-//     { id:1, txn_id:'TXN-1001', tnx_order: 'ORD-1001', user_name:'Kishore Rex',  user_email:'kishore@example.com', plan_name:'Pro Plan',        order_ref:'ORD-2001', amount:49.00, status:'completed', method:'Card',        date:'29 Apr 2026', items:['Pro Plan Subscription'] },
-//     { id:2, txn_id:'TXN-1002', tnx_order: 'ORD-1002', user_name:'Asha Kumar',   user_email:'asha@example.com',    plan_name:'Basic Plan',       order_ref:'ORD-2002', amount:19.00, status:'pending',   method:'UPI',         date:'28 Apr 2026', items:['Basic Plan Subscription'] },
-//     { id:3, txn_id:'TXN-1003', tnx_order: 'ORD-1003', user_name:'Rahul S',      user_email:'rahul@example.com',   plan_name:'Enterprise Plan',  order_ref:'ORD-2003', amount:99.00, status:'refunded',  method:'Net Banking', date:'27 Apr 2026', items:['Enterprise Plan Subscription'] }
-// ];
-// window.TRANSACTIONS = ADMIN_TXNS;
-
-// let txnFiltered   = [...ADMIN_TXNS];
-// let txnPageNum    = 1;
-// let txnPerPage    = 10;
-// let currentTxnId  = null;
 
 const ADMIN_TXNS = window.ADMIN_TXNS || [];
 
@@ -3202,8 +3251,10 @@ var currentFilteredData = [];
 
 function renderFeedback() {
     var fbFiltered = FEEDBACK_DATA;
+
     var typeF =
         (document.getElementById("fb-type-filter") || {}).value || "all";
+
     var statusF =
         (document.getElementById("fb-status-filter") || {}).value || "all";
 
@@ -3211,6 +3262,7 @@ function renderFeedback() {
         fbFiltered = fbFiltered.filter(function (f) {
             return f.type === typeF;
         });
+
     if (statusF !== "all")
         fbFiltered = fbFiltered.filter(function (f) {
             return f.status === statusF;
@@ -3224,7 +3276,7 @@ function renderFeedback() {
                 '<div class="act-item" data-feedback-index="' +
                 index +
                 '" style="' +
-                (f.status === "open"
+                (f.status === "pending"
                     ? "border-color:rgba(244,63,94,.25);background:rgba(244,63,94,.04)"
                     : "") +
                 '">' +
@@ -3235,17 +3287,21 @@ function renderFeedback() {
                 '" style="color:' +
                 f.col +
                 '"></i></div>' +
-                '<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px"><span style="font-size:.84rem;font-weight:600;color:var(--text)">' +
+                '<div style="flex:1;min-width:0">' +
+                '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:2px">' +
+                '<span style="font-size:.84rem;font-weight:600;color:var(--text)">' +
                 f.user +
-                '</span><span class="badge badge-' +
-                (f.type === "bug"
+                "</span>" +
+                '<span class="badge badge-' +
+                (f.type === "high"
                     ? "red"
-                    : f.type === "feature"
-                      ? "amber"
+                    : f.type === "medium"
+                      ? "slate"
                       : "green") +
                 '" style="font-size:.6rem">' +
                 f.type +
-                '</span><span class="badge badge-' +
+                "</span>" +
+                '<span class="badge badge-' +
                 (f.status === "open"
                     ? "red"
                     : f.status === "pending"
@@ -3255,14 +3311,26 @@ function renderFeedback() {
                 index +
                 '">' +
                 f.status +
-                '</span></div><div style="font-size:.79rem;color:var(--text3)">' +
+                "</span></div>" +
+                '<div style="font-size:.79rem;color:var(--text3)">' +
                 f.msg +
-                '</div><div style="font-size:.7rem;color:var(--text4);margin-top:4px">' +
+                "</div>" +
+                '<div style="font-size:.7rem;color:var(--text4);margin-top:4px">' +
                 f.time +
                 "</div></div>" +
-                '<div style="display:flex;gap:4px;flex-shrink:0"><button class="btn btn-primary btn-xs" onclick="openReplyModal(' +
-                index +
-                ')"><i class="ri-reply-line"></i> Reply</button></div></div>'
+                '<div style="display:flex;gap:4px;flex-shrink:0">' +
+                (f.status === "resolved"
+                    ? '<button class="btn btn-success btn-xs" onclick="openReplyModal(' +
+                      index +
+                      ')">' +
+                      '<i class="ri-check-double-line"></i> Resolved' +
+                      "</button>"
+                    : '<button class="btn btn-primary btn-xs" onclick="openReplyModal(' +
+                      index +
+                      ')">' +
+                      '<i class="ri-reply-line"></i> Reply' +
+                      "</button>") +
+                "</div></div>"
             );
         })
         .join("");
@@ -3272,30 +3340,73 @@ function filterFeedback() {
     renderFeedback();
 }
 
+// function openReplyModal(index) {
+//     currentFeedbackIndex = index;
+//     var feedback = currentFilteredData[index];
+
+//     // Populate display fields
+//     document.getElementById("display-name").textContent = feedback.user || "-";
+//     document.getElementById("display-email").textContent =
+//         feedback.email || "-";
+//     document.getElementById("display-phone").textContent =
+//         feedback.phone || "-";
+//     document.getElementById("display-subject").textContent =
+//         feedback.subject || "No Subject";
+//     document.getElementById("display-category").textContent =
+//         feedback.category || "-";
+//     document.getElementById("display-message").textContent =
+//         feedback.msg || "-";
+
+//     // Display type badge
+//     var typeBadgeColor =
+//         feedback.type === "bug"
+//             ? "red"
+//             : feedback.type === "feature"
+//               ? "amber"
+//               : "green";
+//     document.getElementById("display-type-badge").innerHTML =
+//         '<span class="badge badge-' +
+//         typeBadgeColor +
+//         '" style="font-size:.7rem">' +
+//         (feedback.type || "-") +
+//         "</span>";
+
+//     // Clear previous message
+//     document.getElementById("reply-message").value = "";
+
+//     // Show modal
+//     document.getElementById("replyMailModal").style.display = "flex";
+// }
+
 function openReplyModal(index) {
     currentFeedbackIndex = index;
+
     var feedback = currentFilteredData[index];
 
-    // Populate display fields
     document.getElementById("display-name").textContent = feedback.user || "-";
+
     document.getElementById("display-email").textContent =
         feedback.email || "-";
+
     document.getElementById("display-phone").textContent =
         feedback.phone || "-";
+
     document.getElementById("display-subject").textContent =
         feedback.subject || "No Subject";
+
     document.getElementById("display-category").textContent =
         feedback.category || "-";
+
     document.getElementById("display-message").textContent =
         feedback.msg || "-";
 
-    // Display type badge
     var typeBadgeColor =
-        feedback.type === "bug"
+        feedback.type === "high"
             ? "red"
-            : feedback.type === "feature"
-              ? "amber"
+            : feedback.type === "medium"
+              ? "slate"
               : "green";
+
     document.getElementById("display-type-badge").innerHTML =
         '<span class="badge badge-' +
         typeBadgeColor +
@@ -3303,10 +3414,30 @@ function openReplyModal(index) {
         (feedback.type || "-") +
         "</span>";
 
-    // Clear previous message
-    document.getElementById("reply-message").value = "";
+    // Reply textarea
+    document.getElementById("reply-message").value = feedback.admin_reply || "";
 
-    // Show modal
+    // Button & textarea handling
+    let textarea = document.getElementById("reply-message");
+
+    let submitBtn = document.querySelector(
+        '#replyMailForm button[type="submit"]',
+    );
+
+    if (feedback.status === "resolved") {
+        textarea.readOnly = true;
+
+        textarea.style.opacity = "0.7";
+
+        submitBtn.style.display = "none";
+    } else {
+        textarea.readOnly = false;
+
+        textarea.style.opacity = "1";
+
+        submitBtn.style.display = "inline-flex";
+    }
+
     document.getElementById("replyMailModal").style.display = "flex";
 }
 
@@ -3319,6 +3450,7 @@ function closeReplyModal() {
 // Handle form submission
 document.addEventListener("DOMContentLoaded", function () {
     var form = document.getElementById("replyMailForm");
+
     if (form) {
         form.addEventListener("submit", function (e) {
             e.preventDefault();
@@ -3327,50 +3459,78 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!message.trim()) {
                 toast("Please enter a reply message", "error");
+
                 return;
             }
 
-            // Get current feedback data
             var feedback = currentFilteredData[currentFeedbackIndex];
 
-            // Prepare reply data
-            var replyData = {
-                name: feedback.user,
-                email: feedback.email,
-                phone: feedback.phone,
-                type: feedback.type,
-                subject: feedback.subject,
-                category: feedback.category,
-                userMessage: feedback.msg,
-                adminReply: message,
-            };
+            var btn = this.querySelector('button[type="submit"]');
 
-            console.log("Reply Data:", replyData);
+            btn.disabled = true;
 
-            // Update status to resolved in the original data
-            // Find the original feedback in FEEDBACK_DATA
-            for (var i = 0; i < FEEDBACK_DATA.length; i++) {
-                if (
-                    FEEDBACK_DATA[i].user === feedback.user &&
-                    FEEDBACK_DATA[i].msg === feedback.msg &&
-                    FEEDBACK_DATA[i].time === feedback.time
-                ) {
-                    FEEDBACK_DATA[i].status = "resolved";
-                    break;
-                }
-            }
+            btn.innerHTML =
+                '<i class="ri-loader-4-line spinner"></i> Sending...';
 
-            // Show success message
-            toast(
-                "Reply sent successfully! Status updated to resolved.",
-                "success",
-            );
+            fetch("/admin/feedback/reply", {
+                method: "POST",
 
-            // Close modal
-            closeReplyModal();
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]',
+                    ).content,
+                    Accept: "application/json",
+                },
 
-            // Re-render feedback list to show updated status
-            renderFeedback();
+                body: JSON.stringify({
+                    id: feedback.id,
+
+                    reply: message,
+                }),
+            })
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status) {
+                        // Update local data
+                        for (var i = 0; i < FEEDBACK_DATA.length; i++) {
+                            if (FEEDBACK_DATA[i].id === feedback.id) {
+                                FEEDBACK_DATA[i].status = "resolved";
+
+                                FEEDBACK_DATA[i].admin_reply = message;
+
+                                break;
+                            }
+                        }
+
+                        toast(data.message, "success");
+
+                        closeReplyModal();
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+
+                        renderFeedback();
+                    } else {
+                        toast("Something went wrong", "error");
+                    }
+
+                    btn.disabled = false;
+
+                    btn.innerHTML =
+                        '<i class="ri-send-plane-line"></i> Send Reply';
+                })
+                .catch((err) => {
+                    console.log(err);
+
+                    toast("Something went wrong", "error");
+
+                    btn.disabled = false;
+
+                    btn.innerHTML =
+                        '<i class="ri-send-plane-line"></i> Send Reply';
+                });
         });
     }
 });

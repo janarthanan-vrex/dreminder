@@ -15,7 +15,7 @@
 
         <div class="sb-section">Management</div>
         <a class="nav-item" href="admin-users"><i class="ri-group-line"></i><span class="nav-lbl">Users</span><span class="nav-badge">3</span></a>
-        <a class="nav-item" href="admin-reminders"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
+        <a class="nav-item" href="{{route('admin.reminderpage')}}"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
         <a class="nav-item" href="admin-calendar"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
         <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
         <a class="nav-item" href="{{route('admin.category')}}"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
@@ -42,7 +42,7 @@
         <div class="sb-section">System</div>
         <a class="nav-item" href="admin-settings"><i class="ri-settings-3-line"></i><span class="nav-lbl">Settings</span></a>
         <a class="nav-item" href="admin-audit"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
-        <a class="nav-item" href="admin-feedback"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
+        <a class="nav-item" href="{{route('admin.feedback')}}"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
 
 <form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">
     @csrf

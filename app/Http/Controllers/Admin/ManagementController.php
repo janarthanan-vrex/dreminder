@@ -154,6 +154,8 @@ class ManagementController extends Controller
                     'last_name' => $user->last_name,
                     'email' => $user->email,
                     'phone' => $user->phone,
+                    'postcode' => $user->postcode,
+                    'address1' => $user->address1,
                     'initials' => strtoupper(
                         substr($user->first_name, 0, 1) .
                             substr($user->last_name, 0, 1)
@@ -234,7 +236,9 @@ class ManagementController extends Controller
             'last_name' => 'required|max:255',
             'phone' => 'nullable|digits_between:10,15',
             'plan' => 'required',
+            'address1' => 'required|max:255',
             'status' => 'required|in:active,suspended',
+            'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
         ]);
 
         $user = User::findOrFail($request->id);
@@ -247,6 +251,8 @@ class ManagementController extends Controller
             'phone' => $request->phone,
             'status' => $request->status,
             'plan_id' => $plan?->id,
+             'address1' => $request->address1,
+             'postcode' => strtoupper($request->postcode),
         ]);
 
         return response()->json([
@@ -315,7 +321,7 @@ class ManagementController extends Controller
             ]);
 
             // ── Invoice + PDF + Email ──────────────────────────────────────
-            $invoiceId   = 'INV-' . now()->format('Ymd') . '-' . str_pad($payment->id, 5, '0', STR_PAD_LEFT);
+           $invoiceId = 'INV-' . str_pad($payment->id, 3, '0', STR_PAD_LEFT);
 
             // ✅ Only invoices folder (no year/month)
             $invoiceDir  = public_path('invoices');
@@ -378,5 +384,48 @@ class ManagementController extends Controller
         'message' => 'User created successfully',
        
     ]);
+}
+
+public function reminderPage(Request $request)
+{
+
+    $reminders = Reminder::with([
+        'user',
+        'category',
+        'subcategory'
+    ])->latest()->get()->map(function($r){
+        return [
+            'id' => $r->id,
+            'title' => $r->title,
+            'category' => $r->category->name ?? 'N/A',
+            'subcategory' => $r->subcategory->name ?? 'N/A',
+            'due' => $r->reminder_date,
+            'end_reminder_date' => $r->end_reminder_date,
+            'reminder_time' => $r->reminder_time,
+            'description' => $r->description,
+            'provider' => $r->provider,
+            'cost' => $r->cost,
+            'payment_frequency' => $r->payment_frequency,
+            'status' => $r->status,
+            'reminder_status' => $r->reminder_status,
+            'created' => $r->created_at->format('d M Y'),
+            'user' => [
+                'id' => $r->user?->id,
+                'name' => ($r->user?->first_name ?? '') . ' ' . ($r->user?->last_name ?? ''),
+                'email' => $r->user?->email,
+                'initials' => strtoupper(
+                    substr($r->user?->first_name ?? '',0,1) .
+                    substr($r->user?->last_name ?? '',0,1)
+                ),
+                'color' => '#7c3aed',
+                'profile' => $r->user?->profile
+                    ? asset($r->user->profile)
+                    : null,
+            ]
+        ];
+
+    });
+
+    return view('admin.reminders',compact('reminders'));
 }
 }

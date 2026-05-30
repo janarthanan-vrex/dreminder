@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ManagementController;
+use App\Http\Controllers\Admin\SystemController;
 
 Route::get('/admin-login', function () {
 
@@ -43,3 +44,15 @@ Route::post('/admin/users/store',[ManagementController::class,'storeUser'])->nam
 Route::get('/admin-category',[ManagementController::class,'adminCategory'])->name('admin.category');
 Route::post('/admin/category/store', [ManagementController::class, 'storeCategory'])->name('admin.category.store');
 Route::post('/admin/subcategory/store',[ManagementController::class,'storeSubcategory'])->name('admin.subcategory.store');
+
+
+
+Route::get('/admin-reminders',[ManagementController::class,'reminderPage',])->name('admin.reminderpage');
+
+// Route::get('/admin-feedback', function () {
+//     return view('admin.feedback');
+// });
+
+Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
+Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');
+Route::post('/admin/feedback/reply',[SystemController::class,'replyFeedback'])->name('admin.feedback.reply');

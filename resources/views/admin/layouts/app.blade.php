@@ -54,12 +54,12 @@
 
 </head>
 <style>
-.err{
-    color:red;
-    font-size:12px;
-    margin-top:4px;
-    display:block;
-}
+    .err {
+        color: red;
+        font-size: 12px;
+        margin-top: 4px;
+        display: block;
+    }
 </style>
 
 <body>
@@ -136,11 +136,11 @@
 
             <div style="margin-bottom: 14px">
 
-            <div>
-                     <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="john@example.com" />
-                     <small class="err" id="au-email-error"></small>
+                <div>
+                    <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="john@example.com" />
+                    <small class="err" id="au-email-error"></small>
                 </div>
-                
+
             </div>
 
 
@@ -148,30 +148,30 @@
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <div>
-                    <label class="label">Plan</label><select class="inp" id="au-plan">
-                        @foreach($plans as $plan)
-                        <option value="{{ $plan->plan_name }}"
-                            {{ old('plan_name') == $plan->plan_name ? 'selected' : '' }}>
-                            {{ $plan->plan_name }}
-                        </option>
-                        @endforeach
-                    </select>
-                    <small class="err" id="au-plan-error"></small>
-                </div>
+                        <label class="label">Plan</label><select class="inp" id="au-plan">
+                            @foreach($plans as $plan)
+                            <option value="{{ $plan->plan_name }}"
+                                {{ old('plan_name') == $plan->plan_name ? 'selected' : '' }}>
+                                {{ $plan->plan_name }}
+                            </option>
+                            @endforeach
+                        </select>
+                        <small class="err" id="au-plan-error"></small>
+                    </div>
                 </div>
 
-            <div>
-                     <label class="label">Post Code <span style="color: var(--red)">*</span></label><input class="inp" id="au-postcode"  type="text" maxlength="8" placeholder="Enter Post Code" />
-                     <small class="err" id="au-postcode-error"></small>
+                <div>
+                    <label class="label">Post Code <span style="color: var(--red)">*</span></label><input class="inp" id="au-postcode" type="text" maxlength="8" placeholder="Enter Post Code" />
+                    <small class="err" id="au-postcode-error"></small>
                 </div>
-                
+
             </div>
-            
 
 
 
-            
-           
+
+
+
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <label class="label">Phone <span style="color: var(--red)">*</span></label><input class="inp" id="au-phone" placeholder="+44 7700 000000" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
@@ -186,12 +186,12 @@
                 </div>
             </div>
             <div style="margin-bottom: 18px">
-                <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" id="address1" placeholder="Enter Address"/>
+                <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" id="address1" placeholder="Enter Address" />
                 <small class="err" id="address1-error"></small>
             </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('add-user-modal')">Cancel</button>
-                <button class="btn btn-primary btn-sm"  id="create-user-btn" onclick="addUser()">
+                <button class="btn btn-primary btn-sm" id="create-user-btn" onclick="addUser()">
                     <i class="ri-check-line"></i> Create User
                 </button>
             </div>
@@ -219,16 +219,16 @@
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <label class="label">First Name <span style="color: var(--red)">*</span></label>
-                    <input class="inp" id="eu-first_name" placeholder="First name" />
+                    <input class="inp" id="eu-first_name"oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="First name" />
                     <small class="err" id="eu-first_name-error"></small>
 
                 </div>
                 <div>
                     <label class="label">Last Name <span style="color: var(--red)">*</span></label>
-                   <input class="inp" id="eu-last_name" placeholder="Last name" />
+                    <input class="inp" id="eu-last_name" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="Last name" />
                     <small class="err" id="eu-last_name-error"></small>
                 </div>
-                
+
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
@@ -246,7 +246,13 @@
                     </select>
                     <small class="err" id="eu-plan-error"></small>
                 </div>
-                
+
+                <div>
+                    <label class="label">Post Code<span style="color: var(--red)">*</span></label>
+                    <input class="inp" id="eu-postcode" maxlength="8" placeholder="Enter postcode" />
+                    <small class="err" id="eu-postcode-error"></small>
+                </div>
+
                 <div>
                     <label class="label">Status</label><select class="inp" id="eu-status">
                         <option value="active">Active</option>
@@ -255,12 +261,16 @@
                     <small class="err" id="eu-status-error"></small>
                 </div>
                 <div style="margin-bottom: 18px">
-                <label class="label">Phone</label>
-                <input class="inp" id="eu-phone" placeholder="+44 7700 000000" />
-                <small class="err" id="eu-phone-error"></small>
+                    <label class="label">Phone</label>
+                    <input class="inp" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" id="eu-phone" placeholder="+44 7700 000000" />
+                    <small class="err" id="eu-phone-error"></small>
+                </div>
+                <div style="margin-bottom: 18px">
+                <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" maxlength="80" id="eu-address1" placeholder="Enter Address" />
+                <small class="err" id="eu-address1-error"></small>
             </div>
             </div>
-            
+
             <div style="display: flex; gap: 8px; justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('edit-user-modal')">Cancel</button>
                 <button class="btn btn-primary btn-sm" onclick="saveEditUser()">
@@ -1048,36 +1058,32 @@
         });
     </script>
     <script>
+        ['eu-first_name', 'eu-last_name', 'eu-phone', 'eu-plan', 'eu-status','eu-postcode','eu-address1'].forEach(function(id) {
 
-['eu-first_name','eu-last_name','eu-phone','eu-plan','eu-status'].forEach(function(id){
+            document.getElementById(id).addEventListener('input', function() {
 
-    document.getElementById(id).addEventListener('input',function(){
+                let error = document.getElementById(id + '-error');
 
-        let error=document.getElementById(id+'-error');
+                if (error) {
+                    error.innerText = '';
+                }
 
-        if(error){
-            error.innerText='';
-        }
+            });
 
-    });
+        });
+    </script>
 
-});
+    <script>
+        ['au-fname', 'au-lname', 'au-email', 'au-postcode', 'au-phone', 'au-plan', 'au-status', 'address1'].forEach(function(id) {
+            document.getElementById(id).addEventListener('input', function() {
+                let error = document.getElementById(id + '-error');
+                if (error) {
+                    error.innerText = '';
+                }
+            });
 
-</script>
-
-<script>
-
-['au-fname','au-lname','au-email','au-postcode','au-phone','au-plan','au-status','address1'].forEach(function(id){
-    document.getElementById(id).addEventListener('input',function(){
-        let error=document.getElementById(id+'-error');
-        if(error){
-            error.innerText='';
-        }
-    });
-
-});
-
-</script>
+        });
+    </script>
 
 </body>
 

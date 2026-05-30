@@ -268,7 +268,7 @@ class AuthController extends Controller
             ]);
 
             // ── Invoice + PDF + Email ──────────────────────────────────────
-            $invoiceId   = 'INV-' . now()->format('Ymd') . '-' . str_pad($payment->id, 5, '0', STR_PAD_LEFT);
+            $invoiceId = 'INV-' . str_pad($payment->id, 3, '0', STR_PAD_LEFT);
 
             // ✅ Only invoices folder (no year/month)
             $invoiceDir  = public_path('invoices');
@@ -322,6 +322,17 @@ class AuthController extends Controller
                 $m->to($user->email, $user->first_name . ' ' . $user->last_name)
                     ->subject('Payment Successful - Invoice ' . $invoiceId)
                     ->attachData($pdf->output(), $invoiceId . '.pdf', ['mime' => 'application/pdf']);
+            });
+
+            $verifyUrl = route('verify.email',$user->email);
+
+            Mail::send('emails.verify_mail', [
+                'user' => $user,
+                'verifyUrl' => $verifyUrl
+            ], function ($m) use ($user) {
+                $m->from(config('mail.from.address'), config('mail.from.name'));
+                $m->to($user->email, $user->first_name . ' ' . $user->last_name)
+                ->subject('Verify Your Email');
             });
             // ── End Invoice + PDF + Email ──────────────────────────────────
 
@@ -586,4 +597,26 @@ class AuthController extends Controller
             'message' => 'Password reset successful'
         ]);
     }
+
+   public function verifyEmail($email)
+{
+    $user = User::where('email',$email)->first();
+    if(!$user){
+        return redirect()->route('loginpage')
+            ->with('error','User not found');
+    }
+    // Already verified
+    if($user->is_verified == 1){
+        return redirect()->route('loginpage')
+            ->with('success','Email already verified');
+    }
+
+    // Verify email
+    $user->update([
+        'is_verified' => 1
+    ]);
+
+    return redirect()->route('loginpage')
+        ->with('success','Email verified successfully');
+}
 }

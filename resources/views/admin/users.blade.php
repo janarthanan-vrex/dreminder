@@ -8,6 +8,15 @@
     margin-top:4px;
     display:block;
 }
+.spinner{
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    100%{
+        transform:rotate(360deg);
+    }
+}
 </style>
 <section id="page-users" class="page active">
     <div
@@ -137,4 +146,41 @@
 
     }
 </script>
+
+<script>
+function sendVerifyMail(id){
+    const btn=document.getElementById('verify-mail-btn-'+id);
+    btn.disabled=true;
+    btn.innerHTML='<i class="ri-loader-4-line spinner"></i> Processing...';
+    fetch('/admin/send-verification-mail',{
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content,
+            'Accept':'application/json'
+        },
+        body:JSON.stringify({
+            id:id
+        })
+    })
+    .then(res=>res.json())
+    .then(data=>{
+        if(data.status){
+            toast(data.message,'success');
+        }else{
+            toast('Something went wrong','error');
+        }
+        btn.disabled=false;
+        btn.innerHTML='<i class="ri-mail-send-line"></i> Send Verification Mail';
+    })
+    .catch(err=>{
+        console.log(err);
+        toast('Something went wrong','error');
+        btn.disabled=false;
+        btn.innerHTML='<i class="ri-mail-send-line"></i> Send Verification Mail';
+    });
+}
+
+</script>
+
 @endsection

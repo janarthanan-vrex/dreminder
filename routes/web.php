@@ -122,6 +122,7 @@ Route::get('/forgot-password', [AuthController::class, 'forgotPasswordPage'])->n
 Route::post('/store-forgot-password', [AuthController::class, 'storeForgotPassword'])->name('storeToken.forgotpassword');
 Route::get('/reset-password/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
 Route::post('/user/reset-password', [AuthController::class, 'resetPassword'])->name('user.reset-password');
+Route::get('/verify-email/{email}',[AuthController::class,'verifyEmail'])->name('verify.email');
 
 //user panel with middleware
 
@@ -188,9 +189,7 @@ Route::get('/admin-layout', function () {
 // Route::get('/admin-users', function () {
 //     return view('admin.users');
 // });
-Route::get('/admin-reminders', function () {
-    return view('admin.reminders');
-});
+
 Route::get('/admin-calendar', function () {
     return view('admin.calendar');
 });
@@ -215,9 +214,9 @@ Route::get('/admin-notifications', function () {
     return view('admin.notifications');
 });
 
-Route::get('/admin-feedback', function () {
-    return view('admin.feedback');
-});
+// Route::get('/admin-feedback', function () {
+//     return view('admin.feedback');
+// });
 // Route::post('/logout', function () {
 //     Auth::logout();
 //     return redirect('/admin-dashboard');

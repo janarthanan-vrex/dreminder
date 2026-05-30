@@ -2,12 +2,14 @@
 @section('content')
 
 <style>
-    .tabs-header { position: relative; }
+    .tabs-header {
+        position: relative;
+    }
 
     .g2 {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 20px;
     }
 
 
@@ -29,7 +31,7 @@
 
     .tab-btn:hover {
         color: #94a3b8;
-        background: rgba(255,255,255,.02);
+        background: rgba(255, 255, 255, .02);
     }
 
     .tab-btn.active {
@@ -37,33 +39,44 @@
         border-bottom-color: #7c3aed;
     }
 
-    .tab-btn i { font-size: 1rem; }
+    .tab-btn i {
+        font-size: 1rem;
+    }
 
-    .tab-content { animation: fadeIn 0.3s ease-in-out; }
+    .tab-content {
+        animation: fadeIn 0.3s ease-in-out;
+    }
 
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     /* ── Notification items ── */
     .notif-item {
         padding: 14px;
         border-radius: 12px;
-        background: rgba(255,255,255,.02);
-        border: 1px solid rgba(255,255,255,.06);
+        background: rgba(255, 255, 255, .02);
+        border: 1px solid rgba(255, 255, 255, .06);
         transition: all .3s;
         position: relative;
     }
 
     .notif-item:hover {
-        background: rgba(255,255,255,.04);
-        border-color: rgba(255,255,255,.1);
+        background: rgba(255, 255, 255, .04);
+        border-color: rgba(255, 255, 255, .1);
     }
 
     .notif-item.unread {
-        background: rgba(124,58,237,.05);
-        border-color: rgba(124,58,237,.2);
+        background: rgba(124, 58, 237, .05);
+        border-color: rgba(124, 58, 237, .2);
     }
 
     .notif-item.unread::before {
@@ -104,7 +117,7 @@
 
     .notif-empty-state i {
         font-size: 3.5rem;
-        color: rgba(255,255,255,.1);
+        color: rgba(255, 255, 255, .1);
         display: block;
         margin-bottom: 10px;
     }
@@ -181,14 +194,13 @@
                                     </div>
                                 </div>
                                 <!-- EMAIL -->
-<label style="cursor:pointer">
-    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1"
-        {{ $settings->email_notify ? 'checked' : '' }}>
-    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
-        onclick="this.classList.toggle('on');
-                 document.getElementById('email_notify').checked = this.classList.contains('on')">
-    </button>
-</label>
+                                <label style="cursor:pointer">
+                                    <input type="checkbox" hidden name="email_notify" id="email_notify" value="1"
+                                        {{ $settings->email_notify ? 'checked' : '' }}>
+                                    <button type="button" class="toggle {{ $settings->email_notify ? 'on' : '' }}"
+                                        onclick="toggleNotification(this,'email_notify')">
+                                    </button>
+                                </label>
                             </div>
 
                             <!-- PUSH -->
@@ -203,13 +215,12 @@
                                     </div>
                                 </div>
                                 <label style="cursor:pointer">
-    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1"
-        {{ $settings->push_notify ? 'checked' : '' }}>
-    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
-        onclick="this.classList.toggle('on');
-                 document.getElementById('push_notify').checked = this.classList.contains('on')">
-    </button>
-</label>
+                                    <input type="checkbox" hidden name="push_notify" id="push_notify" value="1"
+                                        {{ $settings->push_notify ? 'checked' : '' }}>
+                                    <button type="button" class="toggle {{ $settings->push_notify ? 'on' : '' }}"
+                                        onclick="toggleNotification(this,'push_notify')">
+                                    </button>
+                                </label>
                             </div>
 
                         </div>
@@ -229,11 +240,11 @@
                         <div style="display:flex;flex-direction:column;gap:6px">
 
                             @foreach([
-                                ['before_30_days', '30 days before', 'Early planning alert'],
-                                ['before_7_days',  '7 days before',  'One week reminder'],
-                                ['before_3_days',  '3 days before',  'Important alert'],
-                                ['before_1_day',   '1 day before',   'Final reminder'],
-                                ['on_day',         'On the day',     'Date notification'],
+                            ['before_30_days', '30 days before', 'Early planning alert'],
+                            ['before_7_days', '7 days before', 'One week reminder'],
+                            ['before_3_days', '3 days before', 'Important alert'],
+                            ['before_1_day', '1 day before', 'Final reminder'],
+                            ['on_day', 'On the day', 'Date notification'],
                             ] as [$name, $label, $sub])
                             <label style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;cursor:pointer;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)">
                                 <input type="checkbox"
@@ -261,12 +272,7 @@
                         <button type="button"
                             class="toggle {{ $settings->quit_hours ? 'on' : '' }}"
                             id="quiet-toggle"
-                            onclick="
-                                this.classList.toggle('on');
-                                const isOn = this.classList.contains('on');
-                                document.getElementById('quit_hours').value = isOn ? 1 : 0;
-                                document.getElementById('quiet-cfg').style.display = isOn ? 'grid' : 'none';
-                            ">
+                            onclick="toggleQuietHours(this)">
                         </button>
                     </div>
                     <p style="font-size:.78rem;color:#64748b;margin-bottom:10px">Suppress all notifications during these hours</p>
@@ -360,20 +366,20 @@
                 @forelse($activities as $activity)
 
                 @php
-                    $isUnread = !$activity['is_seen'];
-                    $cat      = $activity['category'];
-                    $reminder = $activity['reminder'];
+                $isUnread = !$activity['is_seen'];
+                $cat = $activity['category'];
+                $reminder = $activity['reminder'];
 
-                    // derive an icon color & bg from the category data
-                    $catIcon  = $cat['icon']  ?? 'ri-bell-line';
-                    $catColor = $cat['color'] ?? '#94a3b8';
-                    $catBg    = 'rgba(' . implode(',', sscanf($catColor, '#%02x%02x%02x')) . ',.12)';
-                    $catName  = $cat['name']  ?? 'System';
+                // derive an icon color & bg from the category data
+                $catIcon = $cat['icon'] ?? 'ri-bell-line';
+                $catColor = $cat['color'] ?? '#94a3b8';
+                $catBg = 'rgba(' . implode(',', sscanf($catColor, '#%02x%02x%02x')) . ',.12)';
+                $catName = $cat['name'] ?? 'System';
                 @endphp
 
                 <div class="notif-item {{ $isUnread ? 'unread' : '' }}"
-                     data-id="{{ $activity['id'] }}"
-                     data-seen="{{ $activity['is_seen'] }}">
+                    data-id="{{ $activity['id'] }}"
+                    data-seen="{{ $activity['is_seen'] }}">
 
                     <div style="display:flex;align-items:flex-start;gap:10px">
 
@@ -458,204 +464,314 @@
 </section>
 
 <script>
-const CSRF = document.querySelector('meta[name="csrf-token"]').content;
+    const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
-/* ─── Tab switching ──────────────────────────────────── */
-function switchTab(tabName) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => {
-        c.style.display = 'none';
-        c.classList.remove('active');
-    });
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-    const el = document.getElementById('tab-' + tabName);
-    el.style.display = 'block';
-    el.classList.add('active');
-    if (tabName === 'history') refreshCounts();
-}
-
-/* ─── Counts ─────────────────────────────────────────── */
-function refreshCounts() {
-    const items    = document.querySelectorAll('#notif-list .notif-item');
-    const visible  = [...items].filter(i => i.style.display !== 'none');
-    const unread   = visible.filter(i => i.classList.contains('unread'));
-
-    document.getElementById('notif-count').textContent   = visible.length;
-    document.getElementById('unread-label').textContent  = unread.length > 0 ? `(${unread.length} unread)` : '';
-
-    const badge = document.getElementById('tab-unread-badge');
-    if (badge) {
-        badge.textContent    = unread.length;
-        badge.style.display  = unread.length > 0 ? 'inline-block' : 'none';
+    /* ─── Tab switching ──────────────────────────────────── */
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => {
+            c.style.display = 'none';
+            c.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        const el = document.getElementById('tab-' + tabName);
+        el.style.display = 'block';
+        el.classList.add('active');
+        if (tabName === 'history') refreshCounts();
     }
 
-    // show/hide empty state
-    const anyVisible = visible.length > 0;
-    document.getElementById('notif-empty').style.display     = anyVisible ? 'none' : 'block';
-    document.getElementById('notif-list').style.display      = anyVisible ? 'flex'  : 'none';
-    const initial = document.getElementById('notif-empty-initial');
-    if (initial) initial.style.display = 'none';
-}
+    /* ─── Counts ─────────────────────────────────────────── */
+    function refreshCounts() {
+        const items = document.querySelectorAll('#notif-list .notif-item');
+        const visible = [...items].filter(i => i.style.display !== 'none');
+        const unread = visible.filter(i => i.classList.contains('unread'));
 
-/* ─── Filter ─────────────────────────────────────────── */
-function filterNotifications() {
-    const q      = document.getElementById('notif-search').value.toLowerCase();
-    const filter = document.getElementById('notif-filter').value;
+        document.getElementById('notif-count').textContent = visible.length;
+        document.getElementById('unread-label').textContent = unread.length > 0 ? `(${unread.length} unread)` : '';
 
-    document.querySelectorAll('#notif-list .notif-item').forEach(item => {
-        const text     = item.textContent.toLowerCase();
-        const isUnread = item.classList.contains('unread');
+        const badge = document.getElementById('tab-unread-badge');
+        if (badge) {
+            badge.textContent = unread.length;
+            badge.style.display = unread.length > 0 ? 'inline-block' : 'none';
+        }
 
-        let show = true;
-        if (q && !text.includes(q))            show = false;
-        if (filter === 'unread' && !isUnread)  show = false;
-        if (filter === 'read'   &&  isUnread)  show = false;
+        // show/hide empty state
+        const anyVisible = visible.length > 0;
+        document.getElementById('notif-empty').style.display = anyVisible ? 'none' : 'block';
+        document.getElementById('notif-list').style.display = anyVisible ? 'flex' : 'none';
+        const initial = document.getElementById('notif-empty-initial');
+        if (initial) initial.style.display = 'none';
+    }
 
-        item.style.display = show ? 'block' : 'none';
-    });
+    /* ─── Filter ─────────────────────────────────────────── */
+    function filterNotifications() {
+        const q = document.getElementById('notif-search').value.toLowerCase();
+        const filter = document.getElementById('notif-filter').value;
 
-    refreshCounts();
-}
+        document.querySelectorAll('#notif-list .notif-item').forEach(item => {
+            const text = item.textContent.toLowerCase();
+            const isUnread = item.classList.contains('unread');
 
-/* ─── Mark single as read ────────────────────────────── */
-async function markReadAjax(id, btn) {
-    try {
-        const res    = await fetch(`/notifications/${id}/mark-read`, {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+            let show = true;
+            if (q && !text.includes(q)) show = false;
+            if (filter === 'unread' && !isUnread) show = false;
+            if (filter === 'read' && isUnread) show = false;
+
+            item.style.display = show ? 'block' : 'none';
         });
-        const result = await res.json();
-        if (!res.ok) { toast(result.message, 'error'); return; }
 
-        const item = btn.closest('.notif-item');
-        item.classList.remove('unread');
-        item.dataset.seen = '1';
-        // update title color
-        const title = item.querySelector('[style*="font-weight:600"]');
-        if (title) title.style.color = '#94a3b8';
-        // remove the mark-read button
-        btn.remove();
         refreshCounts();
-        toast(result.message, 'success');
-
-    } catch (err) {
-        console.error(err);
-        toast('Something went wrong', 'error');
     }
-}
 
-/* ─── Mark ALL as read ───────────────────────────────── */
-async function markAllReadAjax() {
-    try {
-        const res    = await fetch('/notifications/mark-all-read', {
-            method: 'POST',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
-        });
-        const result = await res.json();
-        if (!res.ok) { toast(result.message, 'error'); return; }
+    /* ─── Mark single as read ────────────────────────────── */
+    async function markReadAjax(id, btn) {
+        try {
+            const res = await fetch(`/notifications/${id}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
 
-        document.querySelectorAll('#notif-list .notif-item.unread').forEach(item => {
+            const item = btn.closest('.notif-item');
             item.classList.remove('unread');
             item.dataset.seen = '1';
+            // update title color
             const title = item.querySelector('[style*="font-weight:600"]');
             if (title) title.style.color = '#94a3b8';
-            // remove per-item read button
-            const readBtn = item.querySelector('[onclick*="markReadAjax"]');
-            if (readBtn) readBtn.remove();
-        });
-        refreshCounts();
-        toast(result.message, 'success');
+            // remove the mark-read button
+            btn.remove();
+            refreshCounts();
+            toast(result.message, 'success');
 
-    } catch (err) {
-        console.error(err);
-        toast('Something went wrong', 'error');
+        } catch (err) {
+            console.error(err);
+            toast('Something went wrong', 'error');
+        }
     }
-}
 
-/* ─── Delete single ──────────────────────────────────── */
-async function deleteNotifAjax(id, btn) {
-    try {
-        const res    = await fetch(`/notifications/${id}/delete`, {
-            method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
-        });
-        const result = await res.json();
-        if (!res.ok) { toast(result.message, 'error'); return; }
+    /* ─── Mark ALL as read ───────────────────────────────── */
+    async function markAllReadAjax() {
+        try {
+            const res = await fetch('/notifications/mark-all-read', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
 
-        const item = btn.closest('.notif-item');
-        item.classList.add('removing');
-        setTimeout(() => { item.remove(); refreshCounts(); }, 300);
-        toast(result.message, 'info');
+            document.querySelectorAll('#notif-list .notif-item.unread').forEach(item => {
+                item.classList.remove('unread');
+                item.dataset.seen = '1';
+                const title = item.querySelector('[style*="font-weight:600"]');
+                if (title) title.style.color = '#94a3b8';
+                // remove per-item read button
+                const readBtn = item.querySelector('[onclick*="markReadAjax"]');
+                if (readBtn) readBtn.remove();
+            });
+            refreshCounts();
+            toast(result.message, 'success');
 
-    } catch (err) {
-        console.error(err);
-        toast('Something went wrong', 'error');
+        } catch (err) {
+            console.error(err);
+            toast('Something went wrong', 'error');
+        }
     }
-}
 
-/* ─── Clear ALL ──────────────────────────────────────── */
-async function clearAllAjax() {
-    if (!confirm('Clear all notifications? This cannot be undone.')) return;
-    try {
-        const res    = await fetch('/notifications/clear-all', {
-            method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
-        });
-        const result = await res.json();
-        if (!res.ok) { toast(result.message, 'error'); return; }
+    /* ─── Delete single ──────────────────────────────────── */
+    async function deleteNotifAjax(id, btn) {
+        try {
+            const res = await fetch(`/notifications/${id}/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
 
-        const items = document.querySelectorAll('#notif-list .notif-item');
-        items.forEach((item, i) => {
+            const item = btn.closest('.notif-item');
+            item.classList.add('removing');
             setTimeout(() => {
-                item.classList.add('removing');
-                setTimeout(() => item.remove(), 300);
-            }, i * 40);
-        });
-        setTimeout(() => { refreshCounts(); location.reload(); }, items.length * 40 + 350);
-        toast(result.message, 'success');
+                item.remove();
+                refreshCounts();
+            }, 300);
+            toast(result.message, 'info');
 
-    } catch (err) {
-        console.error(err);
-        toast('Something went wrong', 'error');
+        } catch (err) {
+            console.error(err);
+            toast('Something went wrong', 'error');
+        }
     }
+
+    /* ─── Clear ALL ──────────────────────────────────────── */
+    async function clearAllAjax() {
+        if (!confirm('Clear all notifications? This cannot be undone.')) return;
+        try {
+            const res = await fetch('/notifications/clear-all', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
+
+            const items = document.querySelectorAll('#notif-list .notif-item');
+            items.forEach((item, i) => {
+                setTimeout(() => {
+                    item.classList.add('removing');
+                    setTimeout(() => item.remove(), 300);
+                }, i * 40);
+            });
+            setTimeout(() => {
+                refreshCounts();
+                location.reload();
+            }, items.length * 40 + 350);
+            toast(result.message, 'success');
+
+        } catch (err) {
+            console.error(err);
+            toast('Something went wrong', 'error');
+        }
+    }
+
+   function toggleQuietHours(el){
+
+    el.classList.toggle('on');
+
+    const isOn = el.classList.contains('on');
+
+    const input = document.getElementById('quit_hours');
+
+    input.value = isOn ? '1' : '0';
+
+    document.getElementById('quiet-cfg').style.display =
+        isOn ? 'grid' : 'none';
+
 }
 
-/* ─── Settings form ──────────────────────────────────── */
-document.getElementById('notification-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const fd   = new FormData(this);
-    const data = {
-        email_notify:   fd.has('email_notify')  ? 1 : 0,
-        push_notify:    fd.has('push_notify')   ? 1 : 0,
-        before_30_days: fd.has('before_30_days') ? 1 : 0,
-        before_7_days:  fd.has('before_7_days')  ? 1 : 0,
-        before_3_days:  fd.has('before_3_days')  ? 1 : 0,
-        before_1_day:   fd.has('before_1_day')   ? 1 : 0,
-        on_day:         fd.has('on_day')          ? 1 : 0,
-        quit_hours:     parseInt(fd.get('quit_hours') ?? 0),
-        start_time:     fd.get('start_time') ?? null,
-        end_time:       fd.get('end_time')   ?? null,
-    };
-    try {
-        const res    = await fetch('/notification-settings/update', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': CSRF,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
-    } catch (err) {
-        console.error(err);
-        toast('Server error', 'error');
-    }
-});
+    /* ─── Settings form ──────────────────────────────────── */
+    document.getElementById('notification-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const fd = new FormData(this);
+        const data = {
+            quit_hours: parseInt(fd.get('quit_hours') ?? 0),
+            start_time: fd.get('start_time') ?? null,
+            end_time: fd.get('end_time') ?? null,
+        };
+        try {
+            const res = await fetch('/notification-settings/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
+        } catch (err) {
+            console.error(err);
+            toast('Server error', 'error');
+        }
+    });
 
-/* ─── Boot ───────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', refreshCounts);
+    async function toggleNotification(el, id) {
+
+        el.classList.toggle('on');
+
+        document.getElementById(id).checked =
+            el.classList.contains('on');
+
+        const fd = new FormData(
+            document.getElementById('notification-form')
+        );
+
+        const data = {
+
+            email_notify: fd.has('email_notify') ? 1 : 0,
+
+            push_notify: fd.has('push_notify') ? 1 : 0,
+
+            before_30_days: fd.has('before_30_days') ? 1 : 0,
+
+            before_7_days: fd.has('before_7_days') ? 1 : 0,
+
+            before_3_days: fd.has('before_3_days') ? 1 : 0,
+
+            before_1_day: fd.has('before_1_day') ? 1 : 0,
+
+            on_day: fd.has('on_day') ? 1 : 0,
+
+            quit_hours: parseInt(fd.get('quit_hours') ?? 0),
+
+            start_time: fd.get('start_time') ?? null,
+
+            end_time: fd.get('end_time') ?? null,
+        };
+
+        try {
+
+            const res = await fetch('/notification-settings/update', {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                },
+
+                body: JSON.stringify(data)
+
+            });
+
+            const result = await res.json();
+
+            toast(
+                result.status ?
+                result.message :
+                'Something went wrong',
+
+                result.status ?
+                'success' :
+                'error'
+            );
+
+        } catch (err) {
+
+            console.log(err);
+
+            toast('Server error', 'error');
+
+        }
+
+    }
+
+    /* ─── Boot ───────────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', refreshCounts);
 </script>
 
 @endsection

@@ -79,6 +79,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                         <th>S.No</th>
                         <th>Title</th>
                         <th class="hide-mobile">User</th>
                         <th class="hide-mobile">Category</th>
@@ -99,4 +100,9 @@
         </div>
     </div>
 </section>
+<script>
+
+window.REMINDERS_DATA = @json($reminders);
+
+</script>
 @endsection
