@@ -219,7 +219,7 @@
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <label class="label">First Name <span style="color: var(--red)">*</span></label>
-                    <input class="inp" id="eu-first_name"oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="First name" />
+                    <input class="inp" id="eu-first_name" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="First name" />
                     <small class="err" id="eu-first_name-error"></small>
 
                 </div>
@@ -266,9 +266,9 @@
                     <small class="err" id="eu-phone-error"></small>
                 </div>
                 <div style="margin-bottom: 18px">
-                <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" maxlength="80" id="eu-address1" placeholder="Enter Address" />
-                <small class="err" id="eu-address1-error"></small>
-            </div>
+                    <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" maxlength="80" id="eu-address1" placeholder="Enter Address" />
+                    <small class="err" id="eu-address1-error"></small>
+                </div>
             </div>
 
             <div style="display: flex; gap: 8px; justify-content: flex-end">
@@ -514,14 +514,14 @@
                 </button>
             </div>
             <div id="rem-modal-content"></div>
-            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px">
+            <!-- <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('view-reminder-modal')">Close</button>
                 <button
                     class="btn btn-primary btn-sm"
                     onclick="toast('Reminder updated!','success');closeModal('view-reminder-modal')">
                     <i class="ri-save-line"></i> Save Changes
                 </button>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -878,12 +878,15 @@
             <div style="margin-bottom:14px">
                 <label class="label">Category Name <span style="color:var(--red)">*</span></label>
                 <input class="inp" id="edit-cat-name" placeholder="e.g. Insurance" />
+                <small class="err" id="edit-cat-name-error"></small>
+
             </div>
 
             <div class="g2" style="margin-bottom:14px">
                 <div>
                     <label class="label">Icon</label>
                     <input class="inp" id="edit-cat-icon" placeholder="ri-shield-star-line" />
+                    <small class="err" id="edit-cat-icon-error"></small>
                 </div>
                 <div>
                     <label class="label">Colour</label>
@@ -894,6 +897,7 @@
             <div style="margin-bottom:18px">
                 <label class="label">Description</label>
                 <input class="inp" id="edit-cat-desc" placeholder="Brief description..." />
+                <small class="err" id="edit-cat-desc-error"></small>
             </div>
 
             <div style="display:flex;gap:8px;justify-content:flex-end">
@@ -933,12 +937,14 @@
 
             <div style="margin-bottom:14px">
                 <label class="label">Subcategory Name <span style="color:var(--red)">*</span></label>
-                <input class="inp" id="edit-sub-name" placeholder="e.g. Car Insurance" />
+                <input class="inp" maxlength="50" id="edit-sub-name" placeholder="Subcategory name" />
+                <small class="err" id="edit-sub-name-error"></small>
             </div>
 
             <div style="margin-bottom:14px">
                 <label class="label">Description</label>
-                <input class="inp" id="edit-sub-desc" placeholder="Brief description..." />
+                <input class="inp" maxlength="100" id="edit-sub-desc" placeholder="Description" />
+                <small class="err" id="edit-sub-desc-error"></small>
             </div>
 
             <div style="display:flex;gap:8px;justify-content:flex-end">
@@ -1058,7 +1064,7 @@
         });
     </script>
     <script>
-        ['eu-first_name', 'eu-last_name', 'eu-phone', 'eu-plan', 'eu-status','eu-postcode','eu-address1'].forEach(function(id) {
+        ['eu-first_name', 'eu-last_name', 'eu-phone', 'eu-plan', 'eu-status', 'eu-postcode', 'eu-address1'].forEach(function(id) {
 
             document.getElementById(id).addEventListener('input', function() {
 
@@ -1080,6 +1086,37 @@
                 if (error) {
                     error.innerText = '';
                 }
+            });
+
+        });
+    </script>
+
+    <script>
+        document.querySelectorAll('#edit-sub-name,#edit-sub-desc')
+            .forEach(function(el) {
+                el.addEventListener('input', function() {
+                    let err = document.getElementById(
+                        this.id + '-error'
+                    );
+
+                    if (err) {
+                        err.innerText = '';
+                    }
+
+                });
+
+            });
+
+        document.querySelectorAll('#edit-cat-name,#edit-cat-icon,#edit-cat-desc').forEach(function(el) {
+            el.addEventListener('input', function() {
+                let err = document.getElementById(
+                    this.id + '-error'
+                );
+
+                if (err) {
+                    err.innerText = '';
+                }
+
             });
 
         });

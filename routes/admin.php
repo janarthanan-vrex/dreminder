@@ -44,14 +44,17 @@ Route::post('/admin/users/store',[ManagementController::class,'storeUser'])->nam
 Route::get('/admin-category',[ManagementController::class,'adminCategory'])->name('admin.category');
 Route::post('/admin/category/store', [ManagementController::class, 'storeCategory'])->name('admin.category.store');
 Route::post('/admin/subcategory/store',[ManagementController::class,'storeSubcategory'])->name('admin.subcategory.store');
-
+Route::post('/admin/categories/delete',[ManagementController::class, 'deleteCategory'])->name('admin.categories.delete');
+Route::post('/admin/subcategories/delete',[ManagementController::class, 'deleteSubcategory'])->name('admin.subcategories.delete');
+Route::post('/admin/subcategories/update',[ManagementController::class, 'updateSubcategory'])->name('admin.subcategories.update');
+Route::post('/admin/categories/update',[ManagementController::class, 'updateCategory'])->name('admin.categories.update');
 
 
 Route::get('/admin-reminders',[ManagementController::class,'reminderPage',])->name('admin.reminderpage');
+Route::get('/admin-calendar',[ManagementController::class,'calendarPage'])->name('admin.calendarpage');
+Route::get('/admin/calendar/user-data',[ManagementController::class, 'getUserCalendar'])->name('admin.calendar.user.data');
 
-// Route::get('/admin-feedback', function () {
-//     return view('admin.feedback');
-// });
+
 
 Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
 Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');

@@ -190,9 +190,7 @@ Route::get('/admin-layout', function () {
 //     return view('admin.users');
 // });
 
-Route::get('/admin-calendar', function () {
-    return view('admin.calendar');
-});
+
 
 Route::get('/admin-staff', function () {
     return view('admin.staff');

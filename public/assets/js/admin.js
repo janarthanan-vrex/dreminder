@@ -308,7 +308,7 @@ const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
 
 // ];
 
-const CATS_DATA = window.CATS_DATA || [];
+let CATS_DATA = window.CATS_DATA || [];
 
 const AUDIT_DATA = [
     {
@@ -1229,35 +1229,49 @@ function filterUsers(q) {
 // }
 
 function toggleUserStatus(id) {
-    fetch("/admin/users/status", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-                .content,
-            Accept: "application/json",
-        },
-        body: JSON.stringify({
-            id: id,
-        }),
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            if (data.status) {
-                var u = USERS_DATA.find(function (x) {
-                    return x.id === id;
-                });
-                if (u) {
-                    u.status = data.user_status;
+    var u = USERS_DATA.find(function (x) {return x.id === id;
+    });
+    if (!u) return;
+    openConfirm(
+        "Are you sure you want to " +
+        (u.status === "active" ? "suspend" : "activate") +
+        " this user?",
+        function () {
+            fetch("/admin/users/status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    Accept: "application/json",
+                },
+                body: JSON.stringify({
+                    id: id,
+                }),
+
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.status) {
+                    var u = USERS_DATA.find(function (x) {
+                        return x.id === id;
+                    });
+                    if (u) {
+                        u.status = data.user_status;
+                    }
+                    toast(data.message, "success");
+                    renderUsers();
+                } else {
+                    toast(data.message || "Something went wrong", "error");
                 }
-                toast(data.message, "success");
-                renderUsers();
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            toast("Something went wrong", "error");
-        });
+            })
+            .catch((err) => {
+                console.log(err);
+                toast("Something went wrong", "error");
+            });
+        }
+    );
 }
 
 function openEditUser(id) {
@@ -1502,9 +1516,22 @@ function openUserDrawer(id) {
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Member Since</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             u.joined +
             "</span></div>" +
+            
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Phone</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.phone || "N/A") +
             "</span></div>" +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Address1</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            (u.address1 || "N/A") +
+            "</span></div>" +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Address2</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            (u.address2 || "N/A") +
+            "</span></div>" +
+
+
+   '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            (u.postcode || "N/A") +
+            "</span></div>" +
+
             '</div><div style="display:flex;flex-direction:column;gap:8px">' +
             '<button id="verify-mail-btn-' +
             u.id +
@@ -2064,9 +2091,18 @@ function renderReminders() {
                 due +
                 "</td>" +
                 '<td><span class="badge badge-' +
-                (catColors[r.status] || "slate") +
+
+                (
+    r.reminder_status === "completed"
+        ? "green"
+        : r.reminder_status === "pending"
+          ? "amber"
+          : "slate"
+)
+                
+                +
                 '">' +
-                r.status +
+                r.reminder_status +
                 "</span></td>" +
                 '<td style="text-align:right"><div style="display:flex;gap:4px;justify-content:flex-end">' +
                 '<button class="btn btn-ghost btn-xs" onclick="openViewReminder(' +
@@ -2087,18 +2123,82 @@ function setRemPage(p) {
 }
 
 function filterReminders(q) {
-    if (q === undefined) q = "";
+
+    if (q === undefined) {
+        q = document.querySelector('.search-box input')?.value || "";
+    }
+
     q = q.toLowerCase();
+
     var statusF =
         (document.getElementById("rem-status-filter") || {}).value || "all";
+
+    var dateF =
+        (document.getElementById("rem-date-filter") || {}).value || "this_month";
+
+    var now = new Date();
+
     remFiltered = REMINDERS_DATA.filter(function (r) {
-        var matchQ = (r.title + r.user.name + r.category)
-            .toLowerCase()
-            .includes(q);
-        var matchS = statusF === "all" || r.status === statusF;
-        return matchQ && matchS;
+
+        var matchQ = (
+            r.title +
+            r.user.name +
+            r.category
+        )
+        .toLowerCase()
+        .includes(q);
+
+        var matchS =
+            statusF === "all" ||
+            r.reminder_status === statusF;
+
+        var matchD = true;
+
+        if (r.end_reminder_date) {
+
+            var endDate = new Date(r.end_reminder_date);
+
+            if (dateF === "this_month") {
+
+                matchD =
+                    endDate.getMonth() === now.getMonth() &&
+                    endDate.getFullYear() === now.getFullYear();
+
+            }
+
+            else if (dateF === "3_months") {
+
+                var threeMonthsAgo = new Date();
+                threeMonthsAgo.setMonth(now.getMonth() - 3);
+
+                matchD = endDate >= threeMonthsAgo;
+
+            }
+
+            else if (dateF === "6_months") {
+
+                var sixMonthsAgo = new Date();
+                sixMonthsAgo.setMonth(now.getMonth() - 6);
+
+                matchD = endDate >= sixMonthsAgo;
+
+            }
+
+            else if (dateF === "this_year") {
+
+                matchD =
+                    endDate.getFullYear() === now.getFullYear();
+
+            }
+
+        }
+
+        return matchQ && matchS && matchD;
+
     });
+
     remPageNum = 1;
+
     renderReminders();
 }
 
@@ -2205,8 +2305,8 @@ function openViewReminder(id) {
         r.title +
         '</div>' +
 
-        '<div style="font-size:.75rem;color:var(--text3)">' +
-        '#' + r.id + ' · ' + r.category +
+        '<div style="font-size:.75rem;color:var(--text3)">' 
+        + r.category +
         '</div>' +
 
         '</div></div>' +
@@ -2229,11 +2329,11 @@ function openViewReminder(id) {
 
         rowItem("Provider", r.provider || 'N/A') +
 
-        rowItem("Cost", r.cost || '0') +
+       rowItem("Cost", `€ ${r.cost || '0'}`) +
 
         rowItem("Payment Frequency", r.payment_frequency || 'N/A') +
 
-        rowItem("Status", r.status || 'N/A') +
+     
 
         rowItem("Reminder Status", r.reminder_status || 'N/A') +
 
@@ -2654,6 +2754,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // If you are using router with gop(), it already calls renderTransactions()
     // when page-transactions is active; calling again is safe.
     renderTransactions();
+     filterReminders();
 });
 
 /* ══════════════════════════════════════════
@@ -2725,11 +2826,21 @@ function renderAdminCategories() {
                 "</div>" +
                 "</div>" +
                 "</div>" +
-                '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
-                c.id +
-                ')">' +
-                '<i class="ri-pencil-line"></i>' +
-                "</button>" +
+                '<div style="display:flex;gap:4px">' +
+
+'<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
+c.id +
+')">' +
+'<i class="ri-pencil-line"></i>' +
+"</button>" +
+
+'<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteCategory(' +
+c.id +
+')">' +
+'<i class="ri-delete-bin-line"></i>' +
+"</button>" +
+
+"</div>" +
                 "</div>" +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
                 '<span class="badge badge-teal">' +
@@ -2739,13 +2850,11 @@ function renderAdminCategories() {
                 c.total.toLocaleString() +
                 " reminders</span>" +
                 "</div>" +
-                '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
-                '<span style="font-size:.72rem;color:var(--text3)">Usage</span>' +
-                '<span style="font-size:.72rem;font-weight:700;color:var(--text)">' +
-                c.total.toLocaleString() +
-                "</span>" +
+                '<div  style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+                '<span class="hidden" style="font-size:.72rem;color:var(--text3)">Usage</span>' +
+               
                 "</div>" +
-                '<div class="prog-track" style="margin-bottom:12px">' +
+                '<div class="prog-track hidden" style="margin-bottom:12px">' +
                 '<div class="prog-fill" style="width:' +
                 Math.min((c.total / 700) * 100, 100).toFixed(0) +
                 "%;background:" +
@@ -2761,6 +2870,57 @@ function renderAdminCategories() {
             );
         },
     ).join("");
+}
+
+function deleteCategory(id) {
+    var c = CATS_DATA.find(function (x) {
+        return x.id === id;
+    });
+    if (!c) return;
+    openConfirm(
+        'Delete "' + c.name + '" category?',
+        function () {
+            fetch('/admin/categories/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    'Accept': 'application/json'
+                },
+
+                body: JSON.stringify({
+                    id: id
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                   var index = CATS_DATA.findIndex(function (x) {
+    return x.id === id;
+});
+
+if (index !== -1) {
+    CATS_DATA.splice(index, 1);
+}
+                    renderAdminCategories();
+                    toast(data.message, 'success');
+                } else {
+                    toast(data.message || 'Something went wrong', 'error');
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                toast('Something went wrong', 'error');
+
+            });
+
+        }
+
+    );
+
 }
 
 function openCategoryDetail(categoryId) {
@@ -2829,9 +2989,12 @@ function openCategoryDetail(categoryId) {
         '<button class="btn btn-ghost btn-sm" onclick="openEditCategory(' +
         c.id +
         ')"><i class="ri-pencil-line"></i> Edit</button>' +
-        '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
-        c.id +
-        ");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>" +
+
+       '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
+c.id +
+");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>"
+        
+        +
         "</div>" +
         "</div>" +
         '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px">' +
@@ -2841,7 +3004,7 @@ function openCategoryDetail(categoryId) {
         '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Subcategories</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
         c.subcategories.length +
         "</div></div>" +
-        '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Usage</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Reminder</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
         c.total.toLocaleString() +
         "</div></div>" +
         "</div>" +
@@ -2858,6 +3021,71 @@ function openCategoryDetail(categoryId) {
     openModal("category-detail-modal");
 }
 
+function prefillSubcategoryParent(id) {
+
+    setTimeout(() => {
+
+        const select = document.getElementById('subcategory-parent');
+
+        if (!select) return;
+
+        if (select.tomselect) {
+            select.tomselect.setValue(String(id));
+        }
+
+        select.value = id;
+
+    }, 50);
+
+}
+
+function deleteSubcategory(categoryId, subId) {
+    var c = CATS_DATA.find(function (x) {
+        return x.id === categoryId;
+    });
+    if (!c) return;
+    var s = c.subcategories.find(function (x) {
+        return x.id === subId;
+    });
+    if (!s) return;
+    openConfirm(
+        'Delete "' + s.name + '" subcategory?',
+        function () {
+            fetch('/admin/subcategories/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector(
+                        'meta[name="csrf-token"]'
+                    ).content,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: subId
+                })
+
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status) {
+                    c.subcategories = c.subcategories.filter(function (x) {
+                        return x.id !== subId;
+                    });
+                    renderAdminCategories();
+                    closeModal('category-detail-modal');
+                    toast(data.message, 'success');
+                } else {
+                    toast(data.message || 'Something went wrong', 'error');
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                toast('Something went wrong', 'error');
+            });
+        }
+    );
+}
+
 function populateSubcategoryParents() {
     var sel = document.getElementById("subcategory-parent");
     if (!sel) return;
@@ -2868,40 +3096,20 @@ function populateSubcategoryParents() {
 
 function prefillSubcategoryParent(categoryId) {
     populateSubcategoryParents();
-    document.getElementById("subcategory-parent").value = categoryId;
+
+    setTimeout(() => {
+        const select = document.getElementById("subcategory-parent");
+        if (!select) return;
+
+        if (select.tomselect) {
+            select.tomselect.setValue(String(categoryId));
+        } else {
+            select.value = categoryId;
+        }
+    }, 50);
 }
 
-// function createSubcategory() {
-//     var parentId = parseInt(document.getElementById("subcategory-parent").value);
-//     var name = document.getElementById("subcategory-name").value.trim();
-//     var desc = document.getElementById("subcategory-desc").value.trim();
 
-//     if (!name) {
-//         toast("Subcategory name is required", "error");
-//         return;
-//     }
-
-//     var category = CATS_DATA.find(function(c) { return c.id === parentId; });
-//     if (!category) {
-//         toast("Parent category not found", "error");
-//         return;
-//     }
-
-//     category.subcategories.push({
-//         id: Date.now(),
-//         name: name,
-//         desc: desc,
-//         total: 0
-//     });
-
-//     toast("Subcategory created!", "success");
-//     closeModal("add-subcategory-modal");
-//     renderAdminCategories();
-//     openCategoryDetail(category.id);
-
-//     document.getElementById("subcategory-name").value = "";
-//     document.getElementById("subcategory-desc").value = "";
-// }
 
 function createCategory() {
     var name = document.getElementById("cat-name").value.trim();
@@ -2961,36 +3169,96 @@ function openEditCategory(categoryId) {
     openModal("edit-category-modal");
 }
 
+// function saveCategoryEdit() {
+//     var id = parseInt(document.getElementById("edit-cat-id").value);
+//     var c = CATS_DATA.find(function (item) {
+//         return item.id === id;
+//     });
+
+//     if (!c) {
+//         toast("Category not found", "error");
+//         return;
+//     }
+
+//     var name = document.getElementById("edit-cat-name").value.trim();
+//     var icon = document.getElementById("edit-cat-icon").value.trim();
+//     var color = document.getElementById("edit-cat-color").value;
+//     var desc = document.getElementById("edit-cat-desc").value.trim();
+
+//     if (!name) {
+//         toast("Category name is required", "error");
+//         return;
+//     }
+
+//     c.name = name;
+//     c.icon = icon || "ri-folder-line";
+//     c.color = color;
+//     c.bg = hexToRgba(color, 0.12);
+//     c.desc = desc;
+
+//     renderAdminCategories();
+//     closeModal("edit-category-modal");
+//     toast("Category updated successfully", "success");
+// }
+
 function saveCategoryEdit() {
-    var id = parseInt(document.getElementById("edit-cat-id").value);
-    var c = CATS_DATA.find(function (item) {
-        return item.id === id;
+    document.querySelectorAll('.err').forEach(el => {
+        el.innerText = '';
     });
-
-    if (!c) {
-        toast("Category not found", "error");
-        return;
-    }
-
-    var name = document.getElementById("edit-cat-name").value.trim();
-    var icon = document.getElementById("edit-cat-icon").value.trim();
-    var color = document.getElementById("edit-cat-color").value;
-    var desc = document.getElementById("edit-cat-desc").value.trim();
-
-    if (!name) {
-        toast("Category name is required", "error");
-        return;
-    }
-
-    c.name = name;
-    c.icon = icon || "ri-folder-line";
-    c.color = color;
-    c.bg = hexToRgba(color, 0.12);
-    c.desc = desc;
-
-    renderAdminCategories();
-    closeModal("edit-category-modal");
-    toast("Category updated successfully", "success");
+    let payload = {
+        id: document.getElementById("edit-cat-id").value,
+        name: document.getElementById("edit-cat-name").value.trim(),
+        icon: document.getElementById("edit-cat-icon").value.trim(),
+        color: document.getElementById("edit-cat-color").value,
+        description: document.getElementById("edit-cat-desc").value.trim()
+    };
+    fetch('/admin/categories/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector(
+                'meta[name="csrf-token"]'
+            ).content,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (response.status === 422) {
+            Object.keys(data.errors).forEach(key => {
+                let errorEl = document.getElementById(
+                    'edit-cat-' + key + '-error'
+                );
+                if (errorEl) {
+                    errorEl.innerText = data.errors[key][0];
+                }
+            });
+            return;
+        }
+        if (data.status) {
+            var c = CATS_DATA.find(function (item) {
+                return item.id == payload.id;
+            });
+            if (c) {
+                c.name = payload.name;
+                c.icon = payload.icon || 'ri-folder-line';
+                c.color = payload.color;
+                c.bg = hexToRgba(payload.color, 0.12);
+                c.desc = payload.description;
+            }
+            renderAdminCategories();
+            closeModal("edit-category-modal");
+            toast(data.message, 'success');
+            setTimeout(()=>{
+                location.reload();
+            },1500)
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        toast('Something went wrong', 'error');
+    });
 }
 
 function openEditSubcategory(categoryId, subId) {
@@ -3026,76 +3294,143 @@ function openEditSubcategory(categoryId, subId) {
     openModal("edit-subcategory-modal");
 }
 
+// function saveSubcategoryEdit() {
+//     var subId = parseInt(document.getElementById("edit-sub-id").value);
+//     var oldParentId = parseInt(
+//         document.getElementById("edit-sub-old-parent-id").value,
+//     );
+//     var newParentId = parseInt(
+//         document.getElementById("edit-sub-parent").value,
+//     );
+//     var name = document.getElementById("edit-sub-name").value.trim();
+//     var desc = document.getElementById("edit-sub-desc").value.trim();
+
+//     if (!name) {
+//         toast("Subcategory name is required", "error");
+//         return;
+//     }
+
+//     var oldParent = CATS_DATA.find(function (c) {
+//         return c.id === oldParentId;
+//     });
+
+//     var newParent = CATS_DATA.find(function (c) {
+//         return c.id === newParentId;
+//     });
+
+//     if (!oldParent || !newParent) {
+//         toast("Category not found", "error");
+//         return;
+//     }
+
+//     var subIndex = oldParent.subcategories.findIndex(function (s) {
+//         return s.id === subId;
+//     });
+
+//     if (subIndex === -1) {
+//         toast("Subcategory not found", "error");
+//         return;
+//     }
+
+//     var sub = oldParent.subcategories[subIndex];
+
+//     if (oldParentId === newParentId) {
+//         sub.name = name;
+//         sub.desc = desc;
+//     } else {
+//         oldParent.subcategories.splice(subIndex, 1);
+//         sub.name = name;
+//         sub.desc = desc;
+//         newParent.subcategories.push(sub);
+//     }
+
+//     renderAdminCategories();
+//     closeModal("edit-subcategory-modal");
+//     toast("Subcategory updated successfully", "success");
+//     openCategoryDetail(newParentId);
+// }
+
 function saveSubcategoryEdit() {
-    var subId = parseInt(document.getElementById("edit-sub-id").value);
-    var oldParentId = parseInt(
-        document.getElementById("edit-sub-old-parent-id").value,
-    );
-    var newParentId = parseInt(
-        document.getElementById("edit-sub-parent").value,
-    );
-    var name = document.getElementById("edit-sub-name").value.trim();
-    var desc = document.getElementById("edit-sub-desc").value.trim();
 
-    if (!name) {
-        toast("Subcategory name is required", "error");
-        return;
-    }
-
-    var oldParent = CATS_DATA.find(function (c) {
-        return c.id === oldParentId;
+    document.querySelectorAll('.err').forEach(el => {
+        el.innerText = '';
     });
 
-    var newParent = CATS_DATA.find(function (c) {
-        return c.id === newParentId;
+    let payload = {
+
+        id: document.getElementById("edit-sub-id").value,
+
+        category_id: document.getElementById("edit-sub-parent").value,
+
+        name: document.getElementById("edit-sub-name").value.trim(),
+
+        description: document.getElementById("edit-sub-desc").value.trim()
+
+    };
+
+    fetch('/admin/subcategories/update', {
+
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector(
+                'meta[name="csrf-token"]'
+            ).content,
+            'Accept': 'application/json'
+        },
+
+        body: JSON.stringify(payload)
+
+    })
+
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (response.status === 422) {
+
+            Object.keys(data.errors).forEach(key => {
+
+                let errorEl = document.getElementById(
+                    'edit-sub-' + key + '-error'
+                );
+
+                if (errorEl) {
+
+                    errorEl.innerText = data.errors[key][0];
+
+                }
+
+            });
+
+            return;
+        }
+
+        if (data.status) {
+
+            toast(data.message, 'success');
+
+            closeModal("edit-subcategory-modal");
+
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+
+        }
+
+    })
+
+    .catch(err => {
+
+        console.log(err);
+
+        toast('Something went wrong', 'error');
+
     });
 
-    if (!oldParent || !newParent) {
-        toast("Category not found", "error");
-        return;
-    }
-
-    var subIndex = oldParent.subcategories.findIndex(function (s) {
-        return s.id === subId;
-    });
-
-    if (subIndex === -1) {
-        toast("Subcategory not found", "error");
-        return;
-    }
-
-    var sub = oldParent.subcategories[subIndex];
-
-    if (oldParentId === newParentId) {
-        sub.name = name;
-        sub.desc = desc;
-    } else {
-        oldParent.subcategories.splice(subIndex, 1);
-        sub.name = name;
-        sub.desc = desc;
-        newParent.subcategories.push(sub);
-    }
-
-    renderAdminCategories();
-    closeModal("edit-subcategory-modal");
-    toast("Subcategory updated successfully", "success");
-    openCategoryDetail(newParentId);
 }
 
-function deleteSubcategory(categoryId, subId) {
-    var category = CATS_DATA.find(function (c) {
-        return c.id === categoryId;
-    });
-    if (!category) return;
-
-    category.subcategories = category.subcategories.filter(function (s) {
-        return s.id !== subId;
-    });
-
-    toast("Subcategory deleted", "success");
-    renderAdminCategories();
-    openCategoryDetail(categoryId);
-}
 
 /* ══════════════════════════════════════════
 NOTIFICATIONS

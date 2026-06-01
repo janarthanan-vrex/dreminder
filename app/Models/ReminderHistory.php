@@ -8,28 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class ReminderHistory extends Model
 {
     use HasFactory;
-
     protected $table = 'reminder_histories';
-
     protected $fillable = [
-
         'user_id',
-
         'reminder_id',
-
         'reminder_date',
-
         'reminder_time',
-
         'status',
-
         'sent_at',
     ];
-
     protected $casts = [
-
         'reminder_date' => 'date',
-
         'sent_at' => 'datetime',
     ];
 

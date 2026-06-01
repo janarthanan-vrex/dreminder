@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ReminderHistory;
+use Carbon\Carbon;
 
 class ManagementController extends Controller
 {
@@ -77,6 +79,7 @@ class ManagementController extends Controller
                         return [
                             'id'    => $sub->id,
                             'name'  => $sub->name,
+                            'desc' => $sub->description,
 
                             'total' => Reminder::where('subcategory_id', $sub->id)
                                 ->count()
@@ -156,6 +159,7 @@ class ManagementController extends Controller
                     'phone' => $user->phone,
                     'postcode' => $user->postcode,
                     'address1' => $user->address1,
+                    'address2' => $user->address2,
                     'initials' => strtoupper(
                         substr($user->first_name, 0, 1) .
                             substr($user->last_name, 0, 1)
@@ -388,6 +392,13 @@ class ManagementController extends Controller
 
 public function reminderPage(Request $request)
 {
+    $totalReminders = Reminder::count();
+
+    $completedReminders = Reminder::where('reminder_status','completed')->count();
+
+    $todayReminders = Reminder::whereDate('reminder_date',today())->count();
+
+    $pendingReminders = Reminder::where('reminder_status','pending')->count();
 
     $reminders = Reminder::with([
         'user',
@@ -426,6 +437,170 @@ public function reminderPage(Request $request)
 
     });
 
-    return view('admin.reminders',compact('reminders'));
+    return view('admin.reminders',compact('reminders','totalReminders','completedReminders','todayReminders','pendingReminders'));
 }
+
+public function calendarPage()
+{
+    $users = User::select('id','first_name','last_name','email')
+    ->get()
+    ->map(function ($user) {
+        return [
+            'id' => $user->id,
+            'name' => trim($user->first_name . ' ' . $user->last_name),
+            'email' => $user->email,
+        ];
+    });
+
+    // Categories
+    $fullCats = Category::where('status', 'active')
+        ->with([
+            'subcategories' => function ($q) {
+                $q->where('status', 'active');
+            }
+        ])
+        ->get()
+        ->mapWithKeys(function ($cat) {
+
+            return [
+               (string)$cat->id => [
+                    'name'  => $cat->name,
+                    'color' => $cat->color ?? '#94a3b8',
+                    'icon'  => $cat->icon ?? 'ri-alarm-line',
+                    'bg'    => 'rgba(148,163,184,.15)',
+
+                    'subs' => $cat->subcategories->map(function ($sub) {
+
+                        return [
+                            'id' => $sub->id,
+                            'name' => $sub->name,
+                        ];
+                    })->toArray(),
+                ]
+            ];
+        });
+
+    $categories = $fullCats->map(
+        fn($c) => collect($c)->except('subs')
+    );
+
+    return view('admin.calendar', compact(
+        'users',
+        'categories',
+        'fullCats'
+    ));
+}
+public function getUserCalendar(Request $request)
+{
+    $request->validate(['user_id' => 'required|exists:users,id']);
+
+    $histories = ReminderHistory::with(['reminder.category', 'reminder.subcategory'])
+        ->where('user_id', $request->user_id)
+        ->get()
+        ->map(function ($h) {
+            $reminder = $h->reminder;
+            if (!$reminder) return null;
+
+            return [
+                'id'              => $h->id,
+                'reminder_id'     => $h->reminder_id,
+                'title'           => $reminder->title,
+                'category'        => (string) $reminder->category_id,  // cast to string
+                'subcategory'     => $reminder->subcategory?->name ?? '',
+                'dueDate'         => $h->reminder_date
+                    ? Carbon::parse($h->reminder_date)->format('Y-m-d')  // fixed: no backslash
+                    : null,
+                'dueTime'         => $h->reminder_time,
+                'provider'        => $reminder->provider,
+                'cost'            => $reminder->cost,
+                'frequency'       => $reminder->payment_frequency,
+                'status'          => $h->status,
+                'description'     => $reminder->description,
+            ];
+        })
+        ->filter()->values();
+
+    return response()->json(['status' => true, 'histories' => $histories]);
+}
+
+public function deleteCategory(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:categories,id'
+    ]);
+
+    $category = Category::findOrFail($request->id);
+
+    // Delete subcategories
+    $category->subcategories()->delete();
+
+    // Optional: delete related reminders
+    $category->reminders()->delete();
+
+    // Delete category
+    $category->delete();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Category deleted successfully'
+    ]);
+}
+
+public function deleteSubcategory(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:sub_categories,id'
+    ]);
+    $subcategory = SubCategory::findOrFail($request->id);
+    Reminder::where('subcategory_id',$subcategory->id)->delete();
+    $subcategory->delete();
+    return response()->json([
+        'status' => true,
+        'message' => 'Subcategory deleted successfully'
+    ]);
+}
+
+public function updateSubcategory(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:sub_categories,id',
+        'category_id' => 'required|exists:categories,id',
+        'name' => 'required|string|max:255',
+        'description' => 'nullable|string|max:500',
+    ]);
+    // dd($request->all());
+    $subcategory = SubCategory::findOrFail($request->id);
+    $subcategory->update([
+        'category_id' => $request->category_id,
+        'name' => $request->name,
+        'description' => $request->description,
+    ]);
+    return response()->json([
+        'status' => true,
+        'message' => 'Subcategory updated successfullyyy'
+    ]);
+}
+
+public function updateCategory(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:categories,id',
+        'name' => 'required|string|max:255',
+        'icon' => 'required|string|max:255',
+        'color' => 'required|string',
+        'description' => 'nullable|string|max:500',
+    ]);
+    $category = Category::findOrFail($request->id);
+    $category->update([
+        'name' => $request->name,
+        'icon' => $request->icon,
+        'color' => $request->color,
+        'description' => $request->description,
+    ]);
+    return response()->json([
+        'status' => true,
+        'message' => 'Category updated successfully'
+    ]);
+}
+
 }

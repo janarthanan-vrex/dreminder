@@ -37,9 +37,7 @@
             </p>
         </div>
         <div style="display: flex; gap: 8px">
-            <button class="btn btn-ghost btn-sm" onclick="toast('Users exported','success')">
-                <i class="ri-download-2-line"></i> Export
-            </button>
+           
             <button class="btn btn-primary btn-sm" onclick="openModal('add-user-modal')">
                 <i class="ri-user-add-line"></i> Add User
             </button>
