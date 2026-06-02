@@ -2,872 +2,1139 @@
 @section('content')
 
 <style>
-.cms-tab-btn{padding:10px 18px;background:transparent;border:none;color:var(--text3);font-size:.8rem;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:6px}
-.cms-tab-btn:hover{color:var(--text2)}.cms-tab-btn.active{color:var(--purple);border-bottom-color:var(--purple)}
-.cms-tab-content{display:none}.cms-tab-content.active{display:block}
-.field-group{margin-bottom:16px}
-.field-group .label{margin-bottom:6px;display:block;font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
-.inp-area{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;color:var(--text);font-size:.85rem;resize:vertical;font-family:inherit;transition:border-color .2s}
-.inp-area:focus{outline:none;border-color:var(--purple)}
-.section-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
-.char-count{font-size:.68rem;color:var(--text4);text-align:right;margin-top:4px}.char-count.warn{color:var(--amber)}.char-count.bad{color:var(--red)}
-.seo-score{display:flex;align-items:center;gap:10px;padding:14px 18px;border-radius:12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);margin-bottom:16px}
-.seo-score-circle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:var(--green);flex-shrink:0}
-.toggle-switch{position:relative;width:40px;height:22px;flex-shrink:0}
-.toggle-switch input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:var(--ctrl-bg);border-radius:22px;cursor:pointer;transition:.3s}
-.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--text);border-radius:50%;transition:.3s}
-.toggle-switch input:checked+.toggle-slider{background:var(--purple)}
-.toggle-switch input:checked+.toggle-slider::before{transform:translateX(18px)}
-.sortable-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--row-bg);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:grab;margin-bottom:8px}
-.drag-handle{color:var(--text4);font-size:1.1rem;flex-shrink:0}
-
-/* ---- Multi-Plan Styles ---- */
-.plan-tab-bar{display:flex;gap:6px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
-.plan-tab{padding:7px 16px;border-radius:100px;font-size:.78rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--row-bg);color:var(--text3);transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.plan-tab:hover{border-color:rgba(124,58,237,.3);color:var(--text2)}
-.plan-tab.active{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.35);color:var(--purple-light)}
-.plan-tab .plan-tab-close{width:16px;height:16px;border-radius:50%;background:var(--ctrl-bg);display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0;transition:background .2s}
-.plan-tab .plan-tab-close:hover{background:rgba(239,68,68,.3);color:#fca5a5}
-.plan-editor{display:none}.plan-editor.active{display:block}
-.add-plan-btn{padding:7px 14px;border-radius:100px;font-size:.78rem;font-weight:700;cursor:pointer;border:1px dashed rgba(124,58,237,.4);background:transparent;color:rgba(124,58,237,.7);transition:all .2s;display:flex;align-items:center;gap:5px}
-.add-plan-btn:hover{border-color:rgba(124,58,237,.8);color:var(--purple-light);background:rgba(124,58,237,.08)}
-
-.price-preview{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(6,182,212,.06));border:1px solid rgba(124,58,237,.25);border-radius:24px;padding:24px;text-align:center;margin-bottom:12px;position:relative}
-.price-preview .plan-badge-indicator{position:absolute;top:10px;right:10px;font-size:.6rem;font-weight:800;padding:3px 8px;border-radius:100px;background:rgba(124,58,237,.2);color:var(--purple-light);border:1px solid rgba(124,58,237,.3)}
-
-.popular-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:100px;font-size:.65rem;font-weight:800;background:linear-gradient(135deg,var(--purple),var(--cyan));color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em}
-
-.plan-color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-
-.billing-toggle-wrap{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:16px}
-
-.coupon-row{display:grid;grid-template-columns:1fr 120px 120px auto;gap:8px;align-items:center;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);margin-bottom:6px}
-
-.plan-sort-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--row-bg);border:1px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:grab}
-.plan-sort-color{width:32px;height:32px;border-radius:var(--radius-xs);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:var(--text2)}
+    .cms-tab-btn {
+        padding: 10px 18px;
+        background: transparent;
+        border: none;
+        color: var(--text3);
+        font-size: .8rem;
+        font-weight: 600;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all .2s;
+        display: flex;
+        align-items: center;
+        gap: 6px
+    }
+    .cms-tab-btn:hover { color: var(--text2) }
+    .cms-tab-btn.active { color: var(--purple); border-bottom-color: var(--purple) }
+    .cms-tab-content { display: none }
+    .cms-tab-content.active { display: block }
+    .field-group { margin-bottom: 16px }
+    .field-group .label {
+        margin-bottom: 6px;
+        display: block;
+        font-size: .75rem;
+        font-weight: 700;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: .05em
+    }
+    .inp-area {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        color: var(--text);
+        font-size: .85rem;
+        resize: vertical;
+        font-family: inherit;
+        transition: border-color .2s
+    }
+    .inp-area:focus { outline: none; border-color: var(--purple) }
+    .section-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 14px
+    }
+    .sortable-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--row-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: grab;
+        margin-bottom: 8px
+    }
+    .plan-tab-bar {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+        margin-bottom: 18px;
+        flex-wrap: wrap
+    }
+    .plan-tab {
+        padding: 7px 16px;
+        border-radius: 100px;
+        font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        background: var(--row-bg);
+        color: var(--text3);
+        transition: all .2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap
+    }
+    .plan-tab:hover { border-color: rgba(124,58,237,.3); color: var(--text2) }
+    .plan-tab.active {
+        background: rgba(124,58,237,.15);
+        border-color: rgba(124,58,237,.35);
+        color: var(--purple-light)
+    }
+    .plan-tab .plan-tab-close {
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--ctrl-bg);
+        display: flex; align-items: center; justify-content: center;
+        font-size: .6rem; flex-shrink: 0;
+        transition: background .2s
+    }
+    .plan-tab .plan-tab-close:hover { background: rgba(239,68,68,.3); color: #fca5a5 }
+    .plan-editor { display: none }
+    .plan-editor.active { display: block }
+    .add-plan-btn {
+        padding: 7px 14px;
+        border-radius: 100px;
+        font-size: .78rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: 1px dashed rgba(124,58,237,.4);
+        background: transparent;
+        color: rgba(124,58,237,.7);
+        transition: all .2s;
+        display: flex; align-items: center; gap: 5px
+    }
+    .add-plan-btn:hover {
+        border-color: rgba(124,58,237,.8);
+        color: var(--purple-light);
+        background: rgba(124,58,237,.08)
+    }
+    .plan-color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0 }
+    .total-price-box {
+        background: rgba(16,185,129,.06);
+        border: 1px solid rgba(16,185,129,.2);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-size: .92rem; font-weight: 800; color: #10b981
+    }
+    .feature-serial {
+        width: 22px; height: 22px;
+        border-radius: 6px;
+        background: rgba(124,58,237,.12);
+        color: var(--purple-light);
+        font-size: .65rem; font-weight: 800;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0
+    }
+    .coupon-search-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap }
+    .coupon-search-bar .inp { max-width: 260px }
+    .cpn-pagination {
+        display: flex; align-items: center; gap: 6px;
+        justify-content: flex-end;
+        padding: 10px 14px;
+        border-top: 1px solid var(--border)
+    }
+    .cpn-page-btn {
+        width: 30px; height: 30px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: var(--row-bg);
+        color: var(--text3);
+        font-size: .75rem; font-weight: 700;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: all .2s
+    }
+    .cpn-page-btn:hover { border-color: rgba(124,58,237,.4); color: var(--purple-light) }
+    .cpn-page-btn.active {
+        background: rgba(124,58,237,.15);
+        border-color: rgba(124,58,237,.4);
+        color: var(--purple-light)
+    }
+    .cpn-page-info { font-size: .72rem; color: var(--text3); margin-right: 4px }
+    .error-msg { display: block; margin-top: 4px; font-size: .72rem; color: #ef4444; min-height: 16px }
+    .coupon-error-msg { display: block; margin-top: 4px; font-size: .72rem; color: #ef4444; min-height: 16px }
 </style>
 
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
     <div>
         <h2 class="font-jakarta" style="font-size:1.3rem;font-weight:800">Pricing Module</h2>
-        <p style="font-size:.8rem;color:var(--text3);margin-top:3px">Manage multiple plans, features, hero content and SEO</p>
+        <p style="font-size:.8rem;color:var(--text3);margin-top:3px">Manage plans and coupons</p>
     </div>
-    <div style="display:flex;gap:8px">
-        <a href="pricing" target="_blank" class="btn btn-ghost btn-sm"><i class="ri-eye-line"></i> Preview</a>
-        <button class="btn btn-primary btn-sm" onclick="saveAll()"><i class="ri-save-line"></i> Save & Publish</button>
-    </div>
+    <button type="button" class="btn btn-primary btn-sm" onclick="saveAll()">
+        <i class="ri-save-line"></i> Save & Publish
+    </button>
 </div>
 
 <!-- Page Tabs -->
 <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:2px solid rgba(255,255,255,.05)">
-    <button class="cms-tab-btn active" onclick="switchTab('plans')" id="tab-btn-plans"><i class="ri-price-tag-3-line"></i> Plans</button>
-    <button class="cms-tab-btn" onclick="switchTab('hero')" id="tab-btn-hero"><i class="ri-flag-line"></i> Hero</button>
-    <button class="cms-tab-btn" onclick="switchTab('coupons')" id="tab-btn-coupons"><i class="ri-coupon-line"></i> Coupons</button>
-    <button class="cms-tab-btn" onclick="switchTab('seo')" id="tab-btn-seo"><i class="ri-search-eye-line"></i> SEO</button>
+    <button class="cms-tab-btn active" onclick="switchTab('plans')" id="tab-btn-plans">
+        <i class="ri-price-tag-3-line"></i> Plans
+    </button>
+    <button class="cms-tab-btn" onclick="switchTab('coupons')" id="tab-btn-coupons">
+        <i class="ri-coupon-line"></i> Coupons
+    </button>
 </div>
 
 <!-- ============================== PLANS TAB ============================== -->
 <div class="cms-tab-content active" id="tab-plans">
+    <form id="plan-form" onsubmit="return false;">
+        <div class="section-card">
 
-    <!-- Global Settings -->
-    <div class="section-card" style="margin-bottom:18px">
-        <div class="section-title" style="margin-bottom:14px"><i class="ri-settings-3-line" style="color:var(--purple)"></i> Global Plan Settings</div>
-        <div class="g2">
-            <div class="field-group">
-                <label class="label">Layout Style</label>
-                <select class="inp" id="layout-style" onchange="updateAllPreviews()">
-                    <option value="cards">Side-by-Side Cards</option>
-                    <option value="toggle">Toggle (Monthly / Annual)</option>
-                    <option value="single">Single Plan (Spotlight)</option>
-                    <option value="table">Comparison Table</option>
-                </select>
-            </div>
-            <div class="field-group">
-                <label class="label">Currency Symbol</label>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
-                    <button class="btn btn-primary btn-sm" onclick="setGlobalCurrency('£',this)">£ GBP</button>
-                    <button class="btn btn-ghost btn-sm" onclick="setGlobalCurrency('$',this)">$ USD</button>
-                    <button class="btn btn-ghost btn-sm" onclick="setGlobalCurrency('€',this)">€ EUR</button>
-                    <button class="btn btn-ghost btn-sm" onclick="setGlobalCurrency('A$',this)">A$ AUD</button>
-                </div>
-            </div>
-        </div>
-        <div class="g2">
-            <div class="field-group">
-                <label class="label">Section Heading (before gradient)</label>
-                <input class="inp" value="Everything.">
-            </div>
-            <div class="field-group">
-                <label class="label">Heading Gradient Text</label>
-                <input class="inp" value="One Price.">
-            </div>
-        </div>
-        <div class="field-group">
-            <label class="label">Section Description</label>
-            <textarea class="inp-area inp" rows="2">No tiers. No hidden upgrades. No monthly charges. Just full access to DRemind for a simple annual fee.</textarea>
-        </div>
-        <div class="g2">
-            <div class="field-group">
-                <label class="label">Billing Toggle — Monthly Label</label>
-                <input class="inp" value="Monthly" id="billing-monthly-label">
-            </div>
-            <div class="field-group">
-                <label class="label">Billing Toggle — Annual Label</label>
-                <input class="inp" value="Annual" id="billing-annual-label">
-            </div>
-        </div>
-        <div class="billing-toggle-wrap">
-            <label class="toggle-switch"><input type="checkbox" id="show-billing-toggle" checked><span class="toggle-slider"></span></label>
-            <span style="font-size:.8rem;color:var(--text2);font-weight:600">Show billing period toggle on page</span>
-            <span style="font-size:.72rem;color:var(--text4);margin-left:auto">Lets visitors switch between monthly and annual pricing</span>
-        </div>
-    </div>
+            <!-- Plan tab pills -->
+            <div class="plan-tab-bar" id="plan-tab-bar">
+                @foreach($plans as $key => $plan)
+                <button type="button"
+                    class="plan-tab {{ $key == 0 ? 'active' : '' }}"
+                    onclick="switchPlan({{ $key }}, this)"
+                    id="plan-tab-{{ $key }}">
+                    <span class="plan-color-dot" style="background:{{ $plan->color }}"></span>
+                    {{ $plan->plan_name }}
+                    <span class="plan-tab-close" onclick="deletePlan({{ $plan->id }}, event, {{ $key }})">
+                        <i class="ri-close-line"></i>
+                    </span>
+                </button>
+                @endforeach
 
-    <!-- Plan Tabs Editor -->
-    <div class="section-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-            <div class="section-title" style="margin:0"><i class="ri-layout-column-line" style="color:var(--accent)"></i> Plan Editor</div>
-            <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:.72rem;color:var(--text4)">Drag plans below to reorder</span>
-                <button class="btn btn-ghost btn-sm" onclick="openModal('reorder-plans-modal')"><i class="ri-drag-move-2-line"></i> Reorder</button>
+                <button type="button" class="add-plan-btn" onclick="addNewPlan()">
+                    <i class="ri-add-line"></i> Add Plan
+                </button>
             </div>
-        </div>
 
-        <!-- Plan Tabs -->
-        <div class="plan-tab-bar" id="plan-tab-bar">
-            <button class="plan-tab active" onclick="switchPlan(0,this)" id="plan-tab-0">
-                <span class="plan-color-dot" style="background:#10b981"></span>
-                Free
-            </button>
-            <button class="plan-tab" onclick="switchPlan(1,this)" id="plan-tab-1">
-                <span class="plan-color-dot" style="background:#7c3aed"></span>
-                Pro
-                <span class="plan-tab-close" onclick="deletePlan(1,event)"><i class="ri-close-line"></i></span>
-            </button>
-            <button class="plan-tab" onclick="switchPlan(2,this)" id="plan-tab-2">
-                <span class="plan-color-dot" style="background:#06b6d4"></span>
-                Enterprise
-                <span class="plan-tab-close" onclick="deletePlan(2,event)"><i class="ri-close-line"></i></span>
-            </button>
-            <button class="add-plan-btn" onclick="addNewPlan()"><i class="ri-add-line"></i> Add Plan</button>
-        </div>
+            <!-- Plan editors (existing from DB) -->
+            @foreach($plans as $key => $plan)
+            <div class="plan-editor {{ $key == 0 ? 'active' : '' }}" id="plan-editor-{{ $key }}">
 
-        <!-- Plan 0: Free -->
-        <div class="plan-editor active" id="plan-editor-0">
-            <div class="g2" style="align-items:start">
-                <div style="flex:2">
-                    <!-- Plan Identity -->
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Plan Identity</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Plan Name</label><input class="inp plan-name-inp" data-plan="0" value="Free" oninput="syncPlanTab(0)"></div>
-                            <div class="field-group"><label class="label">Plan Badge / Tagline</label><input class="inp" value="Get Started"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group">
-                                <label class="label">Accent Color</label>
-                                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-                                    <input type="color" class="plan-color-inp" data-plan="0" value="#10b981" oninput="syncPlanColor(0,this.value)" style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
-                                    <input class="inp" value="#10b981" style="flex:1;font-family:monospace">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="label">Is "Popular" / Highlighted?</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show "Most Popular" badge</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Popular Badge Text</label><input class="inp" value="Most Popular" placeholder="e.g. Best Value"></div>
-                            <div class="field-group">
-                                <label class="label">Plan Visibility</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show on page</span>
-                                </div>
-                            </div>
-                        </div>
+                <input type="hidden" name="plan_id[]" value="{{ $plan->id }}">
+
+                <div class="g2">
+                    <div class="field-group">
+                        <label class="label">Plan Name <span style="color:#ef4444">*</span></label>
+                        <input class="inp plan-name-inp"
+                            data-plan="{{ $key }}"
+                            name="plan_name[]"
+                            value="{{ $plan->plan_name }}"
+                            oninput="syncPlanTab({{ $key }}); hideError(this)">
+                        <small class="error-msg"></small>
                     </div>
-
-                    <!-- Pricing -->
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Pricing</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Monthly Price (base)</label><input class="inp" id="p0-price-m" type="number" step="0.01" value="0.00" oninput="calcPlanTax(0,'m')"></div>
-                            <div class="field-group"><label class="label">Annual Price (base)</label><input class="inp" id="p0-price-a" type="number" step="0.01" value="0.00" oninput="calcPlanTax(0,'a')"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">VAT Rate (%)</label><input class="inp" id="p0-vat" type="number" step="0.1" value="0" oninput="calcPlanTax(0,'m');calcPlanTax(0,'a')"></div>
-                            <div class="field-group"><label class="label">Price Display Override</label><input class="inp" id="p0-override" placeholder="e.g. Free, Contact Us, Custom" value="Free"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Period Label</label><input class="inp" value="/ month"></div>
-                            <div class="field-group"><label class="label">Price Sub-label</label><input class="inp" value="No credit card required"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Savings Label (annual)</label><input class="inp" placeholder="e.g. Save 20%"></div>
-                            <div class="field-group"><label class="label">Trial Days</label><input class="inp" type="number" value="0" placeholder="0 = no trial"></div>
-                        </div>
-                    </div>
-
-                    <!-- Features -->
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                            <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Feature List</div>
-                            <button class="btn btn-ghost btn-sm" onclick="addFeature('features-0')"><i class="ri-add-line"></i> Add Feature</button>
-                        </div>
-                        <div id="features-0">
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#10b981;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Up to 5 reminders"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#10b981;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Email notifications"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-close-line" style="color:var(--red);font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Push notifications"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option selected>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-close-line" style="color:var(--red);font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Priority support"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option selected>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                        </div>
-                    </div>
-
-                    <!-- CTA -->
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">CTA Button</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Label</label><input class="inp" value="Get Started Free"></div>
-                            <div class="field-group"><label class="label">Button URL</label><input class="inp" value="register?plan=free"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Style</label><select class="inp"><option>btn-ghost (Outline)</option><option>btn-primary (Purple gradient)</option><option>btn-secondary (Cyan)</option></select></div>
-                            <div class="field-group"><label class="label">Button Icon</label><input class="inp" value="ri-user-line"></div>
-                        </div>
-                        <div class="field-group"><label class="label">Sub-label under button</label><input class="inp" value="No credit card needed"></div>
+                    <div class="field-group">
+                        <label class="label">Plan Icon (Remix Icon class)</label>
+                        <input class="inp" name="icon[]" value="{{ $plan->icon ?? '' }}">
                     </div>
                 </div>
 
-                <!-- Mini Preview -->
-                <div style="flex:1;position:sticky;top:90px">
-                    <div class="price-preview" id="preview-0">
-                        <div class="plan-badge-indicator">Free Plan</div>
-                        <div style="font-size:.72rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Get Started</div>
-                        <div style="font-size:2.2rem;font-weight:900;color:var(--text2)">Free</div>
-                        <div style="font-size:.75rem;color:var(--text4);margin-bottom:14px">No credit card required</div>
-                        <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;text-align:left;max-width:180px;margin:0 auto;font-size:.78rem;color:var(--text2)">
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#10b981"></i> Up to 5 reminders</div>
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#10b981"></i> Email notifications</div>
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;opacity:.45"><i class="ri-close-line" style="color:var(--red)"></i> Push notifications</div>
-                            <div style="display:flex;align-items:center;gap:7px;opacity:.45"><i class="ri-close-line" style="color:var(--red)"></i> Priority support</div>
+                <div class="g2">
+                    <div class="field-group">
+                        <label class="label">Accent Color <span style="color:#ef4444">*</span></label>
+                        <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+                            <input type="color"
+                                class="plan-color-inp"
+                                data-plan="{{ $key }}"
+                                name="color[]"
+                                value="{{ $plan->color }}"
+                                oninput="syncPlanColor({{ $key }}, this.value)"
+                                style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
+                            <input class="inp" id="color-text-{{ $key }}"
+                                value="{{ $plan->color }}" readonly
+                                style="flex:1;font-family:monospace">
                         </div>
-                        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:14px;font-size:.82rem">Get Started Free</button>
-                        <div style="font-size:.68rem;color:var(--text4);margin-top:8px">No credit card needed</div>
                     </div>
-                    <div style="padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px">
-                        <div style="font-size:.7rem;color:var(--text4);margin-bottom:6px">Plan order / position</div>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <span style="font-size:.8rem;color:var(--text3)">Position:</span>
-                            <select class="inp" style="flex:1"><option>1 — First (Left)</option><option>2 — Middle</option><option>3 — Last (Right)</option></select>
-                        </div>
+                    <div class="field-group">
+                        <label class="label">Price <span style="color:#ef4444">*</span></label>
+                        <input class="inp"
+                            id="p{{ $key }}-price"
+                            type="number" step="0.01"
+                            name="price[]"
+                            value="{{ $plan->price }}"
+                            oninput="calcTotal({{ $key }}); hideError(this)">
+                        <small class="error-msg"></small>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Plan 1: Pro -->
-        <div class="plan-editor" id="plan-editor-1">
-            <div class="g2" style="align-items:start">
-                <div style="flex:2">
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Plan Identity</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Plan Name</label><input class="inp plan-name-inp" data-plan="1" value="Pro" oninput="syncPlanTab(1)"></div>
-                            <div class="field-group"><label class="label">Plan Badge / Tagline</label><input class="inp" value="Most Popular"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group">
-                                <label class="label">Accent Color</label>
-                                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-                                    <input type="color" class="plan-color-inp" data-plan="1" value="#7c3aed" oninput="syncPlanColor(1,this.value)" style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
-                                    <input class="inp" value="#7c3aed" style="flex:1;font-family:monospace">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="label">Is "Popular" / Highlighted?</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show "Most Popular" badge</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Popular Badge Text</label><input class="inp" value="Most Popular"></div>
-                            <div class="field-group">
-                                <label class="label">Plan Visibility</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show on page</span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="g2">
+                    <div class="field-group">
+                        <label class="label">VAT</label>
+                        <input class="inp"
+                            id="p{{ $key }}-vat"
+                            type="number" step="0.01"
+                            name="vat[]"
+                            value="{{ $plan->vat }}"
+                            oninput="calcTotal({{ $key }})">
                     </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Pricing</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Monthly Price (base)</label><input class="inp" id="p1-price-m" type="number" step="0.01" value="4.99" oninput="calcPlanTax(1,'m')"></div>
-                            <div class="field-group"><label class="label">Annual Price (base)</label><input class="inp" id="p1-price-a" type="number" step="0.01" value="2.00" oninput="calcPlanTax(1,'a')"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">VAT Rate (%)</label><input class="inp" id="p1-vat" type="number" step="0.1" value="20" oninput="calcPlanTax(1,'m');calcPlanTax(1,'a')"></div>
-                            <div class="field-group"><label class="label">Price Display Override</label><input class="inp" id="p1-override" placeholder="Leave empty to use calculated price"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Period Label</label><input class="inp" value="/ month"></div>
-                            <div class="field-group"><label class="label">Price Sub-label</label><input class="inp" value="£2.00 + £0.40 VAT billed annually"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Savings Label (annual)</label><input class="inp" value="Save 33%"></div>
-                            <div class="field-group"><label class="label">Trial Days</label><input class="inp" type="number" value="14" placeholder="0 = no trial"></div>
-                        </div>
-                    </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                            <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Feature List</div>
-                            <button class="btn btn-ghost btn-sm" onclick="addFeature('features-1')"><i class="ri-add-line"></i> Add Feature</button>
-                        </div>
-                        <div id="features-1">
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#7c3aed;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Unlimited reminders"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#7c3aed;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Email & push notifications"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#7c3aed;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Smart scheduling system"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#7c3aed;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Full access to all features"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#7c3aed;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Priority support"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                        </div>
-                    </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">CTA Button</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Label</label><input class="inp" value="Get Full Access Now"></div>
-                            <div class="field-group"><label class="label">Button URL</label><input class="inp" value="register?plan=pro-annual"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Style</label><select class="inp"><option>btn-ghost (Outline)</option><option selected>btn-primary (Purple gradient)</option><option>btn-secondary (Cyan)</option></select></div>
-                            <div class="field-group"><label class="label">Button Icon</label><input class="inp" value="ri-user-add-line"></div>
-                        </div>
-                        <div class="field-group"><label class="label">Sub-label under button</label><input class="inp" value="One payment. 365 days of peace of mind."></div>
-                    </div>
-                </div>
-                <div style="flex:1;position:sticky;top:90px">
-                    <div class="price-preview" id="preview-1" style="border-color:rgba(124,58,237,.4);box-shadow:0 0 40px rgba(124,58,237,.15)">
-                        <div class="plan-badge-indicator">Pro Plan</div>
-                        <div class="popular-badge"><i class="ri-vip-crown-line"></i> Most Popular</div>
-                        <div style="font-size:.72rem;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Annual Plan</div>
-                        <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:4px">
-                            <span style="font-size:2.2rem;font-weight:900;color:var(--text2)">£2.40</span>
-                            <span style="font-size:.8rem;color:var(--text4);margin-bottom:6px">/ year</span>
-                        </div>
-                        <div style="font-size:.72rem;color:var(--text4);margin-bottom:14px">£2.00 + £0.40 VAT</div>
-                        <div style="background:rgba(124,58,237,.15);border-radius:100px;padding:3px 10px;font-size:.68rem;font-weight:700;color:#c4b5fd;display:inline-block;margin-bottom:14px">Save 33% vs monthly</div>
-                        <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;text-align:left;max-width:180px;margin:0 auto;font-size:.78rem;color:var(--text2)">
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#7c3aed"></i> Unlimited reminders</div>
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#7c3aed"></i> Email & push</div>
-                            <div style="display:flex;align-items:center;gap:7px"><i class="ri-check-line" style="color:#7c3aed"></i> Priority support</div>
-                        </div>
-                        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;font-size:.82rem">Get Full Access Now</button>
-                        <div style="font-size:.68rem;color:var(--text4);margin-top:8px">One payment. 365 days.</div>
-                    </div>
-                    <div style="padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px">
-                        <div style="font-size:.7rem;color:var(--text4);margin-bottom:6px">Plan order / position</div>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <span style="font-size:.8rem;color:var(--text3)">Position:</span>
-                            <select class="inp" style="flex:1"><option>1 — First (Left)</option><option selected>2 — Middle</option><option>3 — Last (Right)</option></select>
+                    <div class="field-group">
+                        <label class="label">Total Price</label>
+                        <div class="total-price-box" id="p{{ $key }}-total">
+                            £{{ number_format($plan->total_price, 2) }}
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Plan 2: Enterprise -->
-        <div class="plan-editor" id="plan-editor-2">
-            <div class="g2" style="align-items:start">
-                <div style="flex:2">
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Plan Identity</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Plan Name</label><input class="inp plan-name-inp" data-plan="2" value="Enterprise" oninput="syncPlanTab(2)"></div>
-                            <div class="field-group"><label class="label">Plan Badge / Tagline</label><input class="inp" value="For Teams"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group">
-                                <label class="label">Accent Color</label>
-                                <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-                                    <input type="color" class="plan-color-inp" data-plan="2" value="#06b6d4" oninput="syncPlanColor(2,this.value)" style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
-                                    <input class="inp" value="#06b6d4" style="flex:1;font-family:monospace">
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <label class="label">Is "Popular" / Highlighted?</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show "Most Popular" badge</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Popular Badge Text</label><input class="inp" value="Best Value"></div>
-                            <div class="field-group">
-                                <label class="label">Plan Visibility</label>
-                                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                                    <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-                                    <span style="font-size:.8rem;color:var(--text3)">Show on page</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Pricing</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Monthly Price (base)</label><input class="inp" id="p2-price-m" type="number" step="0.01" value="9.99" oninput="calcPlanTax(2,'m')"></div>
-                            <div class="field-group"><label class="label">Annual Price (base)</label><input class="inp" id="p2-price-a" type="number" step="0.01" value="7.99" oninput="calcPlanTax(2,'a')"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">VAT Rate (%)</label><input class="inp" id="p2-vat" type="number" step="0.1" value="20" oninput="calcPlanTax(2,'m');calcPlanTax(2,'a')"></div>
-                            <div class="field-group"><label class="label">Price Display Override</label><input class="inp" id="p2-override" placeholder="e.g. Contact Us"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Period Label</label><input class="inp" value="/ month per seat"></div>
-                            <div class="field-group"><label class="label">Price Sub-label</label><input class="inp" value="Billed annually · Min. 5 seats"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Savings Label (annual)</label><input class="inp" value="Save 20%"></div>
-                            <div class="field-group"><label class="label">Trial Days</label><input class="inp" type="number" value="30" placeholder="0 = no trial"></div>
-                        </div>
-                    </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                            <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Feature List</div>
-                            <button class="btn btn-ghost btn-sm" onclick="addFeature('features-2')"><i class="ri-add-line"></i> Add Feature</button>
-                        </div>
-                        <div id="features-2">
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#06b6d4;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Everything in Pro"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#06b6d4;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Team management dashboard"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#06b6d4;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="SSO & advanced security"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                            <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:#06b6d4;font-size:1.1rem;flex-shrink:0"></i><input class="inp" value="Dedicated account manager"><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                        </div>
-                    </div>
-                    <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px">
-                        <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">CTA Button</div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Label</label><input class="inp" value="Contact Sales"></div>
-                            <div class="field-group"><label class="label">Button URL</label><input class="inp" value="contact?subject=enterprise"></div>
-                        </div>
-                        <div class="g2">
-                            <div class="field-group"><label class="label">Button Style</label><select class="inp"><option>btn-ghost (Outline)</option><option>btn-primary (Purple gradient)</option><option selected>btn-secondary (Cyan)</option></select></div>
-                            <div class="field-group"><label class="label">Button Icon</label><input class="inp" value="ri-building-line"></div>
-                        </div>
-                        <div class="field-group"><label class="label">Sub-label under button</label><input class="inp" value="Custom contracts available"></div>
-                    </div>
+                <div class="field-group">
+                    <label class="label">Description</label>
+                    <input type="text" class="inp" name="description[]" value="{{ $plan->description ?? '' }}">
                 </div>
-                <div style="flex:1;position:sticky;top:90px">
-                    <div class="price-preview" id="preview-2" style="background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(124,58,237,.06));border-color:rgba(6,182,212,.25)">
-                        <div class="plan-badge-indicator" style="background:rgba(6,182,212,.2);color:#67e8f9;border-color:rgba(6,182,212,.3)">Enterprise</div>
-                        <div style="font-size:.72rem;font-weight:700;color:#67e8f9;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">For Teams</div>
-                        <div style="display:flex;align-items:flex-end;justify-content:center;gap:6px;margin-bottom:4px">
-                            <span style="font-size:2.2rem;font-weight:900;color:var(--text2)">£9.59</span>
-                            <span style="font-size:.8rem;color:var(--text4);margin-bottom:6px">/ month per seat</span>
-                        </div>
-                        <div style="font-size:.72rem;color:var(--text4);margin-bottom:14px">Billed annually · Min. 5 seats</div>
-                        <div style="background:rgba(6,182,212,.12);border-radius:100px;padding:3px 10px;font-size:.68rem;font-weight:700;color:#67e8f9;display:inline-block;margin-bottom:14px">30-day free trial</div>
-                        <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;text-align:left;max-width:180px;margin:0 auto;font-size:.78rem;color:var(--text2)">
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#06b6d4"></i> Everything in Pro</div>
-                            <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px"><i class="ri-check-line" style="color:#06b6d4"></i> Team dashboard</div>
-                            <div style="display:flex;align-items:center;gap:7px"><i class="ri-check-line" style="color:#06b6d4"></i> Account manager</div>
-                        </div>
-                        <button class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:14px;font-size:.82rem">Contact Sales</button>
-                        <div style="font-size:.68rem;color:var(--text4);margin-top:8px">Custom contracts available</div>
-                    </div>
-                    <div style="padding:12px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px">
-                        <div style="font-size:.7rem;color:var(--text4);margin-bottom:6px">Plan order / position</div>
-                        <div style="display:flex;align-items:center;gap:6px">
-                            <span style="font-size:.8rem;color:var(--text3)">Position:</span>
-                            <select class="inp" style="flex:1"><option>1 — First (Left)</option><option>2 — Middle</option><option selected>3 — Last (Right)</option></select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Value Line -->
-    <div class="section-card">
-        <div class="section-title" style="margin-bottom:14px"><i class="ri-text"></i> Bottom Value Line</div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Value Line Text</label><input class="inp" value="That's just £0.20 per month — less than a cup of tea ☕"></div>
-            <div class="field-group">
-                <label class="label">Show Value Line</label>
-                <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                    <label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label>
-                    <span style="font-size:.8rem;color:var(--text3)">Visible on page</span>
+                <div class="field-group hidden">
+                    <label class="label">Expiry Date</label>
+                    <input type="date" class="inp" name="expiry_date[]"
+                        value="{{ $plan->expiry_date ? $plan->expiry_date->format('Y-m-d') : '' }}">
+                    <small class="error-msg"></small>
                 </div>
+
+                <div class="field-group hidden">
+                    <label class="label">Status</label>
+                    <select class="inp" name="status[]">
+                        <option value="Active"   {{ $plan->status == 'Active'   ? 'selected' : '' }}>Active</option>
+                        <option value="Inactive" {{ $plan->status == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                    </select>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;margin-top:4px">
+                    <label class="label" style="margin:0">Features</label>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="addFeature('features-{{ $key }}')">
+                        <i class="ri-add-line"></i> Add Feature
+                    </button>
+                </div>
+
+                <div id="features-{{ $key }}">
+                    @foreach($plan->features ?? [] as $featureKey => $feature)
+                    <div class="sortable-item">
+                        <span class="feature-serial">{{ $featureKey + 1 }}</span>
+                        <input class="inp feature-inp"
+                            name="features[{{ $key }}][]"
+                            value="{{ $feature }}"
+                            style="flex:1" readonly>
+                        <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFeatureEdit(this)">
+                            <i class="ri-edit-line"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeFeature(this, 'features-{{ $key }}')">
+                            <i class="ri-delete-bin-line"></i>
+                        </button>
+                    </div>
+                    @endforeach
+                </div>
+
             </div>
+            @endforeach
+
+            <!-- New plan editors appended here by JS -->
+            <div id="plan-editors-container"></div>
+
         </div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Guarantee Badge Text</label><input class="inp" value="30-day money back guarantee"></div>
-            <div class="field-group"><label class="label">Trust Icons (comma separated)</label><input class="inp" value="ri-shield-check-line,ri-lock-line,ri-secure-payment-line"></div>
-        </div>
-    </div>
+    </form>
 </div>
 
-<!-- HERO TAB -->
-<div class="cms-tab-content" id="tab-hero">
-    <div class="section-card">
-        <div class="section-title" style="margin-bottom:14px"><i class="ri-flag-line"></i> Page Hero</div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Badge Text</label><input class="inp" value="Plans & Pricing"></div>
-            <div class="field-group"><label class="label">Badge Icon</label><input class="inp" value="ri-vip-crown-line"></div>
-        </div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Headline (before gradient)</label><input class="inp" value="Simple pricing that"></div>
-            <div class="field-group"><label class="label">Headline Gradient Text</label><input class="inp" value="pays for itself."></div>
-        </div>
-        <div class="field-group"><label class="label">Subheadline</label><textarea class="inp-area inp" rows="2">Start free, then upgrade only if you need more power. Most households never pay a cent.</textarea></div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Particle Theme</label><select class="inp"><option>mixed</option><option>purple</option><option>cyan</option></select></div>
-            <div class="field-group"><label class="label">Particle Count</label><input class="inp" type="number" value="60"></div>
-        </div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Breadcrumb Parent</label><input class="inp" value="Home"></div>
-            <div class="field-group"><label class="label">Breadcrumb Current</label><input class="inp" value="Pricing"></div>
-        </div>
-    </div>
-</div>
-
-<!-- COUPONS TAB -->
+<!-- ============================== COUPONS TAB ============================== -->
 <div class="cms-tab-content" id="tab-coupons">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div class="section-title" style="margin:0">Discount Coupons</div>
-        <button class="btn btn-primary btn-sm" onclick="openModal('add-coupon-modal')"><i class="ri-add-line"></i> New Coupon</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="openModal('add-coupon-modal')">
+            <i class="ri-add-line"></i> New Coupon
+        </button>
     </div>
-    <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
+
+    <div class="coupon-search-bar">
+        <div style="position:relative;flex:1;max-width:260px">
+            <i class="ri-search-line" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text4);font-size:.85rem"></i>
+            <input class="inp" id="coupon-search" placeholder="Search code, type…"
+                style="padding-left:32px" oninput="couponSearch()">
+        </div>
+        <span id="coupon-count-label" style="font-size:.72rem;color:var(--text3);margin-left:2px"></span>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
         <table class="data-table">
-            <thead><tr><th>Code</th><th>Discount</th><th>Applies To</th><th>Type</th><th>Usage</th><th>Expires</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody>
+            <thead>
                 <tr>
-                    <td><div style="font-weight:700;font-family:monospace;letter-spacing:.08em">LAUNCH20</div></td>
-                    <td><span class="badge badge-green">20% off</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">All Plans</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Percentage</span></td>
-                    <td><span style="font-size:.78rem">48 / 100</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Jun 30, 2026</span></td>
-                    <td><span class="badge badge-green">Active</span></td>
-                    <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm"><i class="ri-edit-line"></i></button><button class="btn btn-danger btn-sm"><i class="ri-delete-bin-line"></i></button></div></td>
+                    <th>Code</th>
+                    <th>Discount Type</th>
+                    <th>Discount Value</th>
+                    <th>Expiry Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-                <tr>
-                    <td><div style="font-weight:700;font-family:monospace;letter-spacing:.08em">PROONLY</div></td>
-                    <td><span class="badge badge-purple">50% off</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Pro Plan only</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Percentage</span></td>
-                    <td><span style="font-size:.78rem">12 / 50</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Dec 31, 2026</span></td>
-                    <td><span class="badge badge-green">Active</span></td>
-                    <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm"><i class="ri-edit-line"></i></button><button class="btn btn-danger btn-sm"><i class="ri-delete-bin-line"></i></button></div></td>
-                </tr>
-                <tr>
-                    <td><div style="font-weight:700;font-family:monospace;letter-spacing:.08em">EARLYBIRD</div></td>
-                    <td><span class="badge badge-amber">£0.50 off</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">All Plans</span></td>
-                    <td><span style="font-size:.78rem;color:var(--text3)">Fixed Amount</span></td>
-                    <td><span style="font-size:.78rem">200 / 200</span></td>
-                    <td><span style="font-size:.78rem;color:var(--red)">Expired</span></td>
-                    <td><span class="badge badge-red">Expired</span></td>
-                    <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm"><i class="ri-edit-line"></i></button><button class="btn btn-danger btn-sm"><i class="ri-delete-bin-line"></i></button></div></td>
-                </tr>
-            </tbody>
+            </thead>
+            <tbody id="coupon-table-body"></tbody>
         </table>
-    </div>
-    <div class="section-card">
-        <div class="section-title" style="margin-bottom:14px"><i class="ri-settings-3-line"></i> Coupon Settings</div>
-        <div class="field-group"><label class="label">Invalid Coupon Error Message</label><input class="inp" value="This coupon code is invalid or has expired."></div>
-        <div class="field-group"><label class="label">Applied Coupon Success Message</label><input class="inp" value="Coupon applied! Your discount has been applied at checkout."></div>
+        <div class="cpn-pagination" id="coupon-pagination"></div>
     </div>
 </div>
 
-<!-- SEO TAB -->
-<div class="cms-tab-content" id="tab-seo">
-    <div class="g2" style="align-items:start">
-        <div style="flex:2">
-            <div class="section-card">
-                <div class="section-title" style="margin-bottom:14px"><i class="ri-file-text-line"></i> Page Meta</div>
-                <div class="field-group"><label class="label">Meta Title</label><input class="inp" id="mt" value="Pricing — DRemind | Plans from Free to Enterprise" oninput="cc('mt','tc-mt',60)"><div class="char-count" id="tc-mt">50/60</div></div>
-                <div class="field-group"><label class="label">Meta Description</label><textarea class="inp-area inp" id="md" rows="3" oninput="cc('md','tc-md',160)">DRemind offers flexible plans for every household. Start free, upgrade to Pro for £2.40/year, or go Enterprise for teams. Unlimited reminders, email & push notifications.</textarea><div class="char-count" id="tc-md">160/160</div></div>
-                <div class="field-group"><label class="label">Keywords</label><input class="inp" value="DRemind pricing, free plan, pro plan, enterprise, subscription cost, annual plan"></div>
-                <div class="field-group"><label class="label">Canonical URL</label><input class="inp" value="https://dremin.co.uk/pricing"></div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Robots</label><select class="inp"><option>index, follow</option></select></div>
-                    <div class="field-group"><label class="label">Priority</label><select class="inp"><option>0.8 — High</option><option>1.0 — Homepage</option></select></div>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="card" style="padding:18px;position:sticky;top:90px">
-                <div class="section-title" style="margin-bottom:14px"><i class="ri-google-line"></i> SERP Preview</div>
-                <div style="background:var(--bg2);border-radius:12px;padding:14px;border:1px solid var(--border)">
-                    <div style="font-size:.65rem;color:var(--text4);margin-bottom:4px">dremin.co.uk › pricing</div>
-                    <div style="font-size:.95rem;color:#8ab4f8;font-weight:500;margin-bottom:5px">Pricing — DRemind | Plans from Free to Enterprise</div>
-                    <div style="font-size:.8rem;color:var(--text3);line-height:1.6">DRemind offers flexible plans for every household. Start free, upgrade to Pro for £2.40/year, or go Enterprise...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Add Coupon Modal -->
+<!-- ── Add Coupon Modal ── -->
 <div class="modal-bg" id="add-coupon-modal">
-    <div class="modal-box" style="max-width:560px">
+    <div class="modal-box" style="max-width:480px">
         <div class="modal-header">
-            <div><h3 class="font-jakarta" style="font-weight:700;font-size:.95rem"><i class="ri-coupon-line" style="color:var(--purple);margin-right:6px"></i>New Coupon</h3></div>
+            <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem">
+                <i class="ri-coupon-line" style="color:var(--purple);margin-right:6px"></i>New Coupon
+            </h3>
             <button class="modal-close" onclick="closeModal('add-coupon-modal')"><i class="ri-close-line"></i></button>
         </div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Coupon Code <span style="color:var(--red)">*</span></label><input class="inp" id="coupon-code" placeholder="e.g. SAVE20" style="text-transform:uppercase"></div>
-            <div class="field-group"><label class="label">Discount Type</label><select class="inp" id="coupon-type"><option value="percent">Percentage (%)</option><option value="fixed">Fixed Amount</option></select></div>
+        <div class="field-group">
+            <label class="label">Coupon Code <span style="color:#ef4444">*</span></label>
+            <input class="inp" id="coupon-code" placeholder="e.g. SAVE20" style="text-transform:uppercase"
+                oninput="clearOneError('coupon-code','add-code-err')">
+            <small class="coupon-error-msg" id="add-code-err"></small>
         </div>
         <div class="g2">
-            <div class="field-group"><label class="label">Discount Value</label><input class="inp" id="coupon-val" type="number" placeholder="e.g. 20"></div>
-            <div class="field-group"><label class="label">Applies To</label><select class="inp"><option>All Plans</option><option>Free Plan only</option><option>Pro Plan only</option><option>Enterprise Plan only</option></select></div>
+            <div class="field-group">
+                <label class="label">Discount Type</label>
+                <select class="inp" id="coupon-type">
+                    <option value="percentage">percentage (%)</option>
+                    <option value="fixed">Fixed Amount (£)</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label class="label">Discount Value <span style="color:#ef4444">*</span></label>
+                <input class="inp" id="coupon-val" type="number" placeholder="e.g. 20"
+                    oninput="clearOneError('coupon-val','add-val-err')">
+                <small class="coupon-error-msg" id="add-val-err"></small>
+            </div>
         </div>
         <div class="g2">
-            <div class="field-group"><label class="label">Max Uses</label><input class="inp" type="number" placeholder="Leave empty = unlimited"></div>
-            <div class="field-group"><label class="label">Expiry Date</label><input class="inp" type="date"></div>
-        </div>
-        <div class="g2">
-            <div class="field-group"><label class="label">Status</label><select class="inp"><option>Active</option><option>Inactive</option></select></div>
-            <div class="field-group"><label class="label">One-use per user?</label><div style="display:flex;align-items:center;gap:8px;margin-top:10px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><span style="font-size:.8rem;color:var(--text3)">Yes</span></div></div>
+            <div class="field-group">
+                <label class="label">Expiry Date</label>
+                <input class="inp" id="coupon-expiry" type="date"
+                    oninput="clearOneError('coupon-expiry','add-expiry-err')">
+                <small class="coupon-error-msg" id="add-expiry-err"></small>
+            </div>
+            <div class="field-group">
+                <label class="label">Status</label>
+                <select class="inp" id="coupon-status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
         </div>
         <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
-            <button class="btn btn-ghost btn-sm" onclick="closeModal('add-coupon-modal')">Cancel</button>
-            <button class="btn btn-primary btn-sm" onclick="createCoupon()"><i class="ri-check-line"></i> Create Coupon</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('add-coupon-modal')">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="createCoupon()">
+                <i class="ri-check-line"></i> Create Coupon
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Reorder Plans Modal -->
-<div class="modal-bg" id="reorder-plans-modal">
-    <div class="modal-box" style="max-width:440px">
+<!-- ── Edit Coupon Modal ── -->
+<div class="modal-bg" id="edit-coupon-modal">
+    <div class="modal-box" style="max-width:480px">
         <div class="modal-header">
-            <div><h3 class="font-jakarta" style="font-weight:700;font-size:.95rem"><i class="ri-drag-move-2-line" style="color:var(--purple);margin-right:6px"></i>Reorder Plans</h3></div>
-            <button class="modal-close" onclick="closeModal('reorder-plans-modal')"><i class="ri-close-line"></i></button>
+            <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem">
+                <i class="ri-edit-line" style="color:var(--blue);margin-right:6px"></i>Edit Coupon
+            </h3>
+            <button class="modal-close" onclick="closeModal('edit-coupon-modal')"><i class="ri-close-line"></i></button>
         </div>
-        <p style="font-size:.8rem;color:var(--text3);margin-bottom:16px">Drag to set the display order of plans on the pricing page.</p>
-        <div id="reorder-list">
-            <div class="plan-sort-item"><i class="ri-draggable drag-handle"></i><div class="plan-sort-color" style="background:#10b981">F</div><span style="font-size:.9rem;font-weight:700;color:var(--text)">Free</span><span style="font-size:.72rem;color:var(--text4);margin-left:auto">Position 1</span></div>
-            <div class="plan-sort-item"><i class="ri-draggable drag-handle"></i><div class="plan-sort-color" style="background:#7c3aed">P</div><span style="font-size:.9rem;font-weight:700;color:var(--text)">Pro</span><span style="font-size:.72rem;color:var(--text4);margin-left:auto">Position 2</span></div>
-            <div class="plan-sort-item"><i class="ri-draggable drag-handle"></i><div class="plan-sort-color" style="background:#06b6d4">E</div><span style="font-size:.9rem;font-weight:700;color:var(--text)">Enterprise</span><span style="font-size:.72rem;color:var(--text4);margin-left:auto">Position 3</span></div>
+        <input type="hidden" id="edit-coupon-id">
+        <div class="field-group">
+            <label class="label">Coupon Code <span style="color:#ef4444">*</span></label>
+            <input class="inp" id="edit-coupon-code" placeholder="e.g. SAVE20" style="text-transform:uppercase"
+                oninput="clearOneError('edit-coupon-code','edit-code-err')">
+            <small class="coupon-error-msg" id="edit-code-err"></small>
         </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
-            <button class="btn btn-ghost btn-sm" onclick="closeModal('reorder-plans-modal')">Cancel</button>
-            <button class="btn btn-primary btn-sm" onclick="closeModal('reorder-plans-modal');if(typeof toast==='function')toast('Order saved!','success')"><i class="ri-check-line"></i> Save Order</button>
+        <div class="g2">
+            <div class="field-group">
+                <label class="label">Discount Type</label>
+                <select class="inp" id="edit-coupon-type">
+                    <option value="percentage">percentage (%)</option>
+                    <option value="fixed">Fixed Amount (£)</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label class="label">Discount Value <span style="color:#ef4444">*</span></label>
+                <input class="inp" id="edit-coupon-val" type="number" placeholder="e.g. 20"
+                    oninput="clearOneError('edit-coupon-val','edit-val-err')">
+                <small class="coupon-error-msg" id="edit-val-err"></small>
+            </div>
+        </div>
+        <div class="g2">
+            <div class="field-group">
+                <label class="label">Expiry Date</label>
+                <input class="inp" id="edit-coupon-expiry" type="date"
+                    oninput="clearOneError('edit-coupon-expiry','edit-expiry-err')">
+                <small class="coupon-error-msg" id="edit-expiry-err"></small>
+            </div>
+            <div class="field-group">
+                <label class="label">Status</label>
+                <select class="inp" id="edit-coupon-status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="closeModal('edit-coupon-modal')">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="updateCoupon()">
+                <i class="ri-check-line"></i> Update Coupon
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-var globalCurrency = '£';
-var planCount = 3;
+/* ═══════════════════════════════════════════════
+   CONFIG
+═══════════════════════════════════════════════ */
+var globalCurrency  = '£';
+var planCount       = {{ count($plans) }};  // next available index
+var SAVE_PLAN_URL   = "{{ route('save.plan') }}";
+var DELETE_PLAN_URL = "{{ url('/admin/delete-plan') }}";
+var COUPON_URL      = "{{ url('/admin/coupons') }}";
+var CSRF            = document.querySelector('meta[name="csrf-token"]').content;
 
-function switchTab(t){
-    document.querySelectorAll('.cms-tab-content').forEach(c=>c.classList.remove('active'));
-    document.querySelectorAll('.cms-tab-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('tab-'+t).classList.add('active');
-    document.getElementById('tab-btn-'+t).classList.add('active');
+/* ═══════════════════════════════════════════════
+   TAB SWITCHING
+═══════════════════════════════════════════════ */
+function switchTab(t) {
+    document.querySelectorAll('.cms-tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.cms-tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + t).classList.add('active');
+    document.getElementById('tab-btn-' + t).classList.add('active');
+    if (t === 'coupons') loadCoupons();
 }
 
-function switchPlan(idx,btn){
-    document.querySelectorAll('.plan-tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.plan-editor').forEach(e=>e.classList.remove('active'));
-    if(btn) btn.classList.add('active');
-    var ed = document.getElementById('plan-editor-'+idx);
-    if(ed) ed.classList.add('active');
+/* ═══════════════════════════════════════════════
+   PLAN TAB SWITCHING
+═══════════════════════════════════════════════ */
+function switchPlan(idx, btn) {
+    document.querySelectorAll('.plan-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.plan-editor').forEach(e => e.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    var ed = document.getElementById('plan-editor-' + idx);
+    if (ed) ed.classList.add('active');
 }
 
-function syncPlanTab(idx){
-    var inp = document.querySelector('.plan-name-inp[data-plan="'+idx+'"]');
-    var tab = document.getElementById('plan-tab-'+idx);
-    if(!inp||!tab) return;
-    var dot = tab.querySelector('.plan-color-dot');
+function syncPlanTab(idx) {
+    var inp = document.querySelector('.plan-name-inp[data-plan="' + idx + '"]');
+    var tab = document.getElementById('plan-tab-' + idx);
+    if (!inp || !tab) return;
+    // preserve dot and close span, only update text node
+    var dot   = tab.querySelector('.plan-color-dot');
     var close = tab.querySelector('.plan-tab-close');
     tab.innerHTML = '';
-    if(dot) tab.appendChild(dot);
-    tab.appendChild(document.createTextNode(' '+inp.value));
-    if(close) tab.appendChild(close);
+    if (dot) tab.appendChild(dot);
+    tab.appendChild(document.createTextNode(' ' + (inp.value.trim() || 'New Plan') + ' '));
+    if (close) tab.appendChild(close);
 }
 
-function syncPlanColor(idx,color){
-    var dot = document.querySelector('#plan-tab-'+idx+' .plan-color-dot');
-    if(dot) dot.style.background = color;
+function syncPlanColor(idx, color) {
+    var dot = document.querySelector('#plan-tab-' + idx + ' .plan-color-dot');
+    if (dot) dot.style.background = color;
+    var txt = document.getElementById('color-text-' + idx);
+    if (txt) txt.value = color;
 }
 
-function setGlobalCurrency(sym,btn){
-    globalCurrency = sym;
-    document.querySelectorAll('[onclick^="setGlobalCurrency"]').forEach(b=>b.classList.remove('btn-primary'));
-    btn.classList.add('btn-primary');
+function calcTotal(planIdx) {
+    var priceEl = document.getElementById('p' + planIdx + '-price');
+    var vatEl   = document.getElementById('p' + planIdx + '-vat');
+    var totalEl = document.getElementById('p' + planIdx + '-total');
+    if (!priceEl || !vatEl || !totalEl) return;
+    var total = (parseFloat(priceEl.value) || 0) + (parseFloat(vatEl.value) || 0);
+    totalEl.textContent = globalCurrency + total.toFixed(2);
 }
 
-function calcPlanTax(planIdx,period){
-    var priceEl = document.getElementById('p'+planIdx+'-price-'+period);
-    var vatEl = document.getElementById('p'+planIdx+'-vat');
-    if(!priceEl||!vatEl) return;
-    var base = parseFloat(priceEl.value)||0;
-    var vat = parseFloat(vatEl.value)||0;
-    var total = base + (base*vat/100);
-    // Update preview price if period is annual
-    if(period==='a'){
-        var prev = document.getElementById('preview-'+planIdx);
-        if(prev){
-            var priceSpan = prev.querySelector('[style*="font-weight:900"]');
-            if(priceSpan&&base>0) priceSpan.textContent = globalCurrency+total.toFixed(2);
-        }
-    }
-}
-
-function addFeature(listId){
+/* ═══════════════════════════════════════════════
+   FEATURE HELPERS
+═══════════════════════════════════════════════ */
+function reindexFeatures(listId) {
     var list = document.getElementById(listId);
-    if(!list) return;
+    if (!list) return;
+    list.querySelectorAll('.sortable-item').forEach(function(item, i) {
+        var s = item.querySelector('.feature-serial');
+        if (s) s.textContent = i + 1;
+    });
+}
+
+function addFeature(listId) {
+    var list = document.getElementById(listId);
+    if (!list) return;
+    var count = list.querySelectorAll('.sortable-item').length + 1;
+    // derive plan index from listId e.g. "features-3" → "3"
+    var planIdx = listId.replace('features-', '');
     var d = document.createElement('div');
     d.className = 'sortable-item';
-    d.innerHTML = '<i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:var(--green);font-size:1.1rem;flex-shrink:0"></i><input class="inp" placeholder="New feature..."><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest(\'.sortable-item\').remove()"><i class="ri-delete-bin-line"></i></button></div>';
+    d.innerHTML =
+        '<span class="feature-serial">' + count + '</span>' +
+        '<input class="inp feature-inp" name="features[' + planIdx + '][]" placeholder="New feature..." style="flex:1">' +
+        '<button type="button" class="btn btn-ghost btn-sm" onclick="toggleFeatureEdit(this)"><i class="ri-edit-line"></i></button>' +
+        '<button type="button" class="btn btn-danger btn-sm" onclick="removeFeature(this,\'' + listId + '\')"><i class="ri-delete-bin-line"></i></button>';
     list.appendChild(d);
+    var inp = d.querySelector('.feature-inp');
+    inp.removeAttribute('readonly');
+    inp.focus();
 }
 
-function addNewPlan(){
-    var idx = planCount;
-    planCount++;
-    var colors = ['#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
-    var color = colors[idx % colors.length];
+function toggleFeatureEdit(btn) {
+    var inp  = btn.closest('.sortable-item').querySelector('.feature-inp');
+    var icon = btn.querySelector('i');
+    if (inp.hasAttribute('readonly')) {
+        inp.removeAttribute('readonly');
+        inp.focus();
+        icon.className = 'ri-check-line';
+        btn.classList.remove('btn-ghost');
+        btn.classList.add('btn-primary');
+    } else {
+        inp.setAttribute('readonly', '');
+        icon.className = 'ri-edit-line';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-ghost');
+    }
+}
 
-    // Add tab
-    var bar = document.getElementById('plan-tab-bar');
+function removeFeature(btn, listId) {
+    btn.closest('.sortable-item').remove();
+    reindexFeatures(listId);
+}
+
+/* ═══════════════════════════════════════════════
+   ADD NEW PLAN (client-side only until Save)
+═══════════════════════════════════════════════ */
+function addNewPlan() {
+    var idx    = planCount++;
+    var colors = ['#f59e0b','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
+    var color  = colors[idx % colors.length];
+
+    /* ── create tab pill ── */
+    var bar    = document.getElementById('plan-tab-bar');
     var addBtn = bar.querySelector('.add-plan-btn');
-    var tab = document.createElement('button');
+    var tab    = document.createElement('button');
+    tab.type      = 'button';
     tab.className = 'plan-tab';
-    tab.id = 'plan-tab-'+idx;
-    tab.onclick = function(){ switchPlan(idx, this); };
-    tab.innerHTML = '<span class="plan-color-dot" style="background:'+color+'"></span> New Plan <span class="plan-tab-close" onclick="deletePlan('+idx+',event)"><i class="ri-close-line"></i></span>';
+    tab.id        = 'plan-tab-' + idx;
+    tab.innerHTML =
+        '<span class="plan-color-dot" style="background:' + color + '"></span>' +
+        ' New Plan ' +
+        '<span class="plan-tab-close" onclick="deletePlan(null, event, ' + idx + ')"><i class="ri-close-line"></i></span>';
+    tab.onclick = function() { switchPlan(idx, tab); };
     bar.insertBefore(tab, addBtn);
 
-    // Add editor
-    var editorsWrap = document.getElementById('plan-tab-bar').parentElement;
-    var ed = document.createElement('div');
-    ed.className = 'plan-editor';
-    ed.id = 'plan-editor-'+idx;
-    ed.innerHTML = `
-    <div class="g2" style="align-items:start">
-        <div style="flex:2">
-            <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Plan Identity</div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Plan Name</label><input class="inp plan-name-inp" data-plan="${idx}" value="New Plan" oninput="syncPlanTab(${idx})"></div>
-                    <div class="field-group"><label class="label">Plan Badge / Tagline</label><input class="inp" value=""></div>
-                </div>
-                <div class="g2">
-                    <div class="field-group">
-                        <label class="label">Accent Color</label>
-                        <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-                            <input type="color" class="plan-color-inp" data-plan="${idx}" value="${color}" oninput="syncPlanColor(${idx},this.value)" style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
-                            <input class="inp" value="${color}" style="flex:1;font-family:monospace">
-                        </div>
-                    </div>
-                    <div class="field-group">
-                        <label class="label">Is "Popular" / Highlighted?</label>
-                        <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
-                            <label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label>
-                            <span style="font-size:.8rem;color:var(--text3)">Show badge</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Pricing</div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Monthly Price (base)</label><input class="inp" id="p${idx}-price-m" type="number" step="0.01" value="0.00"></div>
-                    <div class="field-group"><label class="label">Annual Price (base)</label><input class="inp" id="p${idx}-price-a" type="number" step="0.01" value="0.00"></div>
-                </div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">VAT Rate (%)</label><input class="inp" id="p${idx}-vat" type="number" step="0.1" value="20"></div>
-                    <div class="field-group"><label class="label">Price Display Override</label><input class="inp" placeholder="e.g. Free, Contact Us"></div>
-                </div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Period Label</label><input class="inp" value="/ month"></div>
-                    <div class="field-group"><label class="label">Price Sub-label</label><input class="inp" placeholder="Billed annually"></div>
-                </div>
-            </div>
-            <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px;margin-bottom:12px">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                    <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Feature List</div>
-                    <button class="btn btn-ghost btn-sm" onclick="addFeature('features-${idx}')"><i class="ri-add-line"></i> Add Feature</button>
-                </div>
-                <div id="features-${idx}">
-                    <div class="sortable-item"><i class="ri-draggable drag-handle"></i><i class="ri-check-line" style="color:${color};font-size:1.1rem;flex-shrink:0"></i><input class="inp" placeholder="Feature name..."><select class="inp" style="width:90px;flex-shrink:0"><option>✓ Check</option><option>✕ Cross</option><option>— Dash</option></select><div style="display:flex;align-items:center;gap:6px"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label><button class="btn btn-danger btn-sm" onclick="this.closest('.sortable-item').remove()"><i class="ri-delete-bin-line"></i></button></div></div>
-                </div>
-            </div>
-            <div style="background:rgba(255,255,255,.015);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:16px">
-                <div style="font-size:.75rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">CTA Button</div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Button Label</label><input class="inp" value="Get Started"></div>
-                    <div class="field-group"><label class="label">Button URL</label><input class="inp" placeholder="register?plan=..."></div>
-                </div>
-                <div class="g2">
-                    <div class="field-group"><label class="label">Button Style</label><select class="inp"><option>btn-ghost (Outline)</option><option selected>btn-primary (Purple gradient)</option><option>btn-secondary (Cyan)</option></select></div>
-                    <div class="field-group"><label class="label">Button Icon</label><input class="inp" value="ri-user-add-line"></div>
-                </div>
-            </div>
-        </div>
-        <div style="flex:1;position:sticky;top:90px">
-            <div class="price-preview" id="preview-${idx}" style="border-color:rgba(255,255,255,.12)">
-                <div class="plan-badge-indicator" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border-color:rgba(255,255,255,.15)">New Plan</div>
-                <div style="font-size:2rem;font-weight:900;color:var(--text2);margin:12px 0">£0.00</div>
-                <div style="font-size:.72rem;color:var(--text4);margin-bottom:14px">/ month</div>
-                <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:14px;text-align:left;max-width:180px;margin:0 auto;font-size:.78rem;color:var(--text2)">
-                    <div style="color:var(--text4);text-align:center;padding:12px">No features added yet</div>
-                </div>
-                <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:14px;font-size:.82rem">Get Started</button>
-            </div>
-        </div>
-    </div>`;
-    editorsWrap.appendChild(ed);
+    /* ── create editor ── */
+    var editor = document.createElement('div');
+    editor.className = 'plan-editor';
+    editor.id        = 'plan-editor-' + idx;
+    editor.innerHTML =
+        '<input type="hidden" name="plan_id[]" value="">' +
+        '<div class="g2">' +
+            '<div class="field-group">' +
+                '<label class="label">Plan Name <span style="color:#ef4444">*</span></label>' +
+                '<input class="inp plan-name-inp" name="plan_name[]" data-plan="' + idx + '" placeholder="Enter Plan Name"' +
+                '       oninput="syncPlanTab(' + idx + '); hideError(this)">' +
+                '<small class="error-msg"></small>' +
+            '</div>' +
+            '<div class="field-group">' +
+                '<label class="label">Plan Icon (Remix Icon class)</label>' +
+                '<input class="inp" name="icon[]" placeholder="ri-star-line">' +
+            '</div>' +
+        '</div>' +
+        '<div class="g2">' +
+            '<div class="field-group">' +
+                '<label class="label">Accent Color</label>' +
+                '<div style="display:flex;gap:8px;align-items:center;margin-top:4px">' +
+                    '<input type="color" class="plan-color-inp" data-plan="' + idx + '" value="' + color + '"' +
+                    '       oninput="syncPlanColor(' + idx + ', this.value)"' +
+                    '       style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">' +
+                    '<input class="inp" id="color-text-' + idx + '" value="' + color + '" readonly style="flex:1;font-family:monospace">' +
+                '</div>' +
+            '</div>' +
+            '<div class="field-group">' +
+                '<label class="label">Price <span style="color:#ef4444">*</span></label>' +
+                '<input class="inp" type="number" step="0.01" name="price[]" id="p' + idx + '-price" value="0"' +
+                '       oninput="calcTotal(' + idx + '); hideError(this)">' +
+                '<small class="error-msg"></small>' +
+            '</div>' +
+        '</div>' +
+        '<div class="g2">' +
+            '<div class="field-group">' +
+                '<label class="label">VAT</label>' +
+                '<input class="inp" type="number" step="0.01" name="vat[]" id="p' + idx + '-vat" value="0"' +
+                '       oninput="calcTotal(' + idx + ')">' +
+            '</div>' +
+            '<div class="field-group">' +
+                '<label class="label">Total Price</label>' +
+                '<div class="total-price-box" id="p' + idx + '-total">£0.00</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="field-group">' +
+            '<label class="label">Description</label>' +
+            '<input type="text" class="inp" name="description[]" placeholder="Short description">' +
+        '</div>' +
+        '<div class="field-group hidden">' +
+            '<label class="label">Expiry Date</label>' +
+            '<input type="date" class="inp" name="expiry_date[]">' +
+            '<small class="error-msg"></small>' +
+        '</div>' +
+        '<div class="field-group hidden">' +
+            '<label class="label">Status</label>' +
+            '<select class="inp" name="status[]">' +
+                '<option value="Active">Active</option>' +
+                '<option value="Inactive">Inactive</option>' +
+            '</select>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;margin:10px 0">' +
+            '<label class="label">Features</label>' +
+            '<button type="button" class="btn btn-ghost btn-sm" onclick="addFeature(\'features-' + idx + '\')">' +
+                '<i class="ri-add-line"></i> Add Feature' +
+            '</button>' +
+        '</div>' +
+        '<div id="features-' + idx + '">' +
+            '<div class="sortable-item">' +
+                '<span class="feature-serial">1</span>' +
+                '<input class="inp feature-inp" name="features[' + idx + '][]" placeholder="Feature name..." style="flex:1">' +
+                '<button type="button" class="btn btn-ghost btn-sm" onclick="toggleFeatureEdit(this)"><i class="ri-edit-line"></i></button>' +
+                '<button type="button" class="btn btn-danger btn-sm" onclick="removeFeature(this,\'features-' + idx + '\')"><i class="ri-delete-bin-line"></i></button>' +
+            '</div>' +
+        '</div>';
+
+    /* ── append editor to the container INSIDE the form ── */
+    document.getElementById('plan-editors-container').appendChild(editor);
+
+    /* ── switch to new tab AFTER DOM is updated ── */
     switchPlan(idx, tab);
-    if(typeof toast==='function') toast('New plan added!','success');
+    calcTotal(idx);
+    toast?.('New plan added!', 'success');
 }
 
-function deletePlan(idx,event){
+/* ═══════════════════════════════════════════════
+   DELETE PLAN
+   - existing DB plans: dbId = numeric id, clientIdx = blade key
+   - new client-only plans: dbId = null, clientIdx = planCount index
+═══════════════════════════════════════════════ */
+function deletePlan(dbId, event, clientIdx) {
     event.stopPropagation();
-    if(!confirm('Delete this plan?')) return;
-    var tab = document.getElementById('plan-tab-'+idx);
-    var ed = document.getElementById('plan-editor-'+idx);
-    if(tab) tab.remove();
-    if(ed) ed.remove();
-    // Switch to first available
-    var firstTab = document.querySelector('.plan-tab');
-    if(firstTab){
-        var firstIdx = firstTab.id.replace('plan-tab-','');
-        switchPlan(firstIdx, firstTab);
+    if (!confirm('Delete this plan?')) return;
+
+    function doRemove(idx) {
+        var tab = document.getElementById('plan-tab-' + idx);
+        var ed  = document.getElementById('plan-editor-' + idx);
+        if (tab) tab.remove();
+        if (ed)  ed.remove();
+        // switch to first remaining tab
+        var firstTab = document.querySelector('.plan-tab');
+        if (firstTab) {
+            var firstIdx = firstTab.id.replace('plan-tab-', '');
+            switchPlan(firstIdx, firstTab);
+        }
+        toast?.('Plan deleted', 'info');
     }
-    if(typeof toast==='function') toast('Plan deleted','info');
+
+    if (dbId) {
+        fetch(DELETE_PLAN_URL + '/' + dbId, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        })
+        .then(r => r.json())
+        .then(function(data) {
+            if (data.status) {
+                doRemove(clientIdx);
+            } else {
+                toast?.('Delete failed: ' + (data.message || ''), 'error');
+            }
+        })
+        .catch(function() { toast?.('Server error', 'error'); });
+    } else {
+        doRemove(clientIdx);
+    }
 }
 
-function cc(i,c,m){
-    var el=document.getElementById(i),cnt=document.getElementById(c);
-    if(!el||!cnt)return;
-    var l=el.value.length;
-    cnt.textContent=l+'/'+m;
-    cnt.className='char-count'+(l>m?' bad':l>m*.85?' warn':'');
+/* ═══════════════════════════════════════════════
+   SAVE ALL PLANS
+═══════════════════════════════════════════════ */
+function saveAll() {
+    var form     = document.getElementById('plan-form');
+    var formData = new FormData(form);
+
+    // clear previous errors
+    document.querySelectorAll('#plan-form .error-msg').forEach(el => el.textContent = '');
+    document.querySelectorAll('#plan-form .inp').forEach(el => el.style.borderColor = '');
+
+    fetch(SAVE_PLAN_URL, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': CSRF },
+        body: formData
+    })
+    .then(async function(response) {
+        var data = await response.json();
+
+        if (!response.ok) {
+            if (data.errors) {
+                // Laravel errors keyed as "plan_name.0", "price.2" etc.
+                Object.entries(data.errors).forEach(function([key, msgs]) {
+                    var parts = key.split('.');
+                    var field = parts[0];       // e.g. "plan_name"
+                    var index = parseInt(parts[1], 10); // e.g. 0
+
+                    var inputs = document.querySelectorAll('#plan-form [name="' + field + '[]"]');
+                    var input  = inputs[index];
+
+                    if (input) {
+                        input.style.borderColor = '#ef4444';
+                        var errEl = input.parentElement.querySelector('.error-msg');
+                        if (errEl) errEl.textContent = msgs[0];
+
+                        // auto-switch to the tab that has this error
+                        // find the enclosing plan-editor and its index
+                        var editor = input.closest('.plan-editor');
+                        if (editor) {
+                            var edIdx = editor.id.replace('plan-editor-', '');
+                            var planTab = document.getElementById('plan-tab-' + edIdx);
+                            if (planTab) switchPlan(edIdx, planTab);
+                        }
+                    }
+                });
+            }
+            toast?.('Validation failed — please fix the errors', 'error');
+            return;
+        }
+        toast?.(data.message, 'success');
+    })
+    .catch(function() { toast?.('Server error', 'error'); });
 }
 
-function createCoupon(){
-    var code=document.getElementById('coupon-code').value.trim();
-    if(!code){if(typeof toast==='function')toast('Coupon code required','error');return;}
-    if(typeof toast==='function')toast('Coupon "'+code+'" created!','success');
-    closeModal('add-coupon-modal');
+function hideError(el) {
+    var errEl = el.parentElement.querySelector('.error-msg');
+    if (errEl) errEl.textContent = '';
+    el.style.borderColor = '';
 }
 
-function saveAll(){
-    if(typeof toast==='function')toast('Pricing page saved & published!','success');
+/* ═══════════════════════════════════════════════
+   COUPON CRUD
+═══════════════════════════════════════════════ */
+var cpnPage    = 1;
+var cpnPerPage = 5;
+var cpnFilter  = '';
+var cpnAll     = [];
+
+function loadCoupons() {
+    fetch(COUPON_URL, {
+        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF }
+    })
+    .then(r => r.json())
+    .then(function(data) {
+        cpnAll  = (data.coupons || []).map(formatCoupon);
+        cpnPage = 1;
+        renderCoupons();
+    })
+    .catch(function() { toast?.('Failed to load coupons', 'error'); });
 }
+
+function formatCoupon(c) {
+    var dispVal   = c.coupon_type === 'percentage'
+        ? c.discount + '%'
+        : '£' + parseFloat(c.discount).toFixed(2);
+    var typeLabel = c.coupon_type === 'percentage' ? 'Percentage' : 'Fixed Amount';
+    var badgeCls  = c.coupon_type === 'percentage' ? 'badge-green' : 'badge-amber';
+    var rawExpiry = c.expiry_date ? c.expiry_date.substring(0, 10) : '';
+    var dispExp   = rawExpiry
+        ? new Date(rawExpiry + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+        : '—';
+    var statusCls = c.status === 'Active' ? 'badge-green' : 'badge-red';
+    return {
+        id: c.id, code: c.code,
+        typeLabel: typeLabel, dispVal: dispVal, badgeCls: badgeCls,
+        expiry: dispExp, status: c.status, statusCls: statusCls,
+        _rawVal: c.discount, _type: c.coupon_type, _expiryRaw: rawExpiry
+    };
+}
+
+function couponRowHTML(c) {
+
+    var today = new Date();
+
+    var expiryDate = c.expiry
+        ? new Date(c.expiry)
+        : null;
+
+    var statusText = '';
+    var statusStyle = '';
+
+    // EXPIRED FIRST
+    if (expiryDate && expiryDate < today) {
+
+        statusText = 'Expired';
+
+        statusStyle =
+            'background:#FEF3C7;color:#D97706;border:1px solid #FCD34D;';
+
+    }
+    else if (
+        String(c.status).toLowerCase() === 'active'
+    ) {
+
+        statusText = 'Active';
+
+        statusStyle =
+            'background:#DCFCE7;color:#059669;border:1px solid #86EFAC;';
+
+    }
+    else {
+
+        statusText = 'Inactive';
+
+        statusStyle =
+            'background:#FEE2E2;color:#DC2626;border:1px solid #FCA5A5;';
+    }
+
+    return '<tr>' +
+
+        '<td><div style="font-weight:700;font-family:monospace;letter-spacing:.08em">' +
+            c.code +
+        '</div></td>' +
+
+        '<td><span style="font-size:.78rem;color:var(--text3)">' +
+            c.typeLabel +
+        '</span></td>' +
+
+        '<td><span class="badge ' + c.badgeCls + '">' +
+            c.dispVal +
+        '</span></td>' +
+
+        '<td><span style="font-size:.78rem;color:var(--text3)">' +
+            c.expiry +
+        '</span></td>' +
+
+        '<td><span class="badge" style="' + statusStyle + '">' +
+            statusText +
+        '</span></td>' +
+
+        '<td><div style="display:flex;gap:4px">' +
+
+            '<button type="button" class="btn btn-ghost btn-sm" onclick="editCoupon(' + c.id + ')">' +
+                '<i class="ri-edit-line"></i>' +
+            '</button>' +
+
+            '<button type="button" class="btn btn-danger btn-sm" onclick="deleteCoupon(' + c.id + ')">' +
+                '<i class="ri-delete-bin-line"></i>' +
+            '</button>' +
+
+        '</div></td>' +
+
+    '</tr>';
+}
+function renderCoupons() {
+    var filtered = cpnAll.filter(function(c) {
+        if (!cpnFilter) return true;
+        var q = cpnFilter.toLowerCase();
+        return c.code.toLowerCase().includes(q) ||
+               c.typeLabel.toLowerCase().includes(q) ||
+               c.status.toLowerCase().includes(q);
+    });
+    var total = filtered.length;
+    var pages = Math.max(1, Math.ceil(total / cpnPerPage));
+    if (cpnPage > pages) cpnPage = pages;
+    var slice = filtered.slice((cpnPage - 1) * cpnPerPage, cpnPage * cpnPerPage);
+
+    document.getElementById('coupon-table-body').innerHTML = slice.length
+        ? slice.map(couponRowHTML).join('')
+        : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text4);font-size:.8rem">' +
+          '<i class="ri-coupon-line" style="display:block;font-size:1.6rem;margin-bottom:6px;opacity:.3"></i>No coupons found</td></tr>';
+
+    document.getElementById('coupon-count-label').textContent =
+        total + ' coupon' + (total !== 1 ? 's' : '') + (cpnFilter ? ' found' : '');
+
+    var pag   = document.getElementById('coupon-pagination');
+    if (pages <= 1) { pag.innerHTML = ''; return; }
+    var html  = '<span class="cpn-page-info">Page ' + cpnPage + ' of ' + pages + '</span>';
+    html += '<button class="cpn-page-btn" onclick="cpnGoPage(' + (cpnPage - 1) + ')"' +
+            (cpnPage === 1 ? ' disabled style="opacity:.35;cursor:default"' : '') + '>&#8249;</button>';
+    for (var p = 1; p <= pages; p++) {
+        html += '<button class="cpn-page-btn' + (p === cpnPage ? ' active' : '') + '" onclick="cpnGoPage(' + p + ')">' + p + '</button>';
+    }
+    html += '<button class="cpn-page-btn" onclick="cpnGoPage(' + (cpnPage + 1) + ')"' +
+            (cpnPage === pages ? ' disabled style="opacity:.35;cursor:default"' : '') + '>&#8250;</button>';
+    pag.innerHTML = html;
+}
+
+function cpnGoPage(p) {
+    var pages = Math.max(1, Math.ceil(cpnAll.length / cpnPerPage));
+    if (p < 1 || p > pages) return;
+    cpnPage = p;
+    renderCoupons();
+}
+
+function couponSearch() {
+    cpnFilter = document.getElementById('coupon-search').value.trim();
+    cpnPage   = 1;
+    renderCoupons();
+}
+
+/* ── Create coupon ── */
+function createCoupon() {
+    var code   = document.getElementById('coupon-code').value.trim().toUpperCase();
+    var type   = document.getElementById('coupon-type').value;
+    var val    = document.getElementById('coupon-val').value.trim();
+    var expiry = document.getElementById('coupon-expiry').value;
+    var status = document.getElementById('coupon-status').value;
+
+    // clear errors
+    clearOneError('coupon-code',   'add-code-err');
+    clearOneError('coupon-val',    'add-val-err');
+    clearOneError('coupon-expiry', 'add-expiry-err');
+
+    fetch(COUPON_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': CSRF,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            code: code,
+            coupon_type: type,
+            discount: val,
+            expiry_date: expiry || null,
+            status: status
+        })
+    })
+    .then(async function(r) {
+        var data = await r.json();
+        if (!r.ok) {
+            showCouponErrors(data.errors, {
+                code:           { inputId: 'coupon-code',   errId: 'add-code-err'   },
+                discount: { inputId: 'coupon-val',    errId: 'add-val-err'    },
+                expiry_date:    { inputId: 'coupon-expiry', errId: 'add-expiry-err' }
+            });
+            return;
+        }
+        cpnAll.unshift(formatCoupon(data.coupon));
+        document.getElementById('coupon-code').value   = '';
+        document.getElementById('coupon-val').value    = '';
+        document.getElementById('coupon-expiry').value = '';
+        closeModal('add-coupon-modal');
+        cpnPage = 1;
+        renderCoupons();
+       toast?.(data.message, 'success');
+    })
+    .catch(function() { toast?.('Server error', 'error'); });
+}
+
+/* ── Open edit coupon modal ── */
+function editCoupon(id) {
+    var c = cpnAll.find(function(x) { return x.id === id; });
+    if (!c) return;
+    document.getElementById('edit-coupon-id').value      = id;
+    document.getElementById('edit-coupon-code').value    = c.code;
+    document.getElementById('edit-coupon-val').value     = c._rawVal;
+    document.getElementById('edit-coupon-type').value    = c._type;
+    document.getElementById('edit-coupon-status').value  = c.status;
+    document.getElementById('edit-coupon-expiry').value  = c._expiryRaw;
+    // clear stale errors
+    clearOneError('edit-coupon-code',   'edit-code-err');
+    clearOneError('edit-coupon-val',    'edit-val-err');
+    clearOneError('edit-coupon-expiry', 'edit-expiry-err');
+    openModal('edit-coupon-modal');
+}
+
+/* ── Update coupon ── */
+function updateCoupon() {
+    var id     = document.getElementById('edit-coupon-id').value;
+    var code   = document.getElementById('edit-coupon-code').value.trim().toUpperCase();
+    var type   = document.getElementById('edit-coupon-type').value;
+    var val    = document.getElementById('edit-coupon-val').value.trim();
+    var expiry = document.getElementById('edit-coupon-expiry').value;
+    var status = document.getElementById('edit-coupon-status').value;
+
+    clearOneError('edit-coupon-code',   'edit-code-err');
+    clearOneError('edit-coupon-val',    'edit-val-err');
+    clearOneError('edit-coupon-expiry', 'edit-expiry-err');
+
+    fetch(COUPON_URL + '/' + id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': CSRF,
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+            code: code,
+            coupon_type: type,
+            discount: val,
+            expiry_date: expiry || null,
+            status: status
+        })
+    })
+    .then(async function(r) {
+        var data = await r.json();
+        if (!r.ok) {
+            showCouponErrors(data.errors, {
+                code:           { inputId: 'edit-coupon-code',   errId: 'edit-code-err'   },
+                discount: { inputId: 'edit-coupon-val',    errId: 'edit-val-err'    },
+                expiry_date:    { inputId: 'edit-coupon-expiry', errId: 'edit-expiry-err' }
+            });
+            return;
+        }
+        var idx = cpnAll.findIndex(function(x) { return x.id == id; });
+        if (idx !== -1) cpnAll[idx] = formatCoupon(data.coupon);
+        closeModal('edit-coupon-modal');
+        renderCoupons();
+        toast?.('"' + code + '" updated!', 'success');
+    })
+    .catch(function() { toast?.('Server error', 'error'); });
+}
+
+/* ── Delete coupon ── */
+function deleteCoupon(id) {
+    openConfirm(
+        'Delete this coupon?',
+        function () {
+            fetch(COUPON_URL + '/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(r => r.json())
+            .then(function(data) {
+                if (data.status) {
+                    cpnAll = cpnAll.filter(x => x.id !== id);
+                    renderCoupons();
+                    toast?.(data.message || 'Coupon deleted','info');
+                } else {
+                    toast?.(data.message || 'Delete failed','error');
+                }
+
+            })
+            .catch(function() {
+
+                toast?.('Server error', 'error');
+
+            });
+
+        }
+    );
+}
+/* ── Coupon error helpers ── */
+function showCouponErrors(errors, fieldMap) {
+    if (!errors) return;
+    Object.entries(errors).forEach(function([key, msgs]) {
+        var mapping = fieldMap[key];
+        if (!mapping) return;
+        var inp = document.getElementById(mapping.inputId);
+        var err = document.getElementById(mapping.errId);
+        if (inp) inp.style.borderColor = '#ef4444';
+        if (err) err.textContent = msgs[0];
+    });
+    toast?.('Please fix the errors', 'error');
+}
+
+function clearOneError(inputId, errId) {
+    var inp = document.getElementById(inputId);
+    var err = document.getElementById(errId);
+    if (inp) inp.style.borderColor = '';
+    if (err) err.textContent = '';
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', function() {
+    @foreach($plans as $key => $plan)
+        calcTotal({{ $key }});
+    @endforeach
+});
 </script>
 
 @endsection

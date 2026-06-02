@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\SystemController;
+use App\Http\Controllers\Admin\CmsController;
 
 Route::get('/admin-login', function () {
 
@@ -30,6 +31,8 @@ Route::get('/admin-dashboard',[AdminController::class,'adminDashboard'])->name('
 Route::get('/admin-profile',[AdminController::class,'adminProfile'])->name('admin.profile');
 Route::post('/admin/profile/update', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
 Route::post('/admin/change-password',[AdminController::class,'changePassword'])->name('admin.change.password');
+
+Route::get('/admin/analytics/data',[AdminController::class, 'analyticsData']);
 
 Route::get('/admin-transactions',[ManagementController::class,'transactionPage'])->name('admin.transaction');
 
@@ -59,3 +62,17 @@ Route::get('/admin/calendar/user-data',[ManagementController::class, 'getUserCal
 Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
 Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');
 Route::post('/admin/feedback/reply',[SystemController::class,'replyFeedback'])->name('admin.feedback.reply');
+
+
+
+Route::get('/admin-pricing',[CmsController::class,'pricingPage'])->name('admin.pricing');
+Route::post('/admin/save-plan',[CmsController::class,'savePlan'])->name('save.plan');
+
+
+    Route::delete('admin/delete-plan/{id}', [CmsController::class, 'deletePlan'])->name('delete.plan');
+
+    // Coupon routes
+    Route::get('admin/coupons',          [CmsController::class, 'getCoupons'])->name('coupons.index');
+    Route::post('admin/coupons',         [CmsController::class, 'createCoupon'])->name('coupons.store');
+    Route::put('admin/coupons/{id}',     [CmsController::class, 'updateCoupon'])->name('coupons.update');
+    Route::delete('admin/coupons/{id}',  [CmsController::class, 'deleteCoupon'])->name('coupons.destroy');

@@ -255,8 +255,8 @@ class ManagementController extends Controller
             'phone' => $request->phone,
             'status' => $request->status,
             'plan_id' => $plan?->id,
-             'address1' => $request->address1,
-             'postcode' => strtoupper($request->postcode),
+            'address1' => $request->address1,
+            'postcode' => strtoupper($request->postcode),
         ]);
 
         return response()->json([
@@ -266,341 +266,344 @@ class ManagementController extends Controller
     }
 
     public function storeUser(Request $request)
-{
+    {
 
-    $request->validate([
-        'first_name' => 'required|max:255',
-        'last_name' => 'required|max:255',
-        'email' => [
+        $request->validate([
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email' => [
                 'required',
                 'email:rfc,dns',
                 'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',
                 'unique:users,email',
                 'max:255'
             ],
-        'phone' => 'required|digits_between:10,15',
-        'plan' => 'required',
-        'status' => 'required|in:active,suspended',
-        'address1' => 'required|max:255',
-        'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
-    ]);
+            'phone' => 'required|digits_between:10,15',
+            'plan' => 'required',
+            'status' => 'required|in:active,suspended',
+            'address1' => 'required|max:255',
+            'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
+        ]);
 
-    // Generate Secure Password
-    $password =
-        Str::upper(Str::random(2)) .
-        Str::lower(Str::random(2)) .
-        rand(10,99) .
-        '@#';
+        // Generate Secure Password
+        $password =
+            Str::upper(Str::random(2)) .
+            Str::lower(Str::random(2)) .
+            rand(10, 99) .
+            '@#';
 
-    $password = str_shuffle($password);
-    $plan = PlanPrice::where('plan_name',$request->plan)->first();
+        $password = str_shuffle($password);
+        $plan = PlanPrice::where('plan_name', $request->plan)->first();
 
-     // Server-side coupon + amount calculation
+        // Server-side coupon + amount calculation
         $couponCode     = null;
         $discountAmount = 0.00;
         $finalAmount    = (float) $plan->total_price;
 
-    $user = User::create([
-        'first_name' => ucfirst($request->first_name),
-        'last_name' => ucfirst($request->last_name),
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'address1' => $request->address1,
-        'status' => $request->status,
-        'plan_id' => $plan?->id,
-        'country' => 'United Kingdom',
-        'postcode' => strtoupper($request->postcode),
-        'password' => Hash::make($password),
-        'admin_created' => 1,
-    ]);
+        $user = User::create([
+            'first_name' => ucfirst($request->first_name),
+            'last_name' => ucfirst($request->last_name),
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address1' => $request->address1,
+            'status' => $request->status,
+            'plan_id' => $plan?->id,
+            'country' => 'United Kingdom',
+            'postcode' => strtoupper($request->postcode),
+            'password' => Hash::make($password),
+            'admin_created' => 1,
+        ]);
 
-     $payment = Payment::create([
-                'user_id'           => $user->id,
-                'currency'          => 'GBP',
-                'stripe_payment_id' => 'CASH-' . date('Ymd') . '-' . strtoupper(Str::random(6)),
-                'amount'            => $finalAmount,
-                'currency'          => 'GBP',
-                'payment_mode'       => 'cash',
-                'status'            => 'successful',
-            ]);
+        $payment = Payment::create([
+            'user_id'           => $user->id,
+            'currency'          => 'GBP',
+            'stripe_payment_id' => 'CASH-' . date('Ymd') . '-' . strtoupper(Str::random(6)),
+            'amount'            => $finalAmount,
+            'currency'          => 'GBP',
+            'payment_mode'       => 'cash',
+            'status'            => 'successful',
+        ]);
 
-            // ── Invoice + PDF + Email ──────────────────────────────────────
-           $invoiceId = 'INV-' . str_pad($payment->id, 3, '0', STR_PAD_LEFT);
+        // ── Invoice + PDF + Email ──────────────────────────────────────
+        $invoiceId = 'INV-' . str_pad($payment->id, 3, '0', STR_PAD_LEFT);
 
-            // ✅ Only invoices folder (no year/month)
-            $invoiceDir  = public_path('invoices');
-            $invoicePath = 'invoices/' . $invoiceId . '.pdf';
+        // ✅ Only invoices folder (no year/month)
+        $invoiceDir  = public_path('invoices');
+        $invoicePath = 'invoices/' . $invoiceId . '.pdf';
 
-            // Create folder if not exists
-            if (!file_exists($invoiceDir)) {
-                mkdir($invoiceDir, 0755, true);
-            }
+        // Create folder if not exists
+        if (!file_exists($invoiceDir)) {
+            mkdir($invoiceDir, 0755, true);
+        }
 
-            // Save in DB
-            Invoice::create([
-                'user_id'      => $user->id,
-                'plan_id'      => $plan->id,
-                'payment_id'   => $payment->id,
-                'invoice_id'   => $invoiceId,
-                'amount'       => $finalAmount,
-                'invoice_path' => $invoicePath,
-                'type'         => 'paid',
-            ]);
+        // Save in DB
+        Invoice::create([
+            'user_id'      => $user->id,
+            'plan_id'      => $plan->id,
+            'payment_id'   => $payment->id,
+            'invoice_id'   => $invoiceId,
+            'amount'       => $finalAmount,
+            'invoice_path' => $invoicePath,
+            'type'         => 'paid',
+        ]);
 
-            // Generate PDF
-            $pdf = \PDF::loadView('emails.invoice_view', [
-                'user'           => $user,
-                'payment'        => $payment,
-                'plan'           => $plan,
-                'invoiceId'      => $invoiceId,
-                'basePrice'      => (float) $plan->price,
-                'vatAmount'      => (float) ($plan->vat ?? 0),
-                'discount'       => $discountAmount,
-                'couponCode'     => $couponCode,
-                'finalAmount'    => $finalAmount,
-                'currencySymbol' => '£',
-                'issueDate'      => now()->format('d M Y'),
-                'dueDate'        => now()->format('d M Y'),
-                'isPaid'         => true,
-                'balance'        => 0,
-            ]);
+        // Generate PDF
+        $pdf = \PDF::loadView('emails.invoice_view', [
+            'user'           => $user,
+            'payment'        => $payment,
+            'plan'           => $plan,
+            'invoiceId'      => $invoiceId,
+            'basePrice'      => (float) $plan->price,
+            'vatAmount'      => (float) ($plan->vat ?? 0),
+            'discount'       => $discountAmount,
+            'couponCode'     => $couponCode,
+            'finalAmount'    => $finalAmount,
+            'currencySymbol' => '£',
+            'issueDate'      => now()->format('d M Y'),
+            'dueDate'        => now()->format('d M Y'),
+            'isPaid'         => true,
+            'balance'        => 0,
+        ]);
 
-            // Save PDF
-            $pdf->save(public_path($invoicePath));
-            Mail::send('emails.user_register', [
-                'user'      => $user,
-                'plan'      => $plan,
-                'password'  => $password,
-                'invoiceId' => $invoiceId,
-                'amount'    => $finalAmount,
-                'discount'  => $discountAmount,
-            ], function ($m) use ($user, $pdf, $invoiceId) {
-                $m->from(config('mail.from.address'), config('mail.from.name'));
-                $m->to($user->email, $user->first_name . ' ' . $user->last_name)
-                    ->subject('Payment Successful - Invoice ' . $invoiceId)
-                    ->attachData($pdf->output(), $invoiceId . '.pdf', ['mime' => 'application/pdf']);
-            });
-            // ── End Invoice + PDF + Email ──────────────────────────────────
+        // Save PDF
+        $pdf->save(public_path($invoicePath));
+        Mail::send('emails.user_register', [
+            'user'      => $user,
+            'plan'      => $plan,
+            'password'  => $password,
+            'invoiceId' => $invoiceId,
+            'amount'    => $finalAmount,
+            'discount'  => $discountAmount,
+        ], function ($m) use ($user, $pdf, $invoiceId) {
+            $m->from(config('mail.from.address'), config('mail.from.name'));
+            $m->to($user->email, $user->first_name . ' ' . $user->last_name)
+                ->subject('Payment Successful - Invoice ' . $invoiceId)
+                ->attachData($pdf->output(), $invoiceId . '.pdf', ['mime' => 'application/pdf']);
+        });
+        // ── End Invoice + PDF + Email ──────────────────────────────────
 
 
-    return response()->json([
-        'status' => true,
-        'message' => 'User created successfully',
-       
-    ]);
-}
+        return response()->json([
+            'status' => true,
+            'message' => 'User created successfully',
 
-public function reminderPage(Request $request)
-{
-    $totalReminders = Reminder::count();
+        ]);
+    }
 
-    $completedReminders = Reminder::where('reminder_status','completed')->count();
+    public function reminderPage(Request $request)
+    {
+        $totalReminders = Reminder::count();
 
-    $todayReminders = Reminder::whereDate('reminder_date',today())->count();
+        $completedReminders = Reminder::where('reminder_status', 'completed')->count();
 
-    $pendingReminders = Reminder::where('reminder_status','pending')->count();
+        $todayReminders = Reminder::whereDate('reminder_date', today())->count();
 
-    $reminders = Reminder::with([
-        'user',
-        'category',
-        'subcategory'
-    ])->latest()->get()->map(function($r){
-        return [
-            'id' => $r->id,
-            'title' => $r->title,
-            'category' => $r->category->name ?? 'N/A',
-            'subcategory' => $r->subcategory->name ?? 'N/A',
-            'due' => $r->reminder_date,
-            'end_reminder_date' => $r->end_reminder_date,
-            'reminder_time' => $r->reminder_time,
-            'description' => $r->description,
-            'provider' => $r->provider,
-            'cost' => $r->cost,
-            'payment_frequency' => $r->payment_frequency,
-            'status' => $r->status,
-            'reminder_status' => $r->reminder_status,
-            'created' => $r->created_at->format('d M Y'),
-            'user' => [
-                'id' => $r->user?->id,
-                'name' => ($r->user?->first_name ?? '') . ' ' . ($r->user?->last_name ?? ''),
-                'email' => $r->user?->email,
-                'initials' => strtoupper(
-                    substr($r->user?->first_name ?? '',0,1) .
-                    substr($r->user?->last_name ?? '',0,1)
-                ),
-                'color' => '#7c3aed',
-                'profile' => $r->user?->profile
-                    ? asset($r->user->profile)
-                    : null,
-            ]
-        ];
+        $pendingReminders = Reminder::where('reminder_status', 'pending')->count();
 
-    });
-
-    return view('admin.reminders',compact('reminders','totalReminders','completedReminders','todayReminders','pendingReminders'));
-}
-
-public function calendarPage()
-{
-    $users = User::select('id','first_name','last_name','email')
-    ->get()
-    ->map(function ($user) {
-        return [
-            'id' => $user->id,
-            'name' => trim($user->first_name . ' ' . $user->last_name),
-            'email' => $user->email,
-        ];
-    });
-
-    // Categories
-    $fullCats = Category::where('status', 'active')
-        ->with([
-            'subcategories' => function ($q) {
-                $q->where('status', 'active');
-            }
-        ])
-        ->get()
-        ->mapWithKeys(function ($cat) {
-
+        $reminders = Reminder::with([
+            'user',
+            'category',
+            'subcategory'
+        ])->latest()->get()->map(function ($r) {
             return [
-               (string)$cat->id => [
-                    'name'  => $cat->name,
-                    'color' => $cat->color ?? '#94a3b8',
-                    'icon'  => $cat->icon ?? 'ri-alarm-line',
-                    'bg'    => 'rgba(148,163,184,.15)',
-
-                    'subs' => $cat->subcategories->map(function ($sub) {
-
-                        return [
-                            'id' => $sub->id,
-                            'name' => $sub->name,
-                        ];
-                    })->toArray(),
+                'id' => $r->id,
+                'title' => $r->title,
+                'category' => $r->category->name ?? 'N/A',
+                'subcategory' => $r->subcategory->name ?? 'N/A',
+                'due' => $r->reminder_date,
+                'end_reminder_date' => $r->end_reminder_date,
+                'reminder_time' => $r->reminder_time,
+                'description' => $r->description,
+                'provider' => $r->provider,
+                'cost' => $r->cost,
+                'payment_frequency' => $r->payment_frequency,
+                'status' => $r->status,
+                'reminder_status' => $r->reminder_status,
+                'created' => $r->created_at->format('d M Y'),
+                'user' => [
+                    'id' => $r->user?->id,
+                    'name' => ($r->user?->first_name ?? '') . ' ' . ($r->user?->last_name ?? ''),
+                    'email' => $r->user?->email,
+                    'initials' => strtoupper(
+                        substr($r->user?->first_name ?? '', 0, 1) .
+                            substr($r->user?->last_name ?? '', 0, 1)
+                    ),
+                    'color' => '#7c3aed',
+                    'profile' => $r->user?->profile
+                        ? asset($r->user->profile)
+                        : null,
                 ]
             ];
         });
 
-    $categories = $fullCats->map(
-        fn($c) => collect($c)->except('subs')
-    );
+        return view('admin.reminders', compact('reminders', 'totalReminders', 'completedReminders', 'todayReminders', 'pendingReminders'));
+    }
 
-    return view('admin.calendar', compact(
-        'users',
-        'categories',
-        'fullCats'
-    ));
-}
-public function getUserCalendar(Request $request)
-{
-    $request->validate(['user_id' => 'required|exists:users,id']);
+    public function calendarPage(Request $request)
+    {
 
-    $histories = ReminderHistory::with(['reminder.category', 'reminder.subcategory'])
-        ->where('user_id', $request->user_id)
-        ->get()
-        ->map(function ($h) {
-            $reminder = $h->reminder;
-            if (!$reminder) return null;
+        $selectedUserId = $request->user_id;
+        $users = User::with('plan')->select('id','first_name','last_name','email','plan_id')
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => trim($user->first_name . ' ' . $user->last_name),
+                    'email' => $user->email,
+                    'plan' => $user->plan?->plan_name ?? 'Free',
+                ];
+            });
 
-            return [
-                'id'              => $h->id,
-                'reminder_id'     => $h->reminder_id,
-                'title'           => $reminder->title,
-                'category'        => (string) $reminder->category_id,  // cast to string
-                'subcategory'     => $reminder->subcategory?->name ?? '',
-                'dueDate'         => $h->reminder_date
-                    ? Carbon::parse($h->reminder_date)->format('Y-m-d')  // fixed: no backslash
-                    : null,
-                'dueTime'         => $h->reminder_time,
-                'provider'        => $reminder->provider,
-                'cost'            => $reminder->cost,
-                'frequency'       => $reminder->payment_frequency,
-                'status'          => $h->status,
-                'description'     => $reminder->description,
-            ];
-        })
-        ->filter()->values();
+        // Categories
+        $fullCats = Category::where('status', 'active')
+            ->with([
+                'subcategories' => function ($q) {
+                    $q->where('status', 'active');
+                }
+            ])
+            ->get()
+            ->mapWithKeys(function ($cat) {
 
-    return response()->json(['status' => true, 'histories' => $histories]);
-}
+                return [
+                    (string)$cat->id => [
+                        'name'  => $cat->name,
+                        'color' => $cat->color ?? '#94a3b8',
+                        'icon'  => $cat->icon ?? 'ri-alarm-line',
+                        'bg'    => 'rgba(148,163,184,.15)',
 
-public function deleteCategory(Request $request)
-{
-    $request->validate([
-        'id' => 'required|exists:categories,id'
-    ]);
+                        'subs' => $cat->subcategories->map(function ($sub) {
 
-    $category = Category::findOrFail($request->id);
+                            return [
+                                'id' => $sub->id,
+                                'name' => $sub->name,
+                            ];
+                        })->toArray(),
+                    ]
+                ];
+            });
 
-    // Delete subcategories
-    $category->subcategories()->delete();
+        $categories = $fullCats->map(
+            fn($c) => collect($c)->except('subs')
+        );
 
-    // Optional: delete related reminders
-    $category->reminders()->delete();
+        return view('admin.calendar', compact(
+            'users',
+            'categories',
+            'fullCats',
+            'selectedUserId'
+        ));
+    }
+    public function getUserCalendar(Request $request)
+    {
+        $request->validate(['user_id' => 'required|exists:users,id']);
 
-    // Delete category
-    $category->delete();
+        $histories = ReminderHistory::with(['reminder.category', 'reminder.subcategory'])
+            ->where('user_id', $request->user_id)
+            ->get()
+            ->map(function ($h) {
+                $reminder = $h->reminder;
+                if (!$reminder) return null;
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Category deleted successfully'
-    ]);
-}
+                return [
+                    'id'              => $h->id,
+                    'reminder_id'     => $h->reminder_id,
+                    'title'           => $reminder->title,
+                    'category'        => (string) $reminder->category_id,  // cast to string
+                    'subcategory'     => $reminder->subcategory?->name ?? '',
+                    'dueDate'         => $h->reminder_date
+                        ? Carbon::parse($h->reminder_date)->format('Y-m-d')  // fixed: no backslash
+                        : null,
+                    'dueTime'         => $h->reminder_time,
+                    'provider'        => $reminder->provider,
+                    'cost'            => $reminder->cost,
+                    'frequency'       => $reminder->payment_frequency,
 
-public function deleteSubcategory(Request $request)
-{
-    $request->validate([
-        'id' => 'required|exists:sub_categories,id'
-    ]);
-    $subcategory = SubCategory::findOrFail($request->id);
-    Reminder::where('subcategory_id',$subcategory->id)->delete();
-    $subcategory->delete();
-    return response()->json([
-        'status' => true,
-        'message' => 'Subcategory deleted successfully'
-    ]);
-}
+                    'status'          => $h->status,
+                    'description'     => $reminder->description,
+                ];
+            })
+            ->filter()->values();
 
-public function updateSubcategory(Request $request)
-{
-    $request->validate([
-        'id' => 'required|exists:sub_categories,id',
-        'category_id' => 'required|exists:categories,id',
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string|max:500',
-    ]);
-    // dd($request->all());
-    $subcategory = SubCategory::findOrFail($request->id);
-    $subcategory->update([
-        'category_id' => $request->category_id,
-        'name' => $request->name,
-        'description' => $request->description,
-    ]);
-    return response()->json([
-        'status' => true,
-        'message' => 'Subcategory updated successfullyyy'
-    ]);
-}
+        return response()->json(['status' => true, 'histories' => $histories]);
+    }
 
-public function updateCategory(Request $request)
-{
-    $request->validate([
-        'id' => 'required|exists:categories,id',
-        'name' => 'required|string|max:255',
-        'icon' => 'required|string|max:255',
-        'color' => 'required|string',
-        'description' => 'nullable|string|max:500',
-    ]);
-    $category = Category::findOrFail($request->id);
-    $category->update([
-        'name' => $request->name,
-        'icon' => $request->icon,
-        'color' => $request->color,
-        'description' => $request->description,
-    ]);
-    return response()->json([
-        'status' => true,
-        'message' => 'Category updated successfully'
-    ]);
-}
+    public function deleteCategory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:categories,id'
+        ]);
 
+        $category = Category::findOrFail($request->id);
+
+        // Delete subcategories
+        $category->subcategories()->delete();
+
+        // Optional: delete related reminders
+        $category->reminders()->delete();
+
+        // Delete category
+        $category->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Category deleted successfully'
+        ]);
+    }
+
+    public function deleteSubcategory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:sub_categories,id'
+        ]);
+        $subcategory = SubCategory::findOrFail($request->id);
+        Reminder::where('subcategory_id', $subcategory->id)->delete();
+        $subcategory->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Subcategory deleted successfully'
+        ]);
+    }
+
+    public function updateSubcategory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:sub_categories,id',
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+        ]);
+        // dd($request->all());
+        $subcategory = SubCategory::findOrFail($request->id);
+        $subcategory->update([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'description' => $request->description,
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Subcategory updated successfullyyy'
+        ]);
+    }
+
+    public function updateCategory(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+            'icon' => 'required|string|max:255',
+            'color' => 'required|string',
+            'description' => 'nullable|string|max:500',
+        ]);
+        $category = Category::findOrFail($request->id);
+        $category->update([
+            'name' => $request->name,
+            'icon' => $request->icon,
+            'color' => $request->color,
+            'description' => $request->description,
+        ]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Category updated successfully'
+        ]);
+    }
 }

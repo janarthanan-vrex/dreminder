@@ -707,6 +707,7 @@ select.inp {
     cursor: pointer;
     user-select: none;
     transition: color 0.15s;
+    text-align:left;
 }
 .data-table thead th:hover {
     color: var(--purple-light);

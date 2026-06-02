@@ -10,13 +10,13 @@
     <nav class="sb-nav">
         
         <div class="sb-section">Overview</div>
-        <a class="nav-item" href="admin-dashboard"><i class="ri-dashboard-line"></i><span class="nav-lbl">Dashboard</span></a>
-        <a class="nav-item" href="admin-analytics"><i class="ri-bar-chart-2-line"></i><span class="nav-lbl">Analytics</span></a>
+        <a class="nav-item hidden" href=""><i class="ri-dashboard-line"></i><span class="nav-lbl">Dashboard</span></a>
+        <a class="nav-item" href="{{route('admin.dashboard')}}"><i class="ri-bar-chart-2-line"></i><span class="nav-lbl">Dashboard</span></a>
 
         <div class="sb-section">Management</div>
         <a class="nav-item" href="admin-users"><i class="ri-group-line"></i><span class="nav-lbl">Users</span><span class="nav-badge">3</span></a>
         <a class="nav-item" href="{{route('admin.reminderpage')}}"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
-        <a class="nav-item" href="admin-calendar"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
+        <a class="nav-item" href="{{route('admin.calendarpage')}}"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
         <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
         <a class="nav-item" href="{{route('admin.category')}}"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
         <a class="nav-item" href="admin-notifications"><i class="ri-notification-3-line"></i><span class="nav-lbl">Notifications</span><span class="nav-badge">5</span></a>

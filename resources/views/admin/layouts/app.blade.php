@@ -51,6 +51,15 @@
             }
         }
     </style>
+    <style>
+    .ts-wrapper .ts-control{
+        border:none !important;
+        padding:0 !important;
+        box-shadow:none !important;
+        background:transparent !important;
+        min-height:auto !important;
+    }
+</style>
 
 </head>
 <style>

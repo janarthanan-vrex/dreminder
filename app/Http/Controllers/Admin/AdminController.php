@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 
+use App\Models\User;
+use App\Models\Reminder;
+use App\Models\Category;
+use App\Models\Payment;
+
+
 class AdminController extends Controller
 {
     public function loginPage(Request $request)
@@ -24,62 +30,6 @@ class AdminController extends Controller
        
         return view('admin.profile',compact('admin'));
     }
-
-    // public function adminLogin(Request $request)
-    // {
-    //     // ── Validation errors → field specific ──────────────────────────────
-    //     $validator = \Validator::make($request->all(), [
-    //         'email'    => 'required|email',
-    //         'password' => 'required|min:8',
-    //     ], [
-    //         'email.required'    => 'Email address is required.',
-    //         'email.email'       => 'Please enter a valid email address.',
-    //         'password.required' => 'Password is required.',
-    //         'password.min'      => 'Password must be at least 8 characters.',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'errors'  => $validator->errors(),
-    //         ], 422);
-    //     }
-
-    //     // ── Check email exists ───────────────────────────────────────────────
-    //     $admin = \App\Models\Admin::where('email', $request->email)->first();
-
-    //     if (!$admin) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'errors'  => ['email' => ['No account found with this email address.']],
-    //         ], 401);
-    //     }
-
-    //     // ── Check password ───────────────────────────────────────────────────
-    //     if (!\Hash::check($request->password, $admin->password)) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'errors'  => ['password' => ['The password you entered is incorrect.']],
-    //         ], 401);
-    //     }
-
-    //     // ── Check status ─────────────────────────────────────────────────────
-    //     if ($admin->status !== 'active') {
-    //         return response()->json([
-    //             'success' => false,
-    //             'errors'  => ['email' => ['Your account has been deactivated. Contact support.']],
-    //         ], 403);
-    //     }
-
-    //     // ── All good → login ─────────────────────────────────────────────────
-    //     Auth::guard('admin')->login($admin, $request->boolean('remember_me'));
-    //     $request->session()->regenerate();
-
-    //     return response()->json([
-    //         'success'  => true,
-    //         'redirect' => route('admin.dashboard'),
-    //     ]);
-    // }
 
     public function adminLogin(Request $request)
     {
@@ -416,6 +366,165 @@ public function changePassword(Request $request)
     return response()->json([
         'status' => true,
         'message' => 'Password updated successfully'
+    ]);
+}
+
+public function analyticsData(Request $request)
+{
+    $filter = $request->filter ?? '30';
+
+    $users = User::query();
+
+    $reminders = Reminder::query();
+
+    $payments = Payment::where('status', 'successful');
+
+    if ($filter == '30') {
+
+        $users->where('created_at', '>=', now()->subDays(30));
+
+        $reminders->where('created_at', '>=', now()->subDays(30));
+
+        $payments->where('created_at', '>=', now()->subDays(30));
+
+    }
+
+    elseif ($filter == '90') {
+
+        $users->where('created_at', '>=', now()->subDays(90));
+
+        $reminders->where('created_at', '>=', now()->subDays(90));
+
+        $payments->where('created_at', '>=', now()->subDays(90));
+
+    }
+
+    elseif ($filter == 'year') {
+
+        $users->whereYear('created_at', now()->year);
+
+        $reminders->whereYear('created_at', now()->year);
+
+        $payments->whereYear('created_at', now()->year);
+
+    }
+
+    $totalUsers = $users->count();
+
+    $totalReminders = $reminders->count();
+
+    $completed = (clone $reminders)
+        ->where('reminder_status', 'completed')
+        ->count();
+
+    $totalRevenue = $payments->sum('amount');
+
+    // Registration Chart
+    if ($filter == 'all') {
+
+        $yearly = User::selectRaw(
+                'YEAR(created_at) year,
+                 COUNT(*) total'
+            )
+            ->groupBy('year')
+            ->orderBy('year')
+            ->get();
+
+        $regLabels = $yearly->pluck('year');
+
+        $regData = $yearly->pluck('total');
+
+    } else {
+
+        $monthly = User::selectRaw(
+                'MONTH(created_at) month,
+                 COUNT(*) total'
+            )
+            ->groupBy('month')
+            ->pluck('total', 'month');
+
+        $regLabels = [
+            'Jan','Feb','Mar','Apr',
+            'May','Jun','Jul','Aug',
+            'Sep','Oct','Nov','Dec'
+        ];
+
+        $regData = [];
+
+        for ($i = 1; $i <= 12; $i++) {
+
+            $regData[] = $monthly[$i] ?? 0;
+
+        }
+    }
+
+    // Category Chart
+    $cats = Category::withCount([
+        'reminders' => function($q) use ($filter) {
+
+            if ($filter == '30') {
+
+                $q->where(
+                    'created_at',
+                    '>=',
+                    now()->subDays(30)
+                );
+
+            }
+
+            elseif ($filter == '90') {
+
+                $q->where(
+                    'created_at',
+                    '>=',
+                    now()->subDays(90)
+                );
+
+            }
+
+            elseif ($filter == 'year') {
+
+                $q->whereYear(
+                    'created_at',
+                    now()->year
+                );
+
+            }
+
+        }
+    ])->get();
+
+    return response()->json([
+
+        'status' => true,
+
+        'cards' => [
+
+            'users' => $totalUsers,
+
+            'reminders' => $totalReminders,
+
+            'completed' => $completed,
+
+            'revenue' => number_format(
+                $totalRevenue,
+                2
+            )
+
+        ],
+
+        'charts' => [
+
+            'regLabels' => $regLabels,
+
+            'regData' => $regData,
+
+            'catLabels' => $cats->pluck('name'),
+
+            'catData' => $cats->pluck('reminders_count')
+
+        ]
+
     ]);
 }
 

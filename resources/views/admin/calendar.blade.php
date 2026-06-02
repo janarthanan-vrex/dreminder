@@ -1088,6 +1088,7 @@
     const CAL_CATS = @json($categories);
 
     const FULL_CATS = @json($fullCats);
+    const DEFAULT_USER_ID ="{{ $selectedUserId }}";
 </script>
 
 <script>
@@ -1814,30 +1815,16 @@
  async function adminCalSelectUser(userId)
 {
     _selUserId = userId;
-
     const u = USERS.find(u => u.id == userId);
-
     if (!u) return;
-
-    document.getElementById('user-dropdown')
-        .classList.remove('open');
-
-    document.getElementById('user-picker-input')
-        .value = u.name;
-
-    document.getElementById('user-picker-clear')
-        .style.display = 'block';
-
+    document.getElementById('user-dropdown').classList.remove('open');
+    document.getElementById('user-picker-input').value = u.name;
+    document.getElementById('user-picker-clear').style.display = 'block';
     const pill = document.getElementById('selected-user-pill');
-
     pill.style.display = 'flex';
-
-    document.getElementById('sel-user-name')
-        .textContent = u.name;
-
-    document.getElementById('cal-user-hint-text')
-        .textContent = `Viewing ${u.name}'s calendar`;
-
+    document.getElementById('sel-user-name').textContent = u.name;
+    document.getElementById('sel-user-plan').textContent = u.plan || 'Free';
+    document.getElementById('cal-user-hint-text').textContent = `Viewing ${u.name}'s calendar`;
     try {
 
         const res = await fetch(
@@ -1901,7 +1888,12 @@
     _buildJumpSelects();
     _buildCatFilter();
     // Load default user (first user)
-    // adminCalSelectUser('u001', true);
+   if (DEFAULT_USER_ID)
+{
+    adminCalSelectUser(
+        DEFAULT_USER_ID
+    );
+}
   }
 
   function _buildJumpSelects() {
@@ -2241,51 +2233,141 @@
   // STATS
   // ══════════════════════════════════════════════════════════
 
+  // function _renderStats() {
+  //   const allRems = getRems().filter(r => {
+  //     const d = new Date(r.dueDate);
+  //     return d.getFullYear() === _calY && d.getMonth() === _calM;
+  //   });
+  //   const filtered = _calCatFilter === 'all' ? allRems : allRems.filter(r => r.category === _calCatFilter);
+  //   const active = filtered.filter(r => r.status === 'active');
+  //   const done = filtered.filter(r => r.status === 'completed');
+  //   const overdue = active.filter(r => daysUntil(r.dueDate) < 0);
+  //   const upcoming = active.filter(r => {
+  //     const n = daysUntil(r.dueDate);
+  //     return n >= 0 && n <= 7;
+  //   });
+  //   const stats = [{
+  //       num: filtered.length,
+  //       lbl: 'Total',
+  //       color: '#a78bfa'
+  //     },
+  //      {
+  //       num: overdue.length,
+  //       lbl: 'Pending',
+  //       color: '#f43f5e'
+  //     },
+  //     {
+  //       num: done.length,
+  //       lbl: 'Completed',
+  //       color: '#10b981'
+  //     },
+  //     {
+  //       num: active.length,
+  //       lbl: 'Categories',
+  //       color: '#14b8a6'
+  //     },
+  //     {
+  //       num: upcoming.length,
+  //       lbl: 'Cost',
+  //       color: '#f59e0b'
+  //     },
+     
+  //   ];
+  //   document.getElementById('cal-stats-row').innerHTML = stats.map(s => `
+  //   <div class="cal-stat">
+  //     <div class="cal-stat-num" style="color:${s.color}">${s.num}</div>
+  //     <div class="cal-stat-lbl">${s.lbl}</div>
+  //   </div>`).join('');
+  // }
+
   function _renderStats() {
+
     const allRems = getRems().filter(r => {
-      const d = new Date(r.dueDate);
-      return d.getFullYear() === _calY && d.getMonth() === _calM;
+
+        const d = new Date(r.dueDate);
+
+        return d.getFullYear() === _calY &&
+               d.getMonth() === _calM;
+
     });
-    const filtered = _calCatFilter === 'all' ? allRems : allRems.filter(r => r.category === _calCatFilter);
-    const active = filtered.filter(r => r.status === 'active');
-    const done = filtered.filter(r => r.status === 'completed');
-    const overdue = active.filter(r => daysUntil(r.dueDate) < 0);
-    const upcoming = active.filter(r => {
-      const n = daysUntil(r.dueDate);
-      return n >= 0 && n <= 7;
-    });
-    const stats = [{
-        num: filtered.length,
-        lbl: 'Total',
-        color: '#a78bfa'
-      },
-      {
-        num: active.length,
-        lbl: 'Active',
-        color: '#14b8a6'
-      },
-      {
-        num: upcoming.length,
-        lbl: 'This Week',
-        color: '#f59e0b'
-      },
-      {
-        num: overdue.length,
-        lbl: 'Overdue',
-        color: '#f43f5e'
-      },
-      {
-        num: done.length,
-        lbl: 'Completed',
-        color: '#10b981'
-      },
+
+    const filtered = _calCatFilter === 'all'
+        ? allRems
+        : allRems.filter(
+            r => String(r.category) === String(_calCatFilter)
+        );
+
+    const pending = filtered.filter(
+        r => r.status === 'pending'
+    );
+
+    const done = filtered.filter(
+        r => r.status === 'completed'
+    );
+
+    const categories = [
+        ...new Set(filtered.map(r => r.category))
     ];
-    document.getElementById('cal-stats-row').innerHTML = stats.map(s => `
-    <div class="cal-stat">
-      <div class="cal-stat-num" style="color:${s.color}">${s.num}</div>
-      <div class="cal-stat-lbl">${s.lbl}</div>
-    </div>`).join('');
-  }
+
+    const totalCost = filtered.reduce(function(sum, r){
+
+        return sum + Number(r.cost || 0);
+
+    }, 0);
+
+    const stats = [
+
+        {
+            num: filtered.length,
+            lbl: 'Total',
+            color: '#a78bfa'
+        },
+
+        {
+            num: pending.length,
+            lbl: 'Pending',
+            color: '#f43f5e'
+        },
+
+        {
+            num: done.length,
+            lbl: 'Completed',
+            color: '#10b981'
+        },
+
+        {
+            num: categories.length,
+            lbl: 'Categories',
+            color: '#14b8a6'
+        },
+
+        {
+            num: '£' + totalCost.toFixed(2),
+            lbl: 'Cost',
+            color: '#f59e0b'
+        }
+
+    ];
+
+    document.getElementById('cal-stats-row').innerHTML =
+        stats.map(s => `
+
+        <div class="cal-stat">
+
+            <div class="cal-stat-num"
+                style="color:${s.color}">
+                ${s.num}
+            </div>
+
+            <div class="cal-stat-lbl">
+                ${s.lbl}
+            </div>
+
+        </div>
+
+    `).join('');
+
+}
 
   // ══════════════════════════════════════════════════════════
   // QUICK CREATE MODAL
@@ -2447,6 +2529,19 @@
   } else {
     setTimeout(initCalendarV2, 80);
   }
+
+ 
+</script>
+<script>
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function ()
+    {
+        initCalendarV2();
+    }
+);
+
 </script>
 
 @endsection

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
     'color',
     'plan_name',
     'range',
+    'icon',
+    'description',
     'price',
     'vat',
     'total_price',
@@ -24,6 +26,7 @@ class PlanPrice extends Model
     {
         return [
             'expiry_date' => 'date',
+            'features' => 'array',
         ];
     }
 }

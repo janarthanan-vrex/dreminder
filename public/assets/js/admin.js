@@ -964,31 +964,16 @@ function initAnalytics() {
             },
         },
     };
+
     var reg = document.getElementById("an-reg-chart");
     if (reg)
         charts["an-reg-chart"] = new Chart(reg, {
             type: "bar",
             data: {
-                labels: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                ],
+                labels: [],
                 datasets: [
                     {
-                        data: [
-                            45, 72, 91, 110, 88, 124, 145, 132, 160, 178, 210,
-                            229,
-                        ],
+                        data: [],
                         backgroundColor: "rgba(124,58,237,.7)",
                         borderRadius: 4,
                         borderSkipped: false,
@@ -997,22 +982,20 @@ function initAnalytics() {
             },
             options: opts,
         });
+
     var cat = document.getElementById("an-cat-chart");
+
     if (cat)
         charts["an-cat-chart"] = new Chart(cat, {
             type: "doughnut",
+
             data: {
-                labels: [
-                    "Subscriptions",
-                    "Motor",
-                    "Insurance",
-                    "Health",
-                    "Special Days",
-                    "Others",
-                ],
+                labels: [],
+
                 datasets: [
                     {
-                        data: [678, 543, 421, 231, 312, 174],
+                        data: [],
+
                         backgroundColor: [
                             "#10b981",
                             "#a78bfa",
@@ -1021,27 +1004,41 @@ function initAnalytics() {
                             "#f59e0b",
                             "#94a3b8",
                         ],
+
                         borderWidth: 0,
+
                         hoverOffset: 8,
                     },
                 ],
             },
+
             options: {
                 responsive: true,
+
                 maintainAspectRatio: false,
+
                 cutout: "62%",
+
                 plugins: {
                     legend: {
                         position: "right",
+
                         labels: {
                             color: tc,
-                            font: { size: 11, family: "DM Sans" },
+
+                            font: {
+                                size: 11,
+
+                                family: "DM Sans",
+                            },
+
                             boxWidth: 12,
                         },
                     },
                 },
             },
         });
+
     var rev = document.getElementById("an-rev-chart");
     if (rev)
         charts["an-rev-chart"] = new Chart(rev, {
@@ -1095,9 +1092,55 @@ function initAnalytics() {
         });
 }
 
+async function loadAnalytics() {
+    let filter = document.getElementById("analytics-filter").value;
+
+    try {
+        const res = await fetch("/admin/analytics/data?filter=" + filter);
+
+        const data = await res.json();
+
+        // Cards
+        document.getElementById("total-users").innerText = data.cards.users;
+
+        document.getElementById("total-reminders").innerText =
+            data.cards.reminders;
+
+        document.getElementById("completion-rate").innerText =
+            data.cards.completed;
+
+        document.getElementById("total-revenue").innerText =
+            "£" + data.cards.revenue;
+
+         // Registration Chart
+
+charts["an-reg-chart"].data.labels =
+    data.charts.regLabels;
+
+charts["an-reg-chart"].data.datasets[0].data =
+    data.charts.regData;
+
+charts["an-reg-chart"].update();
+
+        // Category Chart
+        charts["an-cat-chart"].data.labels = data.charts.catLabels;
+
+        charts["an-cat-chart"].data.datasets[0].data = data.charts.catData;
+
+        charts["an-cat-chart"].update();
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 /* ══════════════════════════════════════════
 USERS
 ══════════════════════════════════════════ */
+ function goToUserCalendar(userId)
+{
+    window.location.href =
+        '/admin-calendar?user_id=' + userId;
+}
 function renderUsers() {
     var data = usersFiltered;
     var totalPages = Math.ceil(data.length / usersPerPage);
@@ -1118,7 +1161,9 @@ function renderUsers() {
                 '<td style="font-weight:600;color:var(--text3)">' +
                 (start + index + 1) +
                 "</td>" +
-                '<td><div style="display:flex;align-items:center;gap:9px">' +
+                '<td><div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="goToUserCalendar(' +
+u.id +
+')">' +
                 (u.profile
                     ? '<img src="' +
                       u.profile +
@@ -1229,48 +1274,48 @@ function filterUsers(q) {
 // }
 
 function toggleUserStatus(id) {
-    var u = USERS_DATA.find(function (x) {return x.id === id;
+    var u = USERS_DATA.find(function (x) {
+        return x.id === id;
     });
     if (!u) return;
     openConfirm(
         "Are you sure you want to " +
-        (u.status === "active" ? "suspend" : "activate") +
-        " this user?",
+            (u.status === "active" ? "suspend" : "activate") +
+            " this user?",
         function () {
             fetch("/admin/users/status", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
+                        'meta[name="csrf-token"]',
                     ).content,
                     Accept: "application/json",
                 },
                 body: JSON.stringify({
                     id: id,
                 }),
-
             })
-            .then((res) => res.json())
-            .then((data) => {
-                if (data.status) {
-                    var u = USERS_DATA.find(function (x) {
-                        return x.id === id;
-                    });
-                    if (u) {
-                        u.status = data.user_status;
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status) {
+                        var u = USERS_DATA.find(function (x) {
+                            return x.id === id;
+                        });
+                        if (u) {
+                            u.status = data.user_status;
+                        }
+                        toast(data.message, "success");
+                        renderUsers();
+                    } else {
+                        toast(data.message || "Something went wrong", "error");
                     }
-                    toast(data.message, "success");
-                    renderUsers();
-                } else {
-                    toast(data.message || "Something went wrong", "error");
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                toast("Something went wrong", "error");
-            });
-        }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast("Something went wrong", "error");
+                });
+        },
     );
 }
 
@@ -1516,7 +1561,6 @@ function openUserDrawer(id) {
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Member Since</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             u.joined +
             "</span></div>" +
-            
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Phone</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.phone || "N/A") +
             "</span></div>" +
@@ -1526,12 +1570,9 @@ function openUserDrawer(id) {
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Address2</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.address2 || "N/A") +
             "</span></div>" +
-
-
-   '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.postcode || "N/A") +
             "</span></div>" +
-
             '</div><div style="display:flex;flex-direction:column;gap:8px">' +
             '<button id="verify-mail-btn-' +
             u.id +
@@ -2091,16 +2132,11 @@ function renderReminders() {
                 due +
                 "</td>" +
                 '<td><span class="badge badge-' +
-
-                (
-    r.reminder_status === "completed"
-        ? "green"
-        : r.reminder_status === "pending"
-          ? "amber"
-          : "slate"
-)
-                
-                +
+                (r.reminder_status === "completed"
+                    ? "green"
+                    : r.reminder_status === "pending"
+                      ? "amber"
+                      : "slate") +
                 '">' +
                 r.reminder_status +
                 "</span></td>" +
@@ -2108,7 +2144,6 @@ function renderReminders() {
                 '<button class="btn btn-ghost btn-xs" onclick="openViewReminder(' +
                 r.id +
                 ')"><i class="ri-eye-line"></i></button>' +
-            
                 "</div></td></tr>"
             );
         })
@@ -2123,9 +2158,8 @@ function setRemPage(p) {
 }
 
 function filterReminders(q) {
-
     if (q === undefined) {
-        q = document.querySelector('.search-box input')?.value || "";
+        q = document.querySelector(".search-box input")?.value || "";
     }
 
     q = q.toLowerCase();
@@ -2134,67 +2168,43 @@ function filterReminders(q) {
         (document.getElementById("rem-status-filter") || {}).value || "all";
 
     var dateF =
-        (document.getElementById("rem-date-filter") || {}).value || "this_month";
+        (document.getElementById("rem-date-filter") || {}).value ||
+        "this_month";
 
     var now = new Date();
 
     remFiltered = REMINDERS_DATA.filter(function (r) {
+        var matchQ = (r.title + r.user.name + r.category)
+            .toLowerCase()
+            .includes(q);
 
-        var matchQ = (
-            r.title +
-            r.user.name +
-            r.category
-        )
-        .toLowerCase()
-        .includes(q);
-
-        var matchS =
-            statusF === "all" ||
-            r.reminder_status === statusF;
+        var matchS = statusF === "all" || r.reminder_status === statusF;
 
         var matchD = true;
 
         if (r.end_reminder_date) {
-
             var endDate = new Date(r.end_reminder_date);
 
             if (dateF === "this_month") {
-
                 matchD =
                     endDate.getMonth() === now.getMonth() &&
                     endDate.getFullYear() === now.getFullYear();
-
-            }
-
-            else if (dateF === "3_months") {
-
+            } else if (dateF === "3_months") {
                 var threeMonthsAgo = new Date();
                 threeMonthsAgo.setMonth(now.getMonth() - 3);
 
                 matchD = endDate >= threeMonthsAgo;
-
-            }
-
-            else if (dateF === "6_months") {
-
+            } else if (dateF === "6_months") {
                 var sixMonthsAgo = new Date();
                 sixMonthsAgo.setMonth(now.getMonth() - 6);
 
                 matchD = endDate >= sixMonthsAgo;
-
+            } else if (dateF === "this_year") {
+                matchD = endDate.getFullYear() === now.getFullYear();
             }
-
-            else if (dateF === "this_year") {
-
-                matchD =
-                    endDate.getFullYear() === now.getFullYear();
-
-            }
-
         }
 
         return matchQ && matchS && matchD;
-
     });
 
     remPageNum = 1;
@@ -2268,7 +2278,6 @@ function filterReminders(q) {
 // }
 
 function openViewReminder(id) {
-
     var r = REMINDERS_DATA.find(function (x) {
         return x.id === id;
     });
@@ -2292,81 +2301,53 @@ function openViewReminder(id) {
         : "N/A";
 
     document.getElementById("rem-modal-content").innerHTML =
-
         '<div style="display:flex;gap:10px;margin-bottom:16px">' +
-
         '<div class="stat-ico" style="background:rgba(124,58,237,.15);margin:0">' +
         '<i class="ri-alarm-line" style="color:var(--purple-light)"></i>' +
-        '</div>' +
-
-        '<div>' +
-
+        "</div>" +
+        "<div>" +
         '<div style="font-weight:700;font-size:.95rem;color:var(--text)">' +
         r.title +
-        '</div>' +
-
-        '<div style="font-size:.75rem;color:var(--text3)">' 
-        + r.category +
-        '</div>' +
-
-        '</div></div>' +
-
+        "</div>" +
+        '<div style="font-size:.75rem;color:var(--text3)">' +
+        r.category +
+        "</div>" +
+        "</div></div>" +
         '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
-
         rowItem("User", r.user.name) +
-
-        rowItem("Email", r.user.email || 'N/A') +
-
+        rowItem("Email", r.user.email || "N/A") +
         rowItem("Category", r.category) +
-
-        rowItem("Sub Category", r.subcategory || 'N/A') +
-
+        rowItem("Sub Category", r.subcategory || "N/A") +
         rowItem("Reminder Date", due) +
-
         rowItem("End Reminder Date", endDate) +
-
-        rowItem("Reminder Time", r.reminder_time || 'N/A') +
-
-        rowItem("Provider", r.provider || 'N/A') +
-
-       rowItem("Cost", `€ ${r.cost || '0'}`) +
-
-        rowItem("Payment Frequency", r.payment_frequency || 'N/A') +
-
-     
-
-        rowItem("Reminder Status", r.reminder_status || 'N/A') +
-
+        rowItem("Reminder Time", r.reminder_time || "N/A") +
+        rowItem("Provider", r.provider || "N/A") +
+        rowItem("Cost", `€ ${r.cost || "0"}`) +
+        rowItem("Payment Frequency", r.payment_frequency || "N/A") +
+        rowItem("Reminder Status", r.reminder_status || "N/A") +
         rowItem("Created", created) +
-
-        '</div>' +
-
-        '<div>' +
+        "</div>" +
+        "<div>" +
         '<label class="label">Description</label>' +
         '<textarea class="inp" rows="4" readonly style="resize:none">' +
-        (r.description || '') +
-        '</textarea>' +
-        '</div>';
+        (r.description || "") +
+        "</textarea>" +
+        "</div>";
 
     openModal("view-reminder-modal");
 }
 
-function rowItem(label, value){
-
+function rowItem(label, value) {
     return (
         '<div style="display:flex;justify-content:space-between;gap:20px;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
-
         '<span style="font-size:.78rem;color:var(--text3)">' +
         label +
-        '</span>' +
-
+        "</span>" +
         '<span style="font-size:.82rem;font-weight:600;color:var(--text);text-align:right">' +
         value +
-        '</span>' +
-
-        '</div>'
+        "</span>" +
+        "</div>"
     );
-
 }
 
 /* ══════════════════════════════════════════
@@ -2754,7 +2735,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // If you are using router with gop(), it already calls renderTransactions()
     // when page-transactions is active; calling again is safe.
     renderTransactions();
-     filterReminders();
+    filterReminders();
 });
 
 /* ══════════════════════════════════════════
@@ -2827,20 +2808,17 @@ function renderAdminCategories() {
                 "</div>" +
                 "</div>" +
                 '<div style="display:flex;gap:4px">' +
-
-'<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
-c.id +
-')">' +
-'<i class="ri-pencil-line"></i>' +
-"</button>" +
-
-'<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteCategory(' +
-c.id +
-')">' +
-'<i class="ri-delete-bin-line"></i>' +
-"</button>" +
-
-"</div>" +
+                '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
+                c.id +
+                ')">' +
+                '<i class="ri-pencil-line"></i>' +
+                "</button>" +
+                '<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteCategory(' +
+                c.id +
+                ')">' +
+                '<i class="ri-delete-bin-line"></i>' +
+                "</button>" +
+                "</div>" +
                 "</div>" +
                 '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
                 '<span class="badge badge-teal">' +
@@ -2852,7 +2830,6 @@ c.id +
                 "</div>" +
                 '<div  style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
                 '<span class="hidden" style="font-size:.72rem;color:var(--text3)">Usage</span>' +
-               
                 "</div>" +
                 '<div class="prog-track hidden" style="margin-bottom:12px">' +
                 '<div class="prog-fill" style="width:' +
@@ -2877,50 +2854,42 @@ function deleteCategory(id) {
         return x.id === id;
     });
     if (!c) return;
-    openConfirm(
-        'Delete "' + c.name + '" category?',
-        function () {
-            fetch('/admin/categories/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-                    'Accept': 'application/json'
-                },
+    openConfirm('Delete "' + c.name + '" category?', function () {
+        fetch("/admin/categories/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
+            },
 
-                body: JSON.stringify({
-                    id: id
-                })
-
-            })
-            .then(res => res.json())
-            .then(data => {
+            body: JSON.stringify({
+                id: id,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
                 if (data.status) {
-                   var index = CATS_DATA.findIndex(function (x) {
-    return x.id === id;
-});
+                    var index = CATS_DATA.findIndex(function (x) {
+                        return x.id === id;
+                    });
 
-if (index !== -1) {
-    CATS_DATA.splice(index, 1);
-}
+                    if (index !== -1) {
+                        CATS_DATA.splice(index, 1);
+                    }
                     renderAdminCategories();
-                    toast(data.message, 'success');
+                    toast(data.message, "success");
                 } else {
-                    toast(data.message || 'Something went wrong', 'error');
+                    toast(data.message || "Something went wrong", "error");
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                toast('Something went wrong', 'error');
-
+                toast("Something went wrong", "error");
             });
-
-        }
-
-    );
-
+    });
 }
 
 function openCategoryDetail(categoryId) {
@@ -2989,12 +2958,9 @@ function openCategoryDetail(categoryId) {
         '<button class="btn btn-ghost btn-sm" onclick="openEditCategory(' +
         c.id +
         ')"><i class="ri-pencil-line"></i> Edit</button>' +
-
-       '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
-c.id +
-");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>"
-        
-        +
+        '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
+        c.id +
+        ");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>" +
         "</div>" +
         "</div>" +
         '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px">' +
@@ -3022,10 +2988,8 @@ c.id +
 }
 
 function prefillSubcategoryParent(id) {
-
     setTimeout(() => {
-
-        const select = document.getElementById('subcategory-parent');
+        const select = document.getElementById("subcategory-parent");
 
         if (!select) return;
 
@@ -3034,9 +2998,7 @@ function prefillSubcategoryParent(id) {
         }
 
         select.value = id;
-
     }, 50);
-
 }
 
 function deleteSubcategory(categoryId, subId) {
@@ -3048,42 +3010,38 @@ function deleteSubcategory(categoryId, subId) {
         return x.id === subId;
     });
     if (!s) return;
-    openConfirm(
-        'Delete "' + s.name + '" subcategory?',
-        function () {
-            fetch('/admin/subcategories/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: subId
-                })
-
-            })
-            .then(res => res.json())
-            .then(data => {
+    openConfirm('Delete "' + s.name + '" subcategory?', function () {
+        fetch("/admin/subcategories/delete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                id: subId,
+            }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
                 if (data.status) {
                     c.subcategories = c.subcategories.filter(function (x) {
                         return x.id !== subId;
                     });
                     renderAdminCategories();
-                    closeModal('category-detail-modal');
-                    toast(data.message, 'success');
+                    closeModal("category-detail-modal");
+                    toast(data.message, "success");
                 } else {
-                    toast(data.message || 'Something went wrong', 'error');
+                    toast(data.message || "Something went wrong", "error");
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 console.log(err);
-                toast('Something went wrong', 'error');
+                toast("Something went wrong", "error");
             });
-        }
-    );
+    });
 }
 
 function populateSubcategoryParents() {
@@ -3108,8 +3066,6 @@ function prefillSubcategoryParent(categoryId) {
         }
     }, 50);
 }
-
-
 
 function createCategory() {
     var name = document.getElementById("cat-name").value.trim();
@@ -3202,63 +3158,62 @@ function openEditCategory(categoryId) {
 // }
 
 function saveCategoryEdit() {
-    document.querySelectorAll('.err').forEach(el => {
-        el.innerText = '';
+    document.querySelectorAll(".err").forEach((el) => {
+        el.innerText = "";
     });
     let payload = {
         id: document.getElementById("edit-cat-id").value,
         name: document.getElementById("edit-cat-name").value.trim(),
         icon: document.getElementById("edit-cat-icon").value.trim(),
         color: document.getElementById("edit-cat-color").value,
-        description: document.getElementById("edit-cat-desc").value.trim()
+        description: document.getElementById("edit-cat-desc").value.trim(),
     };
-    fetch('/admin/categories/update', {
-        method: 'POST',
+    fetch("/admin/categories/update", {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector(
-                'meta[name="csrf-token"]'
-            ).content,
-            'Accept': 'application/json'
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
     })
-    .then(async response => {
-        const data = await response.json();
-        if (response.status === 422) {
-            Object.keys(data.errors).forEach(key => {
-                let errorEl = document.getElementById(
-                    'edit-cat-' + key + '-error'
-                );
-                if (errorEl) {
-                    errorEl.innerText = data.errors[key][0];
-                }
-            });
-            return;
-        }
-        if (data.status) {
-            var c = CATS_DATA.find(function (item) {
-                return item.id == payload.id;
-            });
-            if (c) {
-                c.name = payload.name;
-                c.icon = payload.icon || 'ri-folder-line';
-                c.color = payload.color;
-                c.bg = hexToRgba(payload.color, 0.12);
-                c.desc = payload.description;
+        .then(async (response) => {
+            const data = await response.json();
+            if (response.status === 422) {
+                Object.keys(data.errors).forEach((key) => {
+                    let errorEl = document.getElementById(
+                        "edit-cat-" + key + "-error",
+                    );
+                    if (errorEl) {
+                        errorEl.innerText = data.errors[key][0];
+                    }
+                });
+                return;
             }
-            renderAdminCategories();
-            closeModal("edit-category-modal");
-            toast(data.message, 'success');
-            setTimeout(()=>{
-                location.reload();
-            },1500)
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        toast('Something went wrong', 'error');
-    });
+            if (data.status) {
+                var c = CATS_DATA.find(function (item) {
+                    return item.id == payload.id;
+                });
+                if (c) {
+                    c.name = payload.name;
+                    c.icon = payload.icon || "ri-folder-line";
+                    c.color = payload.color;
+                    c.bg = hexToRgba(payload.color, 0.12);
+                    c.desc = payload.description;
+                }
+                renderAdminCategories();
+                closeModal("edit-category-modal");
+                toast(data.message, "success");
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            toast("Something went wrong", "error");
+        });
 }
 
 function openEditSubcategory(categoryId, subId) {
@@ -3351,86 +3306,66 @@ function openEditSubcategory(categoryId, subId) {
 // }
 
 function saveSubcategoryEdit() {
-
-    document.querySelectorAll('.err').forEach(el => {
-        el.innerText = '';
+    document.querySelectorAll(".err").forEach((el) => {
+        el.innerText = "";
     });
 
     let payload = {
-
         id: document.getElementById("edit-sub-id").value,
 
         category_id: document.getElementById("edit-sub-parent").value,
 
         name: document.getElementById("edit-sub-name").value.trim(),
 
-        description: document.getElementById("edit-sub-desc").value.trim()
-
+        description: document.getElementById("edit-sub-desc").value.trim(),
     };
 
-    fetch('/admin/subcategories/update', {
-
-        method: 'POST',
+    fetch("/admin/subcategories/update", {
+        method: "POST",
 
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector(
-                'meta[name="csrf-token"]'
-            ).content,
-            'Accept': 'application/json'
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
         },
 
-        body: JSON.stringify(payload)
-
+        body: JSON.stringify(payload),
     })
+        .then(async (response) => {
+            const data = await response.json();
 
-    .then(async response => {
+            if (response.status === 422) {
+                Object.keys(data.errors).forEach((key) => {
+                    let errorEl = document.getElementById(
+                        "edit-sub-" + key + "-error",
+                    );
 
-        const data = await response.json();
+                    if (errorEl) {
+                        errorEl.innerText = data.errors[key][0];
+                    }
+                });
 
-        if (response.status === 422) {
+                return;
+            }
 
-            Object.keys(data.errors).forEach(key => {
+            if (data.status) {
+                toast(data.message, "success");
 
-                let errorEl = document.getElementById(
-                    'edit-sub-' + key + '-error'
-                );
+                closeModal("edit-subcategory-modal");
 
-                if (errorEl) {
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            }
+        })
 
-                    errorEl.innerText = data.errors[key][0];
+        .catch((err) => {
+            console.log(err);
 
-                }
-
-            });
-
-            return;
-        }
-
-        if (data.status) {
-
-            toast(data.message, 'success');
-
-            closeModal("edit-subcategory-modal");
-
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-
-        }
-
-    })
-
-    .catch(err => {
-
-        console.log(err);
-
-        toast('Something went wrong', 'error');
-
-    });
-
+            toast("Something went wrong", "error");
+        });
 }
-
 
 /* ══════════════════════════════════════════
 NOTIFICATIONS

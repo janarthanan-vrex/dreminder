@@ -221,9 +221,7 @@ Route::get('/admin-notifications', function () {
 // })->name('logout');
 
 // Admin CMS
-Route::get('/admin-pricing', function () {
-    return view('admin.admin-pricing');
-});
+
 Route::get('/admin-blog', function () {
     return view('admin.blog.admin-blog-list');
 })->name('admin.blog.index');
