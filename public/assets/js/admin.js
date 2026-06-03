@@ -7,85 +7,56 @@ window.addEventListener("load", () => {
 /* ══════════════════════════════════════════
 DATA
 ══════════════════════════════════════════ */
-const ROLES_DATA = [
-    {
-        id: "superadmin",
-        name: "Super Admin",
-        color: "#7c3aed",
-        desc: "Full system access",
-        perms: ["all"],
-        count: 1,
-    },
-    {
-        id: "manager",
-        name: "Manager",
-        color: "#0d9488",
-        desc: "Manage users and content",
-        perms: [
-            "users.read",
-            "users.write",
-            "reminders.read",
-            "reminders.write",
-            "analytics.read",
-        ],
-        count: 2,
-    },
-    {
-        id: "support",
-        name: "Support Agent",
-        color: "#f59e0b",
-        desc: "Handle user queries",
-        perms: ["users.read", "reminders.read", "notifications.send"],
-        count: 3,
-    },
-    {
-        id: "analyst",
-        name: "Analyst",
-        color: "#06b6d4",
-        desc: "View analytics only",
-        perms: ["analytics.read", "users.read"],
-        count: 1,
-    },
-    {
-        id: "moderator",
-        name: "Moderator",
-        color: "#10b981",
-        desc: "Moderate content and feedback",
-        perms: ["users.read", "feedback.read", "feedback.write"],
-        count: 1,
-    },
-];
+
+
 
 const ALL_PERMS = [
-    { key: "users.read", label: "View Users", group: "Users" },
-    { key: "users.write", label: "Edit Users", group: "Users" },
+    { key: "users.view", label: "View Users", group: "Users" },
+    { key: "users.create", label: "Create Users", group: "Users" },
+    { key: "users.edit", label: "Edit Users", group: "Users" },
     { key: "users.delete", label: "Delete Users", group: "Users" },
-    { key: "reminders.read", label: "View Reminders", group: "Reminders" },
-    { key: "reminders.write", label: "Edit Reminders", group: "Reminders" },
-    { key: "reminders.delete", label: "Delete Reminders", group: "Reminders" },
-    { key: "analytics.read", label: "View Analytics", group: "Analytics" },
-    { key: "analytics.export", label: "Export Analytics", group: "Analytics" },
-    {
-        key: "notifications.send",
-        label: "Send Notifications",
-        group: "Notifications",
-    },
-    {
-        key: "notifications.manage",
-        label: "Manage Notifications",
-        group: "Notifications",
-    },
-    { key: "staff.manage", label: "Manage Staff", group: "Team" },
-    { key: "roles.manage", label: "Manage Roles", group: "Team" },
-    { key: "settings.read", label: "View Settings", group: "System" },
-    { key: "settings.write", label: "Edit Settings", group: "System" },
-    { key: "audit.read", label: "View Audit Log", group: "System" },
-    { key: "billing.read", label: "View Billing", group: "Billing" },
-    { key: "billing.write", label: "Edit Billing", group: "Billing" },
-    { key: "feedback.read", label: "View Feedback", group: "Support" },
-    { key: "feedback.write", label: "Respond Feedback", group: "Support" },
-    { key: "categories.manage", label: "Manage Categories", group: "Content" },
+    { key: "reminders.view", label: "View Reminders", group: "Reminders" },
+    { key: "calendar.view", label: "View Calendar", group: "Calendar" },
+    {key: "transaction.view",label: "View Transaction",group: "Transactions",},
+    { key: "categories.view", label: "View Categories", group: "Categories" },
+    {key: "categories.create",label: "Create Categories",group: "Categories",},
+    { key: "categories.edit", label: "Edit Categories", group: "Categories" },
+    {key: "categories.delete",label: "Delete Categories",group: "Categories",},
+    {key: "notifications.view",label: "View Notifications",group: "Notifications",},
+    {key: "notifications.action",label: "Action Notifications",group: "Notifications",},
+    { key: "pricing.view", label: "View Pricing", group: "Pricing" },
+    { key: "pricing.create", label: "Create Pricing", group: "Pricing" },
+    { key: "pricing.edit", label: "Edit Pricing", group: "Pricing" },
+    { key: "pricing.delete", label: "delete Pricing", group: "Pricing" },
+    { key: "coupons.view", label: "View Coupons", group: "Coupons" },
+    { key: "coupons.create", label: "Create Coupons", group: "Coupons" },
+    { key: "coupons.edit", label: "Edit Coupons", group: "Coupons" },
+    { key: "coupons.delete", label: "Delete Coupons", group: "Coupons" },
+    { key: "blogs.view", label: "View Blogs", group: "Blogs" },
+    { key: "blogs.create", label: "Create Blogs", group: "Blogs" },
+    { key: "blogs.edit", label: "Edit Blogs", group: "Blogs" },
+    { key: "blogs.delete", label: "Delete Blogs", group: "Blogs" },
+    { key: "staffs.view", label: "View Staffs", group: "Staffs" },
+    { key: "staffs.create", label: "Create Staffs", group: "Staffs" },
+    { key: "staffs.edit", label: "Edit Staffs", group: "Staffs" },
+    { key: "staffs.delete", label: "Delete Staffs", group: "Staffs" },
+    { key: "roles.view",   label: "View Roles",   group: "Roles" },
+    { key: "roles.create", label: "Create Roles", group: "Roles" },
+    { key: "roles.edit",   label: "Edit Roles",   group: "Roles" },
+    { key: "roles.delete", label: "Delete Roles", group: "Roles" },
+    { key: "cms.view",   label: "View CMS",   group: "CMS" },
+    { key: "cms.create", label: "Create CMS", group: "CMS" },
+    { key: "cms.edit",   label: "Edit CMS",   group: "CMS" },
+    { key: "cms.delete", label: "Delete CMS", group: "CMS" },
+    { key: "profile.view", label: "View Profile", group: "Profile" },
+    { key: "profile.edit", label: "Edit Profile", group: "Profile" },
+    { key: "System.view", label: "View System", group: "System" },
+    { key: "settings.action", label: "Action Settings", group: "System" },
+
+   
 ];
+
+
 
 const NAMES = [
     "Kishore Rex",
@@ -131,88 +102,61 @@ const COLORS_U = [
 
 let USERS_DATA = window.USERS_DATA || [];
 
-const STAFF_DATA = [
-    {
-        id: 1,
-        name: "Alex Morgan",
-        email: "alex@dremind.co.uk",
-        role: "manager",
-        status: "active",
-        last: "2h ago",
-        initials: "AM",
-        color: "#0d9488",
-    },
-    {
-        id: 2,
-        name: "Priya Patel",
-        email: "priya@dremind.co.uk",
-        role: "support",
-        status: "active",
-        last: "30m ago",
-        initials: "PP",
-        color: "#f59e0b",
-    },
-    {
-        id: 3,
-        name: "Tom Walker",
-        email: "tom@dremind.co.uk",
-        role: "analyst",
-        status: "active",
-        last: "1d ago",
-        initials: "TW",
-        color: "#06b6d4",
-    },
-    {
-        id: 4,
-        name: "Rachel Green",
-        email: "rachel@dremind.co.uk",
-        role: "moderator",
-        status: "active",
-        last: "5h ago",
-        initials: "RG",
-        color: "#10b981",
-    },
-    {
-        id: 5,
-        name: "James Lee",
-        email: "james@dremind.co.uk",
-        role: "support",
-        status: "inactive",
-        last: "14d ago",
-        initials: "JL",
-        color: "#94a3b8",
-    },
-    {
-        id: 6,
-        name: "Fatima Khan",
-        email: "fatima@dremind.co.uk",
-        role: "support",
-        status: "active",
-        last: "1h ago",
-        initials: "FK",
-        color: "#ec4899",
-    },
-    {
-        id: 7,
-        name: "David Smith",
-        email: "david@dremind.co.uk",
-        role: "manager",
-        status: "active",
-        last: "3h ago",
-        initials: "DS",
-        color: "#7c3aed",
-    },
-    {
-        id: 8,
-        name: "Nina Johansson",
-        email: "nina@dremind.co.uk",
-        role: "analyst",
-        status: "active",
-        last: "6h ago",
-        initials: "NJ",
-        color: "#f43f5e",
-    },
-];
+// const STAFF_DATA = [
+//     {
+//         id: 1,
+//         name: "Alex Morgan",
+//         email: "alex@dremind.co.uk",
+//         role: "manager",
+//         status: "active",
+       
+//         initials: "AM",
+//         color: "#0d9488",
+//     },
+//     {
+//         id: 2,
+//         name: "Priya Patel",
+//         email: "priya@dremind.co.uk",
+//         role: "support",
+//         status: "active",
+        
+//         initials: "PP",
+//         color: "#f59e0b",
+//     },
+//     {
+//         id: 3,
+//         name: "Tom Walker",
+//         email: "tom@dremind.co.uk",
+//         role: "analyst",
+//         status: "active",
+       
+//         initials: "TW",
+//         color: "#06b6d4",
+//     },
+//     {
+//         id: 4,
+//         name: "Rachel Green",
+//         email: "rachel@dremind.co.uk",
+//         role: "moderator",
+//         status: "active",
+       
+//         initials: "RG",
+//         color: "#10b981",
+//     },
+//     {
+//         id: 5,
+//         name: "James Lee",
+//         email: "james@dremind.co.uk",
+//         role: "support",
+//         status: "inactive",
+      
+//         initials: "JL",
+//         color: "#94a3b8",
+//     },
+   
+// ];
+
+var STAFF_DATA = window.STAFF_DATA || [];
 
 const REM_TITLES = [
     "Car Insurance Renewal",
@@ -276,37 +220,6 @@ const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
     method: ["Visa •••• 4242", "Mastercard •••• 8888", "PayPal"][i % 3],
 }));
 
-// const CATS_DATA = [
-//     {
-//         id: 1,
-//         name: "Insurance",
-//         icon: "ri-shield-star-line",
-//         color: "#f43f5e",
-//         bg: "rgba(244,63,94,.12)",
-//         desc: "Policies, renewals and coverage reminders",
-//         total: 421,
-//         subcategories: [
-//             { id: 101, name: "Car Insurance", total: 110 },
-//             { id: 102, name: "Health Insurance", total: 95 },
-//             { id: 103, name: "Home Insurance", total: 88 }
-//         ]
-//     },
-//     {
-//         id: 2,
-//         name: "Subscriptions",
-//         icon: "ri-refresh-line",
-//         color: "#10b981",
-//         bg: "rgba(16,185,129,.12)",
-//         desc: "Recurring digital and monthly plans",
-//         total: 678,
-//         subcategories: [
-//             { id: 201, name: "Netflix", total: 120 },
-//             { id: 202, name: "Amazon Prime", total: 98 },
-//             { id: 203, name: "Spotify", total: 74 }
-//         ]
-//     },
-
-// ];
 
 let CATS_DATA = window.CATS_DATA || [];
 
@@ -1112,15 +1025,13 @@ async function loadAnalytics() {
         document.getElementById("total-revenue").innerText =
             "£" + data.cards.revenue;
 
-         // Registration Chart
+        // Registration Chart
 
-charts["an-reg-chart"].data.labels =
-    data.charts.regLabels;
+        charts["an-reg-chart"].data.labels = data.charts.regLabels;
 
-charts["an-reg-chart"].data.datasets[0].data =
-    data.charts.regData;
+        charts["an-reg-chart"].data.datasets[0].data = data.charts.regData;
 
-charts["an-reg-chart"].update();
+        charts["an-reg-chart"].update();
 
         // Category Chart
         charts["an-cat-chart"].data.labels = data.charts.catLabels;
@@ -1136,10 +1047,8 @@ charts["an-reg-chart"].update();
 /* ══════════════════════════════════════════
 USERS
 ══════════════════════════════════════════ */
- function goToUserCalendar(userId)
-{
-    window.location.href =
-        '/admin-calendar?user_id=' + userId;
+function goToUserCalendar(userId) {
+    window.location.href = "/admin-calendar?user_id=" + userId;
 }
 function renderUsers() {
     var data = usersFiltered;
@@ -1162,8 +1071,8 @@ function renderUsers() {
                 (start + index + 1) +
                 "</td>" +
                 '<td><div style="display:flex;align-items:center;gap:9px;cursor:pointer" onclick="goToUserCalendar(' +
-u.id +
-')">' +
+                u.id +
+                ')">' +
                 (u.profile
                     ? '<img src="' +
                       u.profile +
@@ -1668,9 +1577,6 @@ function renderStaff(data) {
                 '">' +
                 s.status +
                 "</span></td>" +
-                '<td class="hide-mobile" style="font-size:.75rem;color:var(--text3)">' +
-                s.last +
-                "</td>" +
                 '<td style="text-align:right"><div style="display:flex;gap:4px;justify-content:flex-end">' +
                 '<button class="btn btn-ghost btn-xs" onclick="openStaffDrawer(' +
                 s.id +
@@ -1711,48 +1617,87 @@ function filterStaff(q) {
 }
 
 function removeStaff(id) {
-    staffData = staffData.filter(function (s) {
-        return s.id !== id;
+    fetch("/admin/staff/" + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+        }
+    })
+    .then(function(response) {
+        return response.json().then(function(data) {
+            return { status: response.status, data: data };
+        });
+    })
+    .then(function(result) {
+        if (result.status !== 200) {
+            toast(result.data.message || "Something went wrong!", "error");
+            return;
+        }
+        staffData     = staffData.filter(function(s) { return s.id !== id; });
+        staffFiltered = staffFiltered.filter(function(s) { return s.id !== id; });
+        renderStaff(staffData);
+        toast("Staff member removed", "success");
+    })
+    .catch(function(error) {
+        console.error(error);
+        toast("Something went wrong!", "error");
     });
-    staffFiltered = staffFiltered.filter(function (s) {
-        return s.id !== id;
-    });
-    renderStaff();
-    toast("Staff member removed", "success");
 }
-
 function addStaffMember() {
-    var name = document.getElementById("as-name").value.trim();
-    var email = document.getElementById("as-email").value.trim();
-    var role = document.getElementById("staff-role-sel").value;
-    if (!name || !email || !role) {
+    var name   = document.getElementById("as-name").value.trim();
+    var email  = document.getElementById("as-email").value.trim();
+    var roleId = document.getElementById("staff-role-sel").value;
+
+    if (!name || !email || !roleId) {
         toast("Please fill required fields", "error");
         return;
     }
-    var ini = name
-        .split(" ")
-        .map(function (w) {
-            return w[0];
-        })
-        .join("")
-        .toUpperCase()
-        .slice(0, 2);
-    staffData.push({
-        id: Date.now(),
-        name: name,
-        email: email,
-        role: role,
-        status: "active",
-        last: "just now",
-        initials: ini,
-        color: COLORS_U[staffData.length % 8],
-    });
-    staffFiltered = [...staffData];
-    toast("Staff member added!", "success");
-    closeModal("add-staff-modal");
-    renderStaff();
-}
 
+    fetch("/admin/staff/store", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+        },
+        body: JSON.stringify({ name: name, email: email, role_id: roleId })
+    })
+    .then(function(response) {
+        return response.json().then(function(data) {
+            return { status: response.status, data: data };
+        });
+    })
+    .then(function(result) {
+        if (result.status === 422) {
+            toast(Object.values(result.data.errors)[0][0], "error");
+            return;
+        }
+        if (result.status !== 200 && result.status !== 201) {
+            toast(result.data.message || "Something went wrong!", "error");
+            return;
+        }
+
+        var s = result.data.staff;
+        staffData.push({
+            id:       s.id,
+            name:     s.name,
+            email:    s.email,
+            role:     s.role_id,
+            status:   s.status,
+            initials: s.initials,
+            color:    s.color,
+        });
+        staffFiltered = [...staffData];
+
+        toast("Staff member added!", "success");
+        closeModal("add-staff-modal");
+        renderStaff(staffData);
+    })
+    .catch(function(error) {
+        console.error(error);
+        toast("Something went wrong!", "error");
+    });
+}
 function openEditStaff(id) {
     var s = staffData.find(function (x) {
         return x.id === id;
@@ -1779,301 +1724,354 @@ function openEditStaff(id) {
 }
 
 function saveEditStaff() {
-    var id =
-        parseInt(document.getElementById("es-id").value) ||
-        document.getElementById("es-id").value;
-    var s = staffData.find(function (x) {
-        return x.id == id;
+    var id     = parseInt(document.getElementById("es-id").value);
+    var name   = document.getElementById("es-name").value.trim();
+    var email  = document.getElementById("es-email").value.trim();
+    var roleId = document.getElementById("es-role").value;
+    var status = document.getElementById("es-status").value;
+
+    fetch("/admin/staff/" + id, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+        },
+        body: JSON.stringify({ name: name, email: email, role_id: roleId, status: status })
+    })
+    .then(function(response) {
+        return response.json().then(function(data) {
+            return { status: response.status, data: data };
+        });
+    })
+    .then(function(result) {
+        if (result.status === 422) {
+            toast(Object.values(result.data.errors)[0][0], "error");
+            return;
+        }
+        if (result.status !== 200) {
+            toast(result.data.message || "Something went wrong!", "error");
+            return;
+        }
+
+        var s = staffData.find(function(x) { return x.id === id; });
+        if (s) {
+            s.name     = name;
+            s.email    = email;
+            s.role     = parseInt(roleId);
+            s.status   = status;
+            s.initials = name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+        }
+        staffFiltered = [...staffData];
+
+        toast("Staff updated!", "success");
+        closeModal("edit-staff-modal");
+        renderStaff(staffData);
+    })
+    .catch(function(error) {
+        console.error(error);
+        toast("Something went wrong!", "error");
     });
-    if (!s) return;
-    s.name = document.getElementById("es-name").value;
-    s.email = document.getElementById("es-email").value;
-    s.role = document.getElementById("es-role").value;
-    s.status = document.getElementById("es-status").value;
-    s.initials = s.name
-        .split(" ")
-        .map(function (w) {
-            return w[0];
-        })
-        .join("")
-        .toUpperCase()
-        .slice(0, 2);
-    staffFiltered = [...staffData];
-    toast("Staff updated!", "success");
-    closeModal("edit-staff-modal");
-    renderStaff();
 }
 
 function openStaffDrawer(id) {
+
     var s = staffData.find(function (x) {
         return x.id === id;
     });
+
     if (!s) return;
+
     var role = ROLES_DATA.find(function (r) {
         return r.id === s.role;
-    }) || { name: s.role, color: "#94a3b8", perms: [] };
+    }) || {
+        name: s.role,
+        color: "#94a3b8",
+        perms: []
+    };
+
     openDrawer(
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">Staff Details</h2><button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ri-close-line"></i></button></div>' +
-            '<div style="text-align:center;margin-bottom:20px"><div class="avatar avatar-lg" style="background:' +
-            s.color +
-            "22;color:" +
-            s.color +
-            ';margin:0 auto 10px">' +
-            s.initials +
-            '</div><div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
-            s.name +
-            '</div><div style="font-size:.75rem;color:var(--text3)">' +
-            s.email +
-            '</div><span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:' +
-            role.color +
-            "22;color:" +
-            role.color +
-            ";border:1px solid " +
-            role.color +
-            '44;margin-top:8px">' +
-            role.name +
-            "</span></div>" +
-            '<div style="margin-bottom:14px"><div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">Permissions</div><div style="display:flex;flex-wrap:wrap;gap:5px">' +
-            role.perms
-                .map(function (p) {
-                    return '<span class="chip">' + p + "</span>";
-                })
-                .join("") +
-            "</div></div>" +
-            '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"><div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
-            (s.status === "active" ? "green" : "slate") +
-            '">' +
-            s.status +
-            '</span></div><div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Last Active</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
-            s.last +
-            "</span></div></div>" +
-            '<div style="display:flex;flex-direction:column;gap:8px"><button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditStaff(' +
-            s.id +
-            ')"><i class="ri-pencil-line"></i> Edit Role</button><button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
-            s.name +
-            "?',function(){removeStaff(" +
-            s.id +
-            ');closeDrawer()})"><i class="ri-delete-bin-line"></i> Remove</button></div>',
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">' +
+            '<h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">Staff Details</h2>' +
+            '<button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer">' +
+                '<i class="ri-close-line"></i>' +
+            '</button>' +
+        '</div>' +
+        '<div style="text-align:center;margin-bottom:20px">' +
+            '<div class="avatar avatar-lg" style="background:' + s.color + '22;color:' + s.color + ';margin:0 auto 10px">' +
+                s.initials +
+            '</div>' +
+            '<div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
+                s.name +
+            '</div>' +
+            '<div style="font-size:.75rem;color:var(--text3)">' +
+                s.email +
+            '</div>' +
+            '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:' +
+                role.color +
+                '22;color:' +
+                role.color +
+                ';border:1px solid ' +
+                role.color +
+                '44;margin-top:8px">' +
+                role.name +
+            '</span>' +
+        '</div>' +
+        '<div style="margin-bottom:14px">' +
+            '<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">' +
+                'Permissions' +
+            '</div>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:5px">' +
+                role.perms.map(function (p) {
+                    return '<span class="chip">' + p + '</span>';
+                }).join('') +
+            '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
+                '<span style="font-size:.78rem;color:var(--text3)">Status</span>' +
+                '<span class="badge badge-' +
+                    (s.status === "active" ? "green" : "slate") +
+                '">' +
+                    s.status +
+                '</span>' +
+            '</div>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px">' +
+            '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditStaff(' +
+                s.id +
+            ')">' +
+                '<i class="ri-pencil-line"></i> Edit Role' +
+            '</button>' +
+            '<button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
+                s.name +
+                '?\',function(){removeStaff(' +
+                s.id +
+                ');closeDrawer()})">' +
+                '<i class="ri-delete-bin-line"></i> Remove' +
+            '</button>' +
+        '</div>'
+
     );
 }
 
 /* ══════════════════════════════════════════
 ROLES
 ══════════════════════════════════════════ */
-function renderRoles() {
-    var list = document.getElementById("roles-list");
-    list.innerHTML = ROLES_DATA.map(function (r) {
-        var permBadges = (
-            r.perms.includes("all")
-                ? ALL_PERMS.slice(0, 4)
-                : r.perms.slice(0, 4)
-        )
-            .map(function (p) {
-                return (
-                    '<span class="chip" style="font-size:.58rem">' +
-                    (typeof p === "string" ? p : p.label) +
-                    "</span>"
-                );
-            })
-            .join("");
-        var more =
-            r.perms.length > 4
-                ? '<span class="chip" style="font-size:.58rem">+' +
-                  (r.perms.length - 4) +
-                  " more</span>"
-                : "";
-        return (
-            '<div class="role-card ' +
-            (selectedRole === r.id ? "selected" : "") +
-            '" onclick="selectRole(\'' +
-            r.id +
-            "',this)\">" +
-            '<button class="role-edit-btn" onclick="openEditRole(\'' +
-            r.id +
-            '\', event)"><i class="ri-edit-line"></i></button>' +
-            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:9px;background:' +
-            r.color +
-            '22;display:flex;align-items:center;justify-content:center"><i class="ri-key-2-line" style="color:' +
-            r.color +
-            '"></i></div><div style="flex:1"><div style="font-size:.87rem;font-weight:700;color:var(--text)">' +
-            r.name +
-            '</div><div style="font-size:.72rem;color:var(--text3)">' +
-            r.desc +
-            '</div></div><span style="font-size:.65rem;font-weight:700;background:' +
-            r.color +
-            "22;color:" +
-            r.color +
-            ";padding:2px 8px;border-radius:99px;border:1px solid " +
-            r.color +
-            '44">' +
-            r.count +
-            " member" +
-            (r.count !== 1 ? "s" : "") +
-            "</span></div>" +
-            '<div style="display:flex;flex-wrap:wrap;gap:4px">' +
-            permBadges +
-            more +
-            "</div></div>"
-        );
-    }).join("");
-    renderPermTable();
-    buildRoleModal();
-    populateStaffRoles();
-}
 
-function selectRole(id, el) {
-    selectedRole = id;
-    document.querySelectorAll(".role-card").forEach(function (c) {
-        c.classList.remove("selected");
-    });
-    el.classList.add("selected");
-    var role = ROLES_DATA.find(function (r) {
-        return r.id === id;
-    });
-    document.getElementById("selected-role-badge").textContent = role.name;
-    var groups = {};
-    ALL_PERMS.forEach(function (p) {
-        if (!groups[p.group]) groups[p.group] = [];
-        groups[p.group].push(p);
-    });
-    var hasAll = role.perms.includes("all");
-    var html =
-        '<div style="margin-bottom:12px"><span class="badge badge-purple" style="font-size:.7rem">' +
-        role.name +
-        '</span><span style="font-size:.75rem;color:var(--text3);margin-left:8px">' +
-        (hasAll ? ALL_PERMS.length : role.perms.length) +
-        " permissions</span></div>";
-    Object.entries(groups).forEach(function (entry) {
-        var g = entry[0],
-            perms = entry[1];
-        html +=
-            '<div style="margin-bottom:12px"><div style="font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text4);margin-bottom:6px">' +
-            g +
-            '</div><div style="display:flex;flex-direction:column;gap:4px">';
-        perms.forEach(function (p) {
-            var has = hasAll || role.perms.includes(p.key);
-            html +=
-                '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:rgba(' +
-                (has ? "16,185,129" : "255,255,255") +
-                ',.05)"><i class="ri-' +
-                (has ? "check" : "close") +
-                '-line" style="color:' +
-                (has ? "var(--green)" : "var(--text4)") +
-                ';font-size:.85rem"></i><span style="font-size:.78rem;color:' +
-                (has ? "var(--text2)" : "var(--text4)") +
-                '">' +
-                p.label +
-                "</span></div>";
-        });
-        html += "</div></div>";
-    });
-    html +=
-        '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="toast(\'Role permissions saved!\',\'success\')"><i class="ri-save-line"></i> Save Permissions</button>';
-    document.getElementById("perm-matrix").innerHTML = html;
-}
+// function renderRoles() {
+//     var list = document.getElementById("roles-list");
+//     list.innerHTML = ROLES_DATA.map(function (r) {
+//         var permBadges = (
+//             r.perms.includes("all")
+//                 ? ALL_PERMS.slice(0, 4)
+//                 : r.perms.slice(0, 4)
+//         )
+//             .map(function (p) {
+//                 return (
+//                     '<span class="chip" style="font-size:.58rem">' +
+//                     (typeof p === "string" ? p : p.label) +
+//                     "</span>"
+//                 );
+//             })
+//             .join("");
+//         var more =
+//             r.perms.length > 4
+//                 ? '<span class="chip" style="font-size:.58rem">+' +
+//                   (r.perms.length - 4) +
+//                   " more</span>"
+//                 : "";
+//         return (
+//             '<div class="role-card ' +
+//             (selectedRole === r.id ? "selected" : "") +
+//             '" onclick="selectRole(\'' +
+//             r.id +
+//             "',this)\">" +
+//             '<button class="role-edit-btn" onclick="openEditRole(\'' +
+//             r.id +
+//             '\', event)"><i class="ri-edit-line"></i></button>' +
+//             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:36px;height:36px;border-radius:9px;background:' +
+//             r.color +
+//             '22;display:flex;align-items:center;justify-content:center"><i class="ri-key-2-line" style="color:' +
+//             r.color +
+//             '"></i></div><div style="flex:1"><div style="font-size:.87rem;font-weight:700;color:var(--text)">' +
+//             r.name +
+//             '</div><div style="font-size:.72rem;color:var(--text3)">' +
+//             r.desc +
+//             '</div></div><span style="font-size:.65rem;font-weight:700;background:' +
+//             r.color +
+//             "22;color:" +
+//             r.color +
+//             ";padding:2px 8px;border-radius:99px;border:1px solid " +
+//             r.color +
+//             '44">' +
+//             r.count +
+//             " member" +
+//             (r.count !== 1 ? "s" : "") +
+//             "</span></div>" +
+//             '<div style="display:flex;flex-wrap:wrap;gap:4px">' +
+//             permBadges +
+//             more +
+//             "</div></div>"
+//         );
+//     }).join("");
+//     renderPermTable();
+//     buildRoleModal();
+//     populateStaffRoles();
+// }
 
-function renderPermTable() {
-    var head = document.getElementById("perm-table-head");
-    var body = document.getElementById("perm-table-body");
-    head.innerHTML =
-        '<th style="padding:10px 14px;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Permission</th>' +
-        ROLES_DATA.map(function (r) {
-            return (
-                '<th style="padding:10px 14px;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:' +
-                r.color +
-                '">' +
-                r.name +
-                "</th>"
-            );
-        }).join("");
-    body.innerHTML = ALL_PERMS.slice(0, 10)
-        .map(function (p) {
-            return (
-                '<tr><td><span style="font-size:.78rem;color:var(--text2)">' +
-                p.label +
-                '</span><div style="font-size:.65rem;color:var(--text4)">' +
-                p.group +
-                "</div></td>" +
-                ROLES_DATA.map(function (r) {
-                    var has =
-                        r.perms.includes("all") || r.perms.includes(p.key);
-                    return (
-                        '<td style="text-align:center"><i class="ri-' +
-                        (has ? "check" : "minus") +
-                        '-line" style="color:' +
-                        (has ? "var(--green)" : "var(--text4)") +
-                        '"></i></td>'
-                    );
-                }).join("") +
-                "</tr>"
-            );
-        })
-        .join("");
-}
+// function selectRole(id, el) {
+//     selectedRole = id;
+//     document.querySelectorAll(".role-card").forEach(function (c) {
+//         c.classList.remove("selected");
+//     });
+//     el.classList.add("selected");
+//     var role = ROLES_DATA.find(function (r) {
+//         return r.id === id;
+//     });
+//     document.getElementById("selected-role-badge").textContent = role.name;
+//     var groups = {};
+//     ALL_PERMS.forEach(function (p) {
+//         if (!groups[p.group]) groups[p.group] = [];
+//         groups[p.group].push(p);
+//     });
+//     var hasAll = role.perms.includes("all");
+//     var html =
+//         '<div style="margin-bottom:12px"><span class="badge badge-purple" style="font-size:.7rem">' +
+//         role.name +
+//         '</span><span style="font-size:.75rem;color:var(--text3);margin-left:8px">' +
+//         (hasAll ? ALL_PERMS.length : role.perms.length) +
+//         " permissions</span></div>";
+//     Object.entries(groups).forEach(function (entry) {
+//         var g = entry[0],
+//             perms = entry[1];
+//         html +=
+//             '<div style="margin-bottom:12px"><div style="font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text4);margin-bottom:6px">' +
+//             g +
+//             '</div><div style="display:flex;flex-direction:column;gap:4px">';
+//         perms.forEach(function (p) {
+//             var has = hasAll || role.perms.includes(p.key);
+//             html +=
+//                 '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:rgba(' +
+//                 (has ? "16,185,129" : "255,255,255") +
+//                 ',.05)"><i class="ri-' +
+//                 (has ? "check" : "close") +
+//                 '-line" style="color:' +
+//                 (has ? "var(--green)" : "var(--text4)") +
+//                 ';font-size:.85rem"></i><span style="font-size:.78rem;color:' +
+//                 (has ? "var(--text2)" : "var(--text4)") +
+//                 '">' +
+//                 p.label +
+//                 "</span></div>";
+//         });
+//         html += "</div></div>";
+//     });
+//     html +=
+//         '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:8px" onclick="toast(\'Role permissions saved!\',\'success\')"><i class="ri-save-line"></i> Save Permissions</button>';
+//     document.getElementById("perm-matrix").innerHTML = html;
+// }
 
-function buildRoleModal() {
-    var permsEl = document.getElementById("new-role-perms");
-    permsEl.innerHTML = ALL_PERMS.map(function (p) {
-        return (
-            '<label class="perm-item"><input type="checkbox" value="' +
-            p.key +
-            '" style="accent-color:var(--purple);width:13px;height:13px;cursor:pointer"><span>' +
-            p.label +
-            '<div style="font-size:.63rem;color:var(--text4)">' +
-            p.group +
-            "</div></span></label>"
-        );
-    }).join("");
-    var cp = document.getElementById("role-color-picker");
-    cp.innerHTML = ROLE_COLORS.map(function (c) {
-        return (
-            "<div onclick=\"selectedRoleColor='" +
-            c +
-            "';document.querySelectorAll('#role-color-picker div').forEach(function(d){d.style.outline='none'});this.style.outline='2px solid #fff'\" style=\"width:20px;height:20px;border-radius:50%;background:" +
-            c +
-            ";cursor:pointer;transition:transform .15s;outline:" +
-            (c === selectedRoleColor ? "2px solid #fff" : "none") +
-            '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
-        );
-    }).join("");
-}
+// function renderPermTable() {
+//     var head = document.getElementById("perm-table-head");
+//     var body = document.getElementById("perm-table-body");
+//     head.innerHTML =
+//         '<th style="padding:10px 14px;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Permission</th>' +
+//         ROLES_DATA.map(function (r) {
+//             return (
+//                 '<th style="padding:10px 14px;font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:' +
+//                 r.color +
+//                 '">' +
+//                 r.name +
+//                 "</th>"
+//             );
+//         }).join("");
+//     body.innerHTML = ALL_PERMS.slice(0, 10)
+//         .map(function (p) {
+//             return (
+//                 '<tr><td><span style="font-size:.78rem;color:var(--text2)">' +
+//                 p.label +
+//                 '</span><div style="font-size:.65rem;color:var(--text4)">' +
+//                 p.group +
+//                 "</div></td>" +
+//                 ROLES_DATA.map(function (r) {
+//                     var has =
+//                         r.perms.includes("all") || r.perms.includes(p.key);
+//                     return (
+//                         '<td style="text-align:center"><i class="ri-' +
+//                         (has ? "check" : "minus") +
+//                         '-line" style="color:' +
+//                         (has ? "var(--green)" : "var(--text4)") +
+//                         '"></i></td>'
+//                     );
+//                 }).join("") +
+//                 "</tr>"
+//             );
+//         })
+//         .join("");
+// }
 
-function createRole() {
-    var name = document.getElementById("new-role-name").value.trim();
-    if (!name) {
-        toast("Enter a role name", "error");
-        return;
-    }
-    var desc = document.getElementById("new-role-desc").value.trim();
-    var perms = Array.from(
-        document.querySelectorAll("#new-role-perms input:checked"),
-    ).map(function (i) {
-        return i.value;
-    });
-    ROLES_DATA.push({
-        id: name.toLowerCase().replace(/\s+/g, "-"),
-        name: name,
-        color: selectedRoleColor,
-        desc: desc,
-        perms: perms,
-        count: 0,
-    });
-    toast('Role "' + name + '" created!', "success");
-    closeModal("add-role-modal");
-    renderRoles();
-}
+// function buildRoleModal() {
+//     var permsEl = document.getElementById("new-role-perms");
+//     permsEl.innerHTML = ALL_PERMS.map(function (p) {
+//         return (
+//             '<label class="perm-item"><input type="checkbox" value="' +
+//             p.key +
+//             '" style="accent-color:var(--purple);width:13px;height:13px;cursor:pointer"><span>' +
+//             p.label +
+//             '<div style="font-size:.63rem;color:var(--text4)">' +
+//             p.group +
+//             "</div></span></label>"
+//         );
+//     }).join("");
+//     var cp = document.getElementById("role-color-picker");
+//     cp.innerHTML = ROLE_COLORS.map(function (c) {
+//         return (
+//             "<div onclick=\"selectedRoleColor='" +
+//             c +
+//             "';document.querySelectorAll('#role-color-picker div').forEach(function(d){d.style.outline='none'});this.style.outline='2px solid #fff'\" style=\"width:20px;height:20px;border-radius:50%;background:" +
+//             c +
+//             ";cursor:pointer;transition:transform .15s;outline:" +
+//             (c === selectedRoleColor ? "2px solid #fff" : "none") +
+//             '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
+//         );
+//     }).join("");
+// }
 
-function populateStaffRoles() {
-    var sel = document.getElementById("staff-role-sel");
-    if (sel)
-        sel.innerHTML =
-            '<option value="">Select role…</option>' +
-            ROLES_DATA.map(function (r) {
-                return '<option value="' + r.id + '">' + r.name + "</option>";
-            }).join("");
-}
+// function createRole() {
+//     var name = document.getElementById("new-role-name").value.trim();
+//     if (!name) {
+//         toast("Enter a role name", "error");
+//         return;
+//     }
+//     var desc = document.getElementById("new-role-desc").value.trim();
+//     var perms = Array.from(
+//         document.querySelectorAll("#new-role-perms input:checked"),
+//     ).map(function (i) {
+//         return i.value;
+//     });
+//     ROLES_DATA.push({
+//         id: name.toLowerCase().replace(/\s+/g, "-"),
+//         name: name,
+//         color: selectedRoleColor,
+//         desc: desc,
+//         perms: perms,
+//         count: 0,
+//     });
+//     toast('Role "' + name + '" created!', "success");
+//     closeModal("add-role-modal");
+//     renderRoles();
+// }
 
-var selectedEditRoleColor = "";
+// function populateStaffRoles() {
+//     var sel = document.getElementById("staff-role-sel");
+//     if (sel)
+//         sel.innerHTML =
+//             '<option value="">Select role…</option>' +
+//             ROLES_DATA.map(function (r) {
+//                 return '<option value="' + r.id + '">' + r.name + "</option>";
+//             }).join("");
+// }
+
+// var selectedEditRoleColor = "";
 
 /* ══════════════════════════════════════════
 REMINDERS

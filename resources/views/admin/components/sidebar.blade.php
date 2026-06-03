@@ -14,7 +14,7 @@
         <a class="nav-item" href="{{route('admin.dashboard')}}"><i class="ri-bar-chart-2-line"></i><span class="nav-lbl">Dashboard</span></a>
 
         <div class="sb-section">Management</div>
-        <a class="nav-item" href="admin-users"><i class="ri-group-line"></i><span class="nav-lbl">Users</span><span class="nav-badge">3</span></a>
+        <a class="nav-item" href="{{route('admin.usermanagement')}}"><i class="ri-group-line"></i><span class="nav-lbl">Users</span></a>
         <a class="nav-item" href="{{route('admin.reminderpage')}}"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
         <a class="nav-item" href="{{route('admin.calendarpage')}}"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
         <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
@@ -32,10 +32,10 @@
         <a class="nav-item" href="admin-roles"><i class="ri-key-2-line"></i><span class="nav-lbl">Roles & Permissions</span></a>
 
         <div class="sb-section">CMS</div>
-        <a class="nav-item" href="admin-cms-home"><i class="ri-home-4-line"></i><span class="nav-lbl">Home</span></a>
-        <a class="nav-item" href="admin-cms-about"><i class="ri-information-line"></i><span class="nav-lbl">About</span></a>
+        <a class="nav-item hidden" href="admin-cms-home"><i class="ri-home-4-line"></i><span class="nav-lbl">Home</span></a>
+        <a class="nav-item hidden" href="admin-cms-about"><i class="ri-information-line"></i><span class="nav-lbl">About</span></a>
         <a class="nav-item" href="admin-cms-faq"><i class="ri-question-line"></i><span class="nav-lbl">FAQ</span></a>
-        <a class="nav-item" href="admin-cms-contact"><i class="ri-contacts-line"></i><span class="nav-lbl">Contact</span></a>
+        <a class="nav-item hidden" href="admin-cms-contact"><i class="ri-contacts-line"></i><span class="nav-lbl">Contact</span></a>
         <a class="nav-item" href="admin-cms-terms"><i class="ri-file-list-3-line"></i><span class="nav-lbl">Terms & Conditions</span></a>
         <a class="nav-item" href="admin-cms-privacy"><i class="ri-shield-user-line"></i><span class="nav-lbl">Privacy Policy</span></a>
 

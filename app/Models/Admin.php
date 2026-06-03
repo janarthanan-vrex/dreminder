@@ -32,5 +32,20 @@ class Admin extends Authenticatable
         'remember_token',
     ];
 
+      public function roles()
+{
+    return $this->belongsTo(Role::class, 'role_id');
+}
+
+public function hasPermission($module, $action)
+{
+    return $this->roles
+        && $this->roles->permissions()
+            ->where('module', $module)
+            ->where('permission_name', $action)
+            ->wherePivot('is_checked', 1)
+            ->exists();
+}
+
     
 }

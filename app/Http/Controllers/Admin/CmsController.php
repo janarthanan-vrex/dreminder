@@ -20,11 +20,14 @@ class CmsController extends Controller
         $validator = Validator::make($request->all(), [
             'plan_name.*'   => 'required|string|max:255',
             'price.*'       => 'required|numeric|min:0',
+            'vat.*'         => 'required|numeric|min:0',
             'expiry_date.*' => 'nullable|date',
         ], [
             'plan_name.*.required' => 'Plan name is required',
             'price.*.required'     => 'Price is required',
             'price.*.numeric'      => 'Price must be a number',
+            'vat.*.required'       => 'VAT is required',
+            'vat.*.numeric'        => 'VAT must be a number',
         ]);
 
         if ($validator->fails()) {
@@ -87,7 +90,7 @@ class CmsController extends Controller
             'coupon_type'    => 'required|in:percentage,fixed',
             'discount'   => 'required|numeric|min:0',
             'expiry_date'      => 'required|date',
-            'status'           => 'required|in:Active,Inactive',
+            'status'           => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
@@ -110,10 +113,10 @@ class CmsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'code'           => 'required|string|unique:coupons,code,' . $id,
-            'discount_type'  => 'required|in:percent,fixed',
-            'discount_value' => 'required|numeric|min:0',
-            'expiry_date'    => 'nullable|date',
-            'status'         => 'required|in:Active,Inactive',
+            'coupon_type'  => 'required|in:percentage,fixed',
+            'discount' => 'required|numeric|min:0',
+            'expiry_date'    => 'required|date',
+            'status'         => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {

@@ -77,7 +77,7 @@
                         <th class="hide-mobile">Role</th>
                         <th class="hide-mobile">Permissions</th>
                         <th>Status</th>
-                        <th class="hide-mobile">Last Active</th>
+                        
                         <th style="text-align: right">Actions</th>
                     </tr>
                 </thead>
@@ -93,4 +93,17 @@
         </div>
     </div>
 </section>
+<script>
+    window.STAFF_DATA = @json($staffData->values());
+    window.ROLES_DATA = @json($rolesData->values());
+
+    // re-init after window data is set
+    staffData     = [...window.STAFF_DATA];
+    staffFiltered = [...window.STAFF_DATA];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderStaff(staffData);
+        populateStaffRoles();
+    });
+</script>
 @endsection

@@ -260,13 +260,14 @@
 
                 <div class="g2">
                     <div class="field-group">
-                        <label class="label">VAT</label>
+                        <label class="label">VAT <span style="color:#ef4444">*</span></label>
                         <input class="inp"
                             id="p{{ $key }}-vat"
                             type="number" step="0.01"
                             name="vat[]"
                             value="{{ $plan->vat }}"
-                            oninput="calcTotal({{ $key }})">
+                            oninput="calcTotal({{ $key }}); hideError(this)">
+                             <small class="error-msg"></small>
                     </div>
                     <div class="field-group">
                         <label class="label">Total Price</label>
@@ -353,6 +354,7 @@
         <table class="data-table">
             <thead>
                 <tr>
+                     <th>S.No</th>
                     <th>Code</th>
                     <th>Discount Type</th>
                     <th>Discount Value</th>
@@ -462,8 +464,8 @@
             <div class="field-group">
                 <label class="label">Status</label>
                 <select class="inp" id="edit-coupon-status">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                 </select>
             </div>
         </div>
@@ -650,9 +652,10 @@ function addNewPlan() {
         '</div>' +
         '<div class="g2">' +
             '<div class="field-group">' +
-                '<label class="label">VAT</label>' +
+                '<label class="label">VAT <span style="color:#ef4444">*</span></label>' +
                 '<input class="inp" type="number" step="0.01" name="vat[]" id="p' + idx + '-vat" value="0"' +
-                '       oninput="calcTotal(' + idx + ')">' +
+                '       oninput="calcTotal(' + idx + '); hideError(this)">' +
+                '<small class="error-msg"></small>' +
             '</div>' +
             '<div class="field-group">' +
                 '<label class="label">Total Price</label>' +
@@ -705,40 +708,77 @@ function addNewPlan() {
    - new client-only plans: dbId = null, clientIdx = planCount index
 ═══════════════════════════════════════════════ */
 function deletePlan(dbId, event, clientIdx) {
+
     event.stopPropagation();
-    if (!confirm('Delete this plan?')) return;
 
-    function doRemove(idx) {
-        var tab = document.getElementById('plan-tab-' + idx);
-        var ed  = document.getElementById('plan-editor-' + idx);
-        if (tab) tab.remove();
-        if (ed)  ed.remove();
-        // switch to first remaining tab
-        var firstTab = document.querySelector('.plan-tab');
-        if (firstTab) {
-            var firstIdx = firstTab.id.replace('plan-tab-', '');
-            switchPlan(firstIdx, firstTab);
-        }
-        toast?.('Plan deleted', 'info');
-    }
+    openConfirm(
+        'Are you sure you want to delete this plan?',
+        function () {
 
-    if (dbId) {
-        fetch(DELETE_PLAN_URL + '/' + dbId, {
-            method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
-        })
-        .then(r => r.json())
-        .then(function(data) {
-            if (data.status) {
-                doRemove(clientIdx);
-            } else {
-                toast?.('Delete failed: ' + (data.message || ''), 'error');
+            function doRemove(idx) {
+
+                var tab = document.getElementById('plan-tab-' + idx);
+                var ed  = document.getElementById('plan-editor-' + idx);
+
+                if (tab) tab.remove();
+                if (ed)  ed.remove();
+
+                var firstTab = document.querySelector('.plan-tab');
+
+                if (firstTab) {
+
+                    var firstIdx =
+                        firstTab.id.replace('plan-tab-', '');
+
+                    switchPlan(firstIdx, firstTab);
+                }
+
+                toast?.('Plan deleted', 'info');
             }
-        })
-        .catch(function() { toast?.('Server error', 'error'); });
-    } else {
-        doRemove(clientIdx);
-    }
+
+            if (dbId) {
+
+                fetch(DELETE_PLAN_URL + '/' + dbId, {
+
+                    method: 'DELETE',
+
+                    headers: {
+                        'X-CSRF-TOKEN': CSRF,
+                        'Accept': 'application/json'
+                    }
+
+                })
+
+                .then(r => r.json())
+
+                .then(function(data) {
+
+                    if (data.status) {
+
+                        doRemove(clientIdx);
+
+                    } else {
+
+                        toast?.(
+                            'Delete failed: ' +
+                            (data.message || ''),
+                            'error'
+                        );
+                    }
+                })
+
+                .catch(function() {
+
+                    toast?.('Server error', 'error');
+
+                });
+
+            } else {
+
+                doRemove(clientIdx);
+            }
+        }
+    );
 }
 
 /* ═══════════════════════════════════════════════
@@ -841,10 +881,8 @@ function formatCoupon(c) {
     };
 }
 
-function couponRowHTML(c) {
-
+function couponRowHTML(c, index) {
     var today = new Date();
-
     var expiryDate = c.expiry
         ? new Date(c.expiry)
         : null;
@@ -880,6 +918,7 @@ function couponRowHTML(c) {
     }
 
     return '<tr>' +
+    '<td>' + (index + 1) + '</td>' +
 
         '<td><div style="font-weight:700;font-family:monospace;letter-spacing:.08em">' +
             c.code +

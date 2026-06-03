@@ -25,10 +25,11 @@ class AdminController extends Controller
     {
         return view('admin.admin-login');
     }
-    public function adminProfile(Request $request){
-         $admin = Auth::guard('admin')->user();
-       
-        return view('admin.profile',compact('admin'));
+    public function adminProfile(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+
+        return view('admin.profile', compact('admin'));
     }
 
     public function adminLogin(Request $request)
@@ -87,17 +88,17 @@ class AdminController extends Controller
         ]);
     }
 
-public function adminLogout(Request $request)
-{
-    // dd("fds");
-    auth()->guard('admin')->logout();
+    public function adminLogout(Request $request)
+    {
+        // dd("fds");
+        auth()->guard('admin')->logout();
 
-    $request->session()->invalidate();
+        $request->session()->invalidate();
 
-    $request->session()->regenerateToken();
+        $request->session()->regenerateToken();
 
-    return redirect()->route('admin.login');
-}
+        return redirect()->route('admin.login');
+    }
 
     public function adminDashboard(Request $request)
     {
@@ -105,427 +106,423 @@ public function adminLogout(Request $request)
         return view('admin.dashboard');
     }
 
-    public function adminForgotPage(Request $request){
+    public function adminForgotPage(Request $request)
+    {
         return view('admin.admin-forgot-password');
     }
 
     public function storeForgotPassword(Request $request)
-{
-    try {
-        // ── Validate ─────────────────────────────────────────────────────
-        $validator = \Validator::make($request->all(), [
-            'email' => 'required|email',
+    {
+        try {
+            // ── Validate ─────────────────────────────────────────────────────
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email',
+            ], [
+                'email.required' => 'Email address is required.',
+                'email.email'    => 'Please enter a valid email address.',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => $validator->errors()->first(),
+                ], 422);
+            }
+
+            // ── Check admin exists ────────────────────────────────────────────
+            $admin = \App\Models\Admin::where('email', $request->email)->first();
+
+            if (!$admin) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'This email is not registered with us.',
+                ], 404);
+            }
+
+            // ── Check admin is active ─────────────────────────────────────────
+            if ($admin->status !== 'active') {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Your account has been deactivated. Contact support.',
+                ], 403);
+            }
+
+            // ── Generate token & store in DB ──────────────────────────────────
+            $token = \Str::random(64);
+
+            \DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                [
+                    'role' => 'admin',
+                    'token'      => $token,
+                    'created_at' => now(),
+                ]
+            );
+
+            // ── Send mail ─────────────────────────────────────────────────────
+            \Mail::send('emails.admin_reset_link', [
+                'admin' => $admin,
+                'token' => $token,
+                'email' => $request->email,
+            ], function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('Admin Password Reset Link');
+            });
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Reset link sent successfully',
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Admin forgot password error: ' . $e->getMessage());
+
+            return response()->json([
+                'status'  => false,
+                'message' => 'Something went wrong. Please try again.',
+            ], 500);
+        }
+    }
+
+    public function showAdminResetForm($token, Request $request)
+    {
+        $reset = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->where('role', 'admin')
+            ->first();
+
+        // Check token exists
+        if (!$reset) {
+            return redirect()
+                ->route('admin.forgotPage')
+                ->with('error', 'Invalid reset link');
+        }
+
+        // Check token match
+        if (!hash_equals($reset->token, $token)) {
+            return redirect()
+                ->route('admin.forgotPage')
+                ->with('error', 'Invalid reset token');
+        }
+
+        // Check token expiry (60 minutes)
+        if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
+
+            // Optional: delete expired token
+            DB::table('password_reset_tokens')
+                ->where('email', $request->email)
+                ->delete();
+
+            return redirect()
+                ->route('admin.forgotPage')
+                ->with('error', 'Reset link expired');
+        }
+
+        return view('admin.admin-reset-password', [
+            'token' => $token,
+            'email' => $request->email
+        ]);
+    }
+
+    public function adminResetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'token' => ['required'],
+            'new_password' => [
+                'required',
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
+            ],
         ], [
-            'email.required' => 'Email address is required.',
-            'email.email'    => 'Please enter a valid email address.',
+            'new_password.required' => 'New password is required',
+            'new_password.min' => 'Password must be at least 8 characters',
+            'new_password.confirmed' => 'Passwords do not match',
+            'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status'  => false,
-                'message' => $validator->errors()->first(),
+                'status' => false,
+                'errors' => $validator->errors()
             ], 422);
         }
 
-        // ── Check admin exists ────────────────────────────────────────────
-        $admin = \App\Models\Admin::where('email', $request->email)->first();
+        $user = Admin::where('email', $request->email)
 
-        if (!$admin) {
+            ->first();
+
+        if (!$user) {
             return response()->json([
-                'status'  => false,
-                'message' => 'This email is not registered with us.',
+                'status' => false,
+                'message' => 'User not found'
             ], 404);
         }
 
-        // ── Check admin is active ─────────────────────────────────────────
-        if ($admin->status !== 'active') {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Your account has been deactivated. Contact support.',
-            ], 403);
-        }
+        $user->password = Hash::make($request->new_password);
+        $user->save();
 
-        // ── Generate token & store in DB ──────────────────────────────────
-        $token = \Str::random(64);
-
-        \DB::table('password_reset_tokens')->updateOrInsert(
-            ['email' => $request->email],
-            [
-                'role' => 'admin',
-                'token'      => $token,
-                'created_at' => now(),
-            ]
-        );
-
-        // ── Send mail ─────────────────────────────────────────────────────
-        \Mail::send('emails.admin_reset_link', [
-            'admin' => $admin,
-            'token' => $token,
-            'email' => $request->email,
-        ], function ($message) use ($request) {
-            $message->to($request->email);
-            $message->subject('Admin Password Reset Link');
-        });
-
-        return response()->json([
-            'status'  => true,
-            'message' => 'Reset link sent successfully',
-        ]);
-
-    } catch (\Exception $e) {
-        \Log::error('Admin forgot password error: ' . $e->getMessage());
-
-        return response()->json([
-            'status'  => false,
-            'message' => 'Something went wrong. Please try again.',
-        ], 500);
-    }
-}
-
-public function showAdminResetForm($token, Request $request)
-{
-    $reset = DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->where('role', 'admin')
-        ->first();
-
-    // Check token exists
-    if (!$reset) {
-        return redirect()
-            ->route('admin.forgotPage')
-            ->with('error', 'Invalid reset link');
-    }
-
-    // Check token match
-    if (!hash_equals($reset->token, $token)) {
-        return redirect()
-            ->route('admin.forgotPage')
-            ->with('error', 'Invalid reset token');
-    }
-
-    // Check token expiry (60 minutes)
-    if (Carbon::parse($reset->created_at)->addMinutes(60)->isPast()) {
-
-        // Optional: delete expired token
         DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->delete();
 
-        return redirect()
-            ->route('admin.forgotPage')
-            ->with('error', 'Reset link expired');
-    }
-
-    return view('admin.admin-reset-password', [
-        'token' => $token,
-        'email' => $request->email
-    ]);
-}
-
- public function adminResetPassword(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'email' => ['required', 'email'],
-        'token' => ['required'],
-        'new_password' => [
-            'required',
-            'min:8',
-            'confirmed',
-            'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
-            ],
-            ], [
-                'new_password.required' => 'New password is required',
-                'new_password.min' => 'Password must be at least 8 characters',
-                'new_password.confirmed' => 'Passwords do not match',
-                'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
-                ]);
-                
-                if ($validator->fails()) {
-                    return response()->json([
-                        'status' => false,
-                        'errors' => $validator->errors()
-                        ], 422);
-                        }
-                        
-    $user = Admin::where('email', $request->email)
-           
-            ->first();
-
-    if (!$user) {
         return response()->json([
-            'status' => false,
-            'message' => 'User not found'
-        ], 404);
+            'status' => true,
+            'message' => 'Password reset successful'
+        ]);
     }
 
-    $user->password = Hash::make($request->new_password);
-    $user->save();
+    public function updateProfile(Request $request)
+    {
 
-    DB::table('password_reset_tokens')
-        ->where('email', $request->email)
-        ->delete();
+        $request->validate([
+            'name'          => 'required|string|max:255',
+            'phone' => 'nullable|digits_between:10,15',
+            'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Password reset successful'
-    ]);
-}
+        $admin = Auth::guard('admin')->user();
 
-public function updateProfile(Request $request)
-{
-   
-    $request->validate([
-        'name'          => 'required|string|max:255',
-        'phone' => 'nullable|digits_between:10,15',
-        'profile_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-    ]);
-
-    $admin = Auth::guard('admin')->user();
-
-    $data = [
-        'name'  => $request->name,
-        'phone' => $request->phone,
-    ];
-
-    // Image Upload
-    if ($request->hasFile('profile_image')) {
-
-        // Delete old image
-        if ($admin->profile_image &&
-            File::exists(public_path('profile/' . $admin->profile_image))) {
-
-            File::delete(public_path('profile/' . $admin->profile_image));
-        }
-
-        $image = $request->file('profile_image');
-
-        $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
-
-        $image->move(public_path('profile'), $imageName);
-
-        $data['profile_image'] = $imageName;
-    }
-
-    $admin->update($data);
-
-   return response()->json([
-    'status' => true,
-    'message' => 'Profile updated successfully'
-]);
-}
-
-public function changePassword(Request $request)
-{
-    $admin = Auth::guard('admin')->user();
-
-    $request->validate([
-        'current_password' => 'required',
-        'new_password' => [
-            'required',
-            'min:8',
-            'regex:/[A-Z]/',
-            'regex:/[a-z]/',
-            'regex:/[0-9]/',
-            'regex:/[@$!%*#?&]/'
-        ],
-        'confirm_password' => 'required|same:new_password'
-    ],[
-        'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
-        'confirm_password.same' => 'Confirm password does not match'
-    ]);
-
-    // Current Password Check
-    if(!Hash::check($request->current_password,$admin->password)){
-
-        return response()->json([
-            'status' => false,
-            'errors' => [
-                'current_password' => ['Current password is incorrect']
-            ]
-        ],422);
-
-    }
-
-    // Same Password Check
-    if(Hash::check($request->new_password,$admin->password)){
-
-        return response()->json([
-            'status' => false,
-            'errors' => [
-                'new_password' => ['New password must be different from current password']
-            ]
-        ],422);
-
-    }
-
-    // Update Password
-    $admin->update([
-        'password' => Hash::make($request->new_password)
-    ]);
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Password updated successfully'
-    ]);
-}
-
-public function analyticsData(Request $request)
-{
-    $filter = $request->filter ?? '30';
-
-    $users = User::query();
-
-    $reminders = Reminder::query();
-
-    $payments = Payment::where('status', 'successful');
-
-    if ($filter == '30') {
-
-        $users->where('created_at', '>=', now()->subDays(30));
-
-        $reminders->where('created_at', '>=', now()->subDays(30));
-
-        $payments->where('created_at', '>=', now()->subDays(30));
-
-    }
-
-    elseif ($filter == '90') {
-
-        $users->where('created_at', '>=', now()->subDays(90));
-
-        $reminders->where('created_at', '>=', now()->subDays(90));
-
-        $payments->where('created_at', '>=', now()->subDays(90));
-
-    }
-
-    elseif ($filter == 'year') {
-
-        $users->whereYear('created_at', now()->year);
-
-        $reminders->whereYear('created_at', now()->year);
-
-        $payments->whereYear('created_at', now()->year);
-
-    }
-
-    $totalUsers = $users->count();
-
-    $totalReminders = $reminders->count();
-
-    $completed = (clone $reminders)
-        ->where('reminder_status', 'completed')
-        ->count();
-
-    $totalRevenue = $payments->sum('amount');
-
-    // Registration Chart
-    if ($filter == 'all') {
-
-        $yearly = User::selectRaw(
-                'YEAR(created_at) year,
-                 COUNT(*) total'
-            )
-            ->groupBy('year')
-            ->orderBy('year')
-            ->get();
-
-        $regLabels = $yearly->pluck('year');
-
-        $regData = $yearly->pluck('total');
-
-    } else {
-
-        $monthly = User::selectRaw(
-                'MONTH(created_at) month,
-                 COUNT(*) total'
-            )
-            ->groupBy('month')
-            ->pluck('total', 'month');
-
-        $regLabels = [
-            'Jan','Feb','Mar','Apr',
-            'May','Jun','Jul','Aug',
-            'Sep','Oct','Nov','Dec'
+        $data = [
+            'name'  => $request->name,
+            'phone' => $request->phone,
         ];
 
-        $regData = [];
+        // Image Upload
+        if ($request->hasFile('profile_image')) {
 
-        for ($i = 1; $i <= 12; $i++) {
+            // Delete old image
+            if (
+                $admin->profile_image &&
+                File::exists(public_path('profile/' . $admin->profile_image))
+            ) {
 
-            $regData[] = $monthly[$i] ?? 0;
+                File::delete(public_path('profile/' . $admin->profile_image));
+            }
 
+            $image = $request->file('profile_image');
+
+            $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+
+            $image->move(public_path('profile'), $imageName);
+
+            $data['profile_image'] = $imageName;
         }
+
+        $admin->update($data);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Profile updated successfully'
+        ]);
     }
 
-    // Category Chart
-    $cats = Category::withCount([
-        'reminders' => function($q) use ($filter) {
+    public function changePassword(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
 
-            if ($filter == '30') {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => [
+                'required',
+                'min:8',
+                'regex:/[A-Z]/',
+                'regex:/[a-z]/',
+                'regex:/[0-9]/',
+                'regex:/[@$!%*#?&]/'
+            ],
+            'confirm_password' => 'required|same:new_password'
+        ], [
+            'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
+            'confirm_password.same' => 'Confirm password does not match'
+        ]);
 
-                $q->where(
-                    'created_at',
-                    '>=',
-                    now()->subDays(30)
-                );
+        // Current Password Check
+        if (!Hash::check($request->current_password, $admin->password)) {
 
-            }
-
-            elseif ($filter == '90') {
-
-                $q->where(
-                    'created_at',
-                    '>=',
-                    now()->subDays(90)
-                );
-
-            }
-
-            elseif ($filter == 'year') {
-
-                $q->whereYear(
-                    'created_at',
-                    now()->year
-                );
-
-            }
-
+            return response()->json([
+                'status' => false,
+                'errors' => [
+                    'current_password' => ['Current password is incorrect']
+                ]
+            ], 422);
         }
-    ])->get();
 
-    return response()->json([
+        // Same Password Check
+        if (Hash::check($request->new_password, $admin->password)) {
 
-        'status' => true,
+            return response()->json([
+                'status' => false,
+                'errors' => [
+                    'new_password' => ['New password must be different from current password']
+                ]
+            ], 422);
+        }
 
-        'cards' => [
+        // Update Password
+        $admin->update([
+            'password' => Hash::make($request->new_password)
+        ]);
 
-            'users' => $totalUsers,
+        return response()->json([
+            'status' => true,
+            'message' => 'Password updated successfully'
+        ]);
+    }
 
-            'reminders' => $totalReminders,
+    public function analyticsData(Request $request)
+    {
+        $filter = $request->filter ?? '30';
 
-            'completed' => $completed,
+        $users = User::query();
 
-            'revenue' => number_format(
-                $totalRevenue,
-                2
+        $reminders = Reminder::query();
+
+        $payments = Payment::where('status', 'successful');
+
+        if ($filter == '30') {
+
+            $users->where('created_at', '>=', now()->subDays(30));
+
+            $reminders->where('created_at', '>=', now()->subDays(30));
+
+            $payments->where('created_at', '>=', now()->subDays(30));
+        } elseif ($filter == '90') {
+
+            $users->where('created_at', '>=', now()->subDays(90));
+
+            $reminders->where('created_at', '>=', now()->subDays(90));
+
+            $payments->where('created_at', '>=', now()->subDays(90));
+        } elseif ($filter == 'year') {
+
+            $users->whereYear('created_at', now()->year);
+
+            $reminders->whereYear('created_at', now()->year);
+
+            $payments->whereYear('created_at', now()->year);
+        }
+
+        $totalUsers = $users->count();
+
+        $totalReminders = $reminders->count();
+
+        $completed = (clone $reminders)
+            ->where('reminder_status', 'completed')
+            ->count();
+
+        $totalRevenue = $payments->sum('amount');
+
+        // Registration Chart
+        // Registration Chart
+
+        if ($filter == '30') {
+
+            $regLabels = ['Last 30 Days'];
+
+            $regData = [$totalUsers];
+        } elseif ($filter == '90') {
+
+            $monthly = User::selectRaw(
+                'MONTH(created_at) month,
+             COUNT(*) total'
             )
+                ->where('created_at', '>=', now()->subDays(90))
+                ->groupBy('month')
+                ->pluck('total', 'month');
 
-        ],
+            $regLabels = [];
 
-        'charts' => [
+            $regData = [];
 
-            'regLabels' => $regLabels,
+            for ($i = 2; $i >= 0; $i--) {
 
-            'regData' => $regData,
+                $date = now()->subMonths($i);
 
-            'catLabels' => $cats->pluck('name'),
+                $monthNum  = $date->month;
 
-            'catData' => $cats->pluck('reminders_count')
+                $monthName = $date->format('M');
 
-        ]
+                $regLabels[] = $monthName;
 
-    ]);
-}
+                $regData[] = $monthly[$monthNum] ?? 0;
+            }
+        } elseif ($filter == 'year') {
 
+            $monthly = User::selectRaw(
+                'MONTH(created_at) month,
+             COUNT(*) total'
+            )
+                ->whereYear('created_at', now()->year)
+                ->groupBy('month')
+                ->pluck('total', 'month');
+
+            $regLabels = [
+                'Jan',
+                'Feb',
+                'Mar',
+                'Apr',
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct',
+                'Nov',
+                'Dec'
+            ];
+
+            $regData = [];
+
+            for ($i = 1; $i <= 12; $i++) {
+
+                $regData[] = $monthly[$i] ?? 0;
+            }
+        } else {
+
+            $yearly = User::selectRaw(
+                'YEAR(created_at) year,
+             COUNT(*) total'
+            )
+                ->groupBy('year')
+                ->orderBy('year')
+                ->get();
+
+            $regLabels = $yearly->pluck('year');
+
+            $regData = $yearly->pluck('total');
+        }
+
+        // Category Chart
+        $cats = Category::withCount([
+            'reminders' => function ($q) use ($filter) {
+
+                if ($filter == '30') {
+
+                    $q->where('created_at', '>=', now()->subDays(30));
+                } elseif ($filter == '90') {
+                    $q->where('created_at', '>=', now()->subDays(90));
+                } elseif ($filter == 'year') {
+
+                    $q->whereYear('created_at', now()->year);
+                }
+            }
+        ])->get();
+        return response()->json([
+            'status' => true,
+            'cards' => [
+                'users' => $totalUsers,
+                'reminders' => $totalReminders,
+                'completed' => $completed,
+                'revenue' => number_format($totalRevenue, 2)
+            ],
+            'charts' => [
+                'regLabels' => $regLabels,
+                'regData' => $regData,
+                'catLabels' => $cats->pluck('name'),
+                'catData' => $cats->pluck('reminders_count')
+            ]
+
+        ]);
+    }
 }

@@ -192,12 +192,8 @@ Route::get('/admin-layout', function () {
 
 
 
-Route::get('/admin-staff', function () {
-    return view('admin.staff');
-});
-Route::get('/admin-roles', function () {
-    return view('admin.roles');
-});
+
+
 Route::get('/admin-analytics', function () {
     return view('admin.analytics');
 });

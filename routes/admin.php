@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\SystemController;
 use App\Http\Controllers\Admin\CmsController;
+use App\Http\Controllers\Admin\TeamController;
 
 Route::get('/admin-login', function () {
 
@@ -69,10 +70,24 @@ Route::get('/admin-pricing',[CmsController::class,'pricingPage'])->name('admin.p
 Route::post('/admin/save-plan',[CmsController::class,'savePlan'])->name('save.plan');
 
 
-    Route::delete('admin/delete-plan/{id}', [CmsController::class, 'deletePlan'])->name('delete.plan');
+    Route::delete('admin/delete-plan/{id}',[CmsController::class, 'deletePlan'])->name('delete.plan');
 
     // Coupon routes
-    Route::get('admin/coupons',          [CmsController::class, 'getCoupons'])->name('coupons.index');
-    Route::post('admin/coupons',         [CmsController::class, 'createCoupon'])->name('coupons.store');
-    Route::put('admin/coupons/{id}',     [CmsController::class, 'updateCoupon'])->name('coupons.update');
-    Route::delete('admin/coupons/{id}',  [CmsController::class, 'deleteCoupon'])->name('coupons.destroy');
+    Route::get('admin/coupons',[CmsController::class, 'getCoupons'])->name('coupons.index');
+    Route::post('admin/coupons',[CmsController::class, 'createCoupon'])->name('coupons.store');
+    Route::put('admin/coupons/{id}',[CmsController::class, 'updateCoupon'])->name('coupons.update');
+    Route::delete('admin/coupons/{id}',[CmsController::class, 'deleteCoupon'])->name('coupons.destroy');
+
+   
+
+Route::get('/admin-roles',[TeamController::class,'rolesPage'])->name('admin.roles');
+Route::post('/admin/roles/store',[TeamController::class,'store'])->name('admin.roles.store');
+Route::put('/admin/roles/{id}',[TeamController::class, 'update']) ->name('update');
+Route::delete('/admin/roles/{id}',[TeamController::class, 'destroy'])->name('destroy');
+
+Route::get('/admin-staff',[TeamController::class,'staffManagemant'])->name('admin.staff');
+Route::post('/admin/staff/store',  [TeamController::class, 'storeStaff'])->name('admin.staff.store');
+Route::put('/admin/staff/{id}',    [TeamController::class, 'updateStaff'])->name('admin.staff.update');
+Route::delete('/admin/staff/{id}', [TeamController::class, 'destroyStaff'])->name('admin.staff.destroy');
+
+
