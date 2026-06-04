@@ -8,8 +8,6 @@ window.addEventListener("load", () => {
 DATA
 ══════════════════════════════════════════ */
 
-
-
 const ALL_PERMS = [
     { key: "users.view", label: "View Users", group: "Users" },
     { key: "users.create", label: "Create Users", group: "Users" },
@@ -17,13 +15,33 @@ const ALL_PERMS = [
     { key: "users.delete", label: "Delete Users", group: "Users" },
     { key: "reminders.view", label: "View Reminders", group: "Reminders" },
     { key: "calendar.view", label: "View Calendar", group: "Calendar" },
-    {key: "transaction.view",label: "View Transaction",group: "Transactions",},
+    {
+        key: "transaction.view",
+        label: "View Transaction",
+        group: "Transactions",
+    },
     { key: "categories.view", label: "View Categories", group: "Categories" },
-    {key: "categories.create",label: "Create Categories",group: "Categories",},
+    {
+        key: "categories.create",
+        label: "Create Categories",
+        group: "Categories",
+    },
     { key: "categories.edit", label: "Edit Categories", group: "Categories" },
-    {key: "categories.delete",label: "Delete Categories",group: "Categories",},
-    {key: "notifications.view",label: "View Notifications",group: "Notifications",},
-    {key: "notifications.action",label: "Action Notifications",group: "Notifications",},
+    {
+        key: "categories.delete",
+        label: "Delete Categories",
+        group: "Categories",
+    },
+    {
+        key: "notifications.view",
+        label: "View Notifications",
+        group: "Notifications",
+    },
+    {
+        key: "notifications.action",
+        label: "Action Notifications",
+        group: "Notifications",
+    },
     { key: "pricing.view", label: "View Pricing", group: "Pricing" },
     { key: "pricing.create", label: "Create Pricing", group: "Pricing" },
     { key: "pricing.edit", label: "Edit Pricing", group: "Pricing" },
@@ -40,23 +58,19 @@ const ALL_PERMS = [
     { key: "staffs.create", label: "Create Staffs", group: "Staffs" },
     { key: "staffs.edit", label: "Edit Staffs", group: "Staffs" },
     { key: "staffs.delete", label: "Delete Staffs", group: "Staffs" },
-    { key: "roles.view",   label: "View Roles",   group: "Roles" },
+    { key: "roles.view", label: "View Roles", group: "Roles" },
     { key: "roles.create", label: "Create Roles", group: "Roles" },
-    { key: "roles.edit",   label: "Edit Roles",   group: "Roles" },
+    { key: "roles.edit", label: "Edit Roles", group: "Roles" },
     { key: "roles.delete", label: "Delete Roles", group: "Roles" },
-    { key: "cms.view",   label: "View CMS",   group: "CMS" },
+    { key: "cms.view", label: "View CMS", group: "CMS" },
     { key: "cms.create", label: "Create CMS", group: "CMS" },
-    { key: "cms.edit",   label: "Edit CMS",   group: "CMS" },
+    { key: "cms.edit", label: "Edit CMS", group: "CMS" },
     { key: "cms.delete", label: "Delete CMS", group: "CMS" },
     { key: "profile.view", label: "View Profile", group: "Profile" },
     { key: "profile.edit", label: "Edit Profile", group: "Profile" },
     { key: "System.view", label: "View System", group: "System" },
     { key: "settings.action", label: "Action Settings", group: "System" },
-
-   
 ];
-
-
 
 const NAMES = [
     "Kishore Rex",
@@ -109,7 +123,7 @@ let USERS_DATA = window.USERS_DATA || [];
 //         email: "alex@dremind.co.uk",
 //         role: "manager",
 //         status: "active",
-       
+
 //         initials: "AM",
 //         color: "#0d9488",
 //     },
@@ -119,7 +133,7 @@ let USERS_DATA = window.USERS_DATA || [];
 //         email: "priya@dremind.co.uk",
 //         role: "support",
 //         status: "active",
-        
+
 //         initials: "PP",
 //         color: "#f59e0b",
 //     },
@@ -129,7 +143,7 @@ let USERS_DATA = window.USERS_DATA || [];
 //         email: "tom@dremind.co.uk",
 //         role: "analyst",
 //         status: "active",
-       
+
 //         initials: "TW",
 //         color: "#06b6d4",
 //     },
@@ -139,7 +153,7 @@ let USERS_DATA = window.USERS_DATA || [];
 //         email: "rachel@dremind.co.uk",
 //         role: "moderator",
 //         status: "active",
-       
+
 //         initials: "RG",
 //         color: "#10b981",
 //     },
@@ -149,11 +163,11 @@ let USERS_DATA = window.USERS_DATA || [];
 //         email: "james@dremind.co.uk",
 //         role: "support",
 //         status: "inactive",
-      
+
 //         initials: "JL",
 //         color: "#94a3b8",
 //     },
-   
+
 // ];
 
 var STAFF_DATA = window.STAFF_DATA || [];
@@ -219,7 +233,6 @@ const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
     date: new Date(Date.now() - i * 86400000 * 3),
     method: ["Visa •••• 4242", "Mastercard •••• 8888", "PayPal"][i % 3],
 }));
-
 
 let CATS_DATA = window.CATS_DATA || [];
 
@@ -1435,6 +1448,27 @@ function openUserDrawer(id) {
     });
 
     if (!u) return;
+    var subs = u.custom_subcategories || [];
+
+    var subRows = subs.length
+        ? subs
+              .map(function (s, i) {
+                  return (
+                      '<tr style="border-bottom:1px solid var(--border2)">' +
+                      '<td style="padding:10px 12px;color:var(--text3);font-weight:600;font-size:.75rem">' +
+                      String(i + 1).padStart(2, "0") +
+                      "</td>" +
+                      '<td style="padding:10px 12px;font-weight:500;color:var(--text)">' +
+                      s.category +
+                      "</td>" +
+                      '<td style="padding:10px 12px;font-weight:500;color:var(--text)">' +
+                      s.subcategory +
+                      "</td>" +
+                      "</tr>"
+                  );
+              })
+              .join("")
+        : '<tr><td colspan="3" style="padding:15px;text-align:center;color:var(--text3)">No Custom Subcategories Found</td></tr>';
 
     openDrawer(
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">User Details</h2><button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ri-close-line"></i></button></div>' +
@@ -1463,7 +1497,7 @@ function openUserDrawer(id) {
             '">' +
             u.status +
             "</span></div></div>" +
-            '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">' +
+            '<div style="display: grid;grid-template-columns: 2fr 2fr;gap:10px;margin-bottom:20px">' +
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Total Reminders</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             u.rems +
             "</span></div>" +
@@ -1482,7 +1516,7 @@ function openUserDrawer(id) {
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.postcode || "N/A") +
             "</span></div>" +
-            '</div><div style="display:flex;flex-direction:column;gap:8px">' +
+            '</div><div style="display: grid;grid-template-columns: 2fr 2fr 2fr;gap:8px">' +
             '<button id="verify-mail-btn-' +
             u.id +
             '" class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="sendVerifyMail(' +
@@ -1496,7 +1530,23 @@ function openUserDrawer(id) {
             ');closeDrawer()"><i class="ri-pause-line"></i> ' +
             (u.status === "active" ? "Suspend" : "Activate") +
             " Account</button>" +
-            "</div>",
+            "</div>" +
+            '<div style="margin-top:20px">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+            '<span style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)">Sub Categories</span>' +
+            '<span style="font-size:.72rem;background:var(--row-bg);border:1px solid var(--border2);color:var(--text2);padding:2px 8px;border-radius:20px">' +
+            subs.length +
+            " entries</span>" +
+            "</div>" +
+            '<table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">' +
+            '<thead><tr style="background:var(--row-bg);border-bottom:1px solid var(--border)">' +
+            '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;width:44px">#</th>' +
+            '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;width:38%">Category</th>' +
+            '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase">Sub Category</th>' +
+            "</tr></thead>" +
+            "<tbody>" +
+            subRows +
+            "</tbody></table></div>",
     );
 }
 
@@ -1524,6 +1574,12 @@ function renderStaff(data) {
         document.getElementById("staff-count-active").textContent = act;
     if (document.getElementById("staff-count-inactive"))
         document.getElementById("staff-count-inactive").textContent = inact;
+    var uniqueRoles = [
+        ...new Set(staffData.filter((s) => s.role).map((s) => s.role)),
+    ].length;
+
+    if (document.getElementById("staff-count-roles"))
+        document.getElementById("staff-count-roles").textContent = uniqueRoles;
     document.getElementById("staff-tbody").innerHTML = slice
         .map(function (s) {
             var role = ROLES_DATA.find(function (r) {
@@ -1573,7 +1629,7 @@ function renderStaff(data) {
                 morePerms +
                 "</div></td>" +
                 '<td><span class="badge badge-' +
-                (s.status === "active" ? "green" : "slate") +
+                (s.status === "active" ? "green" : "red") +
                 '">' +
                 s.status +
                 "</span></td>" +
@@ -1621,83 +1677,121 @@ function removeStaff(id) {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-        }
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
+        },
     })
-    .then(function(response) {
-        return response.json().then(function(data) {
-            return { status: response.status, data: data };
+        .then(function (response) {
+            return response.json().then(function (data) {
+                return { status: response.status, data: data };
+            });
+        })
+        .then(function (result) {
+            if (result.status !== 200) {
+                toast(result.data.message || "Something went wrong!", "error");
+                return;
+            }
+            staffData = staffData.filter(function (s) {
+                return s.id !== id;
+            });
+            staffFiltered = staffFiltered.filter(function (s) {
+                return s.id !== id;
+            });
+            renderStaff(staffData);
+            toast("Staff member removed", "success");
+        })
+        .catch(function (error) {
+            console.error(error);
+            toast("Something went wrong!", "error");
         });
-    })
-    .then(function(result) {
-        if (result.status !== 200) {
-            toast(result.data.message || "Something went wrong!", "error");
-            return;
-        }
-        staffData     = staffData.filter(function(s) { return s.id !== id; });
-        staffFiltered = staffFiltered.filter(function(s) { return s.id !== id; });
-        renderStaff(staffData);
-        toast("Staff member removed", "success");
-    })
-    .catch(function(error) {
-        console.error(error);
-        toast("Something went wrong!", "error");
-    });
 }
+
 function addStaffMember() {
-    var name   = document.getElementById("as-name").value.trim();
-    var email  = document.getElementById("as-email").value.trim();
+    var name = document.getElementById("as-name").value.trim();
+    var email = document.getElementById("as-email").value.trim();
     var roleId = document.getElementById("staff-role-sel").value;
-
-    if (!name || !email || !roleId) {
-        toast("Please fill required fields", "error");
-        return;
-    }
-
+    var phone = document.getElementById("as-phone").value.trim();
+    var status = document.getElementById("as-status").value;
+    var btn = document.getElementById("add-staff-btn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Processing...';
+    ["as-name", "as-email", "staff-role-sel", "as-phone"].forEach(
+        function (id) {
+            document.getElementById(id).style.borderColor = "";
+            var err = document.getElementById(id + "-error");
+            if (err) err.innerHTML = "";
+        },
+    );
     fetch("/admin/staff/store", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
         },
-        body: JSON.stringify({ name: name, email: email, role_id: roleId })
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            role_id: roleId,
+            phone: phone,
+            status: status,
+        }),
     })
-    .then(function(response) {
-        return response.json().then(function(data) {
-            return { status: response.status, data: data };
+        .then(function (response) {
+            return response.json().then(function (data) {
+                return {
+                    status: response.status,
+                    data: data,
+                };
+            });
+        })
+        .then(function (result) {
+            if (result.status === 422) {
+                var fieldMap = {
+                    name: "as-name",
+                    email: "as-email",
+                    role_id: "staff-role-sel",
+                    phone: "as-phone",
+                };
+                Object.keys(result.data.errors).forEach(function (field) {
+                    var inputId = fieldMap[field];
+                    if (!inputId) return;
+                    document.getElementById(inputId).style.borderColor =
+                        "#ef4444";
+                    var err = document.getElementById(inputId + "-error");
+                    if (err) {
+                        err.innerHTML = result.data.errors[field][0];
+                    }
+                });
+                btn.disabled = false;
+                btn.innerHTML = '<i class="ri-check-line"></i> Add Staff';
+                return;
+            }
+            if (result.status !== 200 && result.status !== 201) {
+                toast(result.data.message || "Something went wrong!", "error");
+                return;
+            }
+            toast(
+                result.data.message || "Staff member added successfully",
+                "success",
+            );
+            closeModal("add-staff-modal");
+            document.getElementById("as-name").value = "";
+            document.getElementById("as-email").value = "";
+            document.getElementById("as-phone").value = "";
+            document.getElementById("staff-role-sel").value = "";
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+        })
+        .catch(function (error) {
+            console.error(error);
+            toast("Something went wrong!", "error");
         });
-    })
-    .then(function(result) {
-        if (result.status === 422) {
-            toast(Object.values(result.data.errors)[0][0], "error");
-            return;
-        }
-        if (result.status !== 200 && result.status !== 201) {
-            toast(result.data.message || "Something went wrong!", "error");
-            return;
-        }
-
-        var s = result.data.staff;
-        staffData.push({
-            id:       s.id,
-            name:     s.name,
-            email:    s.email,
-            role:     s.role_id,
-            status:   s.status,
-            initials: s.initials,
-            color:    s.color,
-        });
-        staffFiltered = [...staffData];
-
-        toast("Staff member added!", "success");
-        closeModal("add-staff-modal");
-        renderStaff(staffData);
-    })
-    .catch(function(error) {
-        console.error(error);
-        toast("Something went wrong!", "error");
-    });
 }
+
 function openEditStaff(id) {
     var s = staffData.find(function (x) {
         return x.id === id;
@@ -1707,6 +1801,7 @@ function openEditStaff(id) {
     document.getElementById("es-name").value = s.name;
     document.getElementById("es-email").value = s.email;
     document.getElementById("es-status").value = s.status;
+    document.getElementById("es-phone").value = s.phone || "";
     // populate role dropdown
     var sel = document.getElementById("es-role");
     sel.innerHTML = ROLES_DATA.map(function (r) {
@@ -1724,57 +1819,95 @@ function openEditStaff(id) {
 }
 
 function saveEditStaff() {
-    var id     = parseInt(document.getElementById("es-id").value);
-    var name   = document.getElementById("es-name").value.trim();
-    var email  = document.getElementById("es-email").value.trim();
+    var id = parseInt(document.getElementById("es-id").value);
+    var name = document.getElementById("es-name").value.trim();
+    var email = document.getElementById("es-email").value.trim();
     var roleId = document.getElementById("es-role").value;
     var status = document.getElementById("es-status").value;
+    var phone = document.getElementById("es-phone").value.trim();
 
     fetch("/admin/staff/" + id, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
         },
-        body: JSON.stringify({ name: name, email: email, role_id: roleId, status: status })
+        body: JSON.stringify({
+            name: name,
+            email: email,
+            phone: phone,
+            role_id: roleId,
+            status: status,
+        }),
     })
-    .then(function(response) {
-        return response.json().then(function(data) {
-            return { status: response.status, data: data };
+        .then(function (response) {
+            return response.json().then(function (data) {
+                return { status: response.status, data: data };
+            });
+        })
+        .then(function (result) {
+            if (result.status === 422) {
+                document.getElementById("es-name").style.borderColor = "";
+                document.getElementById("es-phone").style.borderColor = "";
+
+                document.getElementById("es-name-error").innerHTML = "";
+                document.getElementById("es-phone-error").innerHTML = "";
+
+                if (result.data.errors.name) {
+                    document.getElementById("es-name").style.borderColor =
+                        "#ef4444";
+
+                    document.getElementById("es-name-error").innerHTML =
+                        result.data.errors.name[0];
+                }
+
+                if (result.data.errors.phone) {
+                    document.getElementById("es-phone").style.borderColor =
+                        "#ef4444";
+
+                    document.getElementById("es-phone-error").innerHTML =
+                        result.data.errors.phone[0];
+                }
+
+                return;
+            }
+            if (result.status !== 200) {
+                toast(result.data.message || "Something went wrong!", "error");
+                return;
+            }
+
+            var s = staffData.find(function (x) {
+                return x.id === id;
+            });
+            if (s) {
+                s.name = name;
+                s.email = email;
+                s.role = parseInt(roleId);
+                s.status = status;
+                s.initials = name
+                    .split(" ")
+                    .map(function (w) {
+                        return w[0];
+                    })
+                    .join("")
+                    .toUpperCase()
+                    .slice(0, 2);
+            }
+            staffFiltered = [...staffData];
+
+            toast("Staff updated!", "success");
+            closeModal("edit-staff-modal");
+            renderStaff(staffData);
+        })
+        .catch(function (error) {
+            console.error(error);
+            toast("Something went wrong!", "error");
         });
-    })
-    .then(function(result) {
-        if (result.status === 422) {
-            toast(Object.values(result.data.errors)[0][0], "error");
-            return;
-        }
-        if (result.status !== 200) {
-            toast(result.data.message || "Something went wrong!", "error");
-            return;
-        }
-
-        var s = staffData.find(function(x) { return x.id === id; });
-        if (s) {
-            s.name     = name;
-            s.email    = email;
-            s.role     = parseInt(roleId);
-            s.status   = status;
-            s.initials = name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
-        }
-        staffFiltered = [...staffData];
-
-        toast("Staff updated!", "success");
-        closeModal("edit-staff-modal");
-        renderStaff(staffData);
-    })
-    .catch(function(error) {
-        console.error(error);
-        toast("Something went wrong!", "error");
-    });
 }
 
 function openStaffDrawer(id) {
-
     var s = staffData.find(function (x) {
         return x.id === id;
     });
@@ -1785,72 +1918,83 @@ function openStaffDrawer(id) {
         return r.id === s.role;
     }) || {
         name: s.role,
-        color: "#94a3b8",
-        perms: []
+        color: "red",
+        perms: [],
     };
 
     openDrawer(
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">' +
             '<h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">Staff Details</h2>' +
             '<button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer">' +
-                '<i class="ri-close-line"></i>' +
-            '</button>' +
-        '</div>' +
-        '<div style="text-align:center;margin-bottom:20px">' +
-            '<div class="avatar avatar-lg" style="background:' + s.color + '22;color:' + s.color + ';margin:0 auto 10px">' +
-                s.initials +
-            '</div>' +
+            '<i class="ri-close-line"></i>' +
+            "</button>" +
+            "</div>" +
+            '<div style="text-align:center;margin-bottom:20px">' +
+            '<div class="avatar avatar-lg" style="background:' +
+            s.color +
+            "22;color:" +
+            s.color +
+            ';margin:0 auto 10px">' +
+            s.initials +
+            "</div>" +
             '<div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
-                s.name +
-            '</div>' +
+            s.name +
+            "</div>" +
             '<div style="font-size:.75rem;color:var(--text3)">' +
-                s.email +
-            '</div>' +
+            s.email +
+            "</div>" +
             '<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:99px;font-size:.68rem;font-weight:700;background:' +
-                role.color +
-                '22;color:' +
-                role.color +
-                ';border:1px solid ' +
-                role.color +
-                '44;margin-top:8px">' +
-                role.name +
-            '</span>' +
-        '</div>' +
-        '<div style="margin-bottom:14px">' +
+            role.color +
+            "22;color:" +
+            role.color +
+            ";border:1px solid " +
+            role.color +
+            '44;margin-top:8px">' +
+            role.name +
+            "</span>" +
+            "</div>" +
+            '<div style="margin-bottom:14px">' +
             '<div style="font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px">' +
-                'Permissions' +
-            '</div>' +
+            "Permissions" +
+            "</div>" +
             '<div style="display:flex;flex-wrap:wrap;gap:5px">' +
-                role.perms.map(function (p) {
-                    return '<span class="chip">' + p + '</span>';
-                }).join('') +
-            '</div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
+            role.perms
+                .map(function (p) {
+                    return '<span class="chip">' + p + "</span>";
+                })
+                .join("") +
+            "</div>" +
+            "</div>" +
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
-                '<span style="font-size:.78rem;color:var(--text3)">Status</span>' +
-                '<span class="badge badge-' +
-                    (s.status === "active" ? "green" : "slate") +
-                '">' +
-                    s.status +
-                '</span>' +
-            '</div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:8px">' +
+            '<span style="font-size:.78rem;color:var(--text3)">Phone</span>' +
+            '<span style="font-size:.78rem;font-weight:600;color:var(--text)">' +
+            (s.phone || "-") +
+            "</span>" +
+            "</div>" +
+            '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
+            '<span style="font-size:.78rem;color:var(--text3)">Status</span>' +
+            '<span class="badge badge-' +
+            (s.status === "active" ? "green" : "red") +
+            '">' +
+            s.status +
+            "</span>" +
+            "</div>" +
+            "</div>" +
+            '<div style="display:flex;flex-direction:column;gap:8px">' +
             '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditStaff(' +
-                s.id +
+            s.id +
             ')">' +
-                '<i class="ri-pencil-line"></i> Edit Role' +
-            '</button>' +
+            '<i class="ri-pencil-line"></i> Edit Role' +
+            "</button>" +
             '<button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
-                s.name +
-                '?\',function(){removeStaff(' +
-                s.id +
-                ');closeDrawer()})">' +
-                '<i class="ri-delete-bin-line"></i> Remove' +
-            '</button>' +
-        '</div>'
-
+            s.name +
+            "?',function(){removeStaff(" +
+            s.id +
+            ');closeDrawer()})">' +
+            '<i class="ri-delete-bin-line"></i> Remove' +
+            "</button>" +
+            "</div>",
     );
 }
 
@@ -3368,54 +3512,25 @@ function saveSubcategoryEdit() {
 /* ══════════════════════════════════════════
 NOTIFICATIONS
 ══════════════════════════════════════════ */
+let NOTIFICATIONS_DATA = window.NOTIFICATIONS_DATA || [];
 function renderNotifications() {
-    var notifs = [
-        {
-            icon: "ri-alarm-line",
-            bg: "rgba(245,158,11,.12)",
-            col: "#f59e0b",
-            title: "Car Insurance Due Soon",
-            desc: "User Kishore Rex has a reminder due in 3 days",
-            time: "2 hours ago",
-            unread: true,
-        },
-        {
-            icon: "ri-bug-line",
-            bg: "rgba(244,63,94,.12)",
-            col: "#f43f5e",
-            title: "Bug Report: Push Notification Failure",
-            desc: "SMS delivery failing for UK numbers with +44",
-            time: "5 hours ago",
-            unread: true,
-        },
-        {
-            icon: "ri-user-add-line",
-            bg: "rgba(16,185,129,.12)",
-            col: "#10b981",
-            title: "New User Registration",
-            desc: "Sarah Johnson registered with Basic Annual plan",
-            time: "1 day ago",
-            unread: true,
-        },
-        {
-            icon: "ri-money-pound-circle-line",
-            bg: "rgba(16,185,129,.12)",
-            col: "#10b981",
-            title: "Payment Received",
-            desc: "£2.40 from Michael Chen — Basic Annual",
-            time: "1 day ago",
-            unread: false,
-        },
-        {
-            icon: "ri-shield-check-line",
-            bg: "rgba(6,182,212,.12)",
-            col: "#06b6d4",
-            title: "Security Alert",
-            desc: "New admin login from 192.168.1.10",
-            time: "2 days ago",
-            unread: true,
-        },
-    ];
+
+    var notifs = NOTIFICATIONS_DATA || [];
+
+    updateNotificationCount();
+
+     if (!notifs.length) {
+
+        document.getElementById("admin-notif-list").innerHTML =
+            '<div class="card" style="padding:40px 20px;text-align:center">' +
+            '<i class="ri-notification-off-line" style="font-size:48px;color:var(--text4)"></i>' +
+            '<div style="margin-top:12px;font-size:.95rem;font-weight:600;color:var(--text)">No Notifications</div>' +
+            '<div style="margin-top:4px;font-size:.78rem;color:var(--text3)">There are no notifications available.</div>' +
+            '</div>';
+
+        return;
+    }
+
     document.getElementById("admin-notif-list").innerHTML = notifs
         .map(function (n) {
             return (
@@ -3426,28 +3541,158 @@ function renderNotifications() {
                 '">' +
                 '<div style="width:36px;height:36px;border-radius:10px;background:' +
                 n.bg +
-                ';display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="' +
-                n.icon +
-                '" style="color:' +
-                n.col +
-                '"></i></div>' +
-                '<div style="flex:1;min-width:0"><div style="font-size:.84rem;font-weight:600;color:var(--text)">' +
+                ';display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+                '<i class="' + n.icon + '" style="color:' + n.col + '"></i>' +
+                '</div>' +
+                '<div style="flex:1;min-width:0">' +
+                '<div style="font-size:.84rem;font-weight:600;color:var(--text)">' +
                 n.title +
-                '</div><div style="font-size:.75rem;color:var(--text3);margin-top:2px">' +
+                '</div>' +
+                '<div style="font-size:.75rem;color:var(--text3);margin-top:2px">' +
                 n.desc +
-                '</div><div style="font-size:.7rem;color:var(--text4);margin-top:4px"><i class="ri-time-line"></i> ' +
-                n.time +
-                "</div></div>" +
+                '</div>' +
+                '<div style="font-size:.7rem;color:var(--text4);margin-top:4px">' +
+                '<i class="ri-time-line"></i> ' + n.time +
+                '</div>' +
+                '</div>' +
                 '<div style="display:flex;gap:4px;flex-shrink:0">' +
                 (n.unread
-                    ? "<button class=\"btn btn-ghost btn-xs\" onclick=\"this.closest('.act-item').style.background='';this.closest('.act-item').style.borderColor='';this.remove();toast('Marked as read','success')\"><i class=\"ri-check-line\"></i></button>"
-                    : "") +
-                "<button class=\"btn btn-danger btn-xs\" onclick=\"this.closest('.act-item').remove();toast('Deleted','info')\"><i class=\"ri-delete-bin-line\"></i></button></div></div>"
+                    ? '<button class="btn btn-ghost btn-xs" onclick="markNotificationRead(' + n.id + ',this)"><i class="ri-check-line"></i></button>'
+                    : '') +
+                '<button class="btn btn-danger btn-xs" onclick="deleteNotification(' + n.id + ',this)"><i class="ri-delete-bin-line"></i></button>' +
+                '</div>' +
+                '</div>'
             );
         })
         .join("");
 }
 
+function markNotificationRead(id, btn) {
+    fetch("/admin/notification/read", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+        },
+        body: JSON.stringify({
+            id: id,
+        }),
+    })
+        .then((r) => r.json())
+        .then((data) => {
+            if (data.status) {
+                var n = NOTIFICATIONS_DATA.find((x) => x.id == id);
+
+                if (n) n.unread = false;
+
+                btn.closest(".act-item").style.background = "";
+                btn.closest(".act-item").style.borderColor = "";
+
+                btn.remove();
+
+                toast("Marked as read", "success");
+            }
+        });
+}
+
+function deleteNotification(id, btn) {
+    fetch("/admin/notification/delete", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+        },
+        body: JSON.stringify({
+            id: id,
+        }),
+    })
+        .then((r) => r.json())
+        .then((data) => {
+            if (data.status) {
+                NOTIFICATIONS_DATA = NOTIFICATIONS_DATA.filter(function (n) {
+                    return n.id != id;
+                });
+
+                btn.closest(".act-item").remove();
+
+                toast("Deleted", "success");
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+            } else {
+                toast("Delete failed", "error");
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+
+            toast("Something went wrong", "error");
+        });
+}
+
+function markAllNotificationsRead() {
+    openConfirm("Mark all notifications as read?", function () {
+        fetch("/admin/notification/read-all", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+            },
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.status) {
+                    NOTIFICATIONS_DATA.forEach(function (n) {
+                        n.unread = false;
+                    });
+
+                    renderNotifications();
+
+                    toast("All notifications marked as read", "success");
+                }
+            });
+    });
+}
+
+function deleteAllNotifications() {
+    openConfirm("Delete all notifications?", function () {
+        fetch("/admin/notification/delete-all", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector(
+                    'meta[name="csrf-token"]',
+                ).content,
+            },
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.status) {
+                    NOTIFICATIONS_DATA = [];
+
+                    renderNotifications();
+
+                    toast("All notifications deleted", "success");
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                }
+            });
+    });
+}
+function updateNotificationCount() {
+
+    var count = (NOTIFICATIONS_DATA || []).length;
+
+    document.getElementById('notif-count').innerText = count;
+
+    document.getElementById('notif-actions').style.display =
+        count ? 'flex' : 'none';
+}
 /* ══════════════════════════════════════════
 AUDIT LOG
 ══════════════════════════════════════════ */

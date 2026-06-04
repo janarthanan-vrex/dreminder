@@ -50,7 +50,7 @@
             <div class="stat-ico" style="background: rgba(245, 158, 11, 0.12)">
                 <i class="ri-key-2-line" style="color: var(--amber)"></i>
             </div>
-            <div class="stat-num">4</div>
+            <div class="stat-num" id="staff-count-roles">{{ $rolesAssignedCount }}</div>
             <div class="stat-lbl">Roles Assigned</div>
         </div>
     </div>
@@ -94,8 +94,22 @@
     </div>
 </section>
 <script>
+    function clearStaffError(input,errorId){
+
+    input.style.borderColor='';
+
+    document.getElementById(errorId).innerHTML='';
+}
+
+function clearAddStaffError(input,errorId){
+
+    input.style.borderColor='';
+
+    document.getElementById(errorId).innerHTML='';
+}
     window.STAFF_DATA = @json($staffData->values());
     window.ROLES_DATA = @json($rolesData->values());
+    let ROLES_ASSIGNED_COUNT = {{ $rolesAssignedCount }};
 
     // re-init after window data is set
     staffData     = [...window.STAFF_DATA];

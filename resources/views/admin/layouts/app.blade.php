@@ -52,18 +52,25 @@
         }
     </style>
     <style>
-    .ts-wrapper .ts-control{
-        border:none !important;
-        padding:0 !important;
-        box-shadow:none !important;
-        background:transparent !important;
-        min-height:auto !important;
-    }
-</style>
+        .ts-wrapper .ts-control {
+            border: none !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+            background: transparent !important;
+            min-height: auto !important;
+        }
+    </style>
 
 </head>
 <style>
     .err {
+        color: red;
+        font-size: 12px;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .text-danger {
         color: red;
         font-size: 12px;
         margin-top: 4px;
@@ -107,10 +114,14 @@
     @php
     use App\Models\Category;
     use App\Models\PlanPrice;
+    use App\Models\Role;
     $categories = Category::where('status', 'Active')
     ->orderBy('name')
     ->get();
     $plans = PlanPrice::where('status', 'Active')
+    ->get();
+    $rolesData = Role::where('status', 'Active')
+    ->orderBy('rolename')
     ->get();
 
     @endphp
@@ -308,69 +319,52 @@
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
-                    <label class="label">Full Name <span style="color: var(--red)">*</span></label><input class="inp" id="as-name" placeholder="Jane Doe" />
+                    <label class="label">Full Name <span style="color: var(--red)">*</span></label>
+                    <input class="inp" id="as-name" maxlength="50" placeholder="Jane Doe" oninput="
+                            this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
+                            clearAddStaffError(this,'as-name-error');
+                        " />
+                    <small id="as-name-error" class="text-danger"></small>
                 </div>
                 <div>
-                    <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="as-email" placeholder="jane@dremind.co.uk" />
+                    <label class="label">Email <span style="color: var(--red)">*</span></label>
+                    <input class="inp" id="as-email" maxlength="45" placeholder="jane@dremind.co.uk" oninput="clearAddStaffError(this,'as-email-error')" />
+                    <small id="as-email-error" class="text-danger"></small>
                 </div>
             </div>
-            <div class="g2" style="margin-bottom: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
 
-                <!-- Password -->
-                <div style="position: relative;">
-                    <label class="label">
-                        Password <span style="color: var(--red)">*</span>
-                    </label>
-                    <input
-                        type="password"
-                        class="inp"
-                        id="password"
-                        placeholder="Enter password"
-                        style="padding-right: 40px;" />
-                    <i class="ri-eye-off-line toggle-eye"
-                        onclick="togglePassword('password', this)"
-                        style="position:absolute; right:12px; top:30px; cursor:pointer; color:#64748b;"></i>
-                </div>
-
-                <!-- Confirm Password -->
-                <div style="position: relative;">
-                    <label class="label">
-                        Confirm Password <span style="color: var(--red)">*</span>
-                    </label>
-                    <input
-                        type="password"
-                        class="inp"
-                        id="confirmPassword"
-                        placeholder="Confirm password"
-                        style="padding-right: 40px;" />
-                    <i class="ri-eye-off-line toggle-eye"
-                        onclick="togglePassword('confirmPassword', this)"
-                        style="position:absolute; right:12px; top:30px; cursor:pointer; color:#64748b;"></i>
-                </div>
-
-            </div>
 
             <div class="g2" style="margin-bottom: 14px">
                 <div>
-                    <label class="label">Role <span style="color: var(--red)">*</span></label><select class="inp" id="staff-role-sel">
-                        <option value="">Select role…</option>
+                    <label class="label">Role <span style="color: var(--red)">*</span></label>
+                    <select class="inp" id="staff-role-sel" onchange="clearAddStaffError(this,'staff-role-sel-error')">
+                        <option value="">Select role...</option>
+
+                        @foreach($rolesData as $role)
+                        <option value="{{ $role->id }}">
+                            {{ $role->rolename }}
+                        </option>
+                        @endforeach
                     </select>
+
+                    <small id="staff-role-sel-error" class="text-danger"></small>
+                </div>
+                <div style="margin-bottom: 18px">
+                    <label class="label">Phone</label>
+                    <input class="inp" id="as-phone" maxlength="15" placeholder="+44 7700 000000" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearAddStaffError(this,'as-phone-error');">
+                    <small id="as-phone-error" class="text-danger"></small>
                 </div>
                 <div>
-                    <label class="label">Department</label><select class="inp" id="as-dept">
-                        <option>Engineering</option>
-                        <option>Support</option>
-                        <option>Marketing</option>
-                        <option>Finance</option>
+                    <label class="label">Status</label><select class="inp" id="as-status">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
                     </select>
                 </div>
             </div>
-            <div style="margin-bottom: 18px">
-                <label class="label">Phone</label><input class="inp" id="as-phone" placeholder="+44 7700 000000" />
-            </div>
+
             <div style="display: flex; gap: 8px; justify-content: flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('add-staff-modal')">Cancel</button>
-                <button class="btn btn-primary btn-sm" onclick="addStaffMember()">
+                <button class="btn btn-primary btn-sm" id="add-staff-btn" onclick="addStaffMember()">
                     <i class="ri-check-line"></i> Add Staff
                 </button>
             </div>
@@ -396,18 +390,30 @@
             </div>
             <input type="hidden" id="es-id" />
             <div class="g2" style="margin-bottom: 14px">
-                <div><label class="label">Full Name</label><input class="inp" id="es-name" /></div>
-                <div><label class="label">Email</label><input class="inp" id="es-email" type="email" /></div>
+                <div><label class="label">Full Name</label><input class="inp" id="es-name" oninput="clearStaffError(this,'es-name-error')" /> <small id="es-name-error" style="color: red"></small></div>
+                <div><label class="label">Email</label><input readonly class="inp" id="es-email" type="email" /></div>
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <label class="label">Role</label><select class="inp" id="es-role"></select>
                 </div>
                 <div>
-                    <label class="label">Status</label><select class="inp" id="es-status">
+                    <label class="label">Status</label>
+                    <select class="inp" id="es-status">
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </select>
+                </div>
+                <div>
+                    <label class="label">Phone</label>
+
+                    <input class="inp"
+                        id="es-phone"
+                        maxlength="15"
+                        placeholder="7700000000"
+                        oninput="this.value=this.value.replace(/\D/g,'').slice(0,15);clearStaffError(this,'es-phone-error')">
+
+                    <small id="es-phone-error" style="color:red"></small>
                 </div>
             </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end">

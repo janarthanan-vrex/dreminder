@@ -57,12 +57,18 @@ Route::post('/admin/categories/update',[ManagementController::class, 'updateCate
 Route::get('/admin-reminders',[ManagementController::class,'reminderPage',])->name('admin.reminderpage');
 Route::get('/admin-calendar',[ManagementController::class,'calendarPage'])->name('admin.calendarpage');
 Route::get('/admin/calendar/user-data',[ManagementController::class, 'getUserCalendar'])->name('admin.calendar.user.data');
-
+Route::get('/admin-notifications',[ManagementController::class,'notificationPage',])->name('admin.notifications');
+Route::post('/admin/notification/read',[ManagementController::class, 'markNotificationRead']);
+Route::post('/admin/notification/delete',[ManagementController::class, 'deleteNotification']);
+Route::post('/admin/notification/read-all',[ManagementController::class,'markAllNotificationsRead']);
+Route::post('/admin/notification/delete-all',[ManagementController::class,'deleteAllNotifications']);
 
 
 Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
 Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');
 Route::post('/admin/feedback/reply',[SystemController::class,'replyFeedback'])->name('admin.feedback.reply');
+
+
 
 
 
@@ -79,6 +85,11 @@ Route::post('/admin/save-plan',[CmsController::class,'savePlan'])->name('save.pl
     Route::delete('admin/coupons/{id}',[CmsController::class, 'deleteCoupon'])->name('coupons.destroy');
 
    
+    Route::get('/admin-cms-privacy',[CmsController::class, 'privacyPolicy'])->name('admin.cms.privacy');
+
+    Route::post('/admin/privacy-policy/save', [CmsController::class, 'savePrivacyPolicy'])->name('privacy-policy.save');
+    Route::get('/admin-cms-terms',[CmsController::class, 'termsCondition'])->name('admin.cms.terms');
+        Route::post('/admin/terms-condition/save', [CmsController::class, 'saveTermsCondition'])->name('terms-condition.save');
 
 Route::get('/admin-roles',[TeamController::class,'rolesPage'])->name('admin.roles');
 Route::post('/admin/roles/store',[TeamController::class,'store'])->name('admin.roles.store');

@@ -204,17 +204,7 @@ Route::get('/admin-settings', function () {
 Route::get('/admin-audit', function () {
     return view('admin.audit');
 });
-Route::get('/admin-notifications', function () {
-    return view('admin.notifications');
-});
 
-// Route::get('/admin-feedback', function () {
-//     return view('admin.feedback');
-// });
-// Route::post('/logout', function () {
-//     Auth::logout();
-//     return redirect('/admin-dashboard');
-// })->name('logout');
 
 // Admin CMS
 

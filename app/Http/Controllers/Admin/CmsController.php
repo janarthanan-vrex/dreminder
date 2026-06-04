@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PlanPrice;
+use App\Models\PrivacyPolicy;
+use App\Models\TermsPage;
 use Illuminate\Support\Facades\Validator;
 
 class CmsController extends Controller
@@ -140,4 +142,64 @@ class CmsController extends Controller
         $coupons = \App\Models\Coupon::latest()->get();
         return response()->json(['status' => true, 'coupons' => $coupons]);
     }
+
+   public function privacyPolicy(Request $request)
+{
+    $policy = PrivacyPolicy::where('slug', 'privacy-policy')->first();
+
+    return view('admin.admin-cms-privacy', [
+        'content' => $policy?->content
+    ]);
+}
+
+    public function savePrivacyPolicy(Request $request)
+    {
+        $request->validate([
+            'content' => 'required',
+        ]);
+
+        PrivacyPolicy::updateOrCreate(
+            ['slug' => 'privacy-policy'],
+            [
+                'title'   => 'Privacy Policy',
+                'content' => $request->content, // Store HTML directly
+            ]
+        );
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Privacy Policy saved successfully.'
+        ]);
+    }
+
+
+    public function termsCondition(Request $request)
+{
+    $terms = TermsPage::where('slug', 'terms-condition')->first();
+
+    return view('admin.admin-cms-terms', [
+        'content' => $terms?->content
+    ]);
+}
+
+     public function saveTermsCondition(Request $request)
+    {
+        $request->validate([
+            'content' => 'required',
+        ]);
+
+        TermsPage::updateOrCreate(
+            ['slug' => 'terms-condition'],
+            [
+                'title'   => 'Terms & Conditions',
+                'content' => $request->content, // Store HTML directly
+            ]
+        );
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Terms & Conditions saved successfully.'
+        ]);
+    }
+
 }

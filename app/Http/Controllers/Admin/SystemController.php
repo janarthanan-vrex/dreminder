@@ -17,55 +17,36 @@ class SystemController extends Controller
             ->latest()
             ->get()
             ->map(function ($f) {
-
                 return [
-
                     'id' => $f->id,
-
                     'user' => $f->user->first_name . ' ' . $f->user->last_name,
-
                     'email' => $f->user->email,
-
                     'phone' => $f->user->phone,
-
                     'subject' => $f->subject,
-
                     'category' => $f->priority,
-
                     'type' => strtolower($f->priority),
-
                     'status' => strtolower($f->feedback_status),
-
                     'msg' => $f->message,
-
                     'admin_reply' => $f->admin_reply,
-
                     'time' => $f->created_at->diffForHumans(),
-
                     'icon' =>
                     $f->priority == 'High'
                         ? 'ri-error-warning-line'
                         : ($f->priority == 'Medium'
                             ? 'ri-lightbulb-line'
                             : 'ri-message-2-line'),
-
                     'col' =>
                     $f->priority == 'High'
                         ? '#ef4444'
                         : ($f->priority == 'Medium'
                             ? '#94a3b8'
                             : '#10b981')
-
                 ];
             });
-
         // Counts
         $totalFeedbacks = Feedback::count();
-
         $resolvedFeedbacks = Feedback::where('feedback_status', 'resolved')->count();
-
         $pendingFeedbacks = Feedback::where('feedback_status', 'pending')->count();
-
         return view('admin.feedback', compact(
             'feedbacks',
             'totalFeedbacks',
@@ -130,4 +111,5 @@ class SystemController extends Controller
 
         ]);
     }
+    
 }

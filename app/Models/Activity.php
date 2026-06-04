@@ -12,6 +12,8 @@ class Activity extends Model
         'description',
         'is_auto_generate',
         'is_seen',
+        'notify_for',
+        'admin_seen',
     ];
 
     protected $casts = [

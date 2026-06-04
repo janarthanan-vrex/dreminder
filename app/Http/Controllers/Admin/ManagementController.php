@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ReminderHistory;
 use Carbon\Carbon;
+use App\Models\Activity;
+
 
 class ManagementController extends Controller
 {
@@ -172,6 +174,17 @@ class ManagementController extends Controller
                     'profile' => $user->profile
                         ? asset($user->profile)
                         : null,
+                    'custom_subcategories' => SubCategory::with('category')
+                        ->where('role', 'user')
+                        ->where('created_by', $user->id)
+                        ->get()
+                        ->map(function ($sub) {
+                            return [
+                                'category' => $sub->category?->name ?? 'N/A',
+                                'subcategory' => $sub->name,
+                            ];
+                        })
+                        ->values(),
                 ];
             });
 
@@ -443,7 +456,7 @@ class ManagementController extends Controller
     {
 
         $selectedUserId = $request->user_id;
-        $users = User::with('plan')->select('id','first_name','last_name','email','plan_id')
+        $users = User::with('plan')->select('id', 'first_name', 'last_name', 'email', 'plan_id')
             ->get()
             ->map(function ($user) {
                 return [
@@ -606,4 +619,68 @@ class ManagementController extends Controller
             'message' => 'Category updated successfully'
         ]);
     }
+
+    public function notificationPage()
+    {
+        $notifications = Activity::where('notify_for', 'admin')
+            ->latest()
+            ->get()
+            ->map(function ($n) {
+                return [
+                    'id' => $n->id,
+                    'icon' => 'ri-notification-3-line',
+                    'bg' => 'rgba(124,58,237,.12)',
+                    'col' => '#7c3aed',
+                    'title' => $n->title ?? 'Notification',
+                    'desc' => $n->description,
+                    'time' => $n->created_at->diffForHumans(),
+                    'unread' => !$n->admin_seen,
+                ];
+            });
+
+        return view('admin.notifications', compact('notifications'));
+    }
+
+    public function markNotificationRead(Request $request)
+{
+    Activity::where('id', $request->id)
+        ->update(['admin_seen' => 1]);
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function deleteNotification(Request $request)
+{
+    Activity::where('id', $request->id)
+        ->delete();
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function markAllNotificationsRead()
+{
+    Activity::where('notify_for', 'admin')
+        ->where('admin_seen', 0)
+        ->update([
+            'admin_seen' => 1
+        ]);
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function deleteAllNotifications()
+{
+    Activity::where('notify_for', 'admin')
+        ->delete();
+
+    return response()->json([
+        'status' => true
+    ]);
+}
 }
