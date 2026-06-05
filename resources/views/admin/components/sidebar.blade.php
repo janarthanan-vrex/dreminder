@@ -4,9 +4,13 @@
     </div>
     @php
     use App\Models\Admin;
-    $admin=Auth::guard('admin')->user();
+    use App\Models\Activity;
 
-    @endphp
+    $admin = Auth::guard('admin')->user();
+
+    $notificationCount = Activity::where('notify_for','admin')
+        ->count();
+@endphp
     <nav class="sb-nav">
         
         <div class="sb-section">Overview</div>
@@ -19,7 +23,13 @@
         <a class="nav-item" href="{{route('admin.calendarpage')}}"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
         <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
         <a class="nav-item" href="{{route('admin.category')}}"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
-        <a class="nav-item" href="admin-notifications"><i class="ri-notification-3-line"></i><span class="nav-lbl">Notifications</span><span class="nav-badge">5</span></a>
+        <a class="nav-item" href="{{route('admin.notifications')}}">
+            <i class="ri-notification-3-line"></i>
+            <span class="nav-lbl">Notifications</span>
+            @if($notificationCount > 0)
+                <span class="nav-badge">{{ $notificationCount }}</span>
+            @endif
+        </a>
 
         <div class="sb-section">Pricing</div>
         <a class="nav-item" href="admin-pricing"><i class="ri-vip-crown-line"></i><span class="nav-lbl">Pricing</span></a>
@@ -40,7 +50,7 @@
         <a class="nav-item" href="admin-cms-privacy"><i class="ri-shield-user-line"></i><span class="nav-lbl">Privacy Policy</span></a>
 
         <div class="sb-section">System</div>
-        <a class="nav-item" href="admin-settings"><i class="ri-settings-3-line"></i><span class="nav-lbl">Settings</span></a>
+        <a class="nav-item" href="{{route('admin.settings')}}"><i class="ri-settings-3-line"></i><span class="nav-lbl">Settings</span></a>
         <a class="nav-item" href="admin-audit"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
         <a class="nav-item" href="{{route('admin.feedback')}}"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
 

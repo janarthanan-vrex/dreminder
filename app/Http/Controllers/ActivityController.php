@@ -287,14 +287,25 @@ class ActivityController extends Controller
             'priority.required' => 'Please select priority',
         ]);
 
+        $user = Auth::user();
+
         Feedback::create([
-            'user_id' => Auth::id(),
+           'user_id' => $user->id,
             'subject' => $request->subject,
             'message' => $request->message,
             'priority' => $request->priority,
             'is_receive' => $request->is_receive ?? 0,
             'admin_reply' => null,
         ]);
+
+        Activity::create(
+            [
+                'user_id' => $user->id,
+                'title'       => 'Feedback from ' . $user->first_name . ' ' . $user->last_name . ' - ' . $request->subject,
+                'description' => $request->message,
+                'notify_for' => 'admin',
+
+            ]);
 
         return response()->json([
             'status' => true,

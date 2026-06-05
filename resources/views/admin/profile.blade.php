@@ -17,7 +17,7 @@
             Manage your admin account
         </p>
     </div>
-    <div class="g2">
+    <div class="g1">
         <div style="display: flex; flex-direction: column; gap: 16px">
 
             <form id="profileForm" enctype="multipart/form-data">
@@ -194,7 +194,7 @@
                 }
             </script>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 16px">
+        <div  style="display: none; flex-direction: column; gap: 16px">
             <div class="card" style="padding: 22px">
                 <div class="section-title">Security Preferences</div>
                 <div style="display: flex; flex-direction: column; gap: 10px">

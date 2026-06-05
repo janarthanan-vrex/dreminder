@@ -67,29 +67,43 @@ Route::post('/admin/notification/delete-all',[ManagementController::class,'delet
 Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
 Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');
 Route::post('/admin/feedback/reply',[SystemController::class,'replyFeedback'])->name('admin.feedback.reply');
-
+Route::get('/admin-settings',[SystemController::class,'adminSettings'])->name('admin.settings');
 
 
 
 
 Route::get('/admin-pricing',[CmsController::class,'pricingPage'])->name('admin.pricing');
 Route::post('/admin/save-plan',[CmsController::class,'savePlan'])->name('save.plan');
+Route::delete('admin/delete-plan/{id}',[CmsController::class, 'deletePlan'])->name('delete.plan');
 
-
-    Route::delete('admin/delete-plan/{id}',[CmsController::class, 'deletePlan'])->name('delete.plan');
-
-    // Coupon routes
-    Route::get('admin/coupons',[CmsController::class, 'getCoupons'])->name('coupons.index');
-    Route::post('admin/coupons',[CmsController::class, 'createCoupon'])->name('coupons.store');
-    Route::put('admin/coupons/{id}',[CmsController::class, 'updateCoupon'])->name('coupons.update');
-    Route::delete('admin/coupons/{id}',[CmsController::class, 'deleteCoupon'])->name('coupons.destroy');
+// Coupon routes
+Route::get('admin/coupons',[CmsController::class, 'getCoupons'])->name('coupons.index');
+Route::post('admin/coupons',[CmsController::class, 'createCoupon'])->name('coupons.store');
+Route::put('admin/coupons/{id}',[CmsController::class, 'updateCoupon'])->name('coupons.update');
+Route::delete('admin/coupons/{id}',[CmsController::class, 'deleteCoupon'])->name('coupons.destroy');
 
    
-    Route::get('/admin-cms-privacy',[CmsController::class, 'privacyPolicy'])->name('admin.cms.privacy');
+Route::get('/admin-cms-privacy',[CmsController::class, 'privacyPolicy'])->name('admin.cms.privacy');
+Route::post('/admin/privacy-policy/save', [CmsController::class, 'savePrivacyPolicy'])->name('privacy-policy.save');
+Route::get('/admin-cms-terms',[CmsController::class, 'termsCondition'])->name('admin.cms.terms');
+Route::post('/admin/terms-condition/save', [CmsController::class, 'saveTermsCondition'])->name('terms-condition.save');
+Route::get('/admin-cms-faq',[CmsController::class,'faqPage'])->name('admin.faq');
 
-    Route::post('/admin/privacy-policy/save', [CmsController::class, 'savePrivacyPolicy'])->name('privacy-policy.save');
-    Route::get('/admin-cms-terms',[CmsController::class, 'termsCondition'])->name('admin.cms.terms');
-        Route::post('/admin/terms-condition/save', [CmsController::class, 'saveTermsCondition'])->name('terms-condition.save');
+
+
+    // FAQ CRUD (AJAX)
+    Route::post  ('/admin/cms/faqs',            [CmsController::class, 'storeFaq']);
+    Route::put   ('/admin/cms/faqs/{faq}',      [CmsController::class, 'updateFaq']);
+    Route::delete('/admin/cms/faqs/{faq}',      [CmsController::class, 'destroyFaq']);
+    Route::post  ('/admin/cms/faqs/reorder',    [CmsController::class, 'reorderFaqs']);
+
+    // Category CRUD (AJAX)
+    Route::post  ('/admin/cms/categories',                   [CmsController::class, 'storeCategory']);
+    Route::put   ('/admin/cms/categories/{faqCategory}',     [CmsController::class, 'updateCategory']);
+    Route::delete('/admin/cms/categories/{faqCategory}',     [CmsController::class, 'destroyCategory']);
+
+
+       
 
 Route::get('/admin-roles',[TeamController::class,'rolesPage'])->name('admin.roles');
 Route::post('/admin/roles/store',[TeamController::class,'store'])->name('admin.roles.store');

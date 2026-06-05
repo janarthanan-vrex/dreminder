@@ -111,5 +111,10 @@ class SystemController extends Controller
 
         ]);
     }
+
+    public function adminSettings(Request $request){
+      
+        return view('admin.settings');
+    }
     
 }

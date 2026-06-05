@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\PlanPrice;
 use App\Models\User;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -310,6 +311,14 @@ class AuthController extends Controller
 
             // Save PDF
             $pdf->save(public_path($invoicePath));
+
+             Activity::create(
+            [
+                'user_id' => $user->id,
+                'title'       => 'New Registration - ' . $user->first_name . ' ' . $user->last_name,
+                'description' => "A new user, {$user->first_name} {$user->last_name} ({$user->email}), has successfully registered an account.",
+                'notify_for' => 'admin',
+            ]);
 
             Mail::send('emails.user_register', [
                 'user'      => $user,

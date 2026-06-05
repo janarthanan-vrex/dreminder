@@ -9,6 +9,7 @@ class Activity extends Model
     protected $fillable = [
         'user_id',
         'reminder_id',
+        'title',
         'description',
         'is_auto_generate',
         'is_seen',

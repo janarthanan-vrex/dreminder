@@ -197,9 +197,8 @@ Route::get('/admin-layout', function () {
 Route::get('/admin-analytics', function () {
     return view('admin.analytics');
 });
-Route::get('/admin-settings', function () {
-    return view('admin.settings');
-});
+
+
 
 Route::get('/admin-audit', function () {
     return view('admin.audit');
@@ -223,9 +222,7 @@ Route::get('/admin-cms-home', function () {
 Route::get('/admin-cms-about', function () {
     return view('admin.admin-cms-about');
 });
-Route::get('/admin-cms-faq', function () {
-    return view('admin.admin-cms-faq');
-});
+
 Route::get('/admin-cms-contact', function () {
     return view('admin.admin-cms-contact');
 });

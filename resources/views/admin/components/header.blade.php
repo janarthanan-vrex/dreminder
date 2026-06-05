@@ -1,3 +1,8 @@
+@php
+    $notificationCount = \App\Models\Activity::where('notify_for','admin')
+        ->where('admin_seen',0)
+        ->count();
+@endphp
 <div class="topbar">
     <div class="topbar-left">
         <button class="tb-btn mobile-menu-btn" onclick="openMobile()">
@@ -21,13 +26,17 @@
         </div>
         <div class="tb-divider hide-mobile"></div>
         <a class="tb-btn notif-btn" href="admin-notifications">
-            <i class="ri-notification-3-line"></i><span class="notif-dot"></span>
-        </a>
+    <i class="ri-notification-3-line"></i>
+
+    @if($notificationCount > 0)
+        <span class="notif-dot"></span>
+    @endif
+</a>
 
         <button class="tb-btn" onclick="toggleTheme()">
             <i class="ri-moon-line" id="theme-icon"></i>
         </button>
-        <a class="tb-btn" href="admin-settings">
+        <a class="tb-btn" href="{{route('admin.profile')}}">
             <i class="ri-user-settings-line"></i>
         </a>
     </div>
