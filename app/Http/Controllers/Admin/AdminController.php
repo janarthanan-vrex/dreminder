@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Reminder;
 use App\Models\Category;
 use App\Models\Payment;
+use App\Models\Setting;
 
 
 class AdminController extends Controller
@@ -113,6 +114,10 @@ class AdminController extends Controller
 
     public function storeForgotPassword(Request $request)
     {
+
+        $emailNotification = Setting::where('group', 'notification')
+            ->where('key', 'email_notifications')
+            ->value('value');
         try {
             // ── Validate ─────────────────────────────────────────────────────
             $validator = \Validator::make($request->all(), [
@@ -160,14 +165,16 @@ class AdminController extends Controller
             );
 
             // ── Send mail ─────────────────────────────────────────────────────
-            \Mail::send('emails.admin_reset_link', [
-                'admin' => $admin,
-                'token' => $token,
-                'email' => $request->email,
-            ], function ($message) use ($request) {
-                $message->to($request->email);
-                $message->subject('Admin Password Reset Link');
-            });
+            if ($emailNotification == 1) {
+                \Mail::send('emails.admin_reset_link', [
+                    'admin' => $admin,
+                    'token' => $token,
+                    'email' => $request->email,
+                ], function ($message) use ($request) {
+                    $message->to($request->email);
+                    $message->subject('Admin Password Reset Link');
+                });
+            }
 
             return response()->json([
                 'status'  => true,

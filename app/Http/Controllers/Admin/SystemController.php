@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\AuditLog;
 use Illuminate\Support\Facades\Mail;
 
 
@@ -112,9 +113,113 @@ class SystemController extends Controller
         ]);
     }
 
-    public function adminSettings(Request $request){
-      
-        return view('admin.settings');
+    /* ── List page ── */
+    public function index()
+    {
+       
+        return view('admin.audit');
     }
+
+    /* ── Paginated JSON for the JS table ── */
+    public function fetch(Request $request)
+    {
+        $query = AuditLog::query()->latest();
+
+        // Text search
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('event',            'like', "%{$search}%")
+                  ->orWhere('admin_name',     'like', "%{$search}%")
+                  ->orWhere('module',         'like', "%{$search}%")
+                  ->orWhere('ip_address',     'like', "%{$search}%")
+                  ->orWhere('changes_summary','like', "%{$search}%");
+            });
+        }
+
+        // Event filter
+        if ($event = $request->input('event')) {
+            $query->where('event', $event);
+        }
+
+        // User filter
+        if ($user = $request->input('user')) {
+            $query->where('admin_name', $user);
+        }
+
+        // Date filter
+        if ($date = $request->input('date')) {
+            match ($date) {
+                'today' => $query->whereDate('created_at', today()),
+                'week'  => $query->where('created_at', '>=', now()->subDays(7)),
+                'month' => $query->where('created_at', '>=', now()->subMonth()),
+                default => null,
+            };
+        }
+
+        $perPage = (int) $request->input('per_page', 10);
+        $logs    = $query->paginate($perPage);
+
+        // Shape for the Blade JS
+        $rows = $logs->map(function ($log) {
+            return [
+                'id'           => $log->id,
+                'date'         => $log->created_at->format('Y-m-d'),
+                'time'         => $log->created_at->format('h:i A'),
+                'event'        => $log->event,
+                'user'         => [
+                    'name'     => $log->admin_name,
+                    'initials' => $log->admin_initials,
+                    'role'     => $log->admin_role,
+                    'color'    => $log->admin_color,
+                    'bg'       => $log->admin_bg,
+                ],
+                'module'       => $log->module,
+                'moduleIcon'   => $log->module_icon,
+                'changes'      => $log->changes_summary,
+                'ip'           => $log->ip_address,
+                'details'      => [
+                    'fields'   => collect($log->changes_detail ?? [])->map(fn($f) => [
+                        'field'  => $f['field']  ?? '',
+                        'old'    => $f['old']    ?? null,
+                        'newVal' => $f['new']    ?? null,
+                    ])->all(),
+                ],
+            ];
+        });
+
+        return response()->json([
+            'data'         => $rows,
+            'current_page' => $logs->currentPage(),
+            'last_page'    => $logs->lastPage(),
+            'total'        => $logs->total(),
+            'per_page'     => $logs->perPage(),
+            'from'         => $logs->firstItem() ?? 0,
+            'to'           => $logs->lastItem()  ?? 0,
+        ]);
+    }
+
+    /* ── Clear all logs ── */
+    public function clear()
+    {
+        AuditLog::truncate();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Audit log cleared',
+        ]);
+    }
+
+    /* ── Get distinct users for the filter dropdown ── */
+    public function users()
+    {
+        $users = AuditLog::select('admin_name')
+            ->distinct()
+            ->orderBy('admin_name')
+            ->pluck('admin_name');
+
+        return response()->json($users);
+    }
+
+    
     
 }

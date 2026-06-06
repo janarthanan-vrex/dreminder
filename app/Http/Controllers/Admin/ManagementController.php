@@ -20,6 +20,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\ReminderHistory;
 use Carbon\Carbon;
 use App\Models\Activity;
+use App\Models\AuditLog;
+
+
 
 
 class ManagementController extends Controller
@@ -190,43 +193,47 @@ class ManagementController extends Controller
 
         return view('admin.users', compact('users', 'plans'));
     }
-    public function deleteUser($id)
-    {
-        $user = User::findOrFail($id);
+   public function deleteUser($id)
+{
+    $user = User::findOrFail($id);
 
-        // Delete profile image
-        if ($user->profile && File::exists(public_path('profile/' . $user->profile))) {
+    // ── Snapshot BEFORE delete (must be before anything is removed) ──
+   // ── Audit log before delete ──
+AuditLog::record('Deleted', 'Users', 'Deleted Record', [
+    ['field' => 'Name',   'old' => trim($user->first_name . ' ' . $user->last_name), 'new' => null],
+    ['field' => 'Email',  'old' => $user->email,                                     'new' => null],
+    ['field' => 'Action', 'old' => 'Profile Image, Invoices, Reminders, Payments, Notification Settings, Account', 'new' => null],
+]);
 
-            File::delete(public_path('profile/' . $user->profile));
-        }
-
-        // Delete invoice files
-        foreach ($user->invoices as $invoice) {
-
-            if ($invoice->invoice_path && File::exists(public_path($invoice->invoice_path))) {
-
-                File::delete(public_path($invoice->invoice_path));
-            }
-        }
-
-        // Delete related data
-        $user->reminders()->delete();
-        $user->payments()->delete();
-        $user->invoices()->delete();
-
-        if ($user->notificationSetting) {
-
-            $user->notificationSetting()->delete();
-        }
-
-        // Delete user
-        $user->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'User deleted successfully'
-        ]);
+    // Delete profile image
+    if ($user->profile && File::exists(public_path('profile/' . $user->profile))) {
+        File::delete(public_path('profile/' . $user->profile));
     }
+
+    // Delete invoice files
+    foreach ($user->invoices as $invoice) {
+        if ($invoice->invoice_path && File::exists(public_path($invoice->invoice_path))) {
+            File::delete(public_path($invoice->invoice_path));
+        }
+    }
+
+    // Delete related data
+    $user->reminders()->delete();
+    $user->payments()->delete();
+    $user->invoices()->delete();
+
+    if ($user->notificationSetting) {
+        $user->notificationSetting()->delete();
+    }
+
+    // Delete user
+    $user->delete();
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'User deleted successfully',
+    ]);
+}
 
     public function toggleUserStatus(Request $request)
     {
@@ -246,37 +253,92 @@ class ManagementController extends Controller
     }
 
     public function updateUser(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:users,id',
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'phone' => 'nullable|digits_between:10,15',
-            'plan' => 'required',
-            'address1' => 'required|max:255',
-            'status' => 'required|in:active,suspended',
-            'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
-        ]);
+{
+    $request->validate([
+        'id'        => 'required|exists:users,id',
+        'first_name'=> 'required|max:255',
+        'last_name' => 'required|max:255',
+        'phone'     => 'nullable|digits_between:10,15',
+        'plan'      => 'required',
+        'address1'  => 'required|max:255',
+        'status'    => 'required|in:active,suspended',
+        'postcode'  => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
+    ]);
 
-        $user = User::findOrFail($request->id);
+    $user = User::findOrFail($request->id);
+    $plan = PlanPrice::where('plan_name', $request->plan)->first();
 
-        $plan = PlanPrice::where('plan_name', $request->plan)->first();
+    // ── Snapshot BEFORE values ──
+    $oldPlanName = optional($user->plan)->plan_name ?? '—';
 
-        $user->update([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'phone' => $request->phone,
-            'status' => $request->status,
-            'plan_id' => $plan?->id,
-            'address1' => $request->address1,
-            'postcode' => strtoupper($request->postcode),
-        ]);
+    $before = [
+        'first_name' => $user->first_name,
+        'last_name'  => $user->last_name,
+        'phone'      => $user->phone      ?? '—',
+        'status'     => $user->status,
+        'plan'       => $oldPlanName,
+        'address1'   => $user->address1,
+        'postcode'   => $user->postcode,
+    ];
 
-        return response()->json([
-            'status' => true,
-            'message' => 'User updated successfully'
-        ]);
+    // ── Perform update ──
+    $user->update([
+        'first_name' => $request->first_name,
+        'last_name'  => $request->last_name,
+        'phone'      => $request->phone,
+        'status'     => $request->status,
+        'plan_id'    => $plan?->id,
+        'address1'   => $request->address1,
+        'postcode'   => strtoupper($request->postcode),
+    ]);
+
+    // ── Snapshot AFTER values ──
+    $after = [
+        'first_name' => $request->first_name,
+        'last_name'  => $request->last_name,
+        'phone'      => $request->phone      ?? '—',
+        'status'     => $request->status,
+        'plan'       => $plan?->plan_name    ?? '—',
+        'address1'   => $request->address1,
+        'postcode'   => strtoupper($request->postcode),
+    ];
+
+    // ── Build only changed fields ──
+    $fieldLabels = [
+        'first_name' => 'First Name',
+        'last_name'  => 'Last Name',
+        'phone'      => 'Phone',
+        'status'     => 'Status',
+        'plan'       => 'Plan',
+        'address1'   => 'Address',
+        'postcode'   => 'Postcode',
+    ];
+
+    $changedFields = [];
+    foreach ($before as $key => $oldVal) {
+        if ((string) $oldVal !== (string) $after[$key]) {
+            $changedFields[] = [
+                'field' => $fieldLabels[$key],
+                'old'   => $oldVal,
+                'new'   => $after[$key],
+            ];
+        }
     }
+
+    // ── Store audit log only if something actually changed ──
+    if (!empty($changedFields)) {
+        $summary = count($changedFields) === 1
+            ? "1 Field Updated"
+            : count($changedFields) . " Fields Updated";
+
+        AuditLog::record('Updated', 'Users', $summary, $changedFields);
+    }
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'User updated successfully',
+    ]);
+}
 
     public function storeUser(Request $request)
     {

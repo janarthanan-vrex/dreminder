@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TermsPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+
 
 class PagesController extends Controller
 {
@@ -33,5 +35,12 @@ class PagesController extends Controller
             'message' => 'Message sent successfully'
         ]);
     }
+
+    public function termsPage()
+{
+    $terms = TermsPage::where('slug', 'terms-condition')->first();
+
+    return view('terms', compact('terms'));
+}
 
 }

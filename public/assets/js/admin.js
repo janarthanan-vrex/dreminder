@@ -3696,65 +3696,7 @@ function updateNotificationCount() {
 /* ══════════════════════════════════════════
 AUDIT LOG
 ══════════════════════════════════════════ */
-function renderAudit() {
-    var data = auditFiltered;
-    var totalPages = Math.ceil(data.length / auditPerPage);
-    var start = (auditPageNum - 1) * auditPerPage;
-    var slice = data.slice(start, start + auditPerPage);
-    document.getElementById("audit-showing").textContent = slice.length;
-    document.getElementById("audit-total").textContent = data.length;
-    document.getElementById("audit-list").innerHTML = slice
-        .map(function (a) {
-            return (
-                '<div class="act-item">' +
-                '<div style="width:36px;height:36px;border-radius:10px;background:' +
-                a.col +
-                '22;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="' +
-                a.icon +
-                '" style="color:' +
-                a.col +
-                '"></i></div>' +
-                '<div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:.84rem;font-weight:700;color:var(--text)">' +
-                a.action +
-                '</span><span style="font-size:.65rem;color:var(--text3);font-weight:600">by ' +
-                a.actor +
-                '</span></div><div style="font-size:.75rem;color:var(--text3);margin-top:2px">' +
-                a.detail +
-                '</div><div style="font-size:.7rem;color:var(--text4);margin-top:4px"><i class="ri-time-line"></i> ' +
-                a.time +
-                "</div></div>" +
-                '<span class="mono" style="font-size:.65rem;color:var(--text4);flex-shrink:0">#' +
-                String(Math.floor(Math.random() * 9000 + 1000)) +
-                "</span></div>"
-            );
-        })
-        .join("");
-    buildPagination(
-        "audit-pagination",
-        auditPageNum,
-        totalPages,
-        "setAuditPage",
-    );
-}
 
-function setAuditPage(p) {
-    auditPageNum = p;
-    renderAudit();
-}
-
-function filterAudit(q) {
-    if (q === undefined) q = "";
-    q = q.toLowerCase();
-    var actionF =
-        (document.getElementById("audit-action-filter") || {}).value || "all";
-    auditFiltered = AUDIT_DATA.filter(function (a) {
-        var matchQ = (a.action + a.detail + a.actor).toLowerCase().includes(q);
-        var matchA = actionF === "all" || a.type === actionF;
-        return matchQ && matchA;
-    });
-    auditPageNum = 1;
-    renderAudit();
-}
 
 /* ══════════════════════════════════════════
 FEEDBACK

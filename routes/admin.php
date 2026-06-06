@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\ManagementController;
 use App\Http\Controllers\Admin\SystemController;
 use App\Http\Controllers\Admin\CmsController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\SettingsController;
 
 Route::get('/admin-login', function () {
 
@@ -67,7 +68,19 @@ Route::post('/admin/notification/delete-all',[ManagementController::class,'delet
 Route::get('/admin-feedback',[SystemController::class,'feedbackPage'])->name('admin.feedback');
 Route::post('/admin/send-verification-mail',[SystemController::class,'sendVerificationMail'])->name('admin.send.verification.mail');
 Route::post('/admin/feedback/reply',[SystemController::class,'replyFeedback'])->name('admin.feedback.reply');
-Route::get('/admin-settings',[SystemController::class,'adminSettings'])->name('admin.settings');
+
+// routes/web.php  (inside your admin auth middleware group)
+
+
+
+
+
+
+    Route::get('/admin-audit',          [SystemController::class, 'index'])->name('admin.audit.index');
+    Route::get('/admin/audit-log/fetch',    [SystemController::class, 'fetch'])->name('admin.audit.fetch');
+    Route::get('/admin/audit-log/users',    [SystemController::class, 'users'])->name('admin.audit.users');
+    Route::delete('/admin/audit-log/clear', [SystemController::class, 'clear'])->name('admin.audit.clear');
+
 
 
 
@@ -92,15 +105,15 @@ Route::get('/admin-cms-faq',[CmsController::class,'faqPage'])->name('admin.faq')
 
 
     // FAQ CRUD (AJAX)
-    Route::post  ('/admin/cms/faqs',            [CmsController::class, 'storeFaq']);
-    Route::put   ('/admin/cms/faqs/{faq}',      [CmsController::class, 'updateFaq']);
-    Route::delete('/admin/cms/faqs/{faq}',      [CmsController::class, 'destroyFaq']);
-    Route::post  ('/admin/cms/faqs/reorder',    [CmsController::class, 'reorderFaqs']);
+    Route::post  ('/admin/cms/faqs',[CmsController::class, 'storeFaq']);
+    Route::put   ('/admin/cms/faqs/{faq}',[CmsController::class, 'updateFaq']);
+    Route::delete('/admin/cms/faqs/{faq}',[CmsController::class, 'destroyFaq']);
+    Route::post  ('/admin/cms/faqs/reorder',[CmsController::class, 'reorderFaqs']);
 
     // Category CRUD (AJAX)
-    Route::post  ('/admin/cms/categories',                   [CmsController::class, 'storeCategory']);
-    Route::put   ('/admin/cms/categories/{faqCategory}',     [CmsController::class, 'updateCategory']);
-    Route::delete('/admin/cms/categories/{faqCategory}',     [CmsController::class, 'destroyCategory']);
+    Route::post  ('/admin/cms/categories',[CmsController::class, 'storeCategory']);
+    Route::put   ('/admin/cms/categories/{faqCategory}',[CmsController::class, 'updateCategory']);
+    Route::delete('/admin/cms/categories/{faqCategory}',[CmsController::class, 'destroyCategory']);
 
 
        
@@ -111,8 +124,13 @@ Route::put('/admin/roles/{id}',[TeamController::class, 'update']) ->name('update
 Route::delete('/admin/roles/{id}',[TeamController::class, 'destroy'])->name('destroy');
 
 Route::get('/admin-staff',[TeamController::class,'staffManagemant'])->name('admin.staff');
-Route::post('/admin/staff/store',  [TeamController::class, 'storeStaff'])->name('admin.staff.store');
-Route::put('/admin/staff/{id}',    [TeamController::class, 'updateStaff'])->name('admin.staff.update');
-Route::delete('/admin/staff/{id}', [TeamController::class, 'destroyStaff'])->name('admin.staff.destroy');
+Route::post('/admin/staff/store',[TeamController::class, 'storeStaff'])->name('admin.staff.store');
+Route::put('/admin/staff/{id}',[TeamController::class, 'updateStaff'])->name('admin.staff.update');
+Route::delete('/admin/staff/{id}',[TeamController::class, 'destroyStaff'])->name('admin.staff.destroy');
+
+Route::post('/settings/email/test',[SettingsController::class, 'sendTestMail'])->name('settings.email.test');
+Route::post('/admin/settings/email', [SettingsController::class, 'saveEmailSettings'])->name('settings.email.save');
+Route::get('/admin-settings',[SettingsController::class,'adminSettings'])->name('admin.settings');
+
 
 

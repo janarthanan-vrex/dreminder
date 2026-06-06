@@ -97,13 +97,12 @@ Route::get('/pricing', function () {
 Route::get('/privacy', function () {
     return view('privacy');
 });
-Route::get('/terms', function () {
-    return view('terms');
-});
+
 
 // web.php
 
 Route::post('/contact-send',[PagesController::class,'send'])->name('contact.send');
+Route::get('/terms',[PagesController::class,'termsPage'])->name('terms.page');
 
 //user panel without middleware
 
@@ -200,9 +199,6 @@ Route::get('/admin-analytics', function () {
 
 
 
-Route::get('/admin-audit', function () {
-    return view('admin.audit');
-});
 
 
 // Admin CMS
