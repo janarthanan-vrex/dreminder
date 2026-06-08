@@ -79,9 +79,9 @@ Route::get('/about', function () {
 Route::get('/category', function () {
     return view('category');
 });
-Route::get('/faq', function () {
-    return view('faq');
-});
+// Route::get('/faq', function () {
+//     return view('faq');
+// });
 Route::get('/blog', function () {
     return view('blog');
 });
@@ -103,6 +103,8 @@ Route::get('/privacy', function () {
 
 Route::post('/contact-send',[PagesController::class,'send'])->name('contact.send');
 Route::get('/terms',[PagesController::class,'termsPage'])->name('terms.page');
+Route::get('/faq',[PagesController::class,'faqPage'])->name('faq.page');
+Route::get('/pricing',[PagesController::class,'pricingPage'])->name('pricing.page');
 
 //user panel without middleware
 
@@ -127,8 +129,6 @@ Route::get('/verify-email/{email}',[AuthController::class,'verifyEmail'])->name(
 
 
 Route::middleware('auth')->group(function () {
-
-
 Route::get('/user-dashboard', [UserController::class, 'userDashboard'])->name('user.dashboard');
 Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
 Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
@@ -203,15 +203,9 @@ Route::get('/admin-analytics', function () {
 
 // Admin CMS
 
-Route::get('/admin-blog', function () {
-    return view('admin.blog.admin-blog-list');
-})->name('admin.blog.index');
-Route::get('/admin-blog-create', function () {
-    return view('admin.blog.admin-blog-create');
-})->name('admin.blog.create');
-Route::get('/admin-blog-edit', function () {
-    return view('admin.blog.admin-blog-edit');
-})->name('admin.blog.edit');
+
+
+
 Route::get('/admin-cms-home', function () {
     return view('admin.admin-cms-home');
 });

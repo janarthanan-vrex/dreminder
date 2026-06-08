@@ -64,61 +64,64 @@
     </p>
 
     <!-- Pricing Card -->
-    <div class="glass-strong rounded-3xl p-10 md:p-14 max-w-2xl mx-auto border border-primary/30 shadow-[0_0_60px_rgba(124,58,237,.25)]">
+   @foreach($plans as $plan)
+<div class="glass-strong rounded-3xl p-10 md:p-14 max-w-2xl mx-auto border border-primary/30 shadow-[0_0_60px_rgba(124,58,237,.25)] mb-10">
 
-      <!-- Price -->
-      <div class="flex justify-center items-end gap-3 mb-6">
-        <span class="text-6xl md:text-7xl font-black text-white">£2.40</span>
-        <span class="text-white/50 text-sm mb-3">/ year</span>
-      </div>
-
-      <!-- Breakdown -->
-      <div class="text-sm text-white/40 mb-8">
-        £2.00 subscription + £0.40 VAT
-      </div>
-
-      <!-- Divider -->
-      <div class="border-t border-white/10 my-8"></div>
-
-      <!-- Category -->
-      <ul class="space-y-4 text-left max-w-md mx-auto text-white/60 text-sm mb-10">
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          Unlimited reminders
-        </li>
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          Email & push notifications
-        </li>
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          Smart scheduling system
-        </li>
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          Full access to all features
-        </li>
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          All updates included
-        </li>
-        <li class="flex items-center gap-3">
-          <i class="ri-check-line text-accent text-lg"></i>
-          Dedicated support
-        </li>
-      </ul>
-
-      <!-- CTA -->
-      <a href="register?plan=annual"
-         class="btn-primary w-full justify-center text-base py-4">
-        <i class="ri-user-add-line mr-2"></i> Get Full Access Now
-      </a>
-
-      <p class="text-[12px] text-white/30 mt-4">
-        One payment. 365 days of peace of mind.
-      </p>
-
+    <div class="badge bg-accent/10 border border-accent/20 text-emerald-300 mx-auto mb-6 w-fit">
+        <i class="{{ $plan->icon }}"></i>
+        {{ $plan->plan_name }}
     </div>
+
+    <h4 class="text-2xl font-bold text-white mb-4">
+        {{ $plan->range }}
+    </h4>
+
+    <p class="text-white/50 mb-8">
+        {{ $plan->description }}
+    </p>
+
+    <!-- Price -->
+    <div class="flex justify-center items-end gap-3 mb-6">
+        <span class="text-6xl md:text-7xl font-black text-white">
+            £{{ number_format($plan->total_price, 2) }}
+        </span>
+        <span class="text-white/50 text-sm mb-3">
+            / year
+        </span>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="text-sm text-white/40 mb-8">
+        £{{ number_format($plan->price, 2) }}
+        subscription +
+        £{{ number_format($plan->vat, 2) }}
+        VAT
+    </div>
+
+    <div class="border-t border-white/10 my-8"></div>
+
+    <!-- Features -->
+    <ul class="space-y-4 text-left max-w-md mx-auto text-white/60 text-sm mb-10">
+
+        @if(is_array($plan->features))
+            @foreach($plan->features as $feature)
+                <li class="flex items-center gap-3">
+                    <i class="ri-check-line text-accent text-lg"></i>
+                    {{ $feature }}
+                </li>
+            @endforeach
+        @endif
+
+    </ul>
+
+    <!-- CTA -->
+    <a href="{{ route('registerpage') }}"
+       class="btn-primary w-full justify-center text-base py-4">
+        <i class="ri-user-add-line mr-2"></i>
+        Get Full Access Now
+    </a>
+</div>
+@endforeach
 
     <!-- Value comparison -->
     <div class="mt-14 text-white/40 text-sm">

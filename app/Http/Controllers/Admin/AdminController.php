@@ -33,73 +33,114 @@ class AdminController extends Controller
         return view('admin.profile', compact('admin'));
     }
 
-    public function adminLogin(Request $request)
-    {
+   public function adminLogin(Request $request)
+{
+    // ── Validation ───────────────────────────────────────────────────────
+    $validator = \Validator::make($request->all(), [
+        'name'     => 'required|string',
+        'password' => 'required|min:8',
+    ], [
+        'name.required'     => 'Name is required.',
+        'password.required' => 'Password is required.',
+        'password.min'      => 'Password must be at least 8 characters.',
+    ]);
 
-        // ── Validation ───────────────────────────────────────────────────────
-        $validator = \Validator::make($request->all(), [
-            'name'     => 'required|string',
-            'password' => 'required|min:8',
-        ], [
-            'name.required'     => 'Name is required.',
-            'password.required' => 'Password is required.',
-            'password.min'      => 'Password must be at least 8 characters.',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors'  => $validator->errors(),
-            ], 422);
-        }
-
-        // ── Check name exists ────────────────────────────────────────────────
-        $admin = \App\Models\Admin::where('name', $request->name)->first();
-
-        if (!$admin) {
-            return response()->json([
-                'success' => false,
-                'errors'  => ['name' => ['No account found with this name.']],
-            ], 401);
-        }
-
-        // ── Check password ───────────────────────────────────────────────────
-        if (!\Hash::check($request->password, $admin->password)) {
-            return response()->json([
-                'success' => false,
-                'errors'  => ['password' => ['The password you entered is incorrect.']],
-            ], 401);
-        }
-
-        // ── Check status ─────────────────────────────────────────────────────
-        if ($admin->status !== 'active') {
-            return response()->json([
-                'success' => false,
-                'errors'  => ['name' => ['Your account has been deactivated. Contact support.']],
-            ], 403);
-        }
-
-        // ── All good → login ─────────────────────────────────────────────────
-        Auth::guard('admin')->login($admin, $request->boolean('remember_me'));
-        $request->session()->regenerate();
-
+    if ($validator->fails()) {
         return response()->json([
-            'success'  => true,
-            'redirect' => route('admin.dashboard'),
+            'success' => false,
+            'errors'  => $validator->errors(),
+        ], 422);
+    }
+
+    // ── Check name exists ────────────────────────────────────────────────
+    $admin = \App\Models\Admin::where('name', $request->name)->first();
+
+    if (!$admin) {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['name' => ['No account found with this name.']],
+        ], 401);
+    }
+
+    // ── Check password ───────────────────────────────────────────────────
+    if (!\Hash::check($request->password, $admin->password)) {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['password' => ['The password you entered is incorrect.']],
+        ], 401);
+    }
+
+    // ── Check status ─────────────────────────────────────────────────────
+    if ($admin->status !== 'active') {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['name' => ['Your account has been deactivated. Contact support.']],
+        ], 403);
+    }
+
+    // ── All good → login ─────────────────────────────────────────────────
+    Auth::guard('admin')->login($admin, $request->boolean('remember_me'));
+    $request->session()->regenerate();
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    \App\Models\AuditLog::create([
+        'event'           => 'Login',
+        'module'          => 'Auth',
+        'module_icon'     => 'ri-shield-check-line',
+        'admin_id'        => $admin->id,
+        'admin_name'      => $admin->name,
+        'admin_role'      => optional($admin->roles)->rolename ?? 'Admin',
+        'admin_initials'  => strtoupper(substr($admin->name, 0, 2)),
+        'admin_color'     => '#2563eb',
+        'admin_bg'        => '#dbeafe',
+        'ip_address'      => $request->ip(),
+        'changes_summary' => 'Authenticated',
+        'changes_detail'  => json_encode([
+            ['field' => 'Name',       'old' => null, 'new' => $admin->name],
+            ['field' => 'Role',       'old' => null, 'new' => optional($admin->roles)->rolename ?? 'Admin'],
+            ['field' => 'IP Address', 'old' => null, 'new' => $request->ip()],
+            ['field' => 'Device',     'old' => null, 'new' => $request->header('User-Agent') ?? '—'],
+        ]),
+    ]);
+
+    return response()->json([
+        'success'  => true,
+        'redirect' => route('admin.dashboard'),
+    ]);
+}
+
+   public function adminLogout(Request $request)
+{
+    $admin = Auth::guard('admin')->user();
+    // ── Audit Log BEFORE session is destroyed ────────────────────────────
+    if ($admin) {
+        \App\Models\AuditLog::create([
+            'event'           => 'Logout',
+            'module'          => 'Auth',
+            'module_icon'     => 'ri-shield-check-line',
+            'admin_id'        => $admin->id,
+            'admin_name'      => $admin->name,
+            'admin_role'      => optional($admin->roles)->rolename ?? 'Admin',
+            'admin_initials'  => strtoupper(substr($admin->name, 0, 2)),
+            'admin_color'     => '#6b7280',
+            'admin_bg'        => '#f3f4f6',
+            'ip_address'      => $request->ip(),
+            'changes_summary' => 'Session Ended',
+            'changes_detail'  => json_encode([
+                ['field' => 'Name',       'old' => $admin->name,                                'new' => null],
+                ['field' => 'Role',       'old' => optional($admin->roles)->rolename ?? 'Admin', 'new' => null],
+                ['field' => 'IP Address', 'old' => $request->ip(),                              'new' => null],
+            ]),
         ]);
     }
 
-    public function adminLogout(Request $request)
-    {
-        // dd("fds");
-        auth()->guard('admin')->logout();
+    // ── Logout AFTER log is saved ─────────────────────────────────────────
+    Auth::guard('admin')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect()->route('admin.login');
-    }
+    return redirect()->route('admin.login');
+}
 
     public function adminDashboard(Request $request)
     {

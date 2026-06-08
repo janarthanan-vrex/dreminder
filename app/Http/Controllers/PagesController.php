@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FaqCategory;
 use App\Models\TermsPage;
+use App\Models\PlanPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -41,6 +43,27 @@ class PagesController extends Controller
     $terms = TermsPage::where('slug', 'terms-condition')->first();
 
     return view('terms', compact('terms'));
+}
+
+public function faqPage()
+{
+    $categories = FaqCategory::with(['faqs' => function($q) {
+            $q->where('status', 'active')->orderBy('sort_order');
+        }])
+        ->where('is_visible', true)
+        ->orderBy('sort_order')
+        ->get();
+
+    return view('faq', compact('categories'));
+}
+
+public function pricingPage()
+{
+        $plans = PlanPrice::where('status','Active')
+        ->latest()
+        ->get();
+
+    return view('pricing', compact('plans'));
 }
 
 }

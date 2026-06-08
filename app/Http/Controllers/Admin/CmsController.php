@@ -12,6 +12,7 @@ use App\Models\FaqCategory;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Models\AuditLog;
 
 class CmsController extends Controller
 {
@@ -44,48 +45,157 @@ class CmsController extends Controller
         }
 
         foreach ($request->plan_name as $key => $planName) {
-            $price = (float)($request->price[$key] ?? 0);
-            $vat   = (float)($request->vat[$key] ?? 0);
+            $price    = (float)($request->price[$key] ?? 0);
+            $vat      = (float)($request->vat[$key] ?? 0);
+            $features = $request->features[$key] ?? [];
 
             $data = [
                 'plan_name'   => $planName,
-                'icon'        => $request->icon[$key] ?? null,
-                'range'       => $request->range[$key] ?? null,
-                'color'       => $request->color[$key] ?? '#7c3aed',
+                'icon'        => $request->icon[$key]        ?? null,
+                'range'       => $request->range[$key]       ?? null,
+                'color'       => $request->color[$key]       ?? '#7c3aed',
                 'price'       => $price,
                 'vat'         => $vat,
                 'total_price' => $price + $vat,
                 'expiry_date' => $request->expiry_date[$key] ?? null,
-                'status'      => $request->status[$key] ?? 'Active',
-                'features'    => $request->features[$key] ?? [],
+                'status'      => $request->status[$key]      ?? 'Active',
+                'features'    => $features,
                 'description' => $request->description[$key] ?? null,
             ];
 
             $planId = $request->plan_id[$key] ?? null;
 
+            // ── Helper: features array → readable string ──────────────────────
+            $featuresToString = function ($val) {
+                if (empty($val)) return '—';
+                if (is_array($val)) return implode(', ', array_filter($val));
+                if (is_string($val)) {
+                    $decoded = json_decode($val, true);
+                    return is_array($decoded)
+                        ? implode(', ', array_filter($decoded))
+                        : $val;
+                }
+                return '—';
+            };
+
             if ($planId) {
-                PlanPrice::where('id', $planId)->update($data);
+                // ── UPDATE ────────────────────────────────────────────────────
+                $existing = PlanPrice::find($planId);
+
+                if ($existing) {
+                    $before = [
+                        'name'        => $existing->plan_name,
+                        'price'       => '£' . number_format($existing->price, 2),
+                        'vat'         => '£' . number_format($existing->vat, 2),
+                        'total_price' => '£' . number_format($existing->total_price, 2),
+                        'status'      => $existing->status                       ?? '—',
+                        'features'    => $featuresToString($existing->features),
+                        // expiry_date only if it had a value before
+                        ...($existing->expiry_date
+                            ? ['expiry_date' => $existing->expiry_date]
+                            : []
+                        ),
+                    ];
+
+                    PlanPrice::where('id', $planId)->update($data);
+
+                    $newExpiry = $request->expiry_date[$key] ?? null;
+
+                    $after = [
+                        'name'        => $planName,
+                        'price'       => '£' . number_format($price, 2),
+                        'vat'         => '£' . number_format($vat, 2),
+                        'total_price' => '£' . number_format($price + $vat, 2),
+                        'status'      => $request->status[$key] ?? 'Active',
+                        'features'    => $featuresToString($features),
+                        // expiry_date only if it had a value before (keep keys in sync)
+                        ...($existing->expiry_date
+                            ? ['expiry_date' => $newExpiry ?? '—']
+                            : []
+                        ),
+                    ];
+
+                    $fieldLabels = [
+                        'name'        => 'Plan Name',
+                        'price'       => 'Price',
+                        'vat'         => 'VAT',
+                        'total_price' => 'Total Price',
+                        'status'      => 'Status',
+                        'features'    => 'Features',
+                        'expiry_date' => 'Expiry Date',
+                    ];
+
+                    $changedFields = [];
+                    foreach ($before as $k => $oldVal) {
+                        if ((string) $oldVal !== (string) $after[$k]) {
+                            $changedFields[] = [
+                                'field' => $fieldLabels[$k],
+                                'old'   => $oldVal,
+                                'new'   => $after[$k],
+                            ];
+                        }
+                    }
+
+                    if (!empty($changedFields)) {
+                        $summary = count($changedFields) === 1
+                            ? '1 Field Updated'
+                            : count($changedFields) . ' Fields Updated';
+
+                        AuditLog::record('Updated', 'Plans', $summary, $changedFields);
+                    }
+                }
             } else {
+                // ── CREATE ────────────────────────────────────────────────────
                 PlanPrice::create($data);
+
+                $createFields = [
+                    ['field' => 'Plan Name',   'old' => null, 'new' => $planName],
+                    ['field' => 'Price',       'old' => null, 'new' => '£' . number_format($price, 2)],
+                    ['field' => 'VAT',         'old' => null, 'new' => '£' . number_format($vat, 2)],
+                    ['field' => 'Total Price', 'old' => null, 'new' => '£' . number_format($price + $vat, 2)],
+                    ['field' => 'Status',      'old' => null, 'new' => $request->status[$key] ?? 'Active'],
+                    ['field' => 'Features',    'old' => null, 'new' => $featuresToString($features)],
+                ];
+
+                // Only add expiry_date row if it was actually provided
+                if (!empty($request->expiry_date[$key])) {
+                    $createFields[] = [
+                        'field' => 'Expiry Date',
+                        'old'   => null,
+                        'new'   => $request->expiry_date[$key],
+                    ];
+                }
+
+                AuditLog::record('Created', 'Plans', 'Created Record', $createFields);
             }
         }
 
         return response()->json([
             'status'  => true,
-            'message' => 'Plans saved successfully!'
+            'message' => 'Plans saved successfully!',
         ]);
     }
 
     public function deletePlan($id)
-    {
-        $plan = PlanPrice::findOrFail($id);
-        $plan->delete();
+{
+    $plan = PlanPrice::findOrFail($id);
 
-        return response()->json([
-            'status'  => true,
-            'message' => 'Plan deleted successfully!'
-        ]);
-    }
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    AuditLog::record('Deleted', 'Plans', 'Deleted Record', [
+        ['field' => 'Plan Name',   'old' => $plan->plan_name,                          'new' => null],
+        ['field' => 'Price',       'old' => '£' . number_format($plan->price, 2),      'new' => null],
+        ['field' => 'Total Price', 'old' => '£' . number_format($plan->total_price, 2),'new' => null],
+        ['field' => 'Status',      'old' => $plan->status ?? '—',                      'new' => null],
+        ['field' => 'Action',      'old' => 'Plan Permanently Removed',                'new' => null],
+    ]);
+
+    $plan->delete();
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Plan deleted successfully!',
+    ]);
+}
 
     /* ── Coupon CRUD ── */
     public function createCoupon(Request $request)
@@ -147,14 +257,14 @@ class CmsController extends Controller
         return response()->json(['status' => true, 'coupons' => $coupons]);
     }
 
-   public function privacyPolicy(Request $request)
-{
-    $policy = PrivacyPolicy::where('slug', 'privacy-policy')->first();
+    public function privacyPolicy(Request $request)
+    {
+        $policy = PrivacyPolicy::where('slug', 'privacy-policy')->first();
 
-    return view('admin.admin-cms-privacy', [
-        'content' => $policy?->content
-    ]);
-}
+        return view('admin.admin-cms-privacy', [
+            'content' => $policy?->content
+        ]);
+    }
 
     public function savePrivacyPolicy(Request $request)
     {
@@ -178,15 +288,15 @@ class CmsController extends Controller
 
 
     public function termsCondition(Request $request)
-{
-    $terms = TermsPage::where('slug', 'terms-condition')->first();
+    {
+        $terms = TermsPage::where('slug', 'terms-condition')->first();
 
-    return view('admin.admin-cms-terms', [
-        'content' => $terms?->content
-    ]);
-}
+        return view('admin.admin-cms-terms', [
+            'content' => $terms?->content
+        ]);
+    }
 
-     public function saveTermsCondition(Request $request)
+    public function saveTermsCondition(Request $request)
     {
         $request->validate([
             'content' => 'required',
@@ -206,7 +316,7 @@ class CmsController extends Controller
         ]);
     }
 
-     /* ─── FAQ CMS Page ─── */
+    /* ─── FAQ CMS Page ─── */
     public function faqPage()
     {
         $categories = FaqCategory::withCount('faqs')
@@ -264,40 +374,40 @@ class CmsController extends Controller
     }
 
     /* ─── Category CRUD ─── */
-   public function storeCategory(Request $request)
-{
-   $data = $request->validate([
-    'name'        => 'required|string|max:100|unique:faq_categories,name',
-    'description' => 'nullable|string|max:255',
-    'icon'        => 'nullable|string|max:100',
-    'color'       => 'nullable|string|max:20',
-], [
-    // Custom error messages
-    'name.required' => 'Category name is required',
-    'name.unique'   => 'Category name already taken',
-]);
+    public function storeCategory(Request $request)
+    {
+        $data = $request->validate([
+            'name'        => 'required|string|max:100|unique:faq_categories,name',
+            'description' => 'nullable|string|max:255',
+            'icon'        => 'nullable|string|max:100',
+            'color'       => 'nullable|string|max:20',
+        ], [
+            // Custom error messages
+            'name.required' => 'Category name is required',
+            'name.unique'   => 'Category name already taken',
+        ]);
 
-    $data['slug'] = Str::slug($data['name']);
-    $data['sort_order'] = (FaqCategory::max('sort_order') ?? 0) + 1;
+        $data['slug'] = Str::slug($data['name']);
+        $data['sort_order'] = (FaqCategory::max('sort_order') ?? 0) + 1;
 
-    $category = FaqCategory::create($data);
+        $category = FaqCategory::create($data);
 
-    return response()->json([
-        'success' => true,
-        'category' => $category
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'category' => $category
+        ]);
+    }
 
     public function updateCategory(Request $request, FaqCategory $faqCategory)
     {
         $data = $request->validate([
-           'name' => [
-            'sometimes',
-            'required',
-            'string',
-            'max:100',
-            Rule::unique('faq_categories', 'name')->ignore($faqCategory->id),
-        ],
+            'name' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('faq_categories', 'name')->ignore($faqCategory->id),
+            ],
             'description' => 'nullable|string|max:255',
             'icon'        => 'nullable|string|max:100',
             'color'       => 'nullable|string|max:20',
@@ -318,5 +428,4 @@ class CmsController extends Controller
         $faqCategory->delete(); // cascades to faqs
         return response()->json(['success' => true]);
     }
-
 }

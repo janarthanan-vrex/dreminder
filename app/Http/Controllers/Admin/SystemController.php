@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\AuditLog;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Models\BlogPost;
+use Illuminate\Support\Facades\Validator;
+
 
 
 class SystemController extends Controller
@@ -116,7 +120,7 @@ class SystemController extends Controller
     /* ── List page ── */
     public function index()
     {
-       
+
         return view('admin.audit');
     }
 
@@ -129,10 +133,10 @@ class SystemController extends Controller
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('event',            'like', "%{$search}%")
-                  ->orWhere('admin_name',     'like', "%{$search}%")
-                  ->orWhere('module',         'like', "%{$search}%")
-                  ->orWhere('ip_address',     'like', "%{$search}%")
-                  ->orWhere('changes_summary','like', "%{$search}%");
+                    ->orWhere('admin_name',     'like', "%{$search}%")
+                    ->orWhere('module',         'like', "%{$search}%")
+                    ->orWhere('ip_address',     'like', "%{$search}%")
+                    ->orWhere('changes_summary', 'like', "%{$search}%");
             });
         }
 
@@ -220,6 +224,159 @@ class SystemController extends Controller
         return response()->json($users);
     }
 
-    
-    
+    public function blogList()
+    {
+        $posts = BlogPost::latest()->get();
+        return view('admin.blog.admin-blog-list', compact('posts'));
+    }
+
+    public function createBlogs()
+    {
+
+        return view('admin.blog.admin-blog-create');
+    }
+
+    public function store(Request $request)
+    {
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'title'            => 'required|string|max:80',
+            'excerpt'          => 'required|string|max:200',
+            'content'          => 'required|string|min:1',
+            'category'         => 'required|string',
+            'featured_image'   => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'meta_description' => 'nullable|string|max:160',
+            'seo_title'        => 'nullable|string|max:60',
+            'focus_keyword'    => 'nullable|string|max:100',
+            'keywords'         => 'nullable|string|max:255',
+            'canonical'        => 'nullable|url|max:255',
+            'robots'           => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $validated = $validator->validated();
+
+        $imagePath = null;
+        if ($request->hasFile('featured_image')) {
+            $file = $request->file('featured_image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/blogPost'), $fileName);
+            $imagePath = 'assets/blogPost/' . $fileName;
+        }
+
+        $slug = Str::slug($validated['title']);
+        $original = $slug;
+        $i = 1;
+        while (BlogPost::where('slug', $slug)->exists()) {
+            $slug = $original . '-' . $i++;
+        }
+
+        BlogPost::create([
+            'title'            => $validated['title'],
+            'slug'             => $slug,
+            'excerpt'          => $validated['excerpt'],
+            'content'          => $validated['content'],
+            'category'         => $validated['category'],
+            'is_active'        => $request->boolean('is_active'),
+            'featured_image'   => $imagePath,
+            'seo_title'        => $validated['seo_title'],
+            'meta_description' => $validated['meta_description'],
+            'focus_keyword'    => $validated['focus_keyword'],
+            'keywords'         => $validated['keywords'],
+            'canonical'        => $validated['canonical'],
+            'robots'           => $validated['robots'] ?? 'index, follow',
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Blog post published successfully.']);
+    }
+    // Controller method
+    public function toggleStatus(Request $request, BlogPost $post)
+    {
+
+        $post->update(['is_active' => $request->is_active]);
+        return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+    }
+    public function destroy(BlogPost $post)
+    {
+
+        $imagePath = public_path($post->featured_image);
+        if ($post->featured_image && file_exists($imagePath)) {
+            unlink($imagePath);
+        }
+
+        $post->delete();
+
+        return response()->json(['success' => true, 'message' => 'Post deleted successfully.']);
+    }
+    public function editBlogs(BlogPost $post)
+{
+
+    return view('admin.blog.admin-blog-edit', compact('post'));
+}
+
+public function update(Request $request, BlogPost $post)
+{
+    // Image is required only if no existing image OR user explicitly removed it
+    $hasExistingImage = $post->featured_image && $request->input('remove_image') !== '1';
+    $imageRule = $hasExistingImage ? 'nullable' : 'required';
+
+    $validator = Validator::make($request->all(), [
+        'title'            => 'required|string|max:80',
+        'excerpt'          => 'required|string|max:200',
+        'content'          => 'required|string|min:1',
+        'category'         => 'required|string',
+        'featured_image'   => $imageRule . '|image|mimes:jpg,jpeg,png,webp|max:5120',
+        'meta_description' => 'nullable|string|max:160',
+        'seo_title'        => 'nullable|string|max:60',
+        'focus_keyword'    => 'nullable|string|max:100',
+        'keywords'         => 'nullable|string|max:255',
+        'canonical'        => 'nullable|url|max:255',
+        'robots'           => 'nullable|string',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $validated = $validator->validated();
+
+    // Handle image removal
+    if ($request->input('remove_image') === '1') {
+        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+            unlink(public_path($post->featured_image));
+        }
+        $validated['featured_image'] = null;
+    }
+
+    // Handle new image upload
+    if ($request->hasFile('featured_image')) {
+        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+            unlink(public_path($post->featured_image));
+        }
+        $file     = $request->file('featured_image');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/blogPost'), $fileName);
+        $validated['featured_image'] = 'assets/blogPost/' . $fileName;
+    }
+
+    // Regenerate slug only if title changed
+    if ($post->title !== $validated['title']) {
+        $slug     = Str::slug($validated['title']);
+        $original = $slug;
+        $i        = 1;
+        while (BlogPost::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+            $slug = $original . '-' . $i++;
+        }
+        $validated['slug'] = $slug;
+    }
+
+    $validated['is_active'] = $request->boolean('is_active');
+
+    $post->update($validated);
+
+    return response()->json(['success' => true, 'message' => 'Blog post updated successfully.']);
+}
 }

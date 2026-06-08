@@ -32,26 +32,26 @@
         </a>
 
         <div class="sb-section">Pricing</div>
-        <a class="nav-item" href="admin-pricing"><i class="ri-vip-crown-line"></i><span class="nav-lbl">Pricing</span></a>
+        <a class="nav-item" href="{{route('admin.pricing')}}"><i class="ri-vip-crown-line"></i><span class="nav-lbl">Pricing</span></a>
 
         <div class="sb-section">Content</div>
-        <a class="nav-item" href="admin-blog"><i class="ri-article-line"></i><span class="nav-lbl">Blog</span></a>
+        <a class="nav-item" href="{{route('admin.blog.index')}}"><i class="ri-article-line"></i><span class="nav-lbl">Blog</span></a>
 
         <div class="sb-section">Team</div>
-        <a class="nav-item" href="admin-staff"><i class="ri-team-line"></i><span class="nav-lbl">Staff</span></a>
-        <a class="nav-item" href="admin-roles"><i class="ri-key-2-line"></i><span class="nav-lbl">Roles & Permissions</span></a>
+        <a class="nav-item" href="{{route('admin.staff')}}"><i class="ri-team-line"></i><span class="nav-lbl">Staff</span></a>
+        <a class="nav-item" href="{{route('admin.roles')}}"><i class="ri-key-2-line"></i><span class="nav-lbl">Roles & Permissions</span></a>
 
         <div class="sb-section">CMS</div>
         <a class="nav-item hidden" href="admin-cms-home"><i class="ri-home-4-line"></i><span class="nav-lbl">Home</span></a>
         <a class="nav-item hidden" href="admin-cms-about"><i class="ri-information-line"></i><span class="nav-lbl">About</span></a>
-        <a class="nav-item" href="admin-cms-faq"><i class="ri-question-line"></i><span class="nav-lbl">FAQ</span></a>
+        <a class="nav-item" href="{{route('admin.faq')}}"><i class="ri-question-line"></i><span class="nav-lbl">FAQ</span></a>
         <a class="nav-item hidden" href="admin-cms-contact"><i class="ri-contacts-line"></i><span class="nav-lbl">Contact</span></a>
-        <a class="nav-item" href="admin-cms-terms"><i class="ri-file-list-3-line"></i><span class="nav-lbl">Terms & Conditions</span></a>
-        <a class="nav-item" href="admin-cms-privacy"><i class="ri-shield-user-line"></i><span class="nav-lbl">Privacy Policy</span></a>
+        <a class="nav-item" href="{{route('admin.cms.terms')}}"><i class="ri-file-list-3-line"></i><span class="nav-lbl">Terms & Conditions</span></a>
+        <a class="nav-item" href="{{route('admin.cms.privacy')}}"><i class="ri-shield-user-line"></i><span class="nav-lbl">Privacy Policy</span></a>
 
         <div class="sb-section">System</div>
         <a class="nav-item" href="{{route('admin.settings')}}"><i class="ri-settings-3-line"></i><span class="nav-lbl">Settings</span></a>
-        <a class="nav-item" href="admin-audit"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
+        <a class="nav-item" href="{{route('admin.audit.index')}}"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
         <a class="nav-item" href="{{route('admin.feedback')}}"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
 
 <form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">

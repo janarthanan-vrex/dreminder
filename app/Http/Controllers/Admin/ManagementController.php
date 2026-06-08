@@ -116,15 +116,21 @@ class ManagementController extends Controller
             'created_by_id' => Auth::guard('admin')->id(),
         ]);
 
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Created', 'Categories', 'Created Record', [
+            ['field' => 'Name',        'old' => null, 'new' => $request->name],
+            ['field' => 'Description', 'old' => null, 'new' => $request->description ?? '—'],
+            ['field' => 'Status',      'old' => null, 'new' => 'Active'],
+        ]);
+
         return response()->json([
-            'status' => true,
-            'message' => 'Category created successfully'
+            'status'  => true,
+            'message' => 'Category created successfully',
         ]);
     }
 
     public function storeSubcategory(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name'        => 'required|unique:sub_categories,name',
@@ -143,9 +149,19 @@ class ManagementController extends Controller
             'status'      => 'Active',
         ]);
 
+        // ── Audit Log ────────────────────────────────────────────────────────
+        $category = \App\Models\Category::find($request->category_id);
+
+        AuditLog::record('Created', 'Subcategories', 'Created Record', [
+            ['field' => 'Name',            'old' => null, 'new' => $request->name],
+            ['field' => 'Parent Category', 'old' => null, 'new' => $category?->name ?? '—'],
+            ['field' => 'Description',     'old' => null, 'new' => $request->description ?? '—'],
+            ['field' => 'Status',          'old' => null, 'new' => 'Active'],
+        ]);
+
         return response()->json([
             'status'  => true,
-            'message' => 'Subcategory created successfully'
+            'message' => 'Subcategory created successfully',
         ]);
     }
 
@@ -193,152 +209,156 @@ class ManagementController extends Controller
 
         return view('admin.users', compact('users', 'plans'));
     }
-   public function deleteUser($id)
-{
-    $user = User::findOrFail($id);
+    public function deleteUser($id)
+    {
+        $user = User::findOrFail($id);
 
-    // ── Snapshot BEFORE delete (must be before anything is removed) ──
-   // ── Audit log before delete ──
-AuditLog::record('Deleted', 'Users', 'Deleted Record', [
-    ['field' => 'Name',   'old' => trim($user->first_name . ' ' . $user->last_name), 'new' => null],
-    ['field' => 'Email',  'old' => $user->email,                                     'new' => null],
-    ['field' => 'Action', 'old' => 'Profile Image, Invoices, Reminders, Payments, Notification Settings, Account', 'new' => null],
-]);
+        // ── Snapshot BEFORE delete (must be before anything is removed) ──
+        // ── Audit log before delete ──
+        AuditLog::record('Deleted', 'Users', 'Deleted Record', [
+            ['field' => 'Name',   'old' => trim($user->first_name . ' ' . $user->last_name), 'new' => null],
+            ['field' => 'Email',  'old' => $user->email,                                     'new' => null],
+            ['field' => 'Action', 'old' => 'Profile Image, Invoices, Reminders, Payments, Notification Settings, Account', 'new' => null],
+        ]);
 
-    // Delete profile image
-    if ($user->profile && File::exists(public_path('profile/' . $user->profile))) {
-        File::delete(public_path('profile/' . $user->profile));
-    }
-
-    // Delete invoice files
-    foreach ($user->invoices as $invoice) {
-        if ($invoice->invoice_path && File::exists(public_path($invoice->invoice_path))) {
-            File::delete(public_path($invoice->invoice_path));
+        // Delete profile image
+        if ($user->profile && File::exists(public_path('profile/' . $user->profile))) {
+            File::delete(public_path('profile/' . $user->profile));
         }
+
+        // Delete invoice files
+        foreach ($user->invoices as $invoice) {
+            if ($invoice->invoice_path && File::exists(public_path($invoice->invoice_path))) {
+                File::delete(public_path($invoice->invoice_path));
+            }
+        }
+
+        // Delete related data
+        $user->reminders()->delete();
+        $user->payments()->delete();
+        $user->invoices()->delete();
+
+        if ($user->notificationSetting) {
+            $user->notificationSetting()->delete();
+        }
+
+        // Delete user
+        $user->delete();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'User deleted successfully',
+        ]);
     }
-
-    // Delete related data
-    $user->reminders()->delete();
-    $user->payments()->delete();
-    $user->invoices()->delete();
-
-    if ($user->notificationSetting) {
-        $user->notificationSetting()->delete();
-    }
-
-    // Delete user
-    $user->delete();
-
-    return response()->json([
-        'status'  => true,
-        'message' => 'User deleted successfully',
-    ]);
-}
-
     public function toggleUserStatus(Request $request)
     {
         $user = User::findOrFail($request->id);
 
-        $user->status = $user->status === 'active'
-            ? 'suspended'
-            : 'active';
+        $oldStatus = $user->status;
 
+        $user->status = $user->status === 'active' ? 'suspended' : 'active';
         $user->save();
 
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Updated', 'Users', 'Status Changed', [
+            ['field' => 'Name',   'old' => trim($user->first_name . ' ' . $user->last_name), 'new' => null],
+            ['field' => 'Status', 'old' => ucfirst($oldStatus), 'new' => ucfirst($user->status)],
+        ]);
+
         return response()->json([
-            'status' => true,
+            'status'      => true,
             'user_status' => $user->status,
-            'message' => 'User status updated successfully'
+            'message'     => 'User status updated successfully',
         ]);
     }
 
     public function updateUser(Request $request)
-{
-    $request->validate([
-        'id'        => 'required|exists:users,id',
-        'first_name'=> 'required|max:255',
-        'last_name' => 'required|max:255',
-        'phone'     => 'nullable|digits_between:10,15',
-        'plan'      => 'required',
-        'address1'  => 'required|max:255',
-        'status'    => 'required|in:active,suspended',
-        'postcode'  => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
-    ]);
+    {
+        $request->validate([
+            'id'        => 'required|exists:users,id',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'phone'     => 'nullable|digits_between:10,15',
+            'plan'      => 'required',
+            'address1'  => 'required|max:255',
+            'status'    => 'required|in:active,suspended',
+            'postcode'  => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
+        ]);
 
-    $user = User::findOrFail($request->id);
-    $plan = PlanPrice::where('plan_name', $request->plan)->first();
+        $user = User::findOrFail($request->id);
+        $plan = PlanPrice::where('plan_name', $request->plan)->first();
 
-    // ── Snapshot BEFORE values ──
-    $oldPlanName = optional($user->plan)->plan_name ?? '—';
+        // ── Snapshot BEFORE values ──
+        $oldPlanName = optional($user->plan)->plan_name ?? '—';
 
-    $before = [
-        'first_name' => $user->first_name,
-        'last_name'  => $user->last_name,
-        'phone'      => $user->phone      ?? '—',
-        'status'     => $user->status,
-        'plan'       => $oldPlanName,
-        'address1'   => $user->address1,
-        'postcode'   => $user->postcode,
-    ];
+        $before = [
+            'first_name' => $user->first_name,
+            'last_name'  => $user->last_name,
+            'phone'      => $user->phone      ?? '—',
+            'status'     => $user->status,
+            'plan'       => $oldPlanName,
+            'address1'   => $user->address1,
+            'postcode'   => $user->postcode,
+        ];
 
-    // ── Perform update ──
-    $user->update([
-        'first_name' => $request->first_name,
-        'last_name'  => $request->last_name,
-        'phone'      => $request->phone,
-        'status'     => $request->status,
-        'plan_id'    => $plan?->id,
-        'address1'   => $request->address1,
-        'postcode'   => strtoupper($request->postcode),
-    ]);
+        // ── Perform update ──
+        $user->update([
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'phone'      => $request->phone,
+            'status'     => $request->status,
+            'plan_id'    => $plan?->id,
+            'address1'   => $request->address1,
+            'postcode'   => strtoupper($request->postcode),
+        ]);
 
-    // ── Snapshot AFTER values ──
-    $after = [
-        'first_name' => $request->first_name,
-        'last_name'  => $request->last_name,
-        'phone'      => $request->phone      ?? '—',
-        'status'     => $request->status,
-        'plan'       => $plan?->plan_name    ?? '—',
-        'address1'   => $request->address1,
-        'postcode'   => strtoupper($request->postcode),
-    ];
+        // ── Snapshot AFTER values ──
+        $after = [
+            'first_name' => $request->first_name,
+            'last_name'  => $request->last_name,
+            'phone'      => $request->phone      ?? '—',
+            'status'     => $request->status,
+            'plan'       => $plan?->plan_name    ?? '—',
+            'address1'   => $request->address1,
+            'postcode'   => strtoupper($request->postcode),
+        ];
 
-    // ── Build only changed fields ──
-    $fieldLabels = [
-        'first_name' => 'First Name',
-        'last_name'  => 'Last Name',
-        'phone'      => 'Phone',
-        'status'     => 'Status',
-        'plan'       => 'Plan',
-        'address1'   => 'Address',
-        'postcode'   => 'Postcode',
-    ];
+        // ── Build only changed fields ──
+        $fieldLabels = [
+            'first_name' => 'First Name',
+            'last_name'  => 'Last Name',
+            'phone'      => 'Phone',
+            'status'     => 'Status',
+            'plan'       => 'Plan',
+            'address1'   => 'Address',
+            'postcode'   => 'Postcode',
+        ];
 
-    $changedFields = [];
-    foreach ($before as $key => $oldVal) {
-        if ((string) $oldVal !== (string) $after[$key]) {
-            $changedFields[] = [
-                'field' => $fieldLabels[$key],
-                'old'   => $oldVal,
-                'new'   => $after[$key],
-            ];
+        $changedFields = [];
+        foreach ($before as $key => $oldVal) {
+            if ((string) $oldVal !== (string) $after[$key]) {
+                $changedFields[] = [
+                    'field' => $fieldLabels[$key],
+                    'old'   => $oldVal,
+                    'new'   => $after[$key],
+                ];
+            }
         }
+
+        // ── Store audit log only if something actually changed ──
+        if (!empty($changedFields)) {
+            $summary = count($changedFields) === 1
+                ? "1 Field Updated"
+                : count($changedFields) . " Fields Updated";
+
+            AuditLog::record('Updated', 'Users', $summary, $changedFields);
+        }
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'User updated successfully',
+        ]);
     }
-
-    // ── Store audit log only if something actually changed ──
-    if (!empty($changedFields)) {
-        $summary = count($changedFields) === 1
-            ? "1 Field Updated"
-            : count($changedFields) . " Fields Updated";
-
-        AuditLog::record('Updated', 'Users', $summary, $changedFields);
-    }
-
-    return response()->json([
-        'status'  => true,
-        'message' => 'User updated successfully',
-    ]);
-}
 
     public function storeUser(Request $request)
     {
@@ -602,85 +622,190 @@ AuditLog::record('Deleted', 'Users', 'Deleted Record', [
         return response()->json(['status' => true, 'histories' => $histories]);
     }
 
-    public function deleteCategory(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:categories,id'
-        ]);
+   public function deleteCategory(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:categories,id'
+    ]);
 
-        $category = Category::findOrFail($request->id);
+    $category = Category::findOrFail($request->id);
 
-        // Delete subcategories
-        $category->subcategories()->delete();
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    AuditLog::record('Deleted', 'Categories', 'Deleted Record', [
+        ['field' => 'Name',          'old' => $category->name,                        'new' => null],
+        ['field' => 'Status',        'old' => $category->status,                      'new' => null],
+        ['field' => 'Action',        'old' => 'Subcategories, Reminders, Category',   'new' => null],
+    ]);
 
-        // Optional: delete related reminders
-        $category->reminders()->delete();
+    // Delete subcategories
+    $category->subcategories()->delete();
+    // Delete related reminders
+    $category->reminders()->delete();
+    // Delete category
+    $category->delete();
 
-        // Delete category
-        $category->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Category deleted successfully'
-        ]);
-    }
+    return response()->json([
+        'status'  => true,
+        'message' => 'Category deleted successfully',
+    ]);
+}
 
     public function deleteSubcategory(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:sub_categories,id'
-        ]);
-        $subcategory = SubCategory::findOrFail($request->id);
-        Reminder::where('subcategory_id', $subcategory->id)->delete();
-        $subcategory->delete();
-        return response()->json([
-            'status' => true,
-            'message' => 'Subcategory deleted successfully'
-        ]);
+{
+    $request->validate([
+        'id' => 'required|exists:sub_categories,id'
+    ]);
+
+    $subcategory = SubCategory::findOrFail($request->id);
+
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    AuditLog::record('Deleted', 'Subcategories', 'Deleted Record', [
+        ['field' => 'Name',            'old' => $subcategory->name,                      'new' => null],
+        ['field' => 'Parent Category', 'old' => optional($subcategory->category)->name ?? '—', 'new' => null],
+        ['field' => 'Action',          'old' => 'Reminders, Subcategory',                'new' => null],
+    ]);
+
+    Reminder::where('subcategory_id', $subcategory->id)->delete();
+    $subcategory->delete();
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Subcategory deleted successfully',
+    ]);
+}
+
+   public function updateSubcategory(Request $request)
+{
+    $request->validate([
+        'id'          => 'required|exists:sub_categories,id',
+        'category_id' => 'required|exists:categories,id',
+        'name'        => 'required|string|max:255',
+        'description' => 'nullable|string|max:500',
+    ]);
+
+    $subcategory = SubCategory::findOrFail($request->id);
+
+    // ── Snapshot BEFORE ───────────────────────────────────────────────────
+    $before = [
+        'name'            => $subcategory->name,
+        'parent_category' => optional($subcategory->category)->name ?? '—',
+        'description'     => $subcategory->description ?? '—',
+    ];
+
+    $subcategory->update([
+        'category_id' => $request->category_id,
+        'name'        => $request->name,
+        'description' => $request->description,
+    ]);
+
+    // ── Snapshot AFTER ────────────────────────────────────────────────────
+    $newCategory = \App\Models\Category::find($request->category_id);
+
+    $after = [
+        'name'            => $request->name,
+        'parent_category' => $newCategory?->name ?? '—',
+        'description'     => $request->description ?? '—',
+    ];
+
+    // ── Build only changed fields ─────────────────────────────────────────
+    $fieldLabels = [
+        'name'            => 'Name',
+        'parent_category' => 'Parent Category',
+        'description'     => 'Description',
+    ];
+
+    $changedFields = [];
+    foreach ($before as $key => $oldVal) {
+        if ((string) $oldVal !== (string) $after[$key]) {
+            $changedFields[] = [
+                'field' => $fieldLabels[$key],
+                'old'   => $oldVal,
+                'new'   => $after[$key],
+            ];
+        }
     }
 
-    public function updateSubcategory(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:sub_categories,id',
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-        ]);
-        // dd($request->all());
-        $subcategory = SubCategory::findOrFail($request->id);
-        $subcategory->update([
-            'category_id' => $request->category_id,
-            'name' => $request->name,
-            'description' => $request->description,
-        ]);
-        return response()->json([
-            'status' => true,
-            'message' => 'Subcategory updated successfullyyy'
-        ]);
+    if (!empty($changedFields)) {
+        $summary = count($changedFields) === 1
+            ? '1 Field Updated'
+            : count($changedFields) . ' Fields Updated';
+
+        AuditLog::record('Updated', 'Subcategories', $summary, $changedFields);
     }
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Subcategory updated successfully',
+    ]);
+}
 
     public function updateCategory(Request $request)
-    {
-        $request->validate([
-            'id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'icon' => 'required|string|max:255',
-            'color' => 'required|string',
-            'description' => 'nullable|string|max:500',
-        ]);
-        $category = Category::findOrFail($request->id);
-        $category->update([
-            'name' => $request->name,
-            'icon' => $request->icon,
-            'color' => $request->color,
-            'description' => $request->description,
-        ]);
-        return response()->json([
-            'status' => true,
-            'message' => 'Category updated successfully'
-        ]);
+{
+    $request->validate([
+        'id'          => 'required|exists:categories,id',
+        'name'        => 'required|string|max:255',
+        'icon'        => 'required|string|max:255',
+        'color'       => 'required|string',
+        'description' => 'nullable|string|max:500',
+    ]);
+
+    $category = Category::findOrFail($request->id);
+
+    // ── Snapshot BEFORE ───────────────────────────────────────────────────
+    $before = [
+        'name'        => $category->name,
+        'icon'        => $category->icon,
+        'color'       => $category->color,
+        'description' => $category->description ?? '—',
+    ];
+
+    $category->update([
+        'name'        => $request->name,
+        'icon'        => $request->icon,
+        'color'       => $request->color,
+        'description' => $request->description,
+    ]);
+
+    // ── Snapshot AFTER ────────────────────────────────────────────────────
+    $after = [
+        'name'        => $request->name,
+        'icon'        => $request->icon,
+        'color'       => $request->color,
+        'description' => $request->description ?? '—',
+    ];
+
+    // ── Build only changed fields ─────────────────────────────────────────
+    $fieldLabels = [
+        'name'        => 'Name',
+        'icon'        => 'Icon',
+        'color'       => 'Color',
+        'description' => 'Description',
+    ];
+
+    $changedFields = [];
+    foreach ($before as $key => $oldVal) {
+        if ((string) $oldVal !== (string) $after[$key]) {
+            $changedFields[] = [
+                'field' => $fieldLabels[$key],
+                'old'   => $oldVal,
+                'new'   => $after[$key],
+            ];
+        }
     }
+
+    if (!empty($changedFields)) {
+        $summary = count($changedFields) === 1
+            ? '1 Field Updated'
+            : count($changedFields) . ' Fields Updated';
+
+        AuditLog::record('Updated', 'Categories', $summary, $changedFields);
+    }
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Category updated successfully',
+    ]);
+}
 
     public function notificationPage()
     {
@@ -704,45 +829,45 @@ AuditLog::record('Deleted', 'Users', 'Deleted Record', [
     }
 
     public function markNotificationRead(Request $request)
-{
-    Activity::where('id', $request->id)
-        ->update(['admin_seen' => 1]);
+    {
+        Activity::where('id', $request->id)
+            ->update(['admin_seen' => 1]);
 
-    return response()->json([
-        'status' => true
-    ]);
-}
-
-public function deleteNotification(Request $request)
-{
-    Activity::where('id', $request->id)
-        ->delete();
-
-    return response()->json([
-        'status' => true
-    ]);
-}
-
-public function markAllNotificationsRead()
-{
-    Activity::where('notify_for', 'admin')
-        ->where('admin_seen', 0)
-        ->update([
-            'admin_seen' => 1
+        return response()->json([
+            'status' => true
         ]);
+    }
 
-    return response()->json([
-        'status' => true
-    ]);
-}
+    public function deleteNotification(Request $request)
+    {
+        Activity::where('id', $request->id)
+            ->delete();
 
-public function deleteAllNotifications()
-{
-    Activity::where('notify_for', 'admin')
-        ->delete();
+        return response()->json([
+            'status' => true
+        ]);
+    }
 
-    return response()->json([
-        'status' => true
-    ]);
-}
+    public function markAllNotificationsRead()
+    {
+        Activity::where('notify_for', 'admin')
+            ->where('admin_seen', 0)
+            ->update([
+                'admin_seen' => 1
+            ]);
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
+
+    public function deleteAllNotifications()
+    {
+        Activity::where('notify_for', 'admin')
+            ->delete();
+
+        return response()->json([
+            'status' => true
+        ]);
+    }
 }

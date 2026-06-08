@@ -402,15 +402,15 @@
         <div class="g2">
             <div class="field-group">
                 <label class="label">Expiry Date</label>
-                <input class="inp" id="coupon-expiry" type="date"
+                <input class="inp" id="coupon-expiry" type="date" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
                     oninput="clearOneError('coupon-expiry','add-expiry-err')">
                 <small class="coupon-error-msg" id="add-expiry-err"></small>
             </div>
             <div class="field-group">
                 <label class="label">Status</label>
                 <select class="inp" id="coupon-status">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                 </select>
             </div>
         </div>
@@ -457,7 +457,7 @@
         <div class="g2">
             <div class="field-group">
                 <label class="label">Expiry Date</label>
-                <input class="inp" id="edit-coupon-expiry" type="date"
+                <input class="inp" id="edit-coupon-expiry" type="date" min="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"
                     oninput="clearOneError('edit-coupon-expiry','edit-expiry-err')">
                 <small class="coupon-error-msg" id="edit-expiry-err"></small>
             </div>
@@ -831,6 +831,9 @@ function saveAll() {
             return;
         }
         toast?.(data.message, 'success');
+        setTimeout(()=>{
+            location.reload();
+        },1500)
     })
     .catch(function() { toast?.('Server error', 'error'); });
 }

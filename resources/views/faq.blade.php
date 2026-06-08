@@ -26,62 +26,46 @@
   <div class="max-w-[860px] mx-auto px-6 lg:px-8">
     <!-- Category Tabs -->
     <div class="flex gap-2 overflow-x-auto pb-2 mb-10 reveal" id="faqTabs" style="scrollbar-width:none">
-      <button class="faq-cat-tab active" data-cat="all">All Questions</button>
-      <button class="faq-cat-tab" data-cat="general">General</button>
-      <button class="faq-cat-tab" data-cat="account">Account</button>
-      <button class="faq-cat-tab" data-cat="reminders">Reminders</button>
-      <button class="faq-cat-tab" data-cat="pricing">Pricing</button>
-      <button class="faq-cat-tab" data-cat="privacy">Privacy</button>
-    </div>
+    <button class="faq-cat-tab active" data-cat="all">All Questions</button>
+    @foreach($categories as $cat)
+        <button class="faq-cat-tab" data-cat="{{ $cat->slug }}">{{ $cat->name }}</button>
+    @endforeach
+</div>
 
-    <div id="faqContainer">
-      <div data-category="general" class="mb-10 faq-section-group show">
-        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center text-sm text-purple-400"><i class="ri-information-line"></i></div><h3 class="text-lg font-bold text-white">General</h3></div>
-        <div class="faq-group-dark flex flex-col gap-2">
-          <div class="faq-item-dark"><div class="faq-question-dark">What is DRemind?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">DRemind is a smart reminder web app that tracks expiry dates for your insurance, utility plans, subscriptions, vehicle registrations, passports, and more. It sends you timely alerts so you always have time to compare prices and switch to better deals before auto-renewals kick in.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Who is DRemind for?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">DRemind is for anyone who wants to stay on top of recurring expenses. Homeowners, renters, families, business owners, and frequent travellers all find it incredibly useful for avoiding overpayment and missed renewals.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Which countries does DRemind support?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">DRemind is available in Australia, New Zealand, United States, United Kingdom, Canada, Ireland, India, and Singapore. We're fully compliant with local privacy laws in each country including GDPR, CCPA, and the Australian Privacy Act.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">How much money can I save?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Our users save an average of $2,847 per year by switching to better deals across insurance, energy, telecom, and subscriptions. Even saving on one renewal can pay off significantly.</p></div></div>
+   <div id="faqContainer">
+    @forelse($categories as $category)
+        @if($category->faqs->count())
+        <div data-category="{{ $category->slug }}" class="mb-10 faq-section-group show">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm"
+                    style="background:{{ $category->color }}22;color:{{ $category->color }}">
+                    <i class="{{ $category->icon }}"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">{{ $category->name }}</h3>
+            </div>
+            <div class="faq-group-dark flex flex-col gap-2">
+                @foreach($category->faqs as $faq)
+                <div class="faq-item-dark">
+                    <div class="faq-question-dark">
+                        {{ $faq->question }}
+                        <i class="ri-add-line faq-icon-dark"></i>
+                    </div>
+                    <div class="faq-answer-dark">
+                        <p class="text-sm text-white/40 leading-relaxed">
+                            {!! nl2br(e($faq->answer)) !!}
+                        </p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
         </div>
-      </div>
-
-      <div data-category="account" class="mb-10 faq-section-group show">
-        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center text-sm text-emerald-400"><i class="ri-user-line"></i></div><h3 class="text-lg font-bold text-white">Account &amp; Access</h3></div>
-        <div class="faq-group-dark flex flex-col gap-2">
-          <div class="faq-item-dark"><div class="faq-question-dark">How do I create an account?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Click "Register", enter your name and email, choose a password — no credit card required. Setup takes under 2 minutes.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Can I use DRemind on multiple devices?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Yes! DRemind syncs in real time across all your devices. Access via web app from any browser, or download the iOS and Android apps.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">I forgot my password. How do I reset it?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">On the login page, click "Forgot password?" and enter your email. You'll receive a reset link within a few minutes. Check your spam folder if it doesn't arrive.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">How do I delete my account?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Go to Settings → Account → Delete Account. All data will be permanently removed within 30 days. You can also email <a href="mailto:info@winngoodremind.co.uk" class="text-purple-400">info@winngoodremind.co.uk</a> to request deletion.</p></div></div>
+        @endif
+    @empty
+        <div class="text-center py-16">
+            <p class="text-white/40">No FAQs available yet.</p>
         </div>
-      </div>
-
-      <div data-category="reminders" class="mb-10 faq-section-group show">
-        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-secondary/15 flex items-center justify-center text-sm text-cyan-400"><i class="ri-notification-3-line"></i></div><h3 class="text-lg font-bold text-white">Reminders &amp; Alerts</h3></div>
-        <div class="faq-group-dark flex flex-col gap-2">
-          <div class="faq-item-dark"><div class="faq-question-dark">How do I add a reminder?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Tap the "+" button in the dock or click "Quick Add". Enter the name, expiry date, category, and preferred alert timing. You can set alerts from 7 days to 90 days before expiry.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">How will I receive my reminders?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">DRemind sends reminders via push notifications, email alerts, and in-app notifications. Choose which channels you prefer in Settings and set multiple reminders at different intervals.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Can I snooze or reschedule a reminder?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Yes. From any notification, you can snooze for 1, 3, or 7 days. You can also edit the reminder directly to change the expiry date or alert timing at any time from your dashboard.</p></div></div>
-        </div>
-      </div>
-
-      <div data-category="pricing" class="mb-10 faq-section-group show">
-        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-yellow-500/15 flex items-center justify-center text-sm text-yellow-400"><i class="ri-price-tag-3-line"></i></div><h3 class="text-lg font-bold text-white">Pricing &amp; Plans</h3></div>
-        <div class="faq-group-dark flex flex-col gap-2">
-          <div class="faq-item-dark"><div class="faq-question-dark">Is DRemind really ?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Yes! The  plan is genuinely  — no credit card, no hidden fees, no time limit. You can track up to 15 reminders and receive push and email alerts forever.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">What does the Pro plan include?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Pro ($4.99/month or $49.99/year) unlocks unlimited reminders, advanced scheduling, family sharing for up to 5 members, data export, detailed analytics, and priority support.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Can I cancel my Pro subscription anytime?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Absolutely. Cancel anytime from Settings → Billing → Cancel Subscription. You keep Pro access until the end of your billing period. No cancellation fees.</p></div></div>
-        </div>
-      </div>
-
-      <div data-category="privacy" class="mb-10 faq-section-group show">
-        <div class="flex items-center gap-3 mb-5"><div class="w-10 h-10 rounded-xl bg-red-500/15 flex items-center justify-center text-sm text-red-400"><i class="ri-shield-check-line"></i></div><h3 class="text-lg font-bold text-white">Privacy &amp; Security</h3></div>
-        <div class="faq-group-dark flex flex-col gap-2">
-          <div class="faq-item-dark"><div class="faq-question-dark">Is my data safe with DRemind?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Yes. We use AES-256 encryption for data at rest and TLS 1.3 for all data in transit. We undergo annual third-party security audits and are fully GDPR/CCPA/APPs compliant.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Do you sell my data to third parties?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Never. We do not sell, rent, or share your personal data with advertisers or third parties. Our revenue comes from Pro subscriptions — your data has no part in our business model.</p></div></div>
-          <div class="faq-item-dark"><div class="faq-question-dark">Can I export all my data?<i class="ri-add-line faq-icon-dark"></i></div><div class="faq-answer-dark"><p class="text-sm text-white/40 leading-relaxed">Yes.  users can export a basic CSV. Pro users can export full data as CSV, PDF, or JSON from Settings → Export. You own your data and can take it with you at any time.</p></div></div>
-        </div>
-      </div>
-    </div>
+    @endforelse
+</div>
 
     <div id="noFaqResults" class="hidden text-center py-16">
       <div class="text-5xl mb-4">🤔</div>
