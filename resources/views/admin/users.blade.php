@@ -18,6 +18,21 @@
     }
 }
 </style>
+@if(!auth('admin')->user()->hasPermission('Users','users.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Users','users.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
 <section id="page-users" class="page active">
     <div
         style="
@@ -37,10 +52,11 @@
             </p>
         </div>
         <div style="display: flex; gap: 8px">
-           
+          @if(auth('admin')->user()->hasPermission('Users', 'users.create'))
             <button class="btn btn-primary btn-sm" onclick="openModal('add-user-modal')">
                 <i class="ri-user-add-line"></i> Add User
             </button>
+            @endif
         </div>
     </div>
     <div class="card" style="padding: 14px; margin-bottom: 14px">

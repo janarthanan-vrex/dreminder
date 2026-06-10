@@ -2,6 +2,28 @@
 @section('content')
 <!-- ═══ STAFF ═══ -->
 <section id="page-staff" class="page active">
+    @if(!auth('admin')->user()->hasPermission('Staffs','staffs.create'))
+<style>
+.create-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('Staffs','staffs.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Staffs','staffs.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
     <div
         style="
             display: flex;
@@ -20,7 +42,7 @@
                 Manage your team members and assignments
             </p>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openModal('add-staff-modal')">
+        <button class="btn btn-primary btn-sm create-btn" onclick="openModal('add-staff-modal')">
             <i class="ri-user-add-line"></i> Add Staff
         </button>
     </div>

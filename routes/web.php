@@ -70,33 +70,12 @@ Route::get('/', function () {
 
     return view('index');
 });
-Route::get('/index', function () {
-    return view('index');
-});
-Route::get('/about', function () {
-    return view('about');
-});
-Route::get('/category', function () {
-    return view('category');
-});
-// Route::get('/faq', function () {
-//     return view('faq');
-// });
-Route::get('/blog', function () {
-    return view('blog');
-});
-Route::get('/blog-detail', function () {
-    return view('blog-detail');
-});
-Route::get('/contact', function () {
-    return view('contact');
-});
-Route::get('/pricing', function () {
-    return view('pricing');
-});
-Route::get('/privacy', function () {
-    return view('privacy');
-});
+
+Route::get('/index', function () {return view('index');})->name('index');
+Route::get('/about', function () {return view('about');})->name('about');
+Route::get('/category', function () {return view('category');})->name('category');
+Route::get('/contact', function () {return view('contact');})->name('contact');
+Route::get('/privacy', function () {return view('privacy');})->name('privacy');
 
 
 // web.php
@@ -105,6 +84,8 @@ Route::post('/contact-send',[PagesController::class,'send'])->name('contact.send
 Route::get('/terms',[PagesController::class,'termsPage'])->name('terms.page');
 Route::get('/faq',[PagesController::class,'faqPage'])->name('faq.page');
 Route::get('/pricing',[PagesController::class,'pricingPage'])->name('pricing.page');
+Route::get('/blog',[PagesController::class,'blogPage'])->name('blog.page');
+Route::get('blog/{slug}', [PagesController::class, 'blogDetail'])->name('blog.detail');
 
 //user panel without middleware
 

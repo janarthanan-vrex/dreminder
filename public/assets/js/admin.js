@@ -68,8 +68,8 @@ const ALL_PERMS = [
     { key: "cms.delete", label: "Delete CMS", group: "CMS" },
     { key: "profile.view", label: "View Profile", group: "Profile" },
     { key: "profile.edit", label: "Edit Profile", group: "Profile" },
-    { key: "System.view", label: "View System", group: "System" },
-    { key: "settings.action", label: "Action Settings", group: "System" },
+    { key: "system.view", label: "View System", group: "System" },
+    { key: "system.action", label: "Action Settings", group: "System" },
 ];
 
 const NAMES = [
@@ -1063,6 +1063,7 @@ USERS
 function goToUserCalendar(userId) {
     window.location.href = "/admin-calendar?user_id=" + userId;
 }
+
 function renderUsers() {
     var data = usersFiltered;
     var totalPages = Math.ceil(data.length / usersPerPage);
@@ -1124,17 +1125,17 @@ function renderUsers() {
                 '<button class="btn btn-ghost btn-xs" onclick="openUserDrawer(' +
                 u.id +
                 ')"><i class="ri-eye-line"></i></button>' +
-                '<button class="btn btn-ghost btn-xs" onclick="openEditUser(' +
+                '<button class="btn btn-ghost btn-xs edit-btn" onclick="openEditUser(' +
                 u.id +
                 ')"><i class="ri-pencil-line"></i></button>' +
-                '<button class="btn btn-' +
+                '<button class="edit-btn btn btn-' +
                 (u.status === "active" ? "amber" : "success") +
                 ' btn-xs" onclick="toggleUserStatus(' +
                 u.id +
                 ')"><i class="ri-' +
                 (u.status === "active" ? "pause" : "play") +
                 '-line"></i></button>' +
-                '<button class="btn btn-danger btn-xs" onclick="deleteUser(' +
+                '<button class="btn btn-danger btn-xs delete-btn" onclick="deleteUser(' +
                 u.id +
                 ')"><i class="ri-delete-bin-line"></i></button>' +
                 "</div></td></tr>"
@@ -1522,10 +1523,10 @@ function openUserDrawer(id) {
             '" class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="sendVerifyMail(' +
             u.id +
             ')"><i class=\"ri-mail-send-line\"></i> Send Verification Mail</button>' +
-            '<button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditUser(' +
+            '<button class="btn btn-ghost btn-sm edit-btn" style="width:100%;justify-content:center" onclick="closeDrawer();openEditUser(' +
             u.id +
             ')"><i class="ri-pencil-line"></i> Edit Profile</button>' +
-            '<button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="toggleUserStatus(' +
+            '<button class="btn btn-danger btn-sm edit-btn" style="width:100%;justify-content:center" onclick="toggleUserStatus(' +
             u.id +
             ');closeDrawer()"><i class="ri-pause-line"></i> ' +
             (u.status === "active" ? "Suspend" : "Activate") +
@@ -1637,10 +1638,10 @@ function renderStaff(data) {
                 '<button class="btn btn-ghost btn-xs" onclick="openStaffDrawer(' +
                 s.id +
                 ')"><i class="ri-eye-line"></i></button>' +
-                '<button class="btn btn-ghost btn-xs" onclick="openEditStaff(' +
+                '<button class="btn btn-ghost btn-xs edit-btn" onclick="openEditStaff(' +
                 s.id +
                 ')"><i class="ri-pencil-line"></i></button>' +
-                '<button class="btn btn-danger btn-xs" onclick="openConfirm(\'Remove ' +
+                '<button class="btn btn-danger btn-xs delete-btn" onclick="openConfirm(\'Remove ' +
                 s.name +
                 " from staff?',function(){removeStaff(" +
                 s.id +
@@ -1982,12 +1983,12 @@ function openStaffDrawer(id) {
             "</div>" +
             "</div>" +
             '<div style="display:flex;flex-direction:column;gap:8px">' +
-            '<button class="btn btn-primary btn-sm" style="width:100%;justify-content:center" onclick="closeDrawer();openEditStaff(' +
+            '<button class="btn btn-primary btn-sm edit-btn" style="width:100%;justify-content:center" onclick="closeDrawer();openEditStaff(' +
             s.id +
             ')">' +
             '<i class="ri-pencil-line"></i> Edit Role' +
             "</button>" +
-            '<button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
+            '<button class="btn btn-danger btn-sm delete-btn" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
             s.name +
             "?',function(){removeStaff(" +
             s.id +
@@ -2950,12 +2951,12 @@ function renderAdminCategories() {
                 "</div>" +
                 "</div>" +
                 '<div style="display:flex;gap:4px">' +
-                '<button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();openEditCategory(' +
+                '<button class="btn btn-ghost btn-xs edit-btn" onclick="event.stopPropagation();openEditCategory(' +
                 c.id +
                 ')">' +
                 '<i class="ri-pencil-line"></i>' +
                 "</button>" +
-                '<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteCategory(' +
+                '<button class="btn btn-danger btn-xs delete-btn" onclick="event.stopPropagation();deleteCategory(' +
                 c.id +
                 ')">' +
                 '<i class="ri-delete-bin-line"></i>' +
@@ -3054,14 +3055,14 @@ function openCategoryDetail(categoryId) {
                 " reminders</div>" +
                 "</div>" +
                 '<div style="display:flex;gap:6px">' +
-                '<button class="btn btn-ghost btn-xs" onclick="openEditSubcategory(' +
+                '<button class="btn btn-ghost btn-xs edit-btn" onclick="openEditSubcategory(' +
                 c.id +
                 "," +
                 s.id +
                 ')">' +
                 '<i class="ri-pencil-line"></i>' +
                 "</button>" +
-                '<button class="btn btn-danger btn-xs" onclick="deleteSubcategory(' +
+                '<button class="btn btn-danger btn-xs delete-btn" onclick="deleteSubcategory(' +
                 c.id +
                 "," +
                 s.id +
@@ -3097,10 +3098,10 @@ function openCategoryDetail(categoryId) {
         "</div>" +
         "</div>" +
         '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
-        '<button class="btn btn-ghost btn-sm" onclick="openEditCategory(' +
+        '<button class="btn btn-ghost btn-sm edit-btn" onclick="openEditCategory(' +
         c.id +
         ')"><i class="ri-pencil-line"></i> Edit</button>' +
-        '<button class="btn btn-primary btn-sm" onclick="prefillSubcategoryParent(' +
+        '<button class="btn btn-primary btn-sm create-btn" onclick="prefillSubcategoryParent(' +
         c.id +
         ");closeModal('category-detail-modal');openModal('add-subcategory-modal')\"><i class=\"ri-node-tree\"></i> Add Subcategory</button>" +
         "</div>" +
@@ -3557,9 +3558,9 @@ function renderNotifications() {
                 '</div>' +
                 '<div style="display:flex;gap:4px;flex-shrink:0">' +
                 (n.unread
-                    ? '<button class="btn btn-ghost btn-xs" onclick="markNotificationRead(' + n.id + ',this)"><i class="ri-check-line"></i></button>'
+                    ? '<button class="btn btn-ghost btn-xs action-btn" onclick="markNotificationRead(' + n.id + ',this)"><i class="ri-check-line"></i></button>'
                     : '') +
-                '<button class="btn btn-danger btn-xs" onclick="deleteNotification(' + n.id + ',this)"><i class="ri-delete-bin-line"></i></button>' +
+                '<button class="btn btn-danger btn-xs action-btn" onclick="deleteNotification(' + n.id + ',this)"><i class="ri-delete-bin-line"></i></button>' +
                 '</div>' +
                 '</div>'
             );

@@ -2,6 +2,28 @@
 @section('content')
 <!-- ═══ ROLES ═══ -->
 <section id="page-roles" class="page active">
+     @if(!auth('admin')->user()->hasPermission('Roles','roles.create'))
+<style>
+.create-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('Roles','roles.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Roles','roles.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
     <div
         style="
             display: flex;
@@ -19,7 +41,7 @@
                 Define roles and control access
             </p>
         </div>
-        <button class="btn btn-primary btn-sm" onclick="openModal('add-role-modal')">
+        <button class="btn btn-primary btn-sm create-btn" onclick="openModal('add-role-modal')">
             <i class="ri-add-line"></i> Create Role
         </button>
     </div>
@@ -164,7 +186,7 @@
         </div>
 
         <div style="display: flex; gap: 8px; justify-content: space-between">
-            <button class="btn btn-danger btn-sm" onclick="deleteRole()">
+            <button class="btn btn-danger btn-sm delete-btn" onclick="deleteRole()">
                 <i class="ri-delete-bin-line"></i> Delete Role
             </button>
             <div style="display: flex; gap: 8px;">
@@ -283,8 +305,8 @@ ROLES
             '<div class="role-card ' + (selectedRole === r.id ? 'selected' : '') + '"' +
            ' onclick="selectRole(' + r.id + ',this)">' +
 
-           '<button class="role-edit-btn" onclick="openEditRole(' + r.id + ', event)">' +
-'<i class="ri-edit-line"></i></button>' +
+           '<button class="role-edit-btn edit-btn" onclick="openEditRole(' + r.id + ', event)">' +
+            '<i class="ri-edit-line"></i></button>' +
 
 
             '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
@@ -665,6 +687,9 @@ function updateRole() {
         toast('Role "' + name + '" updated!', "success");
         closeModal("edit-role-modal");
         renderRoles();
+        setTimeout(()=>{
+            location.reload();
+        },1500)
     })
     .catch(function(error) {
         console.error("updateRole error:", error);

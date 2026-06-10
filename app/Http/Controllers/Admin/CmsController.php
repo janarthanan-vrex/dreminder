@@ -177,50 +177,91 @@ class CmsController extends Controller
     }
 
     public function deletePlan($id)
-{
-    $plan = PlanPrice::findOrFail($id);
+    {
+        $plan = PlanPrice::findOrFail($id);
 
-    // ── Audit Log BEFORE delete ───────────────────────────────────────────
-    AuditLog::record('Deleted', 'Plans', 'Deleted Record', [
-        ['field' => 'Plan Name',   'old' => $plan->plan_name,                          'new' => null],
-        ['field' => 'Price',       'old' => '£' . number_format($plan->price, 2),      'new' => null],
-        ['field' => 'Total Price', 'old' => '£' . number_format($plan->total_price, 2),'new' => null],
-        ['field' => 'Status',      'old' => $plan->status ?? '—',                      'new' => null],
-        ['field' => 'Action',      'old' => 'Plan Permanently Removed',                'new' => null],
-    ]);
+        // ── Audit Log BEFORE delete ───────────────────────────────────────────
+        AuditLog::record('Deleted', 'Plans', 'Deleted Record', [
+            ['field' => 'Plan Name',   'old' => $plan->plan_name,                          'new' => null],
+            ['field' => 'Price',       'old' => '£' . number_format($plan->price, 2),      'new' => null],
+            ['field' => 'Total Price', 'old' => '£' . number_format($plan->total_price, 2), 'new' => null],
+            ['field' => 'Status',      'old' => $plan->status ?? '—',                      'new' => null],
+            ['field' => 'Action',      'old' => 'Plan Permanently Removed',                'new' => null],
+        ]);
 
-    $plan->delete();
+        $plan->delete();
 
-    return response()->json([
-        'status'  => true,
-        'message' => 'Plan deleted successfully!',
-    ]);
-}
+        return response()->json([
+            'status'  => true,
+            'message' => 'Plan deleted successfully!',
+        ]);
+    }
 
     /* ── Coupon CRUD ── */
     public function createCoupon(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'code'             => 'required|string|unique:coupons,code',
-            'coupon_type'    => 'required|in:percentage,fixed',
-            'discount'   => 'required|numeric|min:0',
-            'expiry_date'      => 'required|date',
-            'status'           => 'required|in:active,inactive',
+            'code'         => 'required|string|unique:coupons,code',
+            'coupon_type'  => 'required|in:percentage,fixed',
+            'discount'     => 'required|numeric|min:0',
+            'expiry_date'  => 'required|date',
+            'status'       => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
         }
 
+        $maxPlanPrice = PlanPrice::max('total_price');
+
+        if ($request->coupon_type === 'fixed') {
+
+            if ($request->discount > $maxPlanPrice) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => [
+                        'discount' => [
+                            "Fixed discount cannot exceed the highest plan price (£{$maxPlanPrice})."
+                        ]
+                    ]
+                ], 422);
+            }
+        } elseif ($request->coupon_type === 'percentage') {
+
+            if ($request->discount > 100) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => [
+                        'discount' => [
+                            'Percentage discount cannot exceed 100%.'
+                        ]
+                    ]
+                ], 422);
+            }
+        }
+
         $coupon = \App\Models\Coupon::create([
-            'code'         => strtoupper($request->code),
-            'coupon_type'  => $request->coupon_type,
-            'discount'     => $request->discount,
-            'start_date'   => now(),
-            'expiry_date'  => $request->expiry_date,
-            'status'       => $request->status,
+            'code'        => strtoupper($request->code),
+            'coupon_type' => $request->coupon_type,
+            'discount'    => $request->discount,
+            'start_date'  => now(),
+            'expiry_date' => $request->expiry_date,
+            'status'      => $request->status,
         ]);
+
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Created', 'Coupons', 'Created Record', [
+            ['field' => 'Code',        'old' => null, 'new' => strtoupper($request->code)],
+            ['field' => 'Type',        'old' => null, 'new' => ucfirst($request->coupon_type)],
+            ['field' => 'Discount',    'old' => null, 'new' => $request->coupon_type === 'percentage'
+                ? $request->discount . '%'
+                : '£' . number_format($request->discount, 2)],
+            ['field' => 'Expiry Date', 'old' => null, 'new' => $request->expiry_date],
+            ['field' => 'Status',      'old' => null, 'new' => ucfirst($request->status)],
+        ]);
+
+        // Format date as string to prevent timezone conversion
+        $coupon->expiry_date = $coupon->expiry_date ? $coupon->expiry_date->format('Y-m-d') : null;
 
         return response()->json(['status' => true, 'message' => 'Coupon created!', 'coupon' => $coupon]);
     }
@@ -228,33 +269,153 @@ class CmsController extends Controller
     public function updateCoupon(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'code'           => 'required|string|unique:coupons,code,' . $id,
-            'coupon_type'  => 'required|in:percentage,fixed',
-            'discount' => 'required|numeric|min:0',
-            'expiry_date'    => 'required|date',
-            'status'         => 'required|in:active,inactive',
+            'code'        => 'required|string|unique:coupons,code,' . $id,
+            'coupon_type' => 'required|in:percentage,fixed',
+            'discount'    => 'required|numeric|min:0',
+            'expiry_date' => 'required|date',
+            'status'      => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
         }
+        $maxPlanPrice = PlanPrice::max('total_price');
+
+if ($request->coupon_type === 'fixed') {
+
+    if ($request->discount > $maxPlanPrice) {
+        return response()->json([
+            'status' => false,
+            'errors' => [
+                'discount' => [
+                    "Fixed discount cannot exceed the highest plan price (£{$maxPlanPrice})."
+                ]
+            ]
+        ], 422);
+    }
+
+} elseif ($request->coupon_type === 'percentage') {
+
+    if ($request->discount > 100) {
+        return response()->json([
+            'status' => false,
+            'errors' => [
+                'discount' => [
+                    'Percentage discount cannot exceed 100%.'
+                ]
+            ]
+        ], 422);
+    }
+
+}
 
         $coupon = \App\Models\Coupon::findOrFail($id);
-        $coupon->update($request->only('code', 'discount_type', 'discount_value', 'expiry_date', 'status'));
+
+        // ── Snapshot BEFORE ───────────────────────────────────────────────────
+        $formatDiscount = fn($type, $value) => $type === 'percentage'
+            ? $value . '%'
+            : '£' . number_format($value, 2);
+
+        $before = [
+            'code'        => $coupon->code,
+            'coupon_type' => ucfirst($coupon->coupon_type),
+            'discount'    => $formatDiscount($coupon->coupon_type, $coupon->discount),
+            'expiry_date' => $coupon->expiry_date
+                ? \Carbon\Carbon::parse($coupon->expiry_date)->format('Y-m-d')
+                : null,
+            'status'      => ucfirst($coupon->status),
+        ];
+
+        $coupon->update([
+            'code'        => strtoupper($request->code),
+            'coupon_type' => $request->coupon_type,
+            'discount'    => $request->discount,
+            'expiry_date' => $request->expiry_date,
+            'status'      => $request->status,
+        ]);
+
+        // ── Snapshot AFTER ────────────────────────────────────────────────────
+        $after = [
+            'code'        => strtoupper($request->code),
+            'coupon_type' => ucfirst($request->coupon_type),
+            'discount'    => $formatDiscount($request->coupon_type, $request->discount),
+            'expiry_date' => $request->expiry_date,
+            'status'      => ucfirst($request->status),
+        ];
+
+        $fieldLabels = [
+            'code'        => 'Code',
+            'coupon_type' => 'Type',
+            'discount'    => 'Discount',
+            'expiry_date' => 'Expiry Date',
+            'status'      => 'Status',
+        ];
+
+        $changedFields = [];
+        foreach ($before as $key => $oldVal) {
+            if ((string) $oldVal !== (string) $after[$key]) {
+                $changedFields[] = [
+                    'field' => $fieldLabels[$key],
+                    'old'   => $oldVal,
+                    'new'   => $after[$key],
+                ];
+            }
+        }
+
+        if (!empty($changedFields)) {
+            $summary = count($changedFields) === 1
+                ? '1 Field Updated'
+                : count($changedFields) . ' Fields Updated';
+
+            AuditLog::record('Updated', 'Coupons', $summary, $changedFields);
+        }
+
+        // Format date as string to prevent timezone conversion
+        $coupon->expiry_date = $coupon->expiry_date ? $coupon->expiry_date->format('Y-m-d') : null;
 
         return response()->json(['status' => true, 'message' => 'Coupon updated!', 'coupon' => $coupon]);
     }
 
     public function deleteCoupon($id)
     {
-        \App\Models\Coupon::findOrFail($id)->delete();
+        $coupon = \App\Models\Coupon::findOrFail($id);
+
+        // ── Audit Log BEFORE delete ───────────────────────────────────────────
+        AuditLog::record('Deleted', 'Coupons', 'Deleted Record', [
+            ['field' => 'Code',        'old' => $coupon->code,                                        'new' => null],
+            ['field' => 'Type',        'old' => ucfirst($coupon->coupon_type),                        'new' => null],
+            ['field' => 'Discount',    'old' => $coupon->coupon_type === 'percentage'
+                ? $coupon->discount . '%'
+                : '£' . number_format($coupon->discount, 2),          'new' => null],
+            ['field' => 'Expiry Date', 'old' => $coupon->expiry_date,                                 'new' => null],
+            ['field' => 'Status',      'old' => ucfirst($coupon->status),                             'new' => null],
+        ]);
+
+        $coupon->delete();
+
         return response()->json(['status' => true, 'message' => 'Coupon deleted!']);
     }
 
     public function getCoupons()
     {
         $coupons = \App\Models\Coupon::latest()->get();
-        return response()->json(['status' => true, 'coupons' => $coupons]);
+
+        // Convert to array and format dates to prevent timezone conversion
+        $formattedCoupons = $coupons->map(function ($coupon) {
+            return [
+                'id'            => $coupon->id,
+                'code'          => $coupon->code,
+                'coupon_type'   => $coupon->coupon_type,
+                'discount'      => $coupon->discount,
+                'expiry_date'   => $coupon->expiry_date ? $coupon->expiry_date->format('Y-m-d') : null,
+                'start_date'    => $coupon->start_date ? $coupon->start_date->format('Y-m-d') : null,
+                'status'        => $coupon->status,
+                'created_at'    => $coupon->created_at,
+                'updated_at'    => $coupon->updated_at,
+            ];
+        })->toArray();
+
+        return response()->json(['status' => true, 'coupons' => $formattedCoupons]);
     }
 
     public function privacyPolicy(Request $request)
@@ -316,6 +477,48 @@ class CmsController extends Controller
         ]);
     }
 
+    //      public function saveTermsCondition(Request $request)
+    // {
+    //     $request->validate([
+    //         'content' => 'required',
+    //     ]);
+
+    //     // ── Read old value BEFORE saving ─────────────────────────────────────
+    //     $existing = TermsPage::where('slug', 'terms-condition')->first();
+    //     $isNew    = !$existing;
+
+    //     TermsPage::updateOrCreate(
+    //         ['slug' => 'terms-condition'],
+    //         [
+    //             'title'   => 'Terms & Conditions',
+    //             'content' => $request->content,
+    //         ]
+    //     );
+
+    //     // ── Audit Log ────────────────────────────────────────────────────────
+    //     if ($isNew) {
+    //         AuditLog::record('Created', 'Settings', 'Created Record', [
+    //             ['field' => 'Page',    'old' => null, 'new' => 'Terms & Conditions'],
+    //             ['field' => 'Content', 'old' => null, 'new' => \Str::limit(strip_tags($request->content), 80)],
+    //         ]);
+    //     } else {
+    //         $oldContent = \Str::limit(strip_tags($existing->content), 80);
+    //         $newContent = \Str::limit(strip_tags($request->content),  80);
+
+    //         if ($oldContent !== $newContent) {
+    //             AuditLog::record('Updated', 'Settings', 'Terms & Conditions Updated', [
+    //                 ['field' => 'Page',    'old' => 'Terms & Conditions', 'new' => null],
+    //                 ['field' => 'Content', 'old' => $oldContent,          'new' => $newContent],
+    //             ]);
+    //         }
+    //     }
+
+    //     return response()->json([
+    //         'status'  => true,
+    //         'message' => 'Terms & Conditions saved successfully.',
+    //     ]);
+    // }
+
     /* ─── FAQ CMS Page ─── */
     public function faqPage()
     {
@@ -338,7 +541,18 @@ class CmsController extends Controller
         ]);
 
         $data['sort_order'] = Faq::where('faq_category_id', $data['faq_category_id'])->max('sort_order') + 1;
+
         $faq = Faq::create($data);
+
+        // ── Audit Log ────────────────────────────────────────────────────────
+        $category = FaqCategory::find($data['faq_category_id']);
+
+        AuditLog::record('Created', 'FAQ', 'Created Record', [
+            ['field' => 'Category', 'old' => null, 'new' => $category?->name ?? '—'],
+            ['field' => 'Question', 'old' => null, 'new' => \Str::limit($data['question'], 80)],
+            ['field' => 'Answer',   'old' => null, 'new' => \Str::limit($data['answer'],   80)],
+            ['field' => 'Status',   'old' => null, 'new' => ucfirst($data['status'] ?? 'draft')],
+        ]);
 
         return response()->json(['success' => true, 'faq' => $faq->load('category')]);
     }
@@ -351,14 +565,61 @@ class CmsController extends Controller
             'status'   => 'sometimes|in:active,draft',
         ]);
 
+        // ── Snapshot BEFORE ───────────────────────────────────────────────────
+        $before = [
+            'question' => \Str::limit($faq->question, 80),
+            'answer'   => \Str::limit($faq->answer,   80),
+            'status'   => ucfirst($faq->status ?? 'draft'),
+        ];
+
         $faq->update($data);
+
+        // ── Snapshot AFTER ────────────────────────────────────────────────────
+        $after = [
+            'question' => \Str::limit($data['question'] ?? $faq->question, 80),
+            'answer'   => \Str::limit($data['answer']   ?? $faq->answer,   80),
+            'status'   => ucfirst($data['status']        ?? $faq->status ?? 'draft'),
+        ];
+
+        $fieldLabels = [
+            'question' => 'Question',
+            'answer'   => 'Answer',
+            'status'   => 'Status',
+        ];
+
+        $changedFields = [];
+        foreach ($before as $key => $oldVal) {
+            if ((string) $oldVal !== (string) $after[$key]) {
+                $changedFields[] = [
+                    'field' => $fieldLabels[$key],
+                    'old'   => $oldVal,
+                    'new'   => $after[$key],
+                ];
+            }
+        }
+
+        if (!empty($changedFields)) {
+            $summary = count($changedFields) === 1
+                ? '1 Field Updated'
+                : count($changedFields) . ' Fields Updated';
+
+            AuditLog::record('Updated', 'FAQ', $summary, $changedFields);
+        }
 
         return response()->json(['success' => true, 'faq' => $faq]);
     }
 
     public function destroyFaq(Faq $faq)
     {
+        // ── Audit Log BEFORE delete ───────────────────────────────────────────
+        AuditLog::record('Deleted', 'FAQ', 'Deleted Record', [
+            ['field' => 'Category', 'old' => optional($faq->category)->name ?? '—',  'new' => null],
+            ['field' => 'Question', 'old' => \Str::limit($faq->question, 80),         'new' => null],
+            ['field' => 'Status',   'old' => ucfirst($faq->status ?? 'draft'),        'new' => null],
+        ]);
+
         $faq->delete();
+
         return response()->json(['success' => true]);
     }
 
@@ -382,19 +643,26 @@ class CmsController extends Controller
             'icon'        => 'nullable|string|max:100',
             'color'       => 'nullable|string|max:20',
         ], [
-            // Custom error messages
             'name.required' => 'Category name is required',
             'name.unique'   => 'Category name already taken',
         ]);
 
-        $data['slug'] = Str::slug($data['name']);
+        $data['slug']       = Str::slug($data['name']);
         $data['sort_order'] = (FaqCategory::max('sort_order') ?? 0) + 1;
 
         $category = FaqCategory::create($data);
 
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Created', 'FAQ', 'Created Record', [
+            ['field' => 'Name',        'old' => null, 'new' => $data['name']],
+            ['field' => 'Description', 'old' => null, 'new' => $data['description'] ?? '—'],
+            ['field' => 'Icon',        'old' => null, 'new' => $data['icon']        ?? '—'],
+            ['field' => 'Slug',        'old' => null, 'new' => $data['slug']],
+        ]);
+
         return response()->json([
-            'success' => true,
-            'category' => $category
+            'success'  => true,
+            'category' => $category,
         ]);
     }
 
@@ -418,14 +686,68 @@ class CmsController extends Controller
             $data['slug'] = Str::slug($data['name']);
         }
 
+        // ── Snapshot BEFORE ───────────────────────────────────────────────────
+        $before = [
+            'name'        => $faqCategory->name,
+            'description' => $faqCategory->description ?? '—',
+            'icon'        => $faqCategory->icon         ?? '—',
+            'is_visible'  => $faqCategory->is_visible   ? 'Visible' : 'Hidden',
+        ];
+
         $faqCategory->update($data);
+
+        // ── Snapshot AFTER ────────────────────────────────────────────────────
+        $after = [
+            'name'        => $data['name']        ?? $faqCategory->name,
+            'description' => $data['description'] ?? '—',
+            'icon'        => $data['icon']        ?? '—',
+            'is_visible'  => isset($data['is_visible'])
+                ? ($data['is_visible'] ? 'Visible' : 'Hidden')
+                : $before['is_visible'],
+        ];
+
+        $fieldLabels = [
+            'name'        => 'Name',
+            'description' => 'Description',
+            'icon'        => 'Icon',
+            'is_visible'  => 'Visibility',
+        ];
+
+        $changedFields = [];
+        foreach ($before as $key => $oldVal) {
+            if ((string) $oldVal !== (string) $after[$key]) {
+                $changedFields[] = [
+                    'field' => $fieldLabels[$key],
+                    'old'   => $oldVal,
+                    'new'   => $after[$key],
+                ];
+            }
+        }
+
+        if (!empty($changedFields)) {
+            $summary = count($changedFields) === 1
+                ? '1 Field Updated'
+                : count($changedFields) . ' Fields Updated';
+
+            AuditLog::record('Updated', 'FAQ', $summary, $changedFields);
+        }
 
         return response()->json(['success' => true, 'category' => $faqCategory]);
     }
 
+
     public function destroyCategory(FaqCategory $faqCategory)
     {
-        $faqCategory->delete(); // cascades to faqs
+        // ── Audit Log BEFORE delete ───────────────────────────────────────────
+        AuditLog::record('Deleted', 'FAQ', 'Deleted Record', [
+            ['field' => 'Name',        'old' => $faqCategory->name,                'new' => null],
+            ['field' => 'Description', 'old' => $faqCategory->description ?? '—',  'new' => null],
+            ['field' => 'Visibility',  'old' => $faqCategory->is_visible ? 'Visible' : 'Hidden', 'new' => null],
+            ['field' => 'Action',      'old' => 'Category & FAQs Permanently Removed',           'new' => null],
+        ]);
+
+        $faqCategory->delete();
+
         return response()->json(['success' => true]);
     }
 }

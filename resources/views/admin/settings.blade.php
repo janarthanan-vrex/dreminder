@@ -70,6 +70,13 @@
     transform:translateX(24px);
 }
 </style>
+@if(!auth('admin')->user()->hasPermission('System','system.action'))
+<style>
+.action-btn {
+    display: none !important;
+}
+</style>
+@endif
 <section id="page-settings" class="page active">
     <div style="margin-bottom: 20px">
         <h2 class="font-jakarta" style="font-size: 1.3rem; font-weight: 800">System Settings</h2>
@@ -282,7 +289,7 @@
                         <i class="ri-mail-send-line"></i> Send Test Email
                     </button>
 
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="btn btn-primary btn-sm action-btn">
                         <i class="ri-save-line"></i> Save Settings
                     </button>
                 </div>

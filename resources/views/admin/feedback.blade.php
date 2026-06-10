@@ -2,6 +2,13 @@
 @section('content')
 
 <!-- ═══ FEEDBACK ═══ -->
+ @if(!auth('admin')->user()->hasPermission('System','system.action'))
+<style>
+.action-btn {
+    display: none !important;
+}
+</style>
+@endif
 <section id="page-feedback" class="page active">
     <div
         style="
@@ -139,9 +146,11 @@
 
                     <div style="display: flex; gap: 10px; justify-content: flex-end;">
                         <button type="button" class="btn btn-ghost" onclick="closeReplyModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
+                        
+                        <button type="submit" class="btn btn-primary action-btn">
                             <i class="ri-send-plane-line"></i> Send Reply
                         </button>
+                       
                     </div>
                 </form>
             </div>

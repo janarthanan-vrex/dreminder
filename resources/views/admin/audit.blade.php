@@ -691,6 +691,13 @@
 <!-- ═══════════════════════════════════════════════════
      AUDIT LOG PAGE
 ═══════════════════════════════════════════════════ -->
+ @if(!auth('admin')->user()->hasPermission('System','system.action'))
+<style>
+.action-btn {
+    display: none !important;
+}
+</style>
+@endif
 <section id="page-audit" class="page active">
 
     <!-- ── Page Header ── -->
@@ -702,10 +709,7 @@
         <div class="audit-header-actions">
             <!-- Export Dropdown -->
             <div class="export-dropdown-wrap">
-                <button class="btn btn-ghost btn-sm" id="exportDropBtn" onclick="toggleExportDropdown(event)">
-                    <i class="ri-download-2-line"></i> Export
-                    <i class="ri-arrow-down-s-line" style="margin-left:2px;"></i>
-                </button>
+
                 <div class="export-dropdown-menu" id="exportDropMenu">
                     <a onclick="handleExport('csv')">
                         <i class="ri-file-text-line"></i> Export CSV
@@ -722,7 +726,7 @@
                 </div>
             </div>
             <!-- Clear Log -->
-            <button class="btn btn-danger btn-sm"
+            <button class="btn btn-danger btn-sm action-btn"
                 onclick="confirmClearLog()">
                 <i class="ri-delete-bin-line"></i> Clear Log
             </button>
@@ -799,7 +803,7 @@
             <table class="audit-table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>S.No</th>
                         <th>Date & Time</th>
                         <th>Event</th>
                         <th>User</th>

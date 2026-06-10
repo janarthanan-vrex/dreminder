@@ -163,12 +163,60 @@
     .coupon-error-msg { display: block; margin-top: 4px; font-size: .72rem; color: #ef4444; min-height: 16px }
 </style>
 
+@if(!auth('admin')->user()->hasPermission('Pricing','pricing.create'))
+<style>
+.create-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('Pricing','pricing.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Pricing','pricing.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+
+@if(!auth('admin')->user()->hasPermission('Coupons','coupons.create'))
+<style>
+.cp-create-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('Coupons','coupons.edit'))
+<style>
+.cp-edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Coupons','coupons.delete'))
+<style>
+.cp-delete-btn {
+    display: none !important;
+}
+</style>
+@endif
+
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
     <div>
         <h2 class="font-jakarta" style="font-size:1.3rem;font-weight:800">Pricing Module</h2>
         <p style="font-size:.8rem;color:var(--text3);margin-top:3px">Manage plans and coupons</p>
     </div>
-    <button type="button" class="btn btn-primary btn-sm" onclick="saveAll()">
+    
+    <button type="button" class="btn btn-primary btn-sm edit-btn" onclick="saveAll()">
         <i class="ri-save-line"></i> Save & Publish
     </button>
 </div>
@@ -178,9 +226,11 @@
     <button class="cms-tab-btn active" onclick="switchTab('plans')" id="tab-btn-plans">
         <i class="ri-price-tag-3-line"></i> Plans
     </button>
+     @if(auth('admin')->user()->hasPermission('Coupons', 'coupons.view'))
     <button class="cms-tab-btn" onclick="switchTab('coupons')" id="tab-btn-coupons">
         <i class="ri-coupon-line"></i> Coupons
     </button>
+    @endif
 </div>
 
 <!-- ============================== PLANS TAB ============================== -->
@@ -197,13 +247,13 @@
                     id="plan-tab-{{ $key }}">
                     <span class="plan-color-dot" style="background:{{ $plan->color }}"></span>
                     {{ $plan->plan_name }}
-                    <span class="plan-tab-close" onclick="deletePlan({{ $plan->id }}, event, {{ $key }})">
+                    <span class="plan-tab-close delete-btn" onclick="deletePlan({{ $plan->id }}, event, {{ $key }})">
                         <i class="ri-close-line"></i>
                     </span>
                 </button>
                 @endforeach
 
-                <button type="button" class="add-plan-btn" onclick="addNewPlan()">
+                <button type="button" class="add-plan-btn create-btn" onclick="addNewPlan()">
                     <i class="ri-add-line"></i> Add Plan
                 </button>
             </div>
@@ -312,10 +362,10 @@
                             name="features[{{ $key }}][]"
                             value="{{ $feature }}"
                             style="flex:1" readonly>
-                        <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFeatureEdit(this)">
+                        <button type="button" class="btn btn-ghost btn-sm edit-btn" onclick="toggleFeatureEdit(this)">
                             <i class="ri-edit-line"></i>
                         </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeFeature(this, 'features-{{ $key }}')">
+                        <button type="button" class="btn btn-danger btn-sm delete-btn" onclick="removeFeature(this, 'features-{{ $key }}')">
                             <i class="ri-delete-bin-line"></i>
                         </button>
                     </div>
@@ -336,7 +386,7 @@
 <div class="cms-tab-content" id="tab-coupons">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div class="section-title" style="margin:0">Discount Coupons</div>
-        <button type="button" class="btn btn-primary btn-sm" onclick="openModal('add-coupon-modal')">
+        <button type="button" class="btn btn-primary btn-sm cp-create-btn" onclick="openModal('add-coupon-modal')">
             <i class="ri-add-line"></i> New Coupon
         </button>
     </div>
@@ -563,8 +613,8 @@ function addFeature(listId) {
     d.innerHTML =
         '<span class="feature-serial">' + count + '</span>' +
         '<input class="inp feature-inp" name="features[' + planIdx + '][]" placeholder="New feature..." style="flex:1">' +
-        '<button type="button" class="btn btn-ghost btn-sm" onclick="toggleFeatureEdit(this)"><i class="ri-edit-line"></i></button>' +
-        '<button type="button" class="btn btn-danger btn-sm" onclick="removeFeature(this,\'' + listId + '\')"><i class="ri-delete-bin-line"></i></button>';
+        '<button type="button" class="btn btn-ghost btn-sm edit-btn" onclick="toggleFeatureEdit(this)"><i class="ri-edit-line"></i></button>' +
+        '<button type="button" class="btn btn-danger btn-sm delete-btn" onclick="removeFeature(this,\'' + listId + '\')"><i class="ri-delete-bin-line"></i></button>';
     list.appendChild(d);
     var inp = d.querySelector('.feature-inp');
     inp.removeAttribute('readonly');
@@ -873,7 +923,7 @@ function formatCoupon(c) {
     var badgeCls  = c.coupon_type === 'percentage' ? 'badge-green' : 'badge-amber';
     var rawExpiry = c.expiry_date ? c.expiry_date.substring(0, 10) : '';
     var dispExp   = rawExpiry
-        ? new Date(rawExpiry + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+        ? new Date(rawExpiry + 'T00:00:00Z').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
         : '—';
     var statusCls = c.status === 'Active' ? 'badge-green' : 'badge-red';
     return {
@@ -886,8 +936,8 @@ function formatCoupon(c) {
 
 function couponRowHTML(c, index) {
     var today = new Date();
-    var expiryDate = c.expiry
-        ? new Date(c.expiry)
+    var expiryDate = c._expiryRaw
+        ? new Date(c._expiryRaw + 'T00:00:00Z')
         : null;
 
     var statusText = '';
@@ -945,11 +995,11 @@ function couponRowHTML(c, index) {
 
         '<td><div style="display:flex;gap:4px">' +
 
-            '<button type="button" class="btn btn-ghost btn-sm" onclick="editCoupon(' + c.id + ')">' +
+            '<button type="button" class="btn btn-ghost btn-sm cp-edit-btn" onclick="editCoupon(' + c.id + ')">' +
                 '<i class="ri-edit-line"></i>' +
             '</button>' +
 
-            '<button type="button" class="btn btn-danger btn-sm" onclick="deleteCoupon(' + c.id + ')">' +
+            '<button type="button" class="btn btn-danger btn-sm cp-delete-btn" onclick="deleteCoupon(' + c.id + ')">' +
                 '<i class="ri-delete-bin-line"></i>' +
             '</button>' +
 
@@ -1050,6 +1100,9 @@ function createCoupon() {
         cpnPage = 1;
         renderCoupons();
        toast?.(data.message, 'success');
+       setTimeout(()=>{
+        location.reload();
+       },1500)
     })
     .catch(function() { toast?.('Server error', 'error'); });
 }
@@ -1114,6 +1167,11 @@ function updateCoupon() {
         closeModal('edit-coupon-modal');
         renderCoupons();
         toast?.('"' + code + '" updated!', 'success');
+        setTimeout(()=>{
+        location.reload();
+       },1500)
+        
+        
     })
     .catch(function() { toast?.('Server error', 'error'); });
 }
@@ -1161,7 +1219,7 @@ function showCouponErrors(errors, fieldMap) {
         if (inp) inp.style.borderColor = '#ef4444';
         if (err) err.textContent = msgs[0];
     });
-    toast?.('Please fix the errors', 'error');
+    // toast?.('Please fix the errors', 'error');
 }
 
 function clearOneError(inputId, errId) {

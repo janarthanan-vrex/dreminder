@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\FaqCategory;
 use App\Models\TermsPage;
 use App\Models\PlanPrice;
@@ -64,6 +65,41 @@ public function pricingPage()
         ->get();
 
     return view('pricing', compact('plans'));
+}
+
+public function blogPage(Request $request)
+{
+    $posts = BlogPost::where('is_active', true)
+                     ->latest()
+                     ->get();
+
+    $featured = $posts->first();
+    $rest     = $posts->skip(1)->values();
+
+    return view('blog', compact('posts', 'featured', 'rest'));
+}
+
+public function blogDetail($slug)
+{
+    $post = BlogPost::where('slug', $slug)->where('is_active', true)->firstOrFail();
+
+    // Read time
+    $wordCount = str_word_count(strip_tags($post->content));
+    $readTime  = max(1, ceil($wordCount / 200));
+
+    // Related posts — same category, exclude current
+    $related = BlogPost::where('is_active', true)
+                       ->where('category', $post->category)
+                       ->where('id', '!=', $post->id)
+                       ->latest()
+                       ->take(3)
+                       ->get();
+
+    // Prev / Next
+    $prev = BlogPost::where('is_active', true)->where('id', '<', $post->id)->orderBy('id', 'desc')->first();
+    $next = BlogPost::where('is_active', true)->where('id', '>', $post->id)->orderBy('id', 'asc')->first();
+
+    return view('blog-detail', compact('post', 'readTime', 'related', 'prev', 'next'));
 }
 
 }

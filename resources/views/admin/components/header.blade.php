@@ -1,7 +1,7 @@
 @php
-    $notificationCount = \App\Models\Activity::where('notify_for','admin')
-        ->where('admin_seen',0)
-        ->count();
+$notificationCount = \App\Models\Activity::where('notify_for','admin')
+->where('admin_seen',0)
+->count();
 @endphp
 <div class="topbar">
     <div class="topbar-left">
@@ -25,19 +25,23 @@
             <input placeholder="Quick search…" />
         </div>
         <div class="tb-divider hide-mobile"></div>
-        <a class="tb-btn notif-btn" href="admin-notifications">
-    <i class="ri-notification-3-line"></i>
+         @if(auth('admin')->user()->hasPermission('Notifications', 'notifications.view'))
+        <a class="tb-btn notif-btn" href="{{route('admin.notifications')}}">
+            <i class="ri-notification-3-line"></i>
 
-    @if($notificationCount > 0)
-        <span class="notif-dot"></span>
-    @endif
-</a>
+            @if($notificationCount > 0)
+            <span class="notif-dot"></span>
+            @endif
+        </a>
+        @endif
 
         <button class="tb-btn" onclick="toggleTheme()">
             <i class="ri-moon-line" id="theme-icon"></i>
         </button>
+         @if(auth('admin')->user()->hasPermission('Profile', 'profile.view'))
         <a class="tb-btn" href="{{route('admin.profile')}}">
             <i class="ri-user-settings-line"></i>
         </a>
+        @endif
     </div>
 </div>

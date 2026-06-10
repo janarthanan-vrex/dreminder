@@ -2,6 +2,28 @@
 @section('content')
 
 <!-- ═══ CATEGORIES ═══ -->
+ @if(!auth('admin')->user()->hasPermission('Categories','categories.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('Categories','categories.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('Categories','categories.create'))
+<style>
+.create-btn {
+    display: none !important;
+}
+</style>
+@endif
 <section id="page-categories" class="page active">
     <div class="flex items-start justify-between gap-3 flex-wrap mb-[18px]">
         <div>
@@ -14,12 +36,15 @@
         </div>
 
         <div class="flex gap-2 flex-wrap">
+             @if(auth('admin')->user()->hasPermission('Categories', 'categories.create'))
             <button class="btn btn-ghost btn-sm" onclick="openModal('add-subcategory-modal')">
                 <i class="ri-node-tree"></i> Add Subcategory
             </button>
+            
             <button class="btn btn-primary btn-sm" onclick="openModal('add-category-modal')">
                 <i class="ri-add-line"></i> Add Category
             </button>
+            @endif
         </div>
     </div>
 

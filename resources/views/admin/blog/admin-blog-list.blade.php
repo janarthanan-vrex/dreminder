@@ -27,7 +27,9 @@
         <p style="font-size:.8rem;color:var(--text3);margin-top:3px">Manage articles, drafts and categories</p>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
+         @if(auth('admin')->user()->hasPermission('Blogs', 'blogs.create'))
         <a href="{{ route('admin.blog.create') }}" class="btn btn-primary btn-sm"><i class="ri-add-line"></i> New Post</a>
+        @endif
     </div>
 </div>
 
@@ -112,8 +114,12 @@
                 <td><span style="font-size:.78rem;color:var(--text3)">{{ $post->created_at->format('M d, Y') }}</span></td>
                 <td>
                     <div style="display:flex;gap:4px">
+                         @if(auth('admin')->user()->hasPermission('Blogs', 'blogs.edit'))
                         <a href="{{ route('admin.blog.edit', $post->id) }}" class="btn btn-ghost btn-sm" title="Edit"><i class="ri-edit-line"></i></a>
+                        @endif
+                         @if(auth('admin')->user()->hasPermission('Blogs', 'blogs.delete'))
                         <button class="btn btn-danger btn-sm" onclick="deletePost({{ $post->id }}, this)" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                        @endif
                     </div>
                 </td>
             </tr>

@@ -27,3 +27,4 @@ class PlanPrice extends Model
         'features' => 'array',
     ];
 }
+

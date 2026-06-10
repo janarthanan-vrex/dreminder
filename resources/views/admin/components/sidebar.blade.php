@@ -9,38 +9,70 @@
     $admin = Auth::guard('admin')->user();
 
     $notificationCount = Activity::where('notify_for','admin')
-        ->count();
-@endphp
+    ->count();
+    @endphp
     <nav class="sb-nav">
-        
+
         <div class="sb-section">Overview</div>
         <a class="nav-item hidden" href=""><i class="ri-dashboard-line"></i><span class="nav-lbl">Dashboard</span></a>
         <a class="nav-item" href="{{route('admin.dashboard')}}"><i class="ri-bar-chart-2-line"></i><span class="nav-lbl">Dashboard</span></a>
 
         <div class="sb-section">Management</div>
+        @if(auth('admin')->user()->hasPermission('Users', 'users.view'))
         <a class="nav-item" href="{{route('admin.usermanagement')}}"><i class="ri-group-line"></i><span class="nav-lbl">Users</span></a>
+        @endif
+        @if(auth('admin')->user()->hasPermission('Reminders', 'reminders.view'))
         <a class="nav-item" href="{{route('admin.reminderpage')}}"><i class="ri-alarm-line"></i><span class="nav-lbl">Reminders</span></a>
+        @endif
+        @if(auth('admin')->user()->hasPermission('Calendar', 'calendar.view'))
         <a class="nav-item" href="{{route('admin.calendarpage')}}"><i class="ri-calendar-line"></i><span class="nav-lbl">Calendar</span></a>
+        @endif
+        @if(auth('admin')->user()->hasPermission('Transactions', 'transaction.view'))
         <a class="nav-item" href="{{route('admin.transaction')}}"><i class="ri-bank-card-line"></i><span class="nav-lbl">Transactions</span></a>
+        @endif
+        @if(auth('admin')->user()->hasPermission('Categories', 'categories.view'))
         <a class="nav-item" href="{{route('admin.category')}}"><i class="ri-folder-3-line"></i><span class="nav-lbl">Categories</span></a>
+        @endif
+        @if(auth('admin')->user()->hasPermission('Notifications', 'notifications.view'))
         <a class="nav-item" href="{{route('admin.notifications')}}">
             <i class="ri-notification-3-line"></i>
             <span class="nav-lbl">Notifications</span>
             @if($notificationCount > 0)
-                <span class="nav-badge">{{ $notificationCount }}</span>
+            <span class="nav-badge">{{ $notificationCount }}</span>
             @endif
         </a>
-
+        @endif
+        @if(auth('admin')->user()->hasPermission('Pricing', 'pricing.view'))
         <div class="sb-section">Pricing</div>
         <a class="nav-item" href="{{route('admin.pricing')}}"><i class="ri-vip-crown-line"></i><span class="nav-lbl">Pricing</span></a>
+        @endif
 
+        @if(auth('admin')->user()->hasPermission('Blogs', 'blogs.view'))
         <div class="sb-section">Content</div>
         <a class="nav-item" href="{{route('admin.blog.index')}}"><i class="ri-article-line"></i><span class="nav-lbl">Blog</span></a>
-
+        @endif
+        @if(
+        auth('admin')->user()->hasPermission('Staffs', 'staffs.view') ||
+        auth('admin')->user()->hasPermission('Roles', 'roles.view')
+        )
         <div class="sb-section">Team</div>
-        <a class="nav-item" href="{{route('admin.staff')}}"><i class="ri-team-line"></i><span class="nav-lbl">Staff</span></a>
-        <a class="nav-item" href="{{route('admin.roles')}}"><i class="ri-key-2-line"></i><span class="nav-lbl">Roles & Permissions</span></a>
 
+        @if(auth('admin')->user()->hasPermission('Staffs', 'staffs.view'))
+        <a class="nav-item" href="{{ route('admin.staff') }}">
+            <i class="ri-team-line"></i>
+            <span class="nav-lbl">Staff</span>
+        </a>
+        @endif
+
+        @if(auth('admin')->user()->hasPermission('Roles', 'roles.view'))
+        <a class="nav-item" href="{{ route('admin.roles') }}">
+            <i class="ri-key-2-line"></i>
+            <span class="nav-lbl">Roles & Permissions</span>
+        </a>
+        @endif
+        @endif
+
+        @if(auth('admin')->user()->hasPermission('CMS', 'cms.view'))
         <div class="sb-section">CMS</div>
         <a class="nav-item hidden" href="admin-cms-home"><i class="ri-home-4-line"></i><span class="nav-lbl">Home</span></a>
         <a class="nav-item hidden" href="admin-cms-about"><i class="ri-information-line"></i><span class="nav-lbl">About</span></a>
@@ -48,149 +80,141 @@
         <a class="nav-item hidden" href="admin-cms-contact"><i class="ri-contacts-line"></i><span class="nav-lbl">Contact</span></a>
         <a class="nav-item" href="{{route('admin.cms.terms')}}"><i class="ri-file-list-3-line"></i><span class="nav-lbl">Terms & Conditions</span></a>
         <a class="nav-item" href="{{route('admin.cms.privacy')}}"><i class="ri-shield-user-line"></i><span class="nav-lbl">Privacy Policy</span></a>
-
+        @endif
+        @if(auth('admin')->user()->hasPermission('System', 'system.view'))
         <div class="sb-section">System</div>
         <a class="nav-item" href="{{route('admin.settings')}}"><i class="ri-settings-3-line"></i><span class="nav-lbl">Settings</span></a>
         <a class="nav-item" href="{{route('admin.audit.index')}}"><i class="ri-shield-check-line"></i><span class="nav-lbl">Audit Log</span></a>
         <a class="nav-item" href="{{route('admin.feedback')}}"><i class="ri-feedback-line"></i><span class="nav-lbl">Feedback</span></a>
+        @endif
+        <form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">
+            @csrf
+        </form>
 
-<form id="logoutForm" action="{{ route('admin.logout') }}" method="POST">
-    @csrf
-</form>
+        <a class="nav-item" style="color:var(--red)" onclick="handleLogout()">
+            <i class="ri-logout-box-r-line"></i>
+            <span class="nav-lbl">Logout</span>
+        </a>
 
-<a class="nav-item" style="color:var(--red)" onclick="handleLogout()">
-    <i class="ri-logout-box-r-line"></i>
-    <span class="nav-lbl">Logout</span>
-</a>
+        <script>
+            function openModal(id) {
+                document.getElementById(id).classList.add('active');
+            }
 
-<script>
-    function openModal(id) {
-        document.getElementById(id).classList.add('active');
-    }
+            function closeModal(id) {
+                document.getElementById(id).classList.remove('active');
+            }
 
-    function closeModal(id) {
-        document.getElementById(id).classList.remove('active');
-    }
+            function handleLogout() {
 
-    function handleLogout() {
+                // Set message
+                document.getElementById('confirm-msg').innerText =
+                    "Are you sure you want to logout?";
 
-        // Set message
-        document.getElementById('confirm-msg').innerText =
-            "Are you sure you want to logout?";
+                // Change button text
+                document.getElementById('confirm-ok-btn').innerHTML =
+                    '<i class="ri-logout-box-r-line"></i> Yes, Logout';
 
-        // Change button text
-        document.getElementById('confirm-ok-btn').innerHTML =
-            '<i class="ri-logout-box-r-line"></i> Yes, Logout';
+                // Open modal
+                openModal('confirm-modal');
 
-        // Open modal
-        openModal('confirm-modal');
-
-        // Confirm action
-        document.getElementById('confirm-ok-btn').onclick = function () {
-            document.getElementById('logoutForm').submit();
-        };
-    }
-</script>
+                // Confirm action
+                document.getElementById('confirm-ok-btn').onclick = function() {
+                    document.getElementById('logoutForm').submit();
+                };
+            }
+        </script>
 
     </nav>
-   <div class="sb-user">
-
-    <a class="sb-user-row" href="{{ url('admin-profile') }}">
-
-        @if($admin->profile_image)
-
+    <div class="sb-user">
+        <a class="sb-user-row"
+         @if(auth('admin')->user()->hasPermission('Profile', 'profile.view'))
+        
+        href="{{ url('admin-profile') }}"
+         @endif>
+            @if($admin->profile_image)
             <img
                 src="{{ asset('profile/'.$admin->profile_image) }}"
                 class="sb-avatar"
-                style="object-fit:cover"
-            >
-
-        @else
-
+                style="object-fit:cover">
+            @else
             <div class="sb-avatar">
                 {{ strtoupper(substr($admin->name,0,2)) }}
             </div>
-
-        @endif
-
-        <div class="sb-user-info">
-
-            <div class="sb-user-name">
-                {{ $admin->name }}
+            @endif
+            <div class="sb-user-info">
+                <div class="sb-user-name">
+                    {{ $admin->name }}
+                </div>
+                <div class="sb-user-role">
+                    System Administrator
+                </div>
             </div>
-
-            <div class="sb-user-role">
-                System Administrator
-            </div>
-
-        </div>
-
-    </a>
-
-</div>
+        </a>
+    </div>
 </aside>
 <script>
     function setActiveNav() {
-      const currentPage = window.location.pathname.split('/').pop().split('.')[0];
-      const navItems = document.querySelectorAll('.nav-item');
-      
-      navItems.forEach(item => {
-        item.classList.remove('active');
-        
-        const href = item.getAttribute('href');
-        
-        if (href && (href === currentPage || href.includes(currentPage))) {
-          item.classList.add('active');
-        }
-      });
+        const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(item => {
+            item.classList.remove('active');
+
+            const href = item.getAttribute('href');
+
+            if (href && (href === currentPage || href.includes(currentPage))) {
+                item.classList.add('active');
+            }
+        });
     }
-    
+
     document.addEventListener('DOMContentLoaded', setActiveNav);
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const navItems = document.querySelectorAll('.nav-item');
-    const container = document.querySelector('.sb-nav');
+        const navItems = document.querySelectorAll('.nav-item');
+        const container = document.querySelector('.sb-nav');
 
-    const currentPage = window.location.pathname.split('/').pop();
+        const currentPage = window.location.pathname.split('/').pop();
 
-    let activeItem = null;
+        let activeItem = null;
 
-    navItems.forEach(item => {
-        item.classList.remove('active');
+        navItems.forEach(item => {
+            item.classList.remove('active');
 
-        const href = item.getAttribute('href');
+            const href = item.getAttribute('href');
 
-        if (href && currentPage.includes(href)) {
-            item.classList.add('active');
-            activeItem = item;
+            if (href && currentPage.includes(href)) {
+                item.classList.add('active');
+                activeItem = item;
+            }
+
+            // click scroll
+            item.addEventListener('click', function() {
+                setTimeout(() => centerItem(this), 50);
+            });
+        });
+
+        // initial load scroll
+        if (activeItem) {
+            setTimeout(() => centerItem(activeItem), 100);
         }
 
-        // click scroll
-        item.addEventListener('click', function () {
-            setTimeout(() => centerItem(this), 50);
-        });
+        function centerItem(el) {
+            const containerRect = container.getBoundingClientRect();
+            const itemRect = el.getBoundingClientRect();
+
+            const scrollOffset = itemRect.top - containerRect.top;
+
+            const center = scrollOffset - (container.clientHeight / 2) + (el.clientHeight / 2);
+
+            container.scrollBy({
+                top: center,
+                behavior: 'smooth'
+            });
+        }
+
     });
-
-    // initial load scroll
-    if (activeItem) {
-        setTimeout(() => centerItem(activeItem), 100);
-    }
-
-    function centerItem(el) {
-        const containerRect = container.getBoundingClientRect();
-        const itemRect = el.getBoundingClientRect();
-
-        const scrollOffset = itemRect.top - containerRect.top;
-
-        const center = scrollOffset - (container.clientHeight / 2) + (el.clientHeight / 2);
-
-        container.scrollBy({
-            top: center,
-            behavior: 'smooth'
-        });
-    }
-
-});
 </script>

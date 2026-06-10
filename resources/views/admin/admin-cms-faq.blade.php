@@ -58,6 +58,29 @@
     .faq-item-row input:not([readonly]), .faq-item-row textarea:not([readonly]) { background: var(--surface2); border: 1px solid var(--purple); }
 </style>
 
+@if(!auth('admin')->user()->hasPermission('CMS','cms.create'))
+<style>
+.create-btn {
+    display: none !important;
+}
+</style>
+@endif
+@if(!auth('admin')->user()->hasPermission('CMS','cms.edit'))
+<style>
+.edit-btn {
+    display: none !important;
+}
+</style>
+@endif
+
+@if(!auth('admin')->user()->hasPermission('CMS','cms.delete'))
+<style>
+.delete-btn {
+    display: none !important;
+}
+</style>
+@endif
+
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
     <div>
         <h2 class="font-jakarta" style="font-size:1.3rem;font-weight:800">CMS — FAQ Page</h2>
@@ -65,7 +88,7 @@
     </div>
     <div style="display:flex;gap:8px">
         
-        <button class="btn btn-primary btn-sm" onclick="openModal('add-faq-modal')"><i class="ri-add-line"></i> Add FAQ</button>
+        <button class="btn btn-primary btn-sm create-btn" onclick="openModal('add-faq-modal')"><i class="ri-add-line"></i> Add FAQ</button>
     </div>
 </div>
 
@@ -128,7 +151,7 @@
                     <button class="btn btn-ghost btn-sm edit-btn" onclick="openEditFAQ(this)">
                         <i class="ri-edit-line"></i>Edit
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteFAQ(this)">
+                    <button class="btn btn-danger btn-sm delete-btn" onclick="deleteFAQ(this)">
                         <i class="ri-delete-bin-line"></i>Delete
                     </button>
                 </div>
@@ -146,7 +169,7 @@
         <!-- <button class="btn btn-primary btn-sm" onclick="openModal('add-cat-modal')">
             <i class="ri-add-line"></i> New Category
         </button> -->
-        <button class="btn btn-primary btn-sm" onclick="openNewCategoryModal()">
+        <button class="btn btn-primary btn-sm create-btn" onclick="openNewCategoryModal()">
     <i class="ri-add-line"></i> New Category
 </button>
     </div>
@@ -173,7 +196,7 @@
                     </td>
                     <td><span class="badge" style="background:{{ $cat->color }}22;color:{{ $cat->color }}">{{ $cat->faqs_count }}</span></td>
                     <td>
-                        <label class="toggle-switch">
+                        <label class="toggle-switch edit-btn">
                             <input type="checkbox" {{ $cat->is_visible ? 'checked' : '' }}
                                 onchange="toggleCategoryVisible(this, {{ $cat->id }})">
                             <span class="toggle-slider"></span>
@@ -181,10 +204,10 @@
                     </td>
                     <td>
                         <div style="display:flex;gap:4px">
-                            <button class="btn btn-ghost btn-sm" data-edit-cat="{{ $cat->id }}" onclick="openEditCategoryModal(this)">
+                            <button class="btn btn-ghost btn-sm edit-btn" data-edit-cat="{{ $cat->id }}" onclick="openEditCategoryModal(this)">
                                 <i class="ri-edit-line"></i>Edit
                             </button>
-                           <button class="btn btn-danger btn-sm delete-cat-btn"
+                           <button class="btn btn-danger btn-sm delete-cat-btn delete-btn"
     data-cat-id="{{ $cat->id }}"
     data-cat-name="{{ $cat->name }}"
     data-cat-slug="{{ $cat->slug }}">

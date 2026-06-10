@@ -82,38 +82,43 @@ class SystemController extends Controller
     public function replyFeedback(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists:feedback,id',
-            'reply' => 'required|string'
-
+            'id'    => 'required|exists:feedback,id',
+            'reply' => 'required|string',
         ]);
 
         $feedback = Feedback::findOrFail($request->id);
-        $feedback->update([
-            'admin_reply' => $request->reply,
-            'feedback_status' => 'resolved',
-            'is_receive' => 1
 
+        $feedback->update([
+            'admin_reply'     => $request->reply,
+            'feedback_status' => 'resolved',
+            'is_receive'      => 1,
         ]);
 
         Mail::send(
             'emails.feedback_reply',
             [
-                'user' => $feedback->user,
+                'user'     => $feedback->user,
                 'feedback' => $feedback,
-                'reply' => $request->reply,
-                'subject' => $feedback->subject
+                'reply'    => $request->reply,
+                'subject'  => $feedback->subject,
             ],
             function ($mail) use ($feedback) {
                 $mail->to($feedback->user->email)
                     ->subject($feedback->subject);
             }
-
         );
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Reply sent successfully'
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Updated', 'Feedback', 'Reply Sent', [
+            // ['field' => 'User',    'old' => null, 'new' => optional($feedback->user)->name ?? '—'],
+            ['field' => 'Subject', 'old' => null, 'new' => $feedback->subject],
+            ['field' => 'Status',  'old' => 'Pending', 'new' => 'Resolved'],
+            ['field' => 'Reply',   'old' => null, 'new' => \Str::limit($request->reply, 60)],
+        ]);
 
+        return response()->json([
+            'status'  => true,
+            'message' => 'Reply sent successfully',
         ]);
     }
 
@@ -238,7 +243,6 @@ class SystemController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'title'            => 'required|string|max:80',
             'excerpt'          => 'required|string|max:200',
@@ -261,15 +265,15 @@ class SystemController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('featured_image')) {
-            $file = $request->file('featured_image');
-            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file      = $request->file('featured_image');
+            $fileName  = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('assets/blogPost'), $fileName);
             $imagePath = 'assets/blogPost/' . $fileName;
         }
 
-        $slug = Str::slug($validated['title']);
+        $slug     = Str::slug($validated['title']);
         $original = $slug;
-        $i = 1;
+        $i        = 1;
         while (BlogPost::where('slug', $slug)->exists()) {
             $slug = $original . '-' . $i++;
         }
@@ -290,17 +294,44 @@ class SystemController extends Controller
             'robots'           => $validated['robots'] ?? 'index, follow',
         ]);
 
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Created', 'Blog', 'Created Record', [
+            ['field' => 'Title',    'old' => null, 'new' => $validated['title']],
+            ['field' => 'Slug',     'old' => null, 'new' => $slug],
+            ['field' => 'Category', 'old' => null, 'new' => $validated['category']],
+            ['field' => 'Status',   'old' => null, 'new' => $request->boolean('is_active') ? 'Published' : 'Draft'],
+            ['field' => 'Image',    'old' => null, 'new' => $imagePath ? basename($imagePath) : '—'],
+        ]);
+
         return response()->json(['success' => true, 'message' => 'Blog post published successfully.']);
     }
     // Controller method
     public function toggleStatus(Request $request, BlogPost $post)
     {
+        $oldStatus = $post->is_active ? 'Published' : 'Draft';
 
         $post->update(['is_active' => $request->is_active]);
+
+        $newStatus = $request->is_active ? 'Published' : 'Draft';
+
+        // ── Audit Log ────────────────────────────────────────────────────────
+        AuditLog::record('Updated', 'Blog', 'Status Changed', [
+            ['field' => 'Title',  'old' => $post->title, 'new' => null],
+            ['field' => 'Status', 'old' => $oldStatus,   'new' => $newStatus],
+        ]);
+
         return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
     }
     public function destroy(BlogPost $post)
     {
+        // ── Audit Log BEFORE delete ───────────────────────────────────────────
+        AuditLog::record('Deleted', 'Blog', 'Deleted Record', [
+            ['field' => 'Title',    'old' => $post->title,                                    'new' => null],
+            ['field' => 'Category', 'old' => $post->category,                                 'new' => null],
+            ['field' => 'Status',   'old' => $post->is_active ? 'Published' : 'Draft',        'new' => null],
+            ['field' => 'Image',    'old' => $post->featured_image ? basename($post->featured_image) : '—', 'new' => null],
+            ['field' => 'Action',   'old' => 'Post & Image Permanently Removed',              'new' => null],
+        ]);
 
         $imagePath = public_path($post->featured_image);
         if ($post->featured_image && file_exists($imagePath)) {
@@ -312,71 +343,117 @@ class SystemController extends Controller
         return response()->json(['success' => true, 'message' => 'Post deleted successfully.']);
     }
     public function editBlogs(BlogPost $post)
-{
+    {
 
-    return view('admin.blog.admin-blog-edit', compact('post'));
-}
-
-public function update(Request $request, BlogPost $post)
-{
-    // Image is required only if no existing image OR user explicitly removed it
-    $hasExistingImage = $post->featured_image && $request->input('remove_image') !== '1';
-    $imageRule = $hasExistingImage ? 'nullable' : 'required';
-
-    $validator = Validator::make($request->all(), [
-        'title'            => 'required|string|max:80',
-        'excerpt'          => 'required|string|max:200',
-        'content'          => 'required|string|min:1',
-        'category'         => 'required|string',
-        'featured_image'   => $imageRule . '|image|mimes:jpg,jpeg,png,webp|max:5120',
-        'meta_description' => 'nullable|string|max:160',
-        'seo_title'        => 'nullable|string|max:60',
-        'focus_keyword'    => 'nullable|string|max:100',
-        'keywords'         => 'nullable|string|max:255',
-        'canonical'        => 'nullable|url|max:255',
-        'robots'           => 'nullable|string',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
+        return view('admin.blog.admin-blog-edit', compact('post'));
     }
 
-    $validated = $validator->validated();
+    public function update(Request $request, BlogPost $post)
+    {
+        $hasExistingImage = $post->featured_image && $request->input('remove_image') !== '1';
+        $imageRule        = $hasExistingImage ? 'nullable' : 'required';
 
-    // Handle image removal
-    if ($request->input('remove_image') === '1') {
-        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
-            unlink(public_path($post->featured_image));
+        $validator = Validator::make($request->all(), [
+            'title'            => 'required|string|max:80',
+            'excerpt'          => 'required|string|max:200',
+            'content'          => 'required|string|min:1',
+            'category'         => 'required|string',
+            'featured_image'   => $imageRule . '|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'meta_description' => 'nullable|string|max:160',
+            'seo_title'        => 'nullable|string|max:60',
+            'focus_keyword'    => 'nullable|string|max:100',
+            'keywords'         => 'nullable|string|max:255',
+            'canonical'        => 'nullable|url|max:255',
+            'robots'           => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
         }
-        $validated['featured_image'] = null;
-    }
 
-    // Handle new image upload
-    if ($request->hasFile('featured_image')) {
-        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
-            unlink(public_path($post->featured_image));
+        $validated = $validator->validated();
+
+        // ── Snapshot BEFORE ───────────────────────────────────────────────────
+        $before = [
+            'title'    => $post->title,
+            'excerpt'  => $post->excerpt,
+            'category' => $post->category,
+            'status'   => $post->is_active ? 'Published' : 'Draft',
+            'image'    => $post->featured_image ? basename($post->featured_image) : '—',
+        ];
+
+        // Handle image removal
+        if ($request->input('remove_image') === '1') {
+            if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+                unlink(public_path($post->featured_image));
+            }
+            $validated['featured_image'] = null;
         }
-        $file     = $request->file('featured_image');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('assets/blogPost'), $fileName);
-        $validated['featured_image'] = 'assets/blogPost/' . $fileName;
-    }
 
-    // Regenerate slug only if title changed
-    if ($post->title !== $validated['title']) {
-        $slug     = Str::slug($validated['title']);
-        $original = $slug;
-        $i        = 1;
-        while (BlogPost::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
-            $slug = $original . '-' . $i++;
+        // Handle new image upload
+        if ($request->hasFile('featured_image')) {
+            if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+                unlink(public_path($post->featured_image));
+            }
+            $file                        = $request->file('featured_image');
+            $fileName                    = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('assets/blogPost'), $fileName);
+            $validated['featured_image'] = 'assets/blogPost/' . $fileName;
         }
-        $validated['slug'] = $slug;
+
+        // Regenerate slug only if title changed
+        if ($post->title !== $validated['title']) {
+            $slug     = Str::slug($validated['title']);
+            $original = $slug;
+            $i        = 1;
+            while (BlogPost::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+                $slug = $original . '-' . $i++;
+            }
+            $validated['slug'] = $slug;
+        }
+
+        $validated['is_active'] = $request->boolean('is_active');
+
+        $post->update($validated);
+
+        // ── Snapshot AFTER ────────────────────────────────────────────────────
+        $after = [
+            'title'    => $validated['title'],
+            'excerpt'  => $validated['excerpt'],
+            'category' => $validated['category'],
+            'status'   => $request->boolean('is_active') ? 'Published' : 'Draft',
+            'image'    => isset($validated['featured_image'])
+                ? ($validated['featured_image'] ? basename($validated['featured_image']) : '—')
+                : $before['image'],
+        ];
+
+        $fieldLabels = [
+            'title'    => 'Title',
+            'excerpt'  => 'Excerpt',
+            'category' => 'Category',
+            'status'   => 'Status',
+            'image'    => 'Image',
+        ];
+
+        $changedFields = [];
+        foreach ($before as $key => $oldVal) {
+            if ((string) $oldVal !== (string) $after[$key]) {
+                $changedFields[] = [
+                    'field' => $fieldLabels[$key],
+                    'old'   => $oldVal,
+                    'new'   => $after[$key],
+                ];
+            }
+        }
+
+        if (!empty($changedFields)) {
+            $summary = count($changedFields) === 1
+                ? '1 Field Updated'
+                : count($changedFields) . ' Fields Updated';
+
+            AuditLog::record('Updated', 'Blog', $summary, $changedFields);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Blog post updated successfully.']);
     }
-
-    $validated['is_active'] = $request->boolean('is_active');
-
-    $post->update($validated);
-
-    return response()->json(['success' => true, 'message' => 'Blog post updated successfully.']);
-}
 }
