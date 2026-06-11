@@ -72,7 +72,6 @@
     </div>
 </aside>
 
-
 <script>
     var logoutUrl = "{{ route('logout') }}";
     var loginUrl = "{{ route('loginpage') }}";
@@ -83,16 +82,11 @@
 document.addEventListener("DOMContentLoaded", function () {
     const links = document.querySelectorAll(".nav-link");
     const currentUrl = window.location.href;
-
     links.forEach(link => {
         const linkUrl = link.href;
-
-        // Exact match OR partial match (for dynamic routes)
         if (currentUrl === linkUrl || currentUrl.startsWith(linkUrl)) {
             link.classList.add("active");
         }
     });
-
-    
 });
 </script>

@@ -109,6 +109,8 @@ class ReminderController extends Controller
 
             $subcategory = SubCategory::where('category_id', $request->category_id)
                 ->whereRaw('LOWER(name) = ?', [strtolower($request->subcategory_name)])
+                 ->where('role', 'user')                    // ✅ only user-created
+                ->where('created_by', Auth::id())          // ✅ only this user's own
                 ->first();
 
             if (!$subcategory) {

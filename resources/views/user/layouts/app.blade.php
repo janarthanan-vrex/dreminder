@@ -412,9 +412,7 @@
                 <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">
                     Description
                 </label>
-
                 <input class="inp" id="edit-sub-desc" maxlength="100">
-
                 <div class="error-text" id="edit-err-description"></div>
             </div>
 
@@ -425,7 +423,6 @@
                     <i class="ri-check-line"></i> Update Subcategory
                 </button>
             </div>
-
         </div>
     </div>
 
@@ -847,23 +844,18 @@ window.CATS = @json($cats);
 </script>
 
     <script>
-        new TomSelect("#sub-cat-parent", {
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            placeholder: "Search category..."
-        });
+       // Store instances
+const tomSubParent = new TomSelect("#sub-cat-parent", {
+    create: false,
+    sortField: { field: "text", direction: "asc" },
+    placeholder: "Search category..."
+});
 
-        new TomSelect("#edit-sub-parent", {
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            },
-            placeholder: "Search category..."
-        });
+const tomEditSubParent = new TomSelect("#edit-sub-parent", {
+    create: false,
+    sortField: { field: "text", direction: "asc" },
+    placeholder: "Search category..."
+});
     </script>
 
     <script src="{{ asset('assets/js/user.js') }}"></script>

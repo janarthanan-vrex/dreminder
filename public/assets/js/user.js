@@ -2262,7 +2262,9 @@ function updateCustomSubUI() {
 function openEditSubModal(cs) {
     document.getElementById("edit-sub-id").value = cs.id;
 
-    document.getElementById("edit-sub-parent").value = cs.parent;
+    
+    // ✅ Use TomSelect instance instead of .value
+    tomEditSubParent.setValue(cs.parent);
 
     document.getElementById("edit-sub-name").value = cs.name;
 

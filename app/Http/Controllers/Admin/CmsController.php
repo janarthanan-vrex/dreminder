@@ -281,33 +281,31 @@ class CmsController extends Controller
         }
         $maxPlanPrice = PlanPrice::max('total_price');
 
-if ($request->coupon_type === 'fixed') {
+        if ($request->coupon_type === 'fixed') {
 
-    if ($request->discount > $maxPlanPrice) {
-        return response()->json([
-            'status' => false,
-            'errors' => [
-                'discount' => [
-                    "Fixed discount cannot exceed the highest plan price (£{$maxPlanPrice})."
-                ]
-            ]
-        ], 422);
-    }
+            if ($request->discount > $maxPlanPrice) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => [
+                        'discount' => [
+                            "Fixed discount cannot exceed the highest plan price (£{$maxPlanPrice})."
+                        ]
+                    ]
+                ], 422);
+            }
+        } elseif ($request->coupon_type === 'percentage') {
 
-} elseif ($request->coupon_type === 'percentage') {
-
-    if ($request->discount > 100) {
-        return response()->json([
-            'status' => false,
-            'errors' => [
-                'discount' => [
-                    'Percentage discount cannot exceed 100%.'
-                ]
-            ]
-        ], 422);
-    }
-
-}
+            if ($request->discount > 100) {
+                return response()->json([
+                    'status' => false,
+                    'errors' => [
+                        'discount' => [
+                            'Percentage discount cannot exceed 100%.'
+                        ]
+                    ]
+                ], 422);
+            }
+        }
 
         $coupon = \App\Models\Coupon::findOrFail($id);
 
@@ -734,7 +732,6 @@ if ($request->coupon_type === 'fixed') {
 
         return response()->json(['success' => true, 'category' => $faqCategory]);
     }
-
 
     public function destroyCategory(FaqCategory $faqCategory)
     {

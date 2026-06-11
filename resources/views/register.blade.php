@@ -581,37 +581,72 @@
     hideFieldError('terms');
   });
 
-  // ─── Password Strength ────────────────────────────────────────────
-  var pwdInput      = document.getElementById('password');
-  var strengthBar   = document.getElementById('strengthBar');
-  var strengthLabel = document.getElementById('strengthLabel');
-  var segs          = strengthBar ? strengthBar.querySelectorAll('.strength-seg-dark') : [];
-  var strengthColors = ['rgba(255,255,255,.08)', '#ef4444', '#f97316', '#eab308', '#10b981'];
-  var strengthTexts  = ['', 'Very weak', 'Weak', 'Fair', 'Strong'];
+ // ─── Password Strength ────────────────────────────────────────────
+var pwdInput      = document.getElementById('password');
+var strengthBar   = document.getElementById('strengthBar');
+var strengthLabel = document.getElementById('strengthLabel');
+var segs          = strengthBar ? strengthBar.querySelectorAll('.strength-seg-dark') : [];
 
-  function computeStrength(v) {
+var strengthColors = [
+    'rgba(255,255,255,.08)', // 0
+    '#ef4444', // Very Weak
+    '#f97316', // Weak
+    '#eab308', // Fair
+    '#84cc16', // Good
+    '#10b981'  // Strong
+];
+
+var strengthTexts = [
+    '',
+    'Very Weak',
+    'Weak',
+    'Fair',
+    'Good',
+    'Strong'
+];
+
+function computeStrength(v) {
     var s = 0;
-    if (v.length >= 8)   s++;
-    if (/[0-9]/.test(v)) s++;
-    if (/[A-Z]/.test(v)) s++;
-    if (/[a-z]/.test(v)) s++;
-    return s;
-  }
 
-  if (pwdInput) {
+    if (v.length >= 8) s++;
+    if (/[a-z]/.test(v)) s++;
+    if (/[A-Z]/.test(v)) s++;
+    if (/\d/.test(v)) s++;
+    if (/[^A-Za-z0-9]/.test(v)) s++; // Special character
+
+    return s;
+}
+
+if (pwdInput) {
     pwdInput.addEventListener('input', function() {
-      var val   = pwdInput.value;
-      var score = val.length === 0 ? 0 : computeStrength(val);
-      segs.forEach(function(seg, i) {
-        seg.style.background = (i < score) ? strengthColors[score] : 'rgba(255,255,255,.08)';
-      });
-      strengthLabel.textContent = val.length === 0
-        ? 'Password strength'
-        : 'Password strength: ' + (strengthTexts[score] || 'Very weak');
-      var pwRx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
-      if (pwRx.test(val)) hideFieldError('password');
+
+        var val   = pwdInput.value;
+        var score = val.length === 0 ? 0 : computeStrength(val);
+
+        segs.forEach(function(seg, i) {
+            seg.style.background =
+                (i < score)
+                    ? strengthColors[score]
+                    : 'rgba(255,255,255,.08)';
+        });
+
+        strengthLabel.textContent = val.length === 0
+            ? 'Password strength'
+            : 'Password strength: ' + strengthTexts[score];
+
+        // Minimum 8 chars + Upper + Lower + Number + Special Character
+        var pwRx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
+        if (pwRx.test(val)) {
+            hideFieldError('password');
+        } else {
+            showFieldError(
+                'password',
+                'Password must contain at least 8 characters, 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.'
+            );
+        }
     });
-  }
+}
 
   // Live confirm password match
   var confirmPwdInput = document.getElementById('confirmPassword');
@@ -851,7 +886,7 @@ if (!em) {
       else if (pw !== cp) { showFieldError('confirmPassword', 'Passwords do not match.');   valid = false; }
       else hideFieldError('confirmPassword');
 
-      if (!tc) { showFieldError('terms', 'You must accept the Terms & Conditions.'); valid = false; }
+      if (!tc) { showFieldError('terms', 'You must accept the Terms & Conditions and Privacy Policy.'); valid = false; }
       else hideFieldError('terms');
     }
 
@@ -864,9 +899,10 @@ if (!em) {
       if (!a1) { showFieldError('address1', 'Address line 1 is required.'); valid = false; }
       else hideFieldError('address1');
 
-      var pcRx = /^[A-Z]{1,2}[0-9][A-Z0-9]?\s?[0-9][A-Z]{2}$/i;
+     var pcRx = /^[A-Z]{1,2}[0-9][A-Z0-9]?\s[0-9][A-Z]{2}$/i;
+
       if (!pc)              { showFieldError('postcode', 'Post code is required.'); valid = false; }
-      else if (!pcRx.test(pc)) { showFieldError('postcode', 'Please enter a valid UK postcode (e.g. SW1A 1AA).'); valid = false; }
+      else if (!pcRx.test(pc)) { showFieldError('postcode', 'Please enter a valid standard UK postcode (e.g. SW1A 1AA).'); valid = false; }
       else hideFieldError('postcode');
 
       if (!country) { showFieldError('country', 'Please select a country.'); valid = false; }

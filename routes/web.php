@@ -75,13 +75,14 @@ Route::get('/index', function () {return view('index');})->name('index');
 Route::get('/about', function () {return view('about');})->name('about');
 Route::get('/category', function () {return view('category');})->name('category');
 Route::get('/contact', function () {return view('contact');})->name('contact');
-Route::get('/privacy', function () {return view('privacy');})->name('privacy');
+
 
 
 // web.php
 
 Route::post('/contact-send',[PagesController::class,'send'])->name('contact.send');
 Route::get('/terms',[PagesController::class,'termsPage'])->name('terms.page');
+Route::get('/privacy',[PagesController::class,'privacyPage'])->name('privacy');
 Route::get('/faq',[PagesController::class,'faqPage'])->name('faq.page');
 Route::get('/pricing',[PagesController::class,'pricingPage'])->name('pricing.page');
 Route::get('/blog',[PagesController::class,'blogPage'])->name('blog.page');
@@ -95,7 +96,7 @@ Route::post('/register', [AuthController::class, 'store'])->name('register.store
 Route::post('/coupon/apply',  [AuthController::class, 'applyCoupon'])->name('coupon.apply');
 Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('check.email');
 Route::get('/user/magic-login/{id}/{token}', [AuthController::class, 'magicLogin'])->name('user.magic.login');
-Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/save-token', [AuthController::class, 'saveToken'])->middleware('auth');

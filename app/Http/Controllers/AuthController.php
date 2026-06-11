@@ -79,6 +79,14 @@ class AuthController extends Controller
             $finalPrice = round(max(0, $plan->total_price - $discount), 2);
         }
 
+        // Prevent final price from becoming zero or negative
+        if ($finalPrice <= 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Coupon discount cannot make the plan price zero or less.',
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'coupon'  => [
@@ -124,9 +132,6 @@ class AuthController extends Controller
         return redirect()->route('user.dashboard');
     }
 
-
-
-
     public function store(Request $request)
     {
         $request->validate([
@@ -139,7 +144,11 @@ class AuthController extends Controller
                 'unique:users,email',
                 'max:255'
             ],
-            'password'        => ['required', 'min:8', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'],
+            'password' => [
+                                'required',
+                                'min:8',
+                                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/'
+                            ],
             'confirmPassword' => 'required|same:password',
             'terms'           => 'accepted',
             'address1'        => 'required|string|max:255',
@@ -163,10 +172,10 @@ class AuthController extends Controller
             'email.regex' => 'Please enter a valid email domain.',
             'password.required'        => 'Password is required.',
             'password.min'             => 'Password must be at least 8 characters.',
-            'password.regex'           => 'Password must contain uppercase, lowercase and a number.',
+            'password.regex'           => 'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number and 1 special character.',
             'confirmPassword.required' => 'Please confirm your password.',
             'confirmPassword.same'     => 'Passwords do not match.',
-            'terms.accepted'           => 'You must accept the Terms & Conditions.',
+            'terms.accepted'           => 'You must accept the Terms & Conditions and Privacy Policy.',
             'address1.required'        => 'Address line 1 is required.',
             'postcode.required'        => 'Post code is required.',
             'postcode.regex'           => 'Please enter a valid UK postcode (e.g. SW1A 1AA).',
@@ -628,4 +637,5 @@ class AuthController extends Controller
     return redirect()->route('loginpage')
         ->with('success','Email verified successfully');
 }
+
 }

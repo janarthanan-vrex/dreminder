@@ -272,18 +272,12 @@ class UserController extends Controller
     public function userCategory(Request $request)
     {
         $user = Auth::user();
-
         $categories = Category::with([
             'subcategories' => function ($query) use ($user) {
-
                 $query->where('status', 'Active')
-
                     ->where(function ($q) use ($user) {
-
                         $q->where('role', 'admin')
-
                             ->orWhere(function ($subQ) use ($user) {
-
                                 $subQ->where('role', 'user')
                                     ->where('created_by', $user->id);
                             });
@@ -508,6 +502,20 @@ class UserController extends Controller
 
     return view('user.calendar', compact('histories', 'categories', 'fullCats'));
 }
+
+ public function logout(Request $request)
+    {
+        
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'status'  => true,
+            'message' => 'Logged out successfully'
+        ]);
+    }
 
 
 }

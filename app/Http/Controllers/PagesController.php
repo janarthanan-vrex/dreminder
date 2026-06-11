@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
 use App\Models\FaqCategory;
+use App\Models\PrivacyPolicy;
 use App\Models\TermsPage;
+
 use App\Models\PlanPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -40,11 +42,16 @@ class PagesController extends Controller
     }
 
     public function termsPage()
-{
-    $terms = TermsPage::where('slug', 'terms-condition')->first();
+    {
+        $terms = TermsPage::where('slug', 'Privacy Policy')->first();
+        return view('terms', compact('terms'));
+    }
 
-    return view('terms', compact('terms'));
-}
+     public function privacyPage()
+    {
+        $privacy = PrivacyPolicy::where('slug', 'Privacy-Policy')->first();
+        return view('privacy', compact('privacy'));
+    }
 
 public function faqPage()
 {
@@ -101,5 +108,7 @@ public function blogDetail($slug)
 
     return view('blog-detail', compact('post', 'readTime', 'related', 'prev', 'next'));
 }
+
+
 
 }
