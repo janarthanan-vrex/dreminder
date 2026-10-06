@@ -426,9 +426,15 @@
                 <button class="btn btn-ghost btn-sm hidden" style="color:var(--red);border-color:rgba(239,68,68,.3)" onclick="clearAll()"><i class="ri-delete-bin-line"></i> Clear</button>
             </div>
             <div style="display:flex;gap:6px">
+<<<<<<< HEAD
             @if(auth('admin')->user()->hasPermission('CMS', 'cms.edit'))
                 <button class="btn btn-primary btn-sm" onclick="savePage()"><i class="ri-save-line"></i> Save &amp; Publish</button>
             @endif
+=======
+                 @if(auth('admin')->user()->hasPermission('CMS', 'cms.edit'))
+                <button class="btn btn-primary btn-sm" onclick="savePage()"><i class="ri-save-line"></i> Save &amp; Publish</button>
+                @endif
+>>>>>>> 14b4245 (full updated code)
             </div>
         </div>
 

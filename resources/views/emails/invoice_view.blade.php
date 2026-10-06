@@ -13,8 +13,13 @@
             --bg: #f8fafc;
             --panel: #ffffff;
             --panel-2: #f1f5f9;
+<<<<<<< HEAD
             --line: #e2e8f0;
             --border: #cbd5e1;
+=======
+            --line: #cbd5e1; /* was #e2e8f0 — slightly darker */
+            --border: #94a3b8; /* was #cbd5e1 — slightly darker */
+>>>>>>> 14b4245 (full updated code)
             --text: #1e293b;
             --muted: #64748b;
             --faint: #94a3b8;
@@ -140,7 +145,11 @@
         }
 
         .brand-mark {
+<<<<<<< HEAD
             width: 30%;
+=======
+            width: 50%;
+>>>>>>> 14b4245 (full updated code)
             border-radius: 14px;
             display: grid;
             place-items: center;
@@ -245,13 +254,18 @@
 
         .label {
             font-size: .69rem;
+<<<<<<< HEAD
             color: var(--faint);
+=======
+            color: #717d8e;
+>>>>>>> 14b4245 (full updated code)
             text-transform: uppercase;
             letter-spacing: .12em;
             font-weight: 800;
             margin-bottom: 10px;
         }
 
+<<<<<<< HEAD
         .info-box .main {
             font-size: .9rem;
             font-weight: 700;
@@ -280,6 +294,73 @@
             min-width: 700px;
         }
 
+=======
+        /*.info-box .main {*/
+        /*    font-size: .9rem;*/
+        /*    font-weight: 700;*/
+        /*    color: var(--black);*/
+        /*    line-height: 1.6;*/
+        /*    word-break:break-all;*/
+        /*}*/
+
+        /*.info-box .sub {*/
+        /*    font-size: .8rem;*/
+        /*    color: var(--muted);*/
+        /*    color:#363636;*/
+        /*    line-height: 1.7;*/
+        /*    margin-top: 4px;*/
+        /*    word-break:break-all;*/
+        /*}*/
+        .info-box .main {
+    font-size: .9rem;
+    /*font-weight: 700;*/
+    color: var(--black);
+    line-height: 1.6;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    display: block;
+}
+
+.info-box .sub {
+    font-size: .8rem;
+    color: #363636;
+    line-height: 1.7;
+    margin-top: 4px;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    display: block;
+}
+
+        /* ── ITEMS TABLE ── */
+        /*.table-wrap {*/
+        /*    overflow: auto;*/
+        /*    border: 1px solid var(--line);*/
+        /*    border-radius: 18px;*/
+        /*    margin-bottom: 18px;*/
+        /*}*/
+        .table-wrap {
+    overflow: hidden; 
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    margin-bottom: 18px;
+}
+
+        /*table {*/
+        /*    width: 100%;*/
+        /*    border-collapse: collapse;*/
+        /*    min-width: 700px;*/
+        /*}*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: unset;  /* remove the forced min-width */
+    table-layout: fixed;  /* forces columns to stay within bounds */
+}
+>>>>>>> 14b4245 (full updated code)
         thead th {
             text-align: left;
             padding: 14px 16px;
@@ -435,6 +516,29 @@
                 border: 1px solid #e5e7eb;
             }
         }
+        
+        .totals-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .totals-item span:first-child,
+        .totals-item strong:first-child {
+          text-align: left;
+        }
+        
+        .totals-item span:last-child,
+        .totals-item strong:last-child {
+          text-align: right;
+        }
+        .totals-item strong,
+        .totals-item .amount {
+          margin-left: auto;
+          text-align: right;
+        }
+     
+       
     </style>
 
 </head>
@@ -446,7 +550,11 @@
         <div class="topbar">
             <div class="topbar-title">
                 <h1>Invoice Preview</h1>
+<<<<<<< HEAD
                 <p>Standalone invoice route opened from your transactions drawer.</p>
+=======
+                
+>>>>>>> 14b4245 (full updated code)
             </div>
         </div>
 
@@ -468,8 +576,15 @@
                             </div>
                             <div class="brand-info">
                                 <p>
+<<<<<<< HEAD
                                     123 Sample Street, Chennai, Tamil Nadu<br>
                                     support@yourstore.com · +91 98765 43210
+=======
+                                    Unit 5, Martinbridge Trading Estate,<br>
+                                    240-242 Lincoln Road,<br>
+                                    Enfield,
+                                    EN1 1SP.
+>>>>>>> 14b4245 (full updated code)
                                 </p>
                             </div>
                         </td>
@@ -515,6 +630,7 @@
                         </td>
 
                         <td class="info-box">
+<<<<<<< HEAD
                             <div class="label">Invoice Details</div>
                             <div class="sub">
                                 Transaction ID:
@@ -528,6 +644,21 @@
                                     {{ $invoiceId ?? '-' }}
                                 </span>
                             </div>
+=======
+                            <!--<div class="label">Invoice Details</div>-->
+                            <!--<div class="sub ">-->
+                            <!--    Transaction ID:-->
+                            <!--    <span class="main">-->
+                            <!--        {{ optional($payment)->stripe_payment_id ?? '-' }}-->
+                            <!--    </span>-->
+                            <!--</div>-->
+                            <!--<div class="sub ">-->
+                            <!--    Order Ref:-->
+                            <!--    <span class="main">-->
+                            <!--        {{ $invoiceId ?? '-' }}-->
+                            <!--    </span>-->
+                            <!--</div>-->
+>>>>>>> 14b4245 (full updated code)
                             <div class="sub">
                                 Payment Method:
                                 {{ ucfirst(optional($payment)->payment_mode ?? 'card') }}
@@ -545,23 +676,37 @@
                     <table>
                         <thead>
                             <tr>
+<<<<<<< HEAD
                                 <th>#</th>
                                 <th>Description</th>
                                 <th class="text-right">Qty</th>
                                 <th class="text-right">Unit</th>
                                 <th class="text-right">VAT</th>
                                 <th class="text-right">Total</th>
+=======
+                                <th>S.No</th>
+                                <th>Plan Name</th>
+                                <!--<th class="text-right">Qty</th>-->
+                                <th class="text-right">Plan Price</th>
+                                <!--<th class="text-right">VAT</th>-->
+                                <!--<th class="text-right">Total</th>-->
+>>>>>>> 14b4245 (full updated code)
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>1</td>
                                 <td>{{ optional($plan)->plan_name ?? 'Subscription Plan' }}</td>
+<<<<<<< HEAD
                                 <td class="text-right">1</td>
+=======
+                                <!--<td class="text-right">1</td>-->
+>>>>>>> 14b4245 (full updated code)
                                 <td class="text-right">
                                     {{ $currencySymbol ?? '£' }}
                                     {{ number_format($basePrice ?? 0, 2) }}
                                 </td>
+<<<<<<< HEAD
                                 <td class="text-right">
                                     {{ number_format($vatAmount ?? 0, 2) }}
                                 </td>
@@ -569,6 +714,15 @@
                                     {{ $currencySymbol ?? '£' }}
                                     {{ number_format($finalAmount ?? 0, 2) }}
                                 </td>
+=======
+                                <!--<td class="text-right">-->
+                                <!--    {{ number_format($vatAmount ?? 0, 2) }}-->
+                                <!--</td>-->
+                                <!--<td class="text-right">-->
+                                <!--    {{ $currencySymbol ?? '£' }}-->
+                                <!--    {{ number_format($finalAmount ?? 0, 2) }}-->
+                                <!--</td>-->
+>>>>>>> 14b4245 (full updated code)
                             </tr>
                         </tbody>
                     </table>
@@ -586,6 +740,7 @@
                             </div>
                         </td>
 
+<<<<<<< HEAD
                         <td class="td-totals">
                             <div class="totals-box">
                                 <div class="label">Amount Breakdown</div>
@@ -625,6 +780,34 @@
                                 </div>
                             </div>
                         </td>
+=======
+                       <td class="td-totals">
+    <div class="totals-box">
+        <div class="label">Amount Breakdown</div>
+        <table style="width:100%; border-collapse:collapse; font-size:.84rem;">
+            <tr>
+                <td style="padding:4px 0; color:#64748b;">Subtotal</td>
+                <td style="padding:4px 0; color:#0f172a; font-weight:700; text-align:right;">{{ $currencySymbol ?? '£' }} {{ number_format($basePrice ?? 0, 2) }}</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#64748b;">Discount</td>
+                <td style="padding:4px 0; color:#0f172a; font-weight:700; text-align:right;">-{{ $currencySymbol ?? '£' }} {{ number_format($discount ?? 0, 2) }}</td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#64748b;">VAT</td>
+                <td style="padding:4px 0; color:#0f172a; font-weight:700; text-align:right;">{{ $currencySymbol ?? '£' }} {{ number_format($vatAmount ?? 0, 2) }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding:0;"><hr style="border:none; border-top:1px solid #e2e8f0; margin:8px 0;"></td>
+            </tr>
+            <tr>
+                <td style="padding:4px 0; color:#0f172a; font-weight:800; font-size:1rem;">Total Amount</td>
+                <td style="padding:4px 0; color:#0d9488; font-weight:800; font-size:1rem; text-align:right;">{{ $currencySymbol ?? '£' }} {{ number_format($finalAmount ?? 0, 2) }}</td>
+            </tr>
+        </table>
+    </div>
+</td>
+>>>>>>> 14b4245 (full updated code)
                     </tr>
                 </table>
 

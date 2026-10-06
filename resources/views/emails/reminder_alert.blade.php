@@ -36,7 +36,11 @@
               <!-- logo -->
               <tr>
                 <td align="center" style="padding-bottom:20px;">
+<<<<<<< HEAD
                   <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="" width="200" style="width:200px;border-radius:18px;display:block;">
+=======
+                  <img src="https://dreminder.wimbgo.com/assets/images/common/d-remind.png" alt="" width="200" style="width:200px;border-radius:18px;display:block;">
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
@@ -49,14 +53,22 @@
                     @endif
                     
                   
+<<<<<<< HEAD
                   <br><em style="font-style:italic;">{{ $reminder->title ?? '' }}</em></h1>
+=======
+                  <br><span>{{ $reminder->title ?? '' }}</span></h1>
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
               <!-- sub -->
               <tr>
                 <td align="center">
+<<<<<<< HEAD
                   <p style="font-size:14.5px;color:#6B6860;line-height:1.65;max-width:400px;margin:0 auto;">Hi <strong style="color:#4A4740;">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</strong> — {{ $reminder->title ?? '' }} reminder is due today.</p>
+=======
+                  <p style="font-size:14.5px;color:#4b4944;line-height:1.65;max-width:400px;margin:0 auto;">Hi <strong style="color:#4A4740;">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</strong> — {{ $reminder->title ?? '' }} reminder is due today.</p>
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
@@ -80,7 +92,11 @@
                         <table width="100%" cellpadding="0" cellspacing="0" border="0">
                           <tr>
                             <td width="100%" style="vertical-align:top;">
+<<<<<<< HEAD
                               <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">Category</span>
+=======
+                              <span style="font-size:10.5px;font-weight:600;color:#7a7771;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">Category</span>
+>>>>>>> 14b4245 (full updated code)
                               <span style="font-size:13px;font-weight:600;color:#1A1916;background:#F5F3EF;border:1px solid #E0DDD6;border-radius:8px;padding:4px 12px;display:inline-block;margin-top:2px;">{{ $reminder->category->name ?? '' }}
 </span>
                             </td>
@@ -92,7 +108,11 @@
                     <!-- subcategory -->
                     <tr>
                       <td style="padding:12px 18px;border-bottom:1px solid #F0EDE8;">
+<<<<<<< HEAD
                         <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">Subcategory</span>
+=======
+                        <span style="font-size:10.5px;font-weight:600;color:#7a7771;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">Subcategory</span>
+>>>>>>> 14b4245 (full updated code)
                         <span style="font-size:13.5px;font-weight:600;color:#1A1916;">{{ $reminder->subcategory->name ?? '' }}
 </span>
                       </td>
@@ -102,7 +122,11 @@
                    @if(!empty($reminder->provider))
 <tr>
     <td style="padding:13px 18px;border-bottom:1px solid #F0EDE8;">
+<<<<<<< HEAD
         <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
+=======
+        <span style="font-size:10.5px;font-weight:600;color:#7a7771;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
+>>>>>>> 14b4245 (full updated code)
             Provider
         </span>
 
@@ -116,12 +140,20 @@
                    @if(!empty($reminder->cost))
 <tr>
     <td style="padding:13px 18px;border-bottom:1px solid #F0EDE8;">
+<<<<<<< HEAD
         <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
+=======
+        <span style="font-size:10.5px;font-weight:600;color:#7a7771;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
+>>>>>>> 14b4245 (full updated code)
             Amount Summary
         </span>
 
         <span style="font-size:15px;font-weight:700;color:#15803D;">
+<<<<<<< HEAD
             &#8377;{{ number_format($reminder->cost, 2) }}
+=======
+          £ {{ number_format($reminder->cost, 2) }}
+>>>>>>> 14b4245 (full updated code)
         </span>
     </td>
 </tr>
@@ -131,11 +163,19 @@
                    @if(!empty($reminder->description))
 <tr>
     <td style="padding:13px 18px;">
+<<<<<<< HEAD
         <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
             Important Notes
         </span>
 
         <span style="font-size:13px;font-weight:400;color:#6B6860;line-height:1.5;display:block;">
+=======
+        <span style="font-size:10.5px;font-weight:600;color:#7a7771;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">
+            Important Notes
+        </span>
+
+        <span style="font-size:13px;font-weight:400;color:#43413b;line-height:1.5;display:block;word-break:break-all;">
+>>>>>>> 14b4245 (full updated code)
             {{ $reminder->description }}
         </span>
     </td>

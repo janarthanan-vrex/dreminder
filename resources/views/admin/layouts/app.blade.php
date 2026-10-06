@@ -4,8 +4,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<<<<<<< HEAD
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>D-Remind Admin — Control Panel</title>
+=======
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/common/favicon.png') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Winngoo D Remind - Admin</title>
+>>>>>>> 14b4245 (full updated code)
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet" />
@@ -17,6 +23,62 @@
     <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 
     <style>
+<<<<<<< HEAD
+=======
+    /* iOS Safari viewport fix — prevents bottom sidebar content (logout, etc.) from being hidden behind Safari's toolbar */
+.app,
+.main-wrap {
+    height: 100vh;
+    height: 100dvh;
+}
+@media(max-width:640px) {
+  .cal-cell-v2 {
+    min-height: 56px;
+    padding: 5px
+  }
+
+  /*.cal-chip,*/
+  /*.cal-more-pill,*/
+  /*.pill-done,*/
+  /*.pill-urgent,*/
+  /*.pill-soon,*/
+  /*.pill-ok,*/
+  /*.badge {*/
+  /*  display: none !important*/
+  /*}*/
+
+  .cal-cell-v2.has-reminders::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--purple);
+  }
+}
+#sidebar,
+.sidebar {
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sb-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sb-user {
+    flex-shrink: 0;
+}
+>>>>>>> 14b4245 (full updated code)
         /* PRELOADER */
         #loader {
             position: fixed;
@@ -145,11 +207,19 @@
             </div>
             <div class="g2" style="margin-bottom: 14px">
                 <div>
+<<<<<<< HEAD
                     <label class="label">First Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-fname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="John" />
                     <small class="err" id="au-fname-error"></small>
                 </div>
                 <div>
                     <label class="label">Last Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-lname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="Smith" />
+=======
+                    <label class="label">First Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-fname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="Enter your first name" />
+                    <small class="err" id="au-fname-error"></small>
+                </div>
+                <div>
+                    <label class="label">Last Name <span style="color: var(--red)">*</span></label><input class="inp" id="au-lname" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" maxlength="25" placeholder="Enter your last name" />
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="au-lname-error"></small>
                 </div>
             </div>
@@ -157,7 +227,11 @@
             <div style="margin-bottom: 14px">
 
                 <div>
+<<<<<<< HEAD
                     <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="john@example.com" />
+=======
+                    <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="au-email" type="email" placeholder="Enter your email" />
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="au-email-error"></small>
                 </div>
 
@@ -181,7 +255,11 @@
                 </div>
 
                 <div>
+<<<<<<< HEAD
                     <label class="label">Post Code <span style="color: var(--red)">*</span></label><input class="inp" id="au-postcode" type="text" maxlength="8" placeholder="Enter Post Code" />
+=======
+                    <label class="label">Postal Code <span style="color: var(--red)">*</span></label><input class="inp" id="au-postcode" type="text" maxlength="8" placeholder="Enter your postal code" />
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="au-postcode-error"></small>
                 </div>
 
@@ -194,7 +272,11 @@
 
             <div class="g2" style="margin-bottom: 14px">
                 <div>
+<<<<<<< HEAD
                     <label class="label">Phone <span style="color: var(--red)">*</span></label><input class="inp" id="au-phone" placeholder="+44 7700 000000" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+=======
+                    <label class="label">Phone Number <span style="color: var(--red)">*</span></label><input class="inp" id="au-phone" placeholder="Enter your phone number" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="au-phone-error"></small>
                 </div>
                 <div>
@@ -206,7 +288,11 @@
                 </div>
             </div>
             <div style="margin-bottom: 18px">
+<<<<<<< HEAD
                 <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" id="address1" placeholder="Enter Address" />
+=======
+                <label class="label">Address<span style="color: var(--red)">*</span></label><input class="inp" id="address1" placeholder="Enter your Address" />
+>>>>>>> 14b4245 (full updated code)
                 <small class="err" id="address1-error"></small>
             </div>
             <div style="display: flex; gap: 8px; justify-content: flex-end">
@@ -255,6 +341,7 @@
                     <label class="label">Email <span style="color: var(--red)">*</span></label><input class="inp" id="eu-email" type="email" readonly placeholder="Email" />
                 </div>
                 <div>
+<<<<<<< HEAD
                     <label class="label">Plan</label><select class="inp" id="eu-plan">
                         @foreach($plans as $plan)
                         <option value="{{ $plan->plan_name }}"
@@ -264,6 +351,17 @@
                         @endforeach
 
                     </select>
+=======
+                    <label class="label">Plan</label>
+                   <select class="inp" id="eu-plan" name="plan" style="pointer-events: none; background-color: #f3f4f6; cursor: not-allowed;" tabindex="-1">
+        @foreach($plans as $plan)
+        <option value="{{ $plan->plan_name }}"
+            {{ old('plan_name') == $plan->plan_name ? 'selected' : '' }}>
+            {{ $plan->plan_name }}
+        </option>
+        @endforeach
+    </select>
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="eu-plan-error"></small>
                 </div>
 
@@ -281,12 +379,20 @@
                     <small class="err" id="eu-status-error"></small>
                 </div>
                 <div style="margin-bottom: 18px">
+<<<<<<< HEAD
                     <label class="label">Phone</label>
+=======
+                    <label class="label">Phone Number</label>
+>>>>>>> 14b4245 (full updated code)
                     <input class="inp" maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" id="eu-phone" placeholder="+44 7700 000000" />
                     <small class="err" id="eu-phone-error"></small>
                 </div>
                 <div style="margin-bottom: 18px">
+<<<<<<< HEAD
                     <label class="label">Address 1 <span style="color: var(--red)">*</span></label><input class="inp" maxlength="80" id="eu-address1" placeholder="Enter Address" />
+=======
+                    <label class="label">Address<span style="color: var(--red)">*</span></label><input class="inp" maxlength="80" id="eu-address1" placeholder="Enter Address" />
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="eu-address1-error"></small>
                 </div>
             </div>
@@ -320,7 +426,11 @@
             <div class="g2" style="margin-bottom: 14px">
                 <div>
                     <label class="label">Full Name <span style="color: var(--red)">*</span></label>
+<<<<<<< HEAD
                     <input class="inp" id="as-name" maxlength="50" placeholder="Jane Doe" oninput="
+=======
+                    <input class="inp" id="as-name" maxlength="50" placeholder="Ente your full name" oninput="
+>>>>>>> 14b4245 (full updated code)
                             this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
                             clearAddStaffError(this,'as-name-error');
                         " />
@@ -328,7 +438,11 @@
                 </div>
                 <div>
                     <label class="label">Email <span style="color: var(--red)">*</span></label>
+<<<<<<< HEAD
                     <input class="inp" id="as-email" maxlength="45" placeholder="jane@dremind.co.uk" oninput="clearAddStaffError(this,'as-email-error')" />
+=======
+                    <input class="inp" id="as-email" maxlength="45" placeholder="Enter your email" oninput="clearAddStaffError(this,'as-email-error')" />
+>>>>>>> 14b4245 (full updated code)
                     <small id="as-email-error" class="text-danger"></small>
                 </div>
             </div>
@@ -350,8 +464,13 @@
                     <small id="staff-role-sel-error" class="text-danger"></small>
                 </div>
                 <div style="margin-bottom: 18px">
+<<<<<<< HEAD
                     <label class="label">Phone</label>
                     <input class="inp" id="as-phone" maxlength="15" placeholder="+44 7700 000000" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearAddStaffError(this,'as-phone-error');">
+=======
+                    <label class="label">Phone number</label>
+                    <input class="inp" id="as-phone" maxlength="15" placeholder="Enter your phone number" oninput="this.value = this.value.replace(/[^0-9]/g, ''); clearAddStaffError(this,'as-phone-error');">
+>>>>>>> 14b4245 (full updated code)
                     <small id="as-phone-error" class="text-danger"></small>
                 </div>
                 <div>
@@ -507,7 +626,11 @@
                 <button class="btn btn-ghost btn-sm" onclick="closeModal('send-notif-modal')">Cancel</button>
                 <button
                     class="btn btn-primary btn-sm"
+<<<<<<< HEAD
                     onclick="toast('Notification sent!','success');closeModal('send-notif-modal')">
+=======
+                    onclick="toast('Notification sent','success');closeModal('send-notif-modal')">
+>>>>>>> 14b4245 (full updated code)
                     <i class="ri-send-plane-line"></i> Send
                 </button>
             </div>
@@ -592,7 +715,11 @@
                     Category Name <span style="color:var(--red)">*</span>
                 </label>
 
+<<<<<<< HEAD
                 <input class="inp" id="category-name" placeholder="e.g. Fitness" oninput="clearError('name')">
+=======
+               <input class="inp" id="category-name" maxlength="20" placeholder="Enter the category name" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); clearError('name');">
+>>>>>>> 14b4245 (full updated code)
                 <small id="error-name" style="color:red"></small>
 
 
@@ -603,7 +730,11 @@
                 <div>
                     <label class="label">Icon (Remixicon class)</label>
 
+<<<<<<< HEAD
                     <input class="inp" id="category-icon" placeholder="ri-heart-line" oninput="clearError('icon')">
+=======
+                    <input class="inp" id="category-icon" maxlength="30" placeholder="ri-heart-line" oninput="clearError('icon')">
+>>>>>>> 14b4245 (full updated code)
                     <small id="error-icon" style="color:red"></small>
                 </div>
 
@@ -622,6 +753,10 @@
                 <input
                     class="inp"
                     id="category-description"
+<<<<<<< HEAD
+=======
+                    maxlength="70"
+>>>>>>> 14b4245 (full updated code)
                     placeholder="Brief description…">
             </div>
 
@@ -717,6 +852,12 @@
                 }
 
                 toast(data.message, 'success');
+<<<<<<< HEAD
+=======
+                setTimeout(() => {
+                    location.reload();
+                }, 1500);
+>>>>>>> 14b4245 (full updated code)
 
                 closeModal('add-category-modal');
 
@@ -773,13 +914,21 @@
 
             <div style="margin-bottom:14px">
                 <label class="label">Subcategory Name <span style="color:var(--red)">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="subcategory-name" placeholder="e.g. Car Insurance" oninput="clearSubError('name')" />
+=======
+                <input class="inp" maxlength="20" id="subcategory-name" placeholder="Enter your subcategory name" oninput="clearSubError('name')" />
+>>>>>>> 14b4245 (full updated code)
                 <small id="error-subname" style="color:red;display:block;margin-top:4px"></small>
             </div>
 
             <div style="margin-bottom:18px">
                 <label class="label">Description</label>
+<<<<<<< HEAD
                 <input class="inp" id="subcategory-desc" placeholder="Brief description..." />
+=======
+                <input class="inp" maxlength="70" id="subcategory-desc" placeholder="Brief description..." />
+>>>>>>> 14b4245 (full updated code)
             </div>
 
             <div style="display:flex;gap:8px;justify-content:flex-end">
@@ -861,6 +1010,12 @@
             }
 
             toast(data.message, 'success');
+<<<<<<< HEAD
+=======
+            setTimeout(() => {
+                    location.reload();
+                }, 1500);
+>>>>>>> 14b4245 (full updated code)
 
             closeModal('add-subcategory-modal');
 
@@ -892,7 +1047,11 @@
 
             <div style="margin-bottom:14px">
                 <label class="label">Category Name <span style="color:var(--red)">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="edit-cat-name" placeholder="e.g. Insurance" />
+=======
+                <input class="inp" maxlength="20" id="edit-cat-name" placeholder="e.g. Insurance"  oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"/>
+>>>>>>> 14b4245 (full updated code)
                 <small class="err" id="edit-cat-name-error"></small>
 
             </div>
@@ -900,18 +1059,30 @@
             <div class="g2" style="margin-bottom:14px">
                 <div>
                     <label class="label">Icon</label>
+<<<<<<< HEAD
                     <input class="inp" id="edit-cat-icon" placeholder="ri-shield-star-line" />
+=======
+                    <input class="inp" maxlength="30" id="edit-cat-icon" placeholder="ri-shield-star-line" />
+>>>>>>> 14b4245 (full updated code)
                     <small class="err" id="edit-cat-icon-error"></small>
                 </div>
                 <div>
                     <label class="label">Colour</label>
+<<<<<<< HEAD
                     <input class="inp" id="edit-cat-color" type="color" style="height:42px;padding:4px" />
+=======
+                    <input class="inp" id="edit-cat-color" maxlength="20" type="color" style="height:42px;padding:4px" />
+>>>>>>> 14b4245 (full updated code)
                 </div>
             </div>
 
             <div style="margin-bottom:18px">
                 <label class="label">Description</label>
+<<<<<<< HEAD
                 <input class="inp" id="edit-cat-desc" placeholder="Brief description..." />
+=======
+                <input class="inp" maxlength="70" id="edit-cat-desc" placeholder="Brief description..." />
+>>>>>>> 14b4245 (full updated code)
                 <small class="err" id="edit-cat-desc-error"></small>
             </div>
 
@@ -958,7 +1129,11 @@
 
             <div style="margin-bottom:14px">
                 <label class="label">Description</label>
+<<<<<<< HEAD
                 <input class="inp" maxlength="100" id="edit-sub-desc" placeholder="Description" />
+=======
+                <input class="inp" maxlength="70" id="edit-sub-desc" placeholder="Description" />
+>>>>>>> 14b4245 (full updated code)
                 <small class="err" id="edit-sub-desc-error"></small>
             </div>
 
@@ -1019,6 +1194,42 @@
     </div>
 
     <!-- DRAWER -->
+<<<<<<< HEAD
+=======
+    <!--<div-->
+    <!--    style="-->
+    <!--            position: fixed;-->
+    <!--            inset: 0;-->
+    <!--            background: rgba(0, 0, 0, 0.6);-->
+    <!--            backdrop-filter: blur(5px);-->
+    <!--            z-index: 9997;-->
+    <!--            opacity: 0;-->
+    <!--            pointer-events: none;-->
+    <!--            transition: opacity 0.25s;-->
+    <!--        "-->
+    <!--    id="drawer-overlay"-->
+    <!--    onclick="closeDrawer()"></div>-->
+    <!--<div-->
+    <!--    style="-->
+    <!--                position: fixed;-->
+    <!--                top: 0;-->
+    <!--                right: 0;-->
+    <!--                width: min(840px, 100vw);-->
+    <!--                height: 100vh;-->
+    <!--                background: var(--bg2);-->
+    <!--                border-left: 1px solid rgba(124, 58, 237, 0.2);-->
+    <!--                z-index: 9998;-->
+    <!--                transform: translateX(100%);-->
+    <!--                transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);-->
+    <!--                overflow-y: auto;-->
+    <!--                padding: 26px;-->
+    <!--                box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);-->
+    <!--            "-->
+    <!--    id="detail-drawer">-->
+    <!--    <div id="drawer-content"></div>-->
+    <!--</div>-->
+    <!-- DRAWER -->
+>>>>>>> 14b4245 (full updated code)
     <div
         style="
                 position: fixed;
@@ -1037,8 +1248,9 @@
                     position: fixed;
                     top: 0;
                     right: 0;
-                    width: min(440px, 100vw);
+                    width: min(840px, 100vw);
                     height: 100vh;
+                    height: 100dvh;
                     background: var(--bg2);
                     border-left: 1px solid rgba(124, 58, 237, 0.2);
                     z-index: 9998;
@@ -1046,7 +1258,9 @@
                     transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
                     overflow-y: auto;
                     padding: 26px;
+                    padding-bottom: calc(26px + env(safe-area-inset-bottom, 0px));
                     box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+                    box-sizing: border-box;
                 "
         id="detail-drawer">
         <div id="drawer-content"></div>

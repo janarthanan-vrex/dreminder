@@ -125,7 +125,7 @@
                     </div>
                     <div>
                         <div style="font-size: 0.75rem; color: var(--text4); margin-bottom: 3px;">Message</div>
-                        <div style="font-size: 0.88rem; color: var(--text3); line-height: 1.6; padding: 12px; background: var(--bg); border-radius: 8px;" id="display-message">-</div>
+                        <div style="font-size: 0.88rem; color: var(--text3); line-height: 1.6; padding: 12px; background: var(--bg); border-radius: 8px;word-break:break-all;" id="display-message">-</div>
                     </div>
                 </div>
             </div>
@@ -150,7 +150,11 @@
                         <button type="submit" class="btn btn-primary action-btn">
                             <i class="ri-send-plane-line"></i> Send Reply
                         </button>
+<<<<<<< HEAD
                        
+=======
+                        
+>>>>>>> 14b4245 (full updated code)
                     </div>
                 </form>
             </div>

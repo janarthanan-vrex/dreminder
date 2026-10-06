@@ -81,7 +81,12 @@
         display: flex;
         align-items: center;
         gap: 6px;
+<<<<<<< HEAD
         white-space: nowrap
+=======
+        white-space: normal;
+        word-break:break-all;
+>>>>>>> 14b4245 (full updated code)
     }
     .plan-tab:hover { border-color: rgba(124,58,237,.3); color: var(--text2) }
     .plan-tab.active {
@@ -161,6 +166,16 @@
     .cpn-page-info { font-size: .72rem; color: var(--text3); margin-right: 4px }
     .error-msg { display: block; margin-top: 4px; font-size: .72rem; color: #ef4444; min-height: 16px }
     .coupon-error-msg { display: block; margin-top: 4px; font-size: .72rem; color: #ef4444; min-height: 16px }
+<<<<<<< HEAD
+=======
+    
+    @media(max-width:767px){
+        .cpn-pagination {
+            justify-self:center;
+        }
+
+    }
+>>>>>>> 14b4245 (full updated code)
 </style>
 
 @if(!auth('admin')->user()->hasPermission('Pricing','pricing.create'))
@@ -216,9 +231,13 @@
         <p style="font-size:.8rem;color:var(--text3);margin-top:3px">Manage plans and coupons</p>
     </div>
     
+<<<<<<< HEAD
     <button type="button" class="btn btn-primary btn-sm edit-btn" onclick="saveAll()">
         <i class="ri-save-line"></i> Save & Publish
     </button>
+=======
+    
+>>>>>>> 14b4245 (full updated code)
 </div>
 
 <!-- Page Tabs -->
@@ -270,13 +289,21 @@
                         <input class="inp plan-name-inp"
                             data-plan="{{ $key }}"
                             name="plan_name[]"
+<<<<<<< HEAD
+=======
+                            maxlength="20"
+>>>>>>> 14b4245 (full updated code)
                             value="{{ $plan->plan_name }}"
                             oninput="syncPlanTab({{ $key }}); hideError(this)">
                         <small class="error-msg"></small>
                     </div>
                     <div class="field-group">
                         <label class="label">Plan Icon (Remix Icon class)</label>
+<<<<<<< HEAD
                         <input class="inp" name="icon[]" value="{{ $plan->icon ?? '' }}">
+=======
+                        <input class="inp" maxlength="20" name="icon[]" value="{{ $plan->icon ?? '' }}">
+>>>>>>> 14b4245 (full updated code)
                     </div>
                 </div>
 
@@ -288,6 +315,10 @@
                                 class="plan-color-inp"
                                 data-plan="{{ $key }}"
                                 name="color[]"
+<<<<<<< HEAD
+=======
+                                maxlength="20"
+>>>>>>> 14b4245 (full updated code)
                                 value="{{ $plan->color }}"
                                 oninput="syncPlanColor({{ $key }}, this.value)"
                                 style="width:38px;height:38px;border:none;background:transparent;cursor:pointer;border-radius:8px">
@@ -300,10 +331,19 @@
                         <label class="label">Price <span style="color:#ef4444">*</span></label>
                         <input class="inp"
                             id="p{{ $key }}-price"
+<<<<<<< HEAD
                             type="number" step="0.01"
                             name="price[]"
                             value="{{ $plan->price }}"
                             oninput="calcTotal({{ $key }}); hideError(this)">
+=======
+                            placeholder="Enter Price Amount"
+                            type="number" step="0.01"
+                            name="price[]"
+                            
+                            value="{{ $plan->price }}"
+                            oninput="limitDigits(this); calcTotal({{ $key }}); hideError(this)">
+>>>>>>> 14b4245 (full updated code)
                         <small class="error-msg"></small>
                     </div>
                 </div>
@@ -314,9 +354,16 @@
                         <input class="inp"
                             id="p{{ $key }}-vat"
                             type="number" step="0.01"
+<<<<<<< HEAD
                             name="vat[]"
                             value="{{ $plan->vat }}"
                             oninput="calcTotal({{ $key }}); hideError(this)">
+=======
+                            placeholder="Enter VAT Amount"
+                            name="vat[]"
+                            value="{{ $plan->vat }}"
+                            oninput="limitDigits(this); calcTotal({{ $key }}); hideError(this)">
+>>>>>>> 14b4245 (full updated code)
                              <small class="error-msg"></small>
                     </div>
                     <div class="field-group">
@@ -329,7 +376,11 @@
 
                 <div class="field-group">
                     <label class="label">Description</label>
+<<<<<<< HEAD
                     <input type="text" class="inp" name="description[]" value="{{ $plan->description ?? '' }}">
+=======
+                    <input type="text" maxlength="150" class="inp" name="description[]" value="{{ $plan->description ?? '' }}">
+>>>>>>> 14b4245 (full updated code)
                 </div>
 
                 <div class="field-group hidden">
@@ -380,6 +431,12 @@
 
         </div>
     </form>
+<<<<<<< HEAD
+=======
+    <button type="button" class="btn btn-primary btn-sm edit-btn" onclick="saveAll()">
+        <i class="ri-save-line"></i> Save & Publish
+    </button>
+>>>>>>> 14b4245 (full updated code)
 </div>
 
 <!-- ============================== COUPONS TAB ============================== -->
@@ -400,7 +457,11 @@
         <span id="coupon-count-label" style="font-size:.72rem;color:var(--text3);margin-left:2px"></span>
     </div>
 
+<<<<<<< HEAD
     <div class="card" style="padding:0;overflow:hidden">
+=======
+    <div class="card" style="padding:0;overflow-x:auto">
+>>>>>>> 14b4245 (full updated code)
         <table class="data-table">
             <thead>
                 <tr>
@@ -415,8 +476,13 @@
             </thead>
             <tbody id="coupon-table-body"></tbody>
         </table>
+<<<<<<< HEAD
         <div class="cpn-pagination" id="coupon-pagination"></div>
     </div>
+=======
+    </div>
+    <div class="cpn-pagination" id="coupon-pagination"></div>
+>>>>>>> 14b4245 (full updated code)
 </div>
 
 <!-- ── Add Coupon Modal ── -->
@@ -430,7 +496,11 @@
         </div>
         <div class="field-group">
             <label class="label">Coupon Code <span style="color:#ef4444">*</span></label>
+<<<<<<< HEAD
             <input class="inp" id="coupon-code" placeholder="e.g. SAVE20" style="text-transform:uppercase"
+=======
+            <input class="inp" id="coupon-code" maxlength="20" placeholder="Enter coupon name" style="text-transform:uppercase"
+>>>>>>> 14b4245 (full updated code)
                 oninput="clearOneError('coupon-code','add-code-err')">
             <small class="coupon-error-msg" id="add-code-err"></small>
         </div>
@@ -444,7 +514,11 @@
             </div>
             <div class="field-group">
                 <label class="label">Discount Value <span style="color:#ef4444">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="coupon-val" type="number" placeholder="e.g. 20"
+=======
+                <input class="inp" id="coupon-val" type="number" placeholder="ENTER DISCOUNT VALUE"
+>>>>>>> 14b4245 (full updated code)
                     oninput="clearOneError('coupon-val','add-val-err')">
                 <small class="coupon-error-msg" id="add-val-err"></small>
             </div>
@@ -485,7 +559,11 @@
         <input type="hidden" id="edit-coupon-id">
         <div class="field-group">
             <label class="label">Coupon Code <span style="color:#ef4444">*</span></label>
+<<<<<<< HEAD
             <input class="inp" id="edit-coupon-code" placeholder="e.g. SAVE20" style="text-transform:uppercase"
+=======
+            <input class="inp" maxlength="20" id="edit-coupon-code" placeholder="Enter coupon name" style="text-transform:uppercase"
+>>>>>>> 14b4245 (full updated code)
                 oninput="clearOneError('edit-coupon-code','edit-code-err')">
             <small class="coupon-error-msg" id="edit-code-err"></small>
         </div>
@@ -499,7 +577,11 @@
             </div>
             <div class="field-group">
                 <label class="label">Discount Value <span style="color:#ef4444">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="edit-coupon-val" type="number" placeholder="e.g. 20"
+=======
+                <input class="inp" id="edit-coupon-val" type="number" placeholder="Enter discount value"
+>>>>>>> 14b4245 (full updated code)
                     oninput="clearOneError('edit-coupon-val','edit-val-err')">
                 <small class="coupon-error-msg" id="edit-val-err"></small>
             </div>
@@ -543,6 +625,11 @@ var CSRF            = document.querySelector('meta[name="csrf-token"]').content;
    TAB SWITCHING
 ═══════════════════════════════════════════════ */
 function switchTab(t) {
+<<<<<<< HEAD
+=======
+    localStorage.setItem('pricing_active_tab', t);
+
+>>>>>>> 14b4245 (full updated code)
     document.querySelectorAll('.cms-tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.cms-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + t).classList.add('active');
@@ -674,13 +761,21 @@ function addNewPlan() {
         '<div class="g2">' +
             '<div class="field-group">' +
                 '<label class="label">Plan Name <span style="color:#ef4444">*</span></label>' +
+<<<<<<< HEAD
                 '<input class="inp plan-name-inp" name="plan_name[]" data-plan="' + idx + '" placeholder="Enter Plan Name"' +
+=======
+                '<input class="inp plan-name-inp" maxlength="20" name="plan_name[]" data-plan="' + idx + '" placeholder="Enter Plan Name"' +
+>>>>>>> 14b4245 (full updated code)
                 '       oninput="syncPlanTab(' + idx + '); hideError(this)">' +
                 '<small class="error-msg"></small>' +
             '</div>' +
             '<div class="field-group">' +
                 '<label class="label">Plan Icon (Remix Icon class)</label>' +
+<<<<<<< HEAD
                 '<input class="inp" name="icon[]" placeholder="ri-star-line">' +
+=======
+                '<input class="inp" maxlength="20" name="icon[]" placeholder="ri-star-line">' +
+>>>>>>> 14b4245 (full updated code)
             '</div>' +
         '</div>' +
         '<div class="g2">' +
@@ -695,16 +790,26 @@ function addNewPlan() {
             '</div>' +
             '<div class="field-group">' +
                 '<label class="label">Price <span style="color:#ef4444">*</span></label>' +
+<<<<<<< HEAD
                 '<input class="inp" type="number" step="0.01" name="price[]" id="p' + idx + '-price" value="0"' +
                 '       oninput="calcTotal(' + idx + '); hideError(this)">' +
+=======
+                '<input class="inp" type="number" step="0.01" placeholder="Enter Price Amount" name="price[]" id="p' + idx + '-price"' +
+                '       oninput="limitDigits(this); calcTotal(' + idx + '); hideError(this)">' +
+>>>>>>> 14b4245 (full updated code)
                 '<small class="error-msg"></small>' +
             '</div>' +
         '</div>' +
         '<div class="g2">' +
             '<div class="field-group">' +
                 '<label class="label">VAT <span style="color:#ef4444">*</span></label>' +
+<<<<<<< HEAD
                 '<input class="inp" type="number" step="0.01" name="vat[]" id="p' + idx + '-vat" value="0"' +
                 '       oninput="calcTotal(' + idx + '); hideError(this)">' +
+=======
+                '<input class="inp" type="number" placeholder="Enter VAT Amount" step="0.01" name="vat[]" id="p' + idx + '-vat"' +
+                '       oninput="limitDigits(this); calcTotal(' + idx + '); hideError(this)">' +
+>>>>>>> 14b4245 (full updated code)
                 '<small class="error-msg"></small>' +
             '</div>' +
             '<div class="field-group">' +
@@ -714,7 +819,11 @@ function addNewPlan() {
         '</div>' +
         '<div class="field-group">' +
             '<label class="label">Description</label>' +
+<<<<<<< HEAD
             '<input type="text" class="inp" name="description[]" placeholder="Short description">' +
+=======
+            '<input type="text" maxlength="150" class="inp" name="description[]" placeholder="Short description">' +
+>>>>>>> 14b4245 (full updated code)
         '</div>' +
         '<div class="field-group hidden">' +
             '<label class="label">Expiry Date</label>' +
@@ -749,7 +858,11 @@ function addNewPlan() {
     /* ── switch to new tab AFTER DOM is updated ── */
     switchPlan(idx, tab);
     calcTotal(idx);
+<<<<<<< HEAD
     toast?.('New plan added!', 'success');
+=======
+    toast?.('New plan added', 'success');
+>>>>>>> 14b4245 (full updated code)
 }
 
 /* ═══════════════════════════════════════════════
@@ -877,7 +990,11 @@ function saveAll() {
                     }
                 });
             }
+<<<<<<< HEAD
             toast?.('Validation failed — please fix the errors', 'error');
+=======
+            // toast?.('Validation failed — please fix the errors', 'error');
+>>>>>>> 14b4245 (full updated code)
             return;
         }
         toast?.(data.message, 'success');
@@ -1007,6 +1124,43 @@ function couponRowHTML(c, index) {
 
     '</tr>';
 }
+<<<<<<< HEAD
+=======
+// function renderCoupons() {
+//     var filtered = cpnAll.filter(function(c) {
+//         if (!cpnFilter) return true;
+//         var q = cpnFilter.toLowerCase();
+//         return c.code.toLowerCase().includes(q) ||
+//               c.typeLabel.toLowerCase().includes(q) ||
+//               c.status.toLowerCase().includes(q);
+//     });
+//     var total = filtered.length;
+//     var pages = Math.max(1, Math.ceil(total / cpnPerPage));
+//     if (cpnPage > pages) cpnPage = pages;
+//     var slice = filtered.slice((cpnPage - 1) * cpnPerPage, cpnPage * cpnPerPage);
+
+//     document.getElementById('coupon-table-body').innerHTML = slice.length
+//         ? slice.map(couponRowHTML).join('')
+//         : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text4);font-size:.8rem">' +
+//           '<i class="ri-coupon-line" style="display:block;font-size:1.6rem;margin-bottom:6px;opacity:.3"></i>No coupons found</td></tr>';
+
+//     document.getElementById('coupon-count-label').textContent =
+//         total + ' coupon' + (total !== 1 ? 's' : '') + (cpnFilter ? ' found' : '');
+
+//     var pag   = document.getElementById('coupon-pagination');
+//     if (pages <= 1) { pag.innerHTML = ''; return; }
+//     var html  = '<span class="cpn-page-info">Page ' + cpnPage + ' of ' + pages + '</span>';
+//     html += '<button class="cpn-page-btn" onclick="cpnGoPage(' + (cpnPage - 1) + ')"' +
+//             (cpnPage === 1 ? ' disabled style="opacity:.35;cursor:default"' : '') + '>&#8249;</button>';
+//     for (var p = 1; p <= pages; p++) {
+//         html += '<button class="cpn-page-btn' + (p === cpnPage ? ' active' : '') + '" onclick="cpnGoPage(' + p + ')">' + p + '</button>';
+//     }
+//     html += '<button class="cpn-page-btn" onclick="cpnGoPage(' + (cpnPage + 1) + ')"' +
+//             (cpnPage === pages ? ' disabled style="opacity:.35;cursor:default"' : '') + '>&#8250;</button>';
+//     pag.innerHTML = html;
+// }
+
+>>>>>>> 14b4245 (full updated code)
 function renderCoupons() {
     var filtered = cpnAll.filter(function(c) {
         if (!cpnFilter) return true;
@@ -1020,8 +1174,15 @@ function renderCoupons() {
     if (cpnPage > pages) cpnPage = pages;
     var slice = filtered.slice((cpnPage - 1) * cpnPerPage, cpnPage * cpnPerPage);
 
+<<<<<<< HEAD
     document.getElementById('coupon-table-body').innerHTML = slice.length
         ? slice.map(couponRowHTML).join('')
+=======
+    var offset = (cpnPage - 1) * cpnPerPage;
+
+    document.getElementById('coupon-table-body').innerHTML = slice.length
+        ? slice.map(function(c, i) { return couponRowHTML(c, offset + i); }).join('')
+>>>>>>> 14b4245 (full updated code)
         : '<tr><td colspan="6" style="text-align:center;padding:28px;color:var(--text4);font-size:.8rem">' +
           '<i class="ri-coupon-line" style="display:block;font-size:1.6rem;margin-bottom:6px;opacity:.3"></i>No coupons found</td></tr>';
 
@@ -1092,6 +1253,10 @@ function createCoupon() {
             });
             return;
         }
+<<<<<<< HEAD
+=======
+         localStorage.setItem('pricing_active_tab', 'coupons');
+>>>>>>> 14b4245 (full updated code)
         cpnAll.unshift(formatCoupon(data.coupon));
         document.getElementById('coupon-code').value   = '';
         document.getElementById('coupon-val').value    = '';
@@ -1100,9 +1265,15 @@ function createCoupon() {
         cpnPage = 1;
         renderCoupons();
        toast?.(data.message, 'success');
+<<<<<<< HEAD
        setTimeout(()=>{
         location.reload();
        },1500)
+=======
+      setTimeout(()=>{
+        location.reload();
+      },1500)
+>>>>>>> 14b4245 (full updated code)
     })
     .catch(function() { toast?.('Server error', 'error'); });
 }
@@ -1162,14 +1333,25 @@ function updateCoupon() {
             });
             return;
         }
+<<<<<<< HEAD
+=======
+         localStorage.setItem('pricing_active_tab', 'coupons');
+>>>>>>> 14b4245 (full updated code)
         var idx = cpnAll.findIndex(function(x) { return x.id == id; });
         if (idx !== -1) cpnAll[idx] = formatCoupon(data.coupon);
         closeModal('edit-coupon-modal');
         renderCoupons();
+<<<<<<< HEAD
         toast?.('"' + code + '" updated!', 'success');
         setTimeout(()=>{
         location.reload();
        },1500)
+=======
+        toast?.('"' + code + '" updated', 'success');
+        setTimeout(()=>{
+        location.reload();
+      },1500)
+>>>>>>> 14b4245 (full updated code)
         
         
     })
@@ -1193,7 +1375,15 @@ function deleteCoupon(id) {
                 if (data.status) {
                     cpnAll = cpnAll.filter(x => x.id !== id);
                     renderCoupons();
+<<<<<<< HEAD
                     toast?.(data.message || 'Coupon deleted','info');
+=======
+                     localStorage.setItem('pricing_active_tab', 'coupons');
+                    toast?.(data.message || 'Coupon deleted','info');
+                     setTimeout(()=>{
+                        location.reload();
+                    },1500)
+>>>>>>> 14b4245 (full updated code)
                 } else {
                     toast?.(data.message || 'Delete failed','error');
                 }
@@ -1229,11 +1419,32 @@ function clearOneError(inputId, errId) {
     if (err) err.textContent = '';
 }
 
+<<<<<<< HEAD
+=======
+function limitDigits(input) {
+    let value = input.value;
+
+    // Count digits only (ignore decimal point)
+    if (value.replace('.', '').length > 4) {
+        input.value = value.slice(0, -1);
+    }
+}
+
+/* ── Init ── */
+>>>>>>> 14b4245 (full updated code)
 /* ── Init ── */
 document.addEventListener('DOMContentLoaded', function() {
     @foreach($plans as $key => $plan)
         calcTotal({{ $key }});
     @endforeach
+<<<<<<< HEAD
+=======
+
+    var savedTab = localStorage.getItem('pricing_active_tab');
+    if (savedTab && document.getElementById('tab-' + savedTab)) {
+        switchTab(savedTab);
+    }
+>>>>>>> 14b4245 (full updated code)
 });
 </script>
 

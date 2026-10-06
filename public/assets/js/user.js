@@ -9,232 +9,6 @@ window.addEventListener("load", () => {
 // ============================================================
 const CATS = window.PAGE_CATS || window.CATS || {};
 
-const TEMPLATES = [
-    {
-        id: "car-ins",
-        title: "Car Insurance Renewal",
-        cat: "motor-vehicle",
-        sub: "Car Insurance",
-        freq: "Annually",
-        icon: "ri-car-line",
-        col: "#a78bfa",
-        bg: "rgba(167,139,250,.12)",
-        pop: 245,
-    },
-    {
-        id: "mot",
-        title: "MOT Test",
-        cat: "motor-vehicle",
-        sub: "MOT",
-        freq: "Annually",
-        icon: "ri-tools-line",
-        col: "#10b981",
-        bg: "rgba(16,185,129,.12)",
-        pop: 198,
-    },
-    {
-        id: "road-tax",
-        title: "Road VATRenewal",
-        cat: "motor-vehicle",
-        sub: "Road VAT(12-Month)",
-        freq: "Annually",
-        icon: "ri-file-shield-line",
-        col: "#f43f5e",
-        bg: "rgba(244,63,94,.12)",
-        pop: 167,
-    },
-    {
-        id: "streaming",
-        title: "Streaming Subscription",
-        cat: "subscriptions",
-        sub: "Media Streaming",
-        freq: "Monthly",
-        icon: "ri-play-circle-line",
-        col: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        pop: 189,
-    },
-    {
-        id: "birthday",
-        title: "Birthday Reminder",
-        cat: "special-days",
-        sub: "Birthdays",
-        freq: "",
-        icon: "ri-cake-3-line",
-        col: "#f59e0b",
-        bg: "rgba(245,158,11,.12)",
-        pop: 312,
-    },
-    {
-        id: "passport",
-        title: "Passport Renewal",
-        cat: "travel",
-        sub: "Passport Renewal",
-        freq: "",
-        icon: "ri-passport-line",
-        col: "#ec4899",
-        bg: "rgba(236,72,153,.12)",
-        pop: 134,
-    },
-    {
-        id: "bike-ins",
-        title: "Motorcycle Insurance",
-        cat: "motor-vehicle",
-        sub: "Motorcycle Insurance",
-        freq: "Annually",
-        icon: "ri-motorbike-line",
-        col: "#a78bfa",
-        bg: "rgba(167,139,250,.12)",
-        pop: 89,
-    },
-    {
-        id: "gp",
-        title: "GP Annual Check-Up",
-        cat: "health",
-        sub: "GP Appointments",
-        freq: "Annually",
-        icon: "ri-stethoscope-line",
-        col: "#10b981",
-        bg: "rgba(16,185,129,.12)",
-        pop: 156,
-    },
-    {
-        id: "gym",
-        title: "Gym Membership",
-        cat: "health",
-        sub: "Gym Memberships",
-        freq: "Monthly",
-        icon: "ri-run-line",
-        col: "#10b981",
-        bg: "rgba(16,185,129,.12)",
-        pop: 203,
-    },
-    {
-        id: "pet-ins",
-        title: "Pet Insurance",
-        cat: "pet-care",
-        sub: "Pet Insurance",
-        freq: "Annually",
-        icon: "ri-footprint-line",
-        col: "#10b981",
-        bg: "rgba(16,185,129,.12)",
-        pop: 78,
-    },
-    {
-        id: "home-ins",
-        title: "Home Insurance",
-        cat: "insurance",
-        sub: "Home Insurance",
-        freq: "Annually",
-        icon: "ri-home-heart-line",
-        col: "#f43f5e",
-        bg: "rgba(244,63,94,.12)",
-        pop: 221,
-    },
-    {
-        id: "broadband",
-        title: "Broadband Renewal",
-        cat: "tv-telephone-mobile",
-        sub: "Internet Services",
-        freq: "Annually",
-        icon: "ri-wifi-line",
-        col: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        pop: 145,
-    },
-    {
-        id: "life-ins",
-        title: "Life Insurance",
-        cat: "insurance",
-        sub: "Life Insurance",
-        freq: "Annually",
-        icon: "ri-shield-check-line",
-        col: "#f43f5e",
-        bg: "rgba(244,63,94,.12)",
-        pop: 132,
-    },
-    {
-        id: "anniv",
-        title: "Anniversary",
-        cat: "special-days",
-        sub: "Anniversaries",
-        freq: "Annually",
-        icon: "ri-heart-line",
-        col: "#f59e0b",
-        bg: "rgba(245,158,11,.12)",
-        pop: 187,
-    },
-    {
-        id: "driv-lic",
-        title: "Driving Licence Renewal",
-        cat: "travel",
-        sub: "Driving License",
-        freq: "",
-        icon: "ri-drive-line",
-        col: "#ec4899",
-        bg: "rgba(236,72,153,.12)",
-        pop: 98,
-    },
-    {
-        id: "elec",
-        title: "Electricity Plan",
-        cat: "home",
-        sub: "Electricity",
-        freq: "Annually",
-        icon: "ri-flashlight-line",
-        col: "#14b8a6",
-        bg: "rgba(20,184,166,.12)",
-        pop: 167,
-    },
-];
-const FAQS = [
-    {
-        q: "How do I create my first reminder?",
-        a: 'Click "Create Reminder" in the sidebar or topbar. Fill in the title, category, subcategory, date and time. Optionally add provider, cost, and frequency. Click "Create Reminder" to save it.',
-        cat: "Getting Started",
-    },
-    {
-        q: "What categories are available?",
-        a: "D-Remind offers 10 categories: Special Days, Home, Insurance, TV/Tel/Mobile, Motor Vehicle, Travel, Subscriptions, Pet Care, Health, and Others. Each has multiple subcategories you can also customize.",
-        cat: "Getting Started",
-    },
-    {
-        q: "How do I manage notifications?",
-        a: "Go to Notification Settings in the sidebar. Toggle channels (Email, SMS, Push, WhatsApp) and set alert timing (30 days, 7 days, 3 days, 1 day before or on the day). You can also configure quiet hours.",
-        cat: "Notifications",
-    },
-    {
-        q: "How do I share reminders via WhatsApp or Email?",
-        a: "From My Reminders, click the share icon on any reminder card or open the reminder details. Choose WhatsApp, Email, or Copy Link. Enter the recipient's number or email and optionally add a personal message.",
-        cat: "Sharing",
-    },
-    {
-        q: "What does my membership include?",
-        a: "Basic Annual (£2.40/year incl. VAT) includes unlimited reminders, email & SMS notifications, calendar view, WhatsApp/Email sharing, custom subcategories, analytics, template access and more.",
-        cat: "Billing",
-    },
-    {
-        q: "How do I cancel my membership?",
-        a: "Go to Membership in the sidebar and click 'Cancel Plan'. Your membership stays active until the end of your billing period. You won't be charged again after cancellation.",
-        cat: "Billing",
-    },
-    {
-        q: "I'm not receiving email notifications. What should I do?",
-        a: "Check your spam folder and add support@winngoodremind.co.uk to your contacts. Verify email is enabled in Notification Settings and your email address is correct in Profile settings.",
-        cat: "Technical",
-    },
-    {
-        q: "How do I reset my password?",
-        a: "Go to Profile in the sidebar, scroll to Security Settings. Enter your current password, new password (min 8 chars, 1 uppercase, 1 number), and confirm. Click 'Update Password'.",
-        cat: "Technical",
-    },
-    {
-        q: "Can I add custom subcategories?",
-        a: "Yes! Go to Categories in the sidebar and click 'Add Subcategory'. Select a parent category, enter a name (3–50 characters), and optionally add a description. Your custom subcategory will then be available when creating reminders.",
-        cat: "Categories",
-    },
-];
-
 // Storage
 const S = {
     get: (k, d) => {
@@ -413,14 +187,15 @@ function closeModal(id) {
     document.getElementById(id).classList.remove("open");
     document.body.style.overflow = "";
 }
-document.querySelectorAll(".modal-bg").forEach((m) => {
-    m.addEventListener("click", (e) => {
-        if (e.target === m) {
-            m.classList.remove("open");
-            document.body.style.overflow = "";
-        }
-    });
-});
+// modal issue
+// document.querySelectorAll(".modal-bg").forEach((m) => {
+//     m.addEventListener("click", (e) => {
+//         if (e.target === m) {
+//             m.classList.remove("open");
+//             document.body.style.overflow = "";
+//         }
+//     });
+// });
 // document.addEventListener('keydown', e => {
 //     if (e.key === 'Escape') document.querySelectorAll('.modal-bg.open').forEach(m => {
 //         m.classList.remove('open');
@@ -491,8 +266,7 @@ let dashChart = null;
 function initDash() {
     const h = new Date().getHours();
 
-    document.getElementById("greeting").textContent =
-        h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
+    document.getElementById("greeting").textContent = "Welcome";
 
     const rems = window.UPCOMING_REMINDERS || [];
 
@@ -510,7 +284,7 @@ function initDash() {
     document.getElementById("dash-summary").textContent =
         stats.week > 0
             ? `You have ${stats.week} reminder${stats.week > 1 ? "s" : ""} due this week.`
-            : "No reminders due this week — great job! 🎉";
+            : "No reminders due this week — great job ";
 
     const ul = document.getElementById("dash-list");
 
@@ -535,13 +309,18 @@ function initDashChart() {
     const stats = window.DASH_STATS || {};
 
     const labels = ["Active", "Due This Week", "Completed", "Today"];
-
     const data = [
         stats.active || 0,
         stats.week || 0,
         stats.done || 0,
         stats.today || 0,
     ];
+
+    // ── No data guard ──
+    const hasData = data.some(v => v > 0);
+    showNoData("dash-chart", !hasData);
+    if (!hasData) return;
+    // ──────────────────
 
     dashChart = new Chart(cv, {
         type: "pie",
@@ -550,30 +329,19 @@ function initDashChart() {
             datasets: [
                 {
                     data,
-                    backgroundColor: [
-                        "#7c3aed",
-                        "#f59e0b",
-                        "#10b981",
-                        "#f43f5e",
-                    ],
+                    backgroundColor: ["#7c3aed", "#f59e0b", "#10b981", "#f43f5e"],
                 },
             ],
         },
-
         options: {
             plugins: {
                 legend: {
                     labels: {
                         color: tc,
-
-                        font: {
-                            family: "DM Sans",
-                            size: 11,
-                        },
+                        font: { family: "DM Sans", size: 11 },
                     },
                 },
             },
-
             maintainAspectRatio: false,
         },
     });
@@ -630,8 +398,8 @@ function gridCardHTML(r) {
             : duePill(r.dueDate);
     return `<div class="card" style="padding:16px;cursor:pointer;transition:all .2s" onclick="viewDetail('${r.id}')">
 <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px"><div class="cat-ico" style="background:${cat.bg}"><i class="${cat.icon}" style="color:${cat.color}"></i></div>${dp}</div>
-<div style="font-weight:600;font-size:.87rem;color:#f1f5f9;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
-<div style="font-size:.75rem;color:#64748b;margin-bottom:6px">${cat.name} → ${r.subcategory}</div>
+<div style="font-weight:600;font-size:.87rem;color:#f1f5f9;margin-bottom:4px;word-break:break-all;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+<div style="font-size:.75rem;color:#64748b;margin-bottom:6px;word-break: break-all;">${cat.name} → ${r.subcategory}</div>
 <div style="font-size:.75rem;color:#64748b;margin-bottom:${r.cost ? "6" : "12"}px"><i class="ri-calendar-line"></i> ${fmtDate(r.dueDate)} at ${r.dueTime || "09:00"}</div>
 ${r.cost ? `<div style="font-weight:700;font-size:.85rem;color:#f1f5f9;margin-bottom:12px">£${r.cost}${r.frequency ? " / " + r.frequency : ""}</div>` : ""}
 <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
@@ -678,10 +446,10 @@ ${r.provider ? `<div style="display:flex;gap:10px;padding:12px;border-radius:10p
 ${r.cost ? `<div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><i class="ri-money-pound-circle-line" style="color:#10b981;flex-shrink:0;margin-top:2px"></i><div><div style="font-size:.73rem;color:#64748b">Cost</div><div style="font-size:.87rem;font-weight:600;color:#94a3b8">£${r.cost}${r.frequency ? " / " + r.frequency : ""}</div></div></div>` : ""}
 ${r.description ? `<div style="padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><div style="font-size:.73rem;color:#64748b;margin-bottom:4px">Description</div><div style="font-size:.84rem;color:#64748b;line-height:1.6">${r.description}</div></div>` : ""}
 
-<div style="display:flex;gap:10px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><i class="ri-checkbox-circle-line" style="color:#10b981;flex-shrink:0;margin-top:2px"></i><div><div style="font-size:.73rem;color:#64748b">Status</div><div style="font-size:.87rem;font-weight:600;color:#94a3b8">${r.status}</div></div></div>
+<div style="display:none;gap:10px;padding:12px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><i class="ri-checkbox-circle-line" style="color:#10b981;flex-shrink:0;margin-top:2px"></i><div><div style="font-size:.73rem;color:#64748b">Status</div><div style="font-size:.87rem;font-weight:600;color:#94a3b8">${r.status}</div></div></div>
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
-<button class="btn btn-primary" style="flex:1;justify-content:center" onclick="closeModal('detail-modal');editReminder('${r.id}')"><i class="ri-pencil-line"></i> Edit</button>
+<button class="btn btn-primary hidden" style="flex:1;justify-content:center" onclick="closeModal('detail-modal');editReminder('${r.id}')"><i class="ri-pencil-line"></i> Edittt</button>
 </div>`;
     openModal("detail-modal");
 }
@@ -696,7 +464,7 @@ function markDone(id) {
     saveRems(rems);
     if (curPage === "reminders") loadReminders();
     if (curPage === "dashboard") initDash();
-    toast("Reminder marked as completed! ✓", "success");
+    toast("Reminder marked as completed ✓", "success");
 }
 
 async function deleteRem(id) {
@@ -812,24 +580,41 @@ function loadReminders() {
         .trim();
     const cat = document.getElementById("rem-cat")?.value || "all";
     const st = document.getElementById("rem-status")?.value || "all";
-    const sort = document.getElementById("rem-sort")?.value || "date-asc";
+    const sort = document.getElementById("rem-sort")?.value || "created-desc";
     if (q)
         rems = rems.filter((r) =>
             (r.title + " " + (r.provider || "") + " " + (r.description || ""))
                 .toLowerCase()
                 .includes(q),
         );
-    if (cat !== "all") rems = rems.filter((r) => r.category === cat);
-    if (st === "today")
-        rems = rems.filter(
-            (r) => r.status === "active" && daysUntil(r.dueDate) === 0,
-        );
-    else if (st === "upcoming")
-        rems = rems.filter(
-            (r) => r.status === "active" && daysUntil(r.dueDate) > 0,
-        );
-    else if (st === "completed")
-        rems = rems.filter((r) => r.status === "completed");
+    if (cat !== "all") rems = rems.filter((r) => String(r.category) === String(cat));
+
+    
+    
+    if (st === "today") {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    rems = rems.filter((r) => {
+        if (r.reminder_status === "completed") return false;
+        const d = new Date(r.dueDate);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime() === today.getTime();
+    });
+} else if (st === "upcoming") {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    rems = rems.filter((r) => {
+        if (r.reminder_status === "completed") return false;
+        const d = new Date(r.dueDate);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime() > today.getTime();
+    });
+} else if (st === "completed") {
+    rems = rems.filter((r) => r.reminder_status === "completed");
+}
+        
+        
+        
     const [sf, so] = sort.split("-");
     rems.sort((a, b) => {
         let av =
@@ -849,9 +634,11 @@ function loadReminders() {
     const all = getRems();
     const active = all.filter((r) => r.status === "active");
     const displayCount = document.getElementById("rem-display-count");
+    const displayText = document.getElementById("rem-display-text");
 
-    if (displayCount) {
+    if (displayCount && displayText) {
         displayCount.textContent = rems.length;
+        displayText.textContent = rems.length === 1 ? "reminder" : "reminders";
     }
     const countLabel = document.getElementById("rem-count-label");
 
@@ -1226,7 +1013,7 @@ function saveSubcategory() {
     closeSubPopup();
 
     // 🔥 SUCCESS
-    toast("Subcategory added!", "success");
+    toast("Subcategory added", "success");
 }
 
 // ============================================================
@@ -1302,28 +1089,23 @@ function initCalendarV2() {
 }
 
 // ── Build month/year selects
+
 function _buildJumpSelects() {
     const ms = document.getElementById("cal-month-sel");
     const ys = document.getElementById("cal-year-sel");
-
-    // 🔥 IMPORTANT FIX
     if (!ms || !ys) return;
-
     ms.innerHTML = CAL_MONTHS.map(
         (m, i) => `<option value="${i}">${m}</option>`,
     ).join("");
+    const startYear = 2026;
+const currentYear = new Date().getFullYear();
 
-    const curYear = new Date().getFullYear();
+ys.innerHTML = "";
 
-    ys.innerHTML = "";
-
-    for (let y = curYear - 5; y <= curYear + 10; y++) {
-        ys.innerHTML += `
-            <option value="${y}">
-                ${y}
-            </option>
-        `;
-    }
+// Show years from 2016 up to 100 years in the future
+for (let y = startYear; y <= currentYear + 100; y++) {
+    ys.innerHTML += `<option value="${y}">${y}</option>`;
+}
 }
 
 function _syncJumpSelects() {
@@ -1423,7 +1205,7 @@ function _getRems(y, m) {
         return d.getFullYear() === y && d.getMonth() === m;
     });
     if (_calCatFilter !== "all")
-        rems = rems.filter((r) => r.category === _calCatFilter);
+        rems = rems.filter((r) => String(r.category) === String(_calCatFilter));
     return rems;
 }
 
@@ -1431,7 +1213,7 @@ function _getRemsDate(ds) {
     let rems = _getCalRems();
     rems = rems.filter((r) => r.dueDate === ds);
     if (_calCatFilter !== "all")
-        rems = rems.filter((r) => r.category === _calCatFilter);
+        rems = rems.filter((r) => String(r.category) === String(_calCatFilter));
     return rems;
 }
 
@@ -1441,6 +1223,7 @@ function _pad(n) {
 
 // ── Render all
 function _renderAll() {
+    _buildJumpSelects(); 
     _syncJumpSelects();
     document.getElementById("cal-label-v2").textContent =
         `${CAL_MONTHS[_calM]} ${_calY}`;
@@ -1522,7 +1305,8 @@ function _renderGrid() {
         }
 
         // Plus button
-        const addBtn = `<div class="cal-add-btn" onclick="openReminderModal()" title="Add reminder"><i class="ri-add-line"></i></div>`;
+        // const addBtn = `<div class="cal-add-btn" onclick="openReminderModal()" title="Add reminder"><i class="ri-add-line"></i></div>`;
+        const addBtn = `<div class="cal-add-btn" onclick="event.stopPropagation();openReminderModal(null,null,'${ds}')" title="Add reminder"><i class="ri-add-line"></i></div>`;
 
         cell.innerHTML = dayNumHTML + chipsHTML + addBtn;
         grid.appendChild(cell);
@@ -1559,17 +1343,18 @@ function _selectDay(d) {
         `${dayName}, ${d} ${CAL_MONTHS_SHORT[_calM]}`;
     document.getElementById("sel-day-add-btn").style.display = "flex";
 
-    // Get all rems for this day (unfiltered for display)
+    // Get all rems for this day (filtered by category)
     // let rems = typeof getRems === "function" ? getRems() : [];
     let rems = _getCalRems().filter((r) => r.dueDate === ds);
-    rems = rems.filter((r) => r.dueDate === ds);
+    if (_calCatFilter !== "all")
+        rems = rems.filter((r) => String(r.category) === String(_calCatFilter));
 
     const ev = document.getElementById("sel-day-events-v2");
     if (rems.length === 0) {
         ev.innerHTML = `<div style="text-align:center;padding:28px 0">
             <i class="ri-calendar-check-line" style="font-size:1.8rem;color:rgba(124,58,237,.25);display:block;margin-bottom:8px"></i>
             <p style="font-size:.79rem;color:#64748b;margin-bottom:12px">No reminders on this day</p>
-            <button class="btn btn-primary btn-xs" onclick="openReminderModal()" style="padding:7px 14px !important;font-size:.78rem"><i class="ri-add-line"></i> Add Reminder</button>
+            <button class="btn btn-primary btn-xs" onclick="openReminderModal(null,null,'${ds}')" style="...">Add Reminder</button>
         </div>`;
         return;
     }
@@ -1607,9 +1392,9 @@ function _selectDay(d) {
                 </div>
                 ${pill}
             </div>
-            ${r.provider ? `<div style="font-size:.72rem;color:#64748b;margin-top:6px;display:flex;align-items:center;gap:4px"><i class="ri-building-line"></i> ${r.provider}${r.cost ? " · £" + r.cost : ""}</div>` : ""}
+            ${r.provider ? `<div style="font-size:.72rem;color:#64748b;margin-top:6px;display:flex;align-items:center;gap:4px;word-break:break-all;"><i class="ri-building-line"></i> ${r.provider}${r.cost ? " · £" + r.cost : ""}</div>` : ""}
            ${
-               r.reminder_status !== "completed"
+               r.status !== "completed"
                    ? `
 <div style="display:flex;gap:5px;margin-top:8px">
     <button class="btn btn-ghost btn-xs"
@@ -1730,7 +1515,7 @@ function _renderStats() {
     const filtered =
         _calCatFilter === "all"
             ? allRems
-            : allRems.filter((r) => r.category === _calCatFilter);
+            : allRems.filter((r) => String(r.category) === String(_calCatFilter));
 
     // ── Total & Completed (already working)
     const done = filtered.filter((r) => r.status === "completed").length;
@@ -1897,9 +1682,9 @@ function qcSubmit(e) {
         rems.push(newRem);
         saveRems(rems);
         if (typeof toast === "function")
-            toast("Reminder created! 🎉", "success");
+            toast("Reminder created 🎉", "success");
     } else {
-        if (typeof toast === "function") toast("Reminder saved!", "success");
+        if (typeof toast === "function") toast("Reminder saved", "success");
     }
 
     closeQuickCreate();
@@ -1974,7 +1759,7 @@ function useTemplate(id) {
             if (t.freq) document.getElementById("r-freq").value = t.freq;
         }, 80);
     }, 60);
-    toast("Template loaded!", "success");
+    toast("Template loaded", "success");
 }
 
 // ============================================================
@@ -2030,7 +1815,7 @@ function renderCategories() {
                         <i class="${c.icon}" style="color:${c.color}"></i>
                     </div>
                     <div>
-                        <div class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9">
+                        <div class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;word-break:break-all;">
                             ${c.name}
                         </div>
                         <div style="font-size:.72rem;color:#64748b">
@@ -2154,6 +1939,9 @@ function updateCustomSubUI() {
 
     document.getElementById("custom-sub-badge").textContent =
         customCount + " Custom";
+        
+        // 🔥 SORT by latest created (highest id first)
+dbSubs.sort((a, b) => b.id - a.id);
 
     // 🔥 EMPTY
     if (dbSubs.length === 0) {
@@ -2165,7 +1953,7 @@ function updateCustomSubUI() {
                 font-size:.82rem
             ">
                 No custom subcategories yet.
-                Add one above!
+                Add one above.
             </div>
         `;
 
@@ -2194,7 +1982,7 @@ function updateCustomSubUI() {
             ">
 
                 <div style="
-                    width:30px;
+                    min-width:30px;
                     height:30px;
                     border-radius:8px;
                     background:${CATS[cs.parent]?.bg || "rgba(148,163,184,.12)"};
@@ -2215,14 +2003,16 @@ function updateCustomSubUI() {
                    <div style="
     font-size:.85rem;
     font-weight:600;
-    color:#94a3b8
+    color:#94a3b8;
+    word-break:break-all;
 ">
     ${cs.desc || "No Description"}
 </div>
 
                     <div style="
                         font-size:.73rem;
-                        color:#64748b
+                        color:#64748b;
+                        word-break:break-all;
                     ">
                         ${CATS[cs.parent]?.name || cs.parent}
                         -> 
@@ -2262,8 +2052,12 @@ function updateCustomSubUI() {
 function openEditSubModal(cs) {
     document.getElementById("edit-sub-id").value = cs.id;
 
+<<<<<<< HEAD
     
     // ✅ Use TomSelect instance instead of .value
+=======
+   // ✅ Use TomSelect instance instead of .value
+>>>>>>> 14b4245 (full updated code)
     tomEditSubParent.setValue(cs.parent);
 
     document.getElementById("edit-sub-name").value = cs.name;
@@ -2393,9 +2187,10 @@ function expandCat(k) {
                       return `<div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);margin-bottom:6px"><div style="flex:1"><div style="font-size:.87rem;font-weight:600;color:#94a3b8">${r.title}</div><div style="font-size:.75rem;color:#64748b">${r.subcategory}${r.dueDate ? " · " + fmtDate(r.dueDate) : ""}</div></div>${dp}</div>`;
                   })
                   .join("");
-    document.getElementById("detail-content").innerHTML =
-        `<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div class="cat-ico" style="background:${c.bg}"><i class="${c.icon}" style="color:${c.color}"></i></div><div><div class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9">${c.name}</div><div style="font-size:.77rem;color:#64748b">${rems.length} reminder${rems.length !== 1 ? "s" : ""}</div></div></div>${html}<div style="margin-top:14px"></div>`;
-    openModal("detail-modal");
+    document.getElementById("detail-modal-group-header").innerHTML =
+    `<div style="display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><div class="cat-ico" style="background:${c.bg}"><i class="${c.icon}" style="color:${c.color}"></i></div><div><div class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9">${c.name}</div><div style="font-size:.77rem;color:#64748b">${rems.length} reminder${rems.length !== 1 ? "s" : ""}</div></div></div>`;
+document.getElementById("detail-content").innerHTML = html + `<div style="margin-top:14px"></div>`;
+openModal("detail-modal");
 }
 
 // function expandCat(k) {
@@ -2435,6 +2230,33 @@ function expandCat(k) {
 // ============================================================
 // ANALYTICS CHARTS
 // ============================================================
+
+function showNoData(canvasId, show) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const wrapper = canvas.parentElement;
+
+    // Remove existing overlay if any
+    const existing = wrapper.querySelector('.no-data-overlay');
+    if (existing) existing.remove();
+
+    if (show) {
+        canvas.style.opacity = '0';
+        const overlay = document.createElement('div');
+        overlay.className = 'no-data-overlay';
+        overlay.style.cssText = `
+            position:absolute;inset:0;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;gap:8px;
+        `;
+        overlay.innerHTML = `
+            <i class="ri-bar-chart-2-line" style="font-size:2rem;color:#334155"></i>
+            <span style="font-size:.78rem;color:#475569;font-weight:600">No data available</span>
+        `;
+        wrapper.appendChild(overlay);
+    } else {
+        canvas.style.opacity = '1';
+    }
+}
 
 function renderActivityLog() {
     const acts = [
@@ -2533,138 +2355,73 @@ function initCharts() {
     // Activity Chart
     const ac = document.getElementById("act-trend-chart");
 
-    if (ac)
-        charts.act = new Chart(ac, {
-            type: "line",
-            data: {
-                labels: analyticsData.activityLabels,
-                datasets: [
-                    {
-                        label: "Created",
-                        data: analyticsData.createdData,
-                        borderColor: "#7c3aed",
-                        backgroundColor: "rgba(124,58,237,.12)",
-                        fill: true,
-                        tension: 0.4,
-                    },
-                    {
-                        label: "Completed",
-                        data: analyticsData.completedData,
-                        borderColor: "#10b981",
-                        backgroundColor: "rgba(16,185,129,.08)",
-                        fill: true,
-                        tension: 0.4,
-                    },
-                ],
-            },
-            options: baseOpts(),
-        });
-
+   if (ac) {
+    const hasData = analyticsData.createdData.some(v => v > 0) || analyticsData.completedData.some(v => v > 0);
+    showNoData('act-trend-chart', !hasData);
+    if (hasData) charts.act = new Chart(ac, {
+        type: 'line',
+        data: {
+            labels: analyticsData.activityLabels,
+            datasets: [
+                { label: 'Created', data: analyticsData.createdData, borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.12)', fill: true, tension: 0.4 },
+                { label: 'Completed', data: analyticsData.completedData, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.08)', fill: true, tension: 0.4 },
+            ],
+        },
+        options: baseOpts(),
+    });
+}
     // Category Chart
     const cc = document.getElementById("cat-dist-chart");
 
-    if (cc)
-        charts.cat = new Chart(cc, {
-            type: "doughnut",
-            data: {
-                labels: analyticsData.categoryLabels,
-                datasets: [
-                    {
-                        data: analyticsData.categoryTotals,
-                        backgroundColor: [
-                            "#14b8a6",
-                            "#f43f5e",
-                            "#a78bfa",
-                            "#10b981",
-                            "#f59e0b",
-                            "#94a3b8",
-                        ],
-                        borderWidth: 0,
-                    },
-                ],
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        position: "right",
-                        labels: {
-                            color: tc,
-                        },
-                    },
-                },
-                cutout: "65%",
-                maintainAspectRatio: false,
-            },
-        });
+    if (cc) {
+    const hasData = analyticsData.categoryTotals.some(v => v > 0);
+    showNoData('cat-dist-chart', !hasData);
+    if (hasData) charts.cat = new Chart(cc, {
+        type: 'doughnut',
+        data: {
+            labels: analyticsData.categoryLabels,
+            datasets: [{ data: analyticsData.categoryTotals, backgroundColor: ['#14b8a6','#f43f5e','#a78bfa','#10b981','#f59e0b','#94a3b8'], borderWidth: 0 }],
+        },
+        options: { plugins: { legend: { display: false } }, cutout: '65%', maintainAspectRatio: false },
+    });
+}
 
     // Completion Chart
     const cs = document.getElementById("comp-chart");
 
-    if (cs)
-        charts.comp = new Chart(cs, {
-            type: "doughnut",
-            data: {
-                labels: ["Completed", "Pending"],
-                datasets: [
-                    {
-                        data: analyticsData.completionChart,
-                        backgroundColor: ["#10b981", "#f43f5e"],
-                        borderWidth: 0,
-                    },
-                ],
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        position: "bottom",
-                        labels: {
-                            color: tc,
-                        },
-                    },
-                },
-                cutout: "60%",
-                maintainAspectRatio: false,
-            },
-        });
+    if (cs) {
+    const hasData = analyticsData.completionChart.some(v => v > 0);
+    showNoData('comp-chart', !hasData);
+
+    // Show/hide the stats boxes
+    const compStats = document.getElementById('comp-stats');
+    if (compStats) compStats.style.display = hasData ? 'grid' : 'none';
+
+    if (hasData) charts.comp = new Chart(cs, {
+        type: 'doughnut',
+        data: {
+            labels: ['Completed', 'Pending'],
+            datasets: [{ data: analyticsData.completionChart, backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }],
+        },
+        options: { plugins: { legend: { position: 'bottom', labels: { color: tc } } }, cutout: '60%', maintainAspectRatio: false },
+    });
+}
 
     // Monthly Spending
     const sc = document.getElementById("spend-chart");
 
-    if (sc)
-        charts.spend = new Chart(sc, {
-            type: "bar",
-            data: {
-                labels: [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                ],
-                datasets: [
-                    {
-                        label: "£",
-                        data: analyticsData.monthlySpending,
-                        backgroundColor: "rgba(124,58,237,.7)",
-                        borderRadius: 6,
-                    },
-                ],
-            },
-            options: baseOpts({
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
-            }),
-        });
+    if (sc) {
+    const hasData = analyticsData.monthlySpending.some(v => v > 0);
+    showNoData('spend-chart', !hasData);
+    if (hasData) charts.spend = new Chart(sc, {
+        type: 'bar',
+        data: {
+            labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            datasets: [{ label: '£', data: analyticsData.monthlySpending, backgroundColor: 'rgba(124,58,237,.7)', borderRadius: 6 }],
+        },
+        options: baseOpts({ plugins: { legend: { display: false } } }),
+    });
+}
 }
 
 const originalAnalyticsData =
@@ -2672,20 +2429,56 @@ const originalAnalyticsData =
         ? JSON.parse(JSON.stringify(analyticsData))
         : null;
 
+// function setPeriod(btn, days) {
+//     if (typeof analyticsData === "undefined") {
+//         return;
+//     }
+
+//     document
+//         .querySelectorAll(".period-btn")
+//         .forEach((b) => b.classList.remove("active"));
+
+//     btn.classList.add("active");
+
+//     window.location.href = `/user-analytics?days=${days}`;
+// }
+
 function setPeriod(btn, days) {
-    if (typeof analyticsData === "undefined") {
-        return;
-    }
+    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
 
-    document
-        .querySelectorAll(".period-btn")
-        .forEach((b) => b.classList.remove("active"));
+    fetch(`/user-analytics/data?days=${days}`, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(res => res.json())
+    .then(data => {
+        // Update stat cards
+        document.querySelector('#page-analytics .stat-card:nth-child(1) .font-jakarta').textContent = data.totalReminders;
+        document.querySelector('#page-analytics .stat-card:nth-child(2) .font-jakarta').textContent = data.completedReminders;
+        document.querySelector('#page-analytics .stat-card:nth-child(3) .font-jakarta').textContent = data.pendingReminders;
+        document.querySelector('#page-analytics .stat-card:nth-child(4) .font-jakarta').textContent = '£' + data.totalCost;
 
-    btn.classList.add("active");
+        // Update completion count boxes
+        const compBoxes = document.querySelectorAll('#page-analytics .g2 .font-jakarta');
+        // (these are inside the Completion Status card bottom boxes)
+        document.querySelectorAll('[style*="rgba(16,185,129,.1)"] .font-jakarta').forEach(el => el.textContent = data.completedReminders);
+        document.querySelectorAll('[style*="rgba(244,63,94,.1)"] .font-jakarta').forEach(el => el.textContent = data.pendingReminders);
 
-    window.location.href = `/user-analytics?days=${days}`;
+        // Merge into analyticsData and re-render charts
+        analyticsData = {
+            activityLabels:  data.activityLabels,
+            createdData:     data.createdData,
+            completedData:   data.completedData,
+            categoryLabels:  data.categoryLabels,
+            categoryTotals:  data.categoryTotals,
+            completionChart: data.completionChart,
+            monthlySpending: data.monthlySpending,
+        };
+
+        initCharts();
+    })
+    .catch(err => console.error('Analytics fetch error:', err));
 }
-
 // ============================================================
 // HELP
 // ============================================================
@@ -2830,6 +2623,7 @@ function selPri(btn) {
 }
 
 function handleLogout() {
+    mobileClose();
     confirm_act("Are you sure you want to logout?", () => {
         fetch(logoutUrl, {
             method: "POST",
@@ -2878,101 +2672,106 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Modal Open
 
+
 // function openReminderModal() {
-//     const modal = document.getElementById('reminder-modal');
-//     modal.style.display = 'flex';
+//     const modal = document.getElementById("reminder-modal");
+//     modal.style.display = "flex";
 
-//     const catSelect = document.getElementById('r-cat');
+//     const catSelect = document.getElementById("r-cat");
+//     if (catSelect.tomselect) catSelect.tomselect.destroy();
 
-//     // 🔥 destroy old TomSelect
-//     if (catSelect.tomselect) {
-//         catSelect.tomselect.destroy();
-//     }
-
-//     // 🔥 clear options
 //     catSelect.innerHTML = '<option value="">Select category...</option>';
-
-//     // 🔥 populate categories
 //     Object.entries(CATS).forEach(([id, cat]) => {
-//         const option = document.createElement('option');
+//         const option = document.createElement("option");
 //         option.value = id;
 //         option.textContent = cat.name;
 //         catSelect.appendChild(option);
 //     });
 
-//     // 🔥 TomSelect init
-//     const categorySelect = new TomSelect('#r-cat', {
+//     const categorySelect = new TomSelect("#r-cat", {
 //         create: false,
-//         placeholder: 'Search category...',
-//         sortField: { field: 'text', direction: 'asc' }
+//         placeholder: "Search category...",
+//         sortField: { field: "text", direction: "asc" },
 //     });
 
-//     // 🔥 move error div inside ts-wrapper
-//     const wrapper = document.querySelector('#r-cat').parentElement;
-//     if (wrapper && wrapper.classList.contains('ts-wrapper')) {
-//         wrapper.appendChild(document.getElementById('err-rem-category_id'));
+//     const wrapper = document.querySelector("#r-cat").parentElement;
+//     if (wrapper && wrapper.classList.contains("ts-wrapper")) {
+//         wrapper.appendChild(document.getElementById("err-rem-category_id"));
 //     }
 
-//     // 🔥 clear error on change
-//     categorySelect.on('change', function () {
-//         document.getElementById('err-rem-category_id').innerText = '';
+//     categorySelect.on("change", function () {
+//         document.getElementById("err-rem-category_id").innerText = "";
 //         updateSubs();
 //     });
 
-//     // 🔥 reset sub
-//     const sub = document.getElementById('r-sub');
+//     const sub = document.getElementById("r-sub");
 //     sub.innerHTML = '<option value="">Select category first...</option>';
 //     sub.disabled = true;
 
-//     // 🔥 clear all errors
-//     document.querySelectorAll('#reminder-modal .error-text')
-//         .forEach(el => el.innerText = '');
+//     document
+//         .querySelectorAll("#reminder-modal .error-text")
+//         .forEach((el) => (el.innerText = ""));
 
-//     // 🔥 EDIT MODE — populate fields
 //     if (editingId) {
-//         const r = getRems().find(x => String(x.id) === String(editingId));
-//         if (r) {
-//             // update modal title
-//             document.querySelector('#reminder-modal h2').textContent = 'Edit Reminder';
-//             document.getElementById('create-btn-txt').textContent = 'Save Changes';
+//         // ── look in reminders first, then fall back to calendar histories
+//         let r =
+//             typeof getRems === "function"
+//                 ? getRems().find((x) => String(x.id) === String(editingId))
+//                 : null;
 
-//             // set category in TomSelect
+//         if (!r && Array.isArray(window.CALENDAR_HISTORIES)) {
+//             r = window.CALENDAR_HISTORIES.find(
+//                 (x) => String(x.reminder_id) === String(editingId),
+//             );
+//         }
+
+//         if (r) {
+//             document.querySelector("#reminder-modal h2").textContent =
+//                 "Edit Reminder";
+//             document.getElementById("create-btn-txt").textContent =
+//                 "Save Changes";
+
+//             // set category — this also triggers updateSubs() via the 'change' listener
 //             categorySelect.setValue(String(r.category));
 
-//             // populate subcategories then select the right one
-//             updateSubs();
+//             // wait for TomSelect + updateSubs() to finish, then set subcategory
 //             setTimeout(() => {
-//                 document.getElementById('r-sub').value = r.subcategory || '';
-//             }, 100);
+//                 document.getElementById("r-sub").value = r.subcategory || "";
+//             }, 150);
 
-//             // populate other fields
-//             document.getElementById('r-title').value    = r.title || '';
-//             document.getElementById('r-date').value     = r.end_reminder_date || '';
-//             document.getElementById('r-time').value     = r.dueTime || '09:00';
-//             document.getElementById('r-desc').value     = r.description || '';
-//             document.getElementById('desc-len').textContent = (r.description || '').length;
-//             document.getElementById('r-provider').value = r.provider || '';
-//             document.getElementById('r-cost').value     = r.cost || '';
-//             document.getElementById('r-freq').value     = r.frequency || '';
+//             document.getElementById("r-title").value = r.title || "";
+//             document.getElementById("r-date").value = r.end_reminder_date || "";
+//             document.getElementById("r-time").value = r.dueTime || "09:00";
+//             document.getElementById("r-desc").value = r.description || "";
+//             document.getElementById("desc-len").textContent = (
+//                 r.description || ""
+//             ).length;
+//             document.getElementById("r-provider").value = r.provider || "";
+//             document.getElementById("r-cost").value = r.cost || "";
+//             document.getElementById("r-freq").value = r.frequency || "";
 
-//             // show optional fields if they have values
 //             if (r.provider || r.cost || r.frequency) {
-//                 document.getElementById('opt-fields').style.display = 'block';
+//                 document.getElementById("opt-fields").style.display = "block";
 //             }
 //         }
 //     } else {
-//         // 🔥 CREATE MODE
-//         document.querySelector('#reminder-modal h2').textContent = 'Create New Reminder';
-//         document.getElementById('create-btn-txt').textContent = 'Create Reminder';
-//         document.getElementById('rem-form').reset();
-//         document.getElementById('desc-len').textContent = '0';
-//         document.getElementById('opt-fields').style.display = 'none';
+//         document.querySelector("#reminder-modal h2").textContent =
+//             "Create New Reminder";
+//         document.getElementById("create-btn-txt").textContent =
+//             "Create Reminder";
+//         document.getElementById("rem-form").reset();
+//         document.getElementById("desc-len").textContent = "0";
+//         document.getElementById("opt-fields").style.display = "none";
 //     }
 // }
 
-function openReminderModal() {
+function openReminderModal(categoryId = null, categoryName = null, presetDate = null) {
     const modal = document.getElementById("reminder-modal");
     modal.style.display = "flex";
+
+    if (categoryId || presetDate) {
+        editingId = null;
+    }
 
     const catSelect = document.getElementById("r-cat");
     if (catSelect.tomselect) catSelect.tomselect.destroy();
@@ -3010,7 +2809,7 @@ function openReminderModal() {
         .forEach((el) => (el.innerText = ""));
 
     if (editingId) {
-        // ── look in reminders first, then fall back to calendar histories
+        // ── unchanged edit-mode logic ──
         let r =
             typeof getRems === "function"
                 ? getRems().find((x) => String(x.id) === String(editingId))
@@ -3028,10 +2827,8 @@ function openReminderModal() {
             document.getElementById("create-btn-txt").textContent =
                 "Save Changes";
 
-            // set category — this also triggers updateSubs() via the 'change' listener
             categorySelect.setValue(String(r.category));
 
-            // wait for TomSelect + updateSubs() to finish, then set subcategory
             setTimeout(() => {
                 document.getElementById("r-sub").value = r.subcategory || "";
             }, 150);
@@ -3059,6 +2856,15 @@ function openReminderModal() {
         document.getElementById("rem-form").reset();
         document.getElementById("desc-len").textContent = "0";
         document.getElementById("opt-fields").style.display = "none";
+
+        if (categoryId) {
+            categorySelect.setValue(String(categoryId));
+        }
+
+        // NEW: pre-fill date from calendar "+" click
+        if (presetDate) {
+            document.getElementById("r-date").value = presetDate;
+        }
     }
 }
 

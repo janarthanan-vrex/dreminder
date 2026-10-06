@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use App\Models\Reminder;
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
 
 
 
@@ -118,18 +119,31 @@ class UserController extends Controller
         // dd($request->all());
         $user = Auth::user();
 
-        $request->validate([
+       $request->validate([
             'first_name' => 'required|string|max:50',
             'last_name'  => 'required|string|max:50',
             'email'      => 'required|email|unique:users,email,' . $user->id,
+<<<<<<< HEAD
             'phone' => 'required|digits_between:10,15',
+=======
+           'phone'      => [
+            'required',
+            'digits_between:10,15',
+            Rule::unique('users', 'phone')->ignore($user->id)
+        ],
+>>>>>>> 14b4245 (full updated code)
             'address1' => 'required|string|max:100',
             'address2' => 'nullable|string|max:100',
             'postcode' => [
                 'required',
-                'regex:/^(GIR 0AA|[A-Z]{1,2}\d{1,2}[A-Z]?\s?\d[A-Z]{2})$/i'
+                'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2}$/i'
             ],
             'profile'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ],
+        [
+            'phone.required'       => 'Your phone number is required.',
+        'phone.digits_between' => 'The phone number must be between 10 and 15 digits long.',
+        'phone.unique'         => 'This phone number is already registered to another account.',
         ]);
 
         // ========================
@@ -157,8 +171,8 @@ class UserController extends Controller
         // ========================
         // UPDATE USER DATA
         // ========================
-        $user->first_name = $request->first_name;
-        $user->last_name  = $request->last_name;
+         $user->first_name = ucfirst($request->first_name);
+        $user->last_name  = ucfirst($request->last_name);
         $user->email      = $request->email;
         $user->phone      = $request->phone;
         $user->postcode   = $request->postcode;
@@ -245,7 +259,7 @@ class UserController extends Controller
             $orderId   = str_pad((string) $invoice->id, 5, '0', STR_PAD_LEFT);
             $planName  = ($invoice->plan && $invoice->plan->plan_name) ? $invoice->plan->plan_name : 'N/A';
             $status    = $invoice->payment_id ? 'completed' : 'pending';
-            $type      = $invoice->type ? $invoice->type : 'N/A';
+            $type      = $type = $invoice->payment->payment_mode ?? 'N/A';
 
             return [
                 'id'        => $invoice->id,
@@ -273,6 +287,7 @@ class UserController extends Controller
     {
         $user = Auth::user();
         $categories = Category::with([
+<<<<<<< HEAD
             'subcategories' => function ($query) use ($user) {
                 $query->where('status', 'Active')
                     ->where(function ($q) use ($user) {
@@ -287,6 +302,23 @@ class UserController extends Controller
             ->where('status', 'Active')
             ->get();
 
+=======
+        'subcategories' => function ($query) use ($user) {
+            $query->where('status', 'Active')
+                ->where(function ($q) use ($user) {
+                    $q->where('role', 'admin')
+                        ->orWhere(function ($subQ) use ($user) {
+                            $subQ->where('role', 'user')
+                                ->where('created_by', $user->id);
+                        });
+                })
+                ->latest(); // Order subcategories by created_at DESC
+        }
+    ])
+    ->where('status', 'Active')
+    ->get();
+    
+>>>>>>> 14b4245 (full updated code)
         // 🔥 REMINDERS
         $reminders = Reminder::with([
             'category',
@@ -343,13 +375,15 @@ class UserController extends Controller
     public function storeSubCategory(Request $request)
     {
         $user = Auth::user();
-
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-
             'name' => 'required|string|min:3|max:50',
-
             'description' => 'nullable|string|max:100',
+        ],
+        [
+            'category_id.required' => 'Category field is required',
+            'name.required' => 'Subcategory field is required',
+            'name.min' => 'Subcategory must be at least 3 characters'
         ]);
 
         // 🔥 CHECK DUPLICATE
@@ -441,28 +475,35 @@ class UserController extends Controller
     $userId = auth()->id();
 
     // ── Full CATS with subs — KEY = integer ID (not slug)
-    $fullCats = \App\Models\Category::where('status', 'active')
-        ->with(['subcategories' => function ($q) {
-            $q->where('status', 'active');
-        }])
-        ->get()
-        ->mapWithKeys(function ($cat) {
-            return [
-                $cat->id => [                          // ✅ integer ID as key
-                    'name'  => $cat->name,
-                    'color' => $cat->color ?? '#94a3b8',
-                    'icon'  => $cat->icon  ?? 'ri-alarm-line',
-                    'bg'    => 'rgba(148,163,184,.15)',
-                    'subs'  => $cat->subcategories->map(fn($sub) => [
-                        'id'          => $sub->id,
-                        'name'        => $sub->name,
-                        'role'        => $sub->role,
-                        'description' => $sub->description,
-                        'created_by'  => $sub->created_by,
-                    ])->toArray(),
-                ]
-            ];
-        });
+     $fullCats = \App\Models\Category::where('status', 'active')
+    ->with(['subcategories' => function ($q) use ($userId) {
+        $q->where('status', 'active')
+          ->where(function ($query) use ($userId) {
+              $query->where('role', 'admin')
+                    ->orWhere(function ($subQuery) use ($userId) {
+                        $subQuery->where('role', 'user')
+                                 ->where('created_by', $userId);
+                    });
+          });
+    }])
+    ->get()
+    ->mapWithKeys(function ($cat) {
+        return [
+            $cat->id => [
+                'name'  => $cat->name,
+                'color' => $cat->color ?? '#94a3b8',
+                'icon'  => $cat->icon ?? 'ri-alarm-line',
+                'bg'    => 'rgba(148,163,184,.15)',
+                'subs'  => $cat->subcategories->map(fn($sub) => [
+                    'id'          => $sub->id,
+                    'name'        => $sub->name,
+                    'role'        => $sub->role,
+                    'description' => $sub->description,
+                    'created_by'  => $sub->created_by,
+                ])->toArray(),
+            ]
+        ];
+    });
 
     // ── Slim CAL_CATS for chip colours — KEY = integer ID (not slug)
     $categories = $fullCats->map(fn($c) => collect($c)->except('subs'));
@@ -503,7 +544,11 @@ class UserController extends Controller
     return view('user.calendar', compact('histories', 'categories', 'fullCats'));
 }
 
+<<<<<<< HEAD
  public function logout(Request $request)
+=======
+public function logout(Request $request)
+>>>>>>> 14b4245 (full updated code)
     {
         
         Auth::logout();

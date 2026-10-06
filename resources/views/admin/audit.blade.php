@@ -83,7 +83,11 @@
 .audit-search-wrap input:focus {
     border-color: var(--primary, #6366f1);
     box-shadow: 0 0 0 3px rgba(99,102,241,0.10);
+<<<<<<< HEAD
     background: var(--card-bg, #fff);
+=======
+    /*background: var(--card-bg, #fff);*/
+>>>>>>> 14b4245 (full updated code)
 }
 .audit-select {
     padding: 8px 32px 8px 12px;
@@ -497,7 +501,11 @@
 .audit-modal-title {
     font-size: 1rem;
     font-weight: 800;
+<<<<<<< HEAD
     color: var(--text);
+=======
+    color: #363636;
+>>>>>>> 14b4245 (full updated code)
     margin: 0 0 2px;
 }
 .audit-modal-subtitle {
@@ -563,7 +571,11 @@
 .audit-changes-section h4 {
     font-size: 0.80rem;
     font-weight: 700;
+<<<<<<< HEAD
     color: var(--text);
+=======
+    color: #363636;
+>>>>>>> 14b4245 (full updated code)
     margin: 0 0 12px;
     display: flex;
     align-items: center;
@@ -606,7 +618,11 @@
 }
 .change-field {
     font-weight: 700;
+<<<<<<< HEAD
     color: var(--text);
+=======
+    color: #363636;
+>>>>>>> 14b4245 (full updated code)
     font-size: 0.78rem;
 }
 .change-old {
@@ -760,11 +776,17 @@
             </select>
             <select class="audit-select" id="auditUserFilter" onchange="handleAuditSearch()">
                 <option value="">All Users</option>
+<<<<<<< HEAD
                 <option value="Vijay">Vijay</option>
                 <option value="Swetha">Swetha</option>
                 <option value="Arjun">Arjun</option>
                 <option value="Priya">Priya</option>
                 <option value="System">System</option>
+=======
+                @foreach($admins as $admin)
+                <option value="{{$admin->name}}">{{$admin->name}}</option>
+                @endforeach
+>>>>>>> 14b4245 (full updated code)
             </select>
             <select class="audit-select" id="auditDateFilter" onchange="handleAuditSearch()">
                 <option value="">All Time</option>
@@ -868,7 +890,11 @@
 
             <!-- Changes Section -->
             <div class="audit-changes-section">
+<<<<<<< HEAD
                 <h4><i class="ri-git-diff-line" style="color:var(--primary,#6366f1)"></i> Field Changes</h4>
+=======
+                <h4><i class="ri-git-diff-line" style="color:#363636"></i> Field Changes</h4>
+>>>>>>> 14b4245 (full updated code)
                 <table class="audit-changes-table">
                     <thead>
                         <tr>

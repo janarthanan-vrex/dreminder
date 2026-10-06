@@ -46,22 +46,22 @@
         <i class="ri-lock-unlock-line text-3xl text-white"></i>
       </div>
       <h1 class="text-2xl font-black tracking-tight text-white mb-1">Forgot Password?</h1>
-      <p class="text-sm text-white/35">No worries, we'll send you reset instructions</p>
+      <p class="text-sm text-white/80">No worries, we'll send you reset instructions</p>
     </div>
 
     <form class="flex flex-col gap-4" onsubmit="return false;">
       <div>
-        <label class="auth-label">Email Address</label>
+        <label class="auth-label">Email Address <span class="text-red-400">*</span></label>
         <div class="auth-input-icon">
           <i class="ri-mail-line auth-icon"></i>
           <input type="email" id="forgotEmail" placeholder="Enter your registered email" class="auth-input" autocomplete="email" required>
         </div>
         <div class="form-err-dark" id="emailErr">Please enter a valid email address.</div>
         @if(session('error'))
-    <div class="field-error" id="sessionError" style="display:block;">
-        {{ session('error') }}
-    </div>
-@endif
+          <div class="field-error" id="sessionError" style="display:block;">
+              {{ session('error') }}
+          </div>
+        @endif
       </div>
 
       <button type="button" class="auth-submit-dark" id="resetBtn">
@@ -76,21 +76,22 @@
           <i class="ri-check-line text-emerald-400"></i>
         </div>
         <div>
-          <h4 class="font-bold text-sm text-white mb-1">Email Sent!</h4>
-   <p class="text-xs text-white/35">
-  Check your inbox for password reset instructions.
-  Didn't receive it?
-  <a href="{{ route('forgotpassword.page') }}" id="resendBtn"
-     class="btn text-emerald-400 font-semibold hover:text-emerald-300">
-     Resend
-  </a>
-</p>
+          <h4 class="font-bold text-sm text-white mb-1">Email Sent</h4>
+          <p class="text-xs text-white/35">
+            Check your inbox for password reset instructions.
+            Didn't receive it?
+            <button id="resendBtn"
+                    class="text-emerald-400 font-semibold hover:text-emerald-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+              Resend (60s)
+            </button>
+          </p>
         </div>
       </div>
     </div>
 
     <div class="mt-6 text-center">
-      <a href="login" class="inline-flex items-center gap-2 text-sm text-white/40 hover:text-purple-400 transition">
+      <a href="login" class="inline-flex items-center gap-2 text-sm text-white/60 hover:text-purple-400 transition">
         <i class="ri-arrow-left-line"></i> Back to Login
       </a>
     </div>
@@ -103,9 +104,54 @@
 <script>
 
 /* =========================
-   RESET PASSWORD (API CALL)
+   RESEND TIMER HELPER
 ========================= */
+let resendInterval = null;
 
+function startResendTimer(seconds = 60) {
+  const resendBtn = document.getElementById('resendBtn');
+  if (!resendBtn) return;
+
+  let timeLeft = seconds;
+  resendBtn.disabled = true;
+  resendBtn.innerHTML = `Resend (${timeLeft}s)`;
+
+  clearInterval(resendInterval);
+
+  resendInterval = setInterval(() => {
+    timeLeft--;
+    resendBtn.innerHTML = `Resend (${timeLeft}s)`;
+
+    if (timeLeft <= 0) {
+      clearInterval(resendInterval);
+      resendBtn.disabled = false;
+      resendBtn.innerHTML = 'Resend';
+    }
+  }, 1000);
+}
+
+
+/* =========================
+   SEND RESET LINK API CALL
+========================= */
+async function sendResetLink(email) {
+  const res = await fetch("{{ route('storeToken.forgotpassword') }}", {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+    },
+    body: JSON.stringify({ email: email })
+  });
+
+  return await res.json();
+}
+
+
+/* =========================
+   RESET BUTTON — FIRST SEND
+========================= */
 document.getElementById('resetBtn')?.addEventListener('click', async function () {
 
   const email = document.getElementById('forgotEmail').value;
@@ -113,7 +159,6 @@ document.getElementById('resetBtn')?.addEventListener('click', async function ()
 
   emailErr.classList.remove('show');
 
-  // Frontend validation
   if (!email || !email.includes('@')) {
     emailErr.innerText = "Please enter a valid email address.";
     emailErr.classList.add('show');
@@ -124,34 +169,24 @@ document.getElementById('resetBtn')?.addEventListener('click', async function ()
   this.disabled = true;
 
   try {
+    const data = await sendResetLink(email);
 
-    const res = await fetch("{{ route('storeToken.forgotpassword') }}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({ email: email })
-    });
-
-    const data = await res.json();
-
-    // ❌ Backend error
     if (!data.status) {
       emailErr.innerText = data.message;
       emailErr.classList.add('show');
-
       this.innerHTML = '<i class="ri-mail-send-line mr-2"></i>Send Reset Link';
       this.disabled = false;
       return;
     }
 
-    // ✅ SUCCESS
+    // ✅ Success — show success block and start timer
+    document.getElementById('forgotEmail').readOnly = true;
     this.classList.add('hidden');
     document.getElementById('successMsg').classList.remove('hidden');
+    startResendTimer(60);
 
   } catch (err) {
-    console.log(err);
+    console.error(err);
     this.innerHTML = '<i class="ri-mail-send-line mr-2"></i>Send Reset Link';
     this.disabled = false;
   }
@@ -167,62 +202,57 @@ document.getElementById('resendBtn')?.addEventListener('click', async function (
   const emailErr = document.getElementById('emailErr');
 
   if (!email || !email.includes('@')) {
-    emailErr.innerText = "Enter valid email to resend.";
+    emailErr.innerText = "Enter a valid email to resend.";
     emailErr.classList.add('show');
     return;
   }
 
   this.innerHTML = '<i class="ri-loader-4-line ri-spin"></i>';
+  this.disabled = true;
 
   try {
+    await sendResetLink(email);
 
-    await fetch("{{ route('storeToken.forgotpassword') }}", {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-      },
-      body: JSON.stringify({ email: email })
-    });
-
-    this.innerHTML = 'Sent!';
-    setTimeout(() => {
-      this.innerHTML = 'Resend';
-    }, 2000);
+    // Restart the 60s timer after resend
+    startResendTimer(60);
 
   } catch (err) {
-    console.log(err);
+    console.error(err);
+    this.disabled = false;
     this.innerHTML = 'Resend';
   }
 });
 
 
 /* =========================
-   HIDE ERROR ON INPUT (SAFE)
+   HIDE ERROR ON INPUT
 ========================= */
 document.getElementById('forgotEmail')?.addEventListener('input', function () {
   document.getElementById('emailErr')?.classList.remove('show');
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-
-  const input = document.getElementById('forgotEmail');
   const sessionError = document.getElementById('sessionError');
-
-  if (!input) return;
-
-  input.addEventListener('input', function () {
-
-    // Hide session error when user types
-    if (sessionError) {
-      sessionError.style.display = 'none';
-      sessionError.innerText = '';
-    }
-
-  });
-
+  if (sessionError) {
+    sessionError.style.display = 'none';
+    sessionError.innerText = '';
+  }
 });
+
+
+/* =========================
+   SHOW ERROR FROM URL PARAMS
+========================= */
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const error = params.get('error');
+
+  if (error) {
+    const emailErr = document.getElementById('emailErr');
+    if (emailErr) {
+      emailErr.innerText = decodeURIComponent(error);
+      emailErr.classList.add('show');
+    }
+  }
+})();
 
 
 /* =========================
@@ -276,23 +306,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     requestAnimationFrame(anim);
   })();
-})();
-</script>
-
-<script>
-// Show error message from URL
-(function () {
-  const params = new URLSearchParams(window.location.search);
-  const error = params.get('error');
-
-  if (error) {
-    const emailErr = document.getElementById('emailErr');
-
-    if (emailErr) {
-      emailErr.innerText = decodeURIComponent(error);
-      emailErr.classList.add('show');
-    }
-  }
 })();
 </script>
 

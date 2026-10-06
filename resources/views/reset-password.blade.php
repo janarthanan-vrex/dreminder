@@ -44,7 +44,16 @@
       <input type="hidden" name="email" value="{{ request()->email }}">
       <input type="hidden" name="token" value="{{ request()->token }}">
       <div>
-        <label class="auth-label">New Password</label>
+        <label class="auth-label flex items-center gap-1.5">
+  New Password <span class="text-red-400">*</span>
+  <span class="relative inline-flex items-center group">
+    <i class="ri-information-line text-white/40 hover:text-white/70 cursor-help text-sm transition"></i>
+    <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 p-2.5 rounded-lg bg-[#1a1a2e] border border-white/10 text-xs text-white/70 leading-relaxed shadow-xl z-20">
+      Must be at least 8 characters and include an uppercase letter, a number, and a special character.
+      <span class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-[#1a1a2e] border-r border-b border-white/10 rotate-45 -mt-1"></span>
+    </span>
+  </span>
+</label>
         <div class="auth-input-icon" style="position:relative">
           <i class="ri-lock-line auth-icon"></i>
           <input type="password" id="newPwd" name="new_password" placeholder="Enter new password" class="auth-input" required>
@@ -67,7 +76,7 @@
       </div>
 
       <div>
-        <label class="auth-label">Confirm Password</label>
+        <label class="auth-label">Confirm Password <span class="text-red-400">*</span></label>
         <div class="auth-input-icon" style="position:relative">
           <i class="ri-lock-line auth-icon"></i>
           <input type="password" id="confirmPwd" name="new_password_confirmation" placeholder="Confirm new password" class="auth-input" required>
@@ -94,6 +103,15 @@
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
 <script>
+  document.getElementById('newPwd').addEventListener('input', function () {
+    document.getElementById('pwdErr').classList.remove('show');
+    document.getElementById('confirmErr').classList.remove('show');
+});
+
+document.getElementById('confirmPwd').addEventListener('input', function () {
+    document.getElementById('confirmErr').classList.remove('show');
+});
+
   // Toggle password visibility
   document.getElementById('togglePwd1')?.addEventListener('click', function() {
     const inp = document.getElementById('newPwd');
@@ -202,19 +220,19 @@
     pwdErr.classList.remove('show');
     confirmErr.classList.remove('show');
 
-    if (newPwd.length < 8) {
-      pwdErr.innerText = "Password must be at least 8 characters";
-      pwdErr.classList.add('show');
-      isValid = false;
-    }
+    // if (newPwd.length < 8) {
+    //   pwdErr.innerText = "Password must be at least 8 characters";
+    //   pwdErr.classList.add('show');
+    //   isValid = false;
+    // }
 
-    if (newPwd !== confirmPwd) {
-      confirmErr.innerText = "Passwords do not match";
-      confirmErr.classList.add('show');
-      isValid = false;
-    }
+    // if (newPwd !== confirmPwd) {
+    //   confirmErr.innerText = "Passwords do not match";
+    //   confirmErr.classList.add('show');
+    //   isValid = false;
+    // }
 
-    if (!isValid) return;
+    // if (!isValid) return;
 
     btn.innerHTML = '<i class="ri-loader-4-line ri-spin mr-2"></i>Resetting...';
     btn.disabled = true;
@@ -241,16 +259,28 @@
       if (!data.status) {
 
         if (data.errors) {
-          if (data.errors.new_password) {
-            pwdErr.innerText = data.errors.new_password[0];
-            pwdErr.classList.add('show');
-          }
 
-          if (data.errors.new_password_confirmation) {
-            confirmErr.innerText = data.errors.new_password_confirmation[0];
-            confirmErr.classList.add('show');
-          }
-        } else {
+    if (data.errors.new_password) {
+        pwdErr.innerText = data.errors.new_password[0];
+        pwdErr.classList.add('show');
+    }
+
+    if (data.errors.new_password_confirmation) {
+        confirmErr.innerText = data.errors.new_password_confirmation[0];
+        confirmErr.classList.add('show');
+    }
+
+    if (data.errors.email) {
+        alert(data.errors.email[0]);
+    }
+
+    if (data.errors.token) {
+        alert(data.errors.token[0]);
+    }
+}
+        
+        
+        else {
           const msg = encodeURIComponent(data.message || "Session expired. Please try again.");
 
           window.location.href = "{{ route('forgotpassword.page') }}?error=" + msg;
@@ -262,7 +292,7 @@
       }
 
       // ✅ SUCCESS (same flow as before)
-      btn.innerHTML = '<i class="ri-check-line mr-2"></i>Password Reset!';
+      btn.innerHTML = '<i class="ri-check-line mr-2"></i>Password Reset';
       btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
 
       setTimeout(() => {

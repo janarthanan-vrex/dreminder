@@ -147,7 +147,11 @@
                     {{ $admin->name }}
                 </div>
                 <div class="sb-user-role">
+<<<<<<< HEAD
                     System Administrator
+=======
+                     {{$admin->roles?->rolename ?? ''}}
+>>>>>>> 14b4245 (full updated code)
                 </div>
             </div>
         </a>
@@ -172,20 +176,33 @@
     document.addEventListener('DOMContentLoaded', setActiveNav);
 </script>
 <script>
+<<<<<<< HEAD
     document.addEventListener('DOMContentLoaded', function() {
 
         const navItems = document.querySelectorAll('.nav-item');
         const container = document.querySelector('.sb-nav');
 
         const currentPage = window.location.pathname.split('/').pop();
+=======
+    document.addEventListener('DOMContentLoaded', function () {
+
+    const navItems = document.querySelectorAll('.nav-item');
+    const container = document.querySelector('.sb-nav');
+    const currentPath = window.location.pathname;
+>>>>>>> 14b4245 (full updated code)
 
         let activeItem = null;
 
+<<<<<<< HEAD
         navItems.forEach(item => {
             item.classList.remove('active');
+=======
+    navItems.forEach(item => {
+>>>>>>> 14b4245 (full updated code)
 
             const href = item.getAttribute('href');
 
+<<<<<<< HEAD
             if (href && currentPage.includes(href)) {
                 item.classList.add('active');
                 activeItem = item;
@@ -217,4 +234,45 @@
         }
 
     });
+=======
+        if (!href || href === '#') return;
+
+        const itemPath = new URL(href, window.location.origin).pathname;
+
+        item.classList.remove('active');
+
+        if (currentPath === itemPath) {
+            item.classList.add('active');
+            activeItem = item;
+        }
+
+        // Click scroll
+        item.addEventListener('click', function () {
+            setTimeout(() => centerItem(this), 100);
+        });
+    });
+
+    // Initial load scroll
+    if (activeItem) {
+        setTimeout(() => centerItem(activeItem), 100);
+    }
+
+    function centerItem(el) {
+
+        const containerHeight = container.clientHeight;
+
+        const itemTop = el.offsetTop;
+        const itemHeight = el.offsetHeight;
+
+        const scrollPosition =
+            itemTop - (containerHeight / 2) + (itemHeight / 2);
+
+        container.scrollTo({
+            top: scrollPosition,
+            behavior: 'smooth'
+        });
+    }
+
+});
+>>>>>>> 14b4245 (full updated code)
 </script>

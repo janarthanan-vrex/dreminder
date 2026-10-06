@@ -21,6 +21,8 @@
   </script>
 
 <section class="page-hero-dark section-alt relative" data-particles="purple" data-p-count="40" data-p-connect="false">
+     <div class="hero-bg-image terms-bnr"></div>
+     <div class="hero-overlay"></div>
   <div class="gradient-blob w-[460px] h-[460px] bg-primary top-[-18%] left-[15%]"></div>
   <div class="max-w-[840px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb">
@@ -29,12 +31,28 @@
     <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 w-fit reveal">
       <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Terms &amp; Conditions
     </div>
+<<<<<<< HEAD
     <h1 class="reveal"> {{ $terms->title }}</span></h1>
+=======
+    <h1 class="reveal"> {{ $terms->title }}</h1>
+>>>>>>> 14b4245 (full updated code)
     <p class="reveal" data-delay="1">
-      We take privacy and security seriously. Review the key policies that govern how DRemind works.
+      We take privacy and security seriously. Review the key policies that govern how D-Remind works.
     </p>
   </div>
 </section>
+
+<style>
+    .legal-tab-dark,
+    .legal-tab-dark * {
+        font-family: 'Inter', sans-serif !important;
+    }
+    .legal-tab-dark p,
+    .legal-tab-dark div,
+    .legal-tab-dark span {
+        text-align: justify !important;
+    }
+</style>
 
 <section class="relative py-16 md:py-20 section-dark overflow-hidden">
     <div class="max-w-100 mx-auto px-6 lg:px-40">

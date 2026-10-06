@@ -35,6 +35,7 @@ class AdminController extends Controller
 
     public function adminLogin(Request $request)
     {
+<<<<<<< HEAD
         // ── Validation ───────────────────────────────────────────────────────
         $validator = \Validator::make($request->all(), [
             'name'     => 'required|string',
@@ -85,12 +86,97 @@ class AdminController extends Controller
         // ── Audit Log ────────────────────────────────────────────────────────
         \App\Models\AuditLog::create([
             'event'           => 'Login',
+=======
+    // ── Validation ───────────────────────────────────────────────────────
+    $validator = \Validator::make($request->all(), [
+        'name'     => 'required|string',
+        'password' => 'required|min:8',
+    ], [
+        'name.required'     => 'Name is required.',
+        'password.required' => 'Password is required.',
+        'password.min'      => 'Password must be at least 8 characters.',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'errors'  => $validator->errors(),
+        ], 422);
+    }
+
+    // ── Check name exists ────────────────────────────────────────────────
+    $admin = \App\Models\Admin::where('name', $request->name)->first();
+
+    if (!$admin) {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['name' => ['No account found with this name.']],
+        ], 401);
+    }
+
+    // ── Check password ───────────────────────────────────────────────────
+    if (!\Hash::check($request->password, $admin->password)) {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['password' => ['The password you entered is incorrect.']],
+        ], 401);
+    }
+
+    // ── Check status ─────────────────────────────────────────────────────
+    if ($admin->status !== 'active') {
+        return response()->json([
+            'success' => false,
+            'errors'  => ['name' => ['Your account has been deactivated. Contact support.']],
+        ], 403);
+    }
+
+    // ── All good → login ─────────────────────────────────────────────────
+    Auth::guard('admin')->login($admin, $request->boolean('remember_me'));
+    $request->session()->regenerate();
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    \App\Models\AuditLog::create([
+        'event'           => 'Login',
+        'module'          => 'Auth',
+        'module_icon'     => 'ri-shield-check-line',
+        'admin_id'        => $admin->id,
+        'admin_name'      => $admin->name,
+        'admin_role'      => optional($admin->roles)->rolename ?? 'Admin',
+        'admin_initials'  => strtoupper(substr($admin->name, 0, 2)),
+        'admin_color'     => '#2563eb',
+        'admin_bg'        => '#dbeafe',
+        'ip_address'      => $request->ip(),
+        'changes_summary' => 'Authenticated',
+        'changes_detail'  => json_encode([
+            ['field' => 'Name',       'old' => null, 'new' => $admin->name],
+            ['field' => 'Role',       'old' => null, 'new' => optional($admin->roles)->rolename ?? 'Admin'],
+            ['field' => 'IP Address', 'old' => null, 'new' => $request->ip()],
+            ['field' => 'Device',     'old' => null, 'new' => $request->header('User-Agent') ?? '—'],
+        ]),
+    ]);
+
+    return response()->json([
+        'success'  => true,
+        'redirect' => route('admin.dashboard'),
+    ]);
+}
+
+
+     public function adminLogout(Request $request)
+    {
+    $admin = Auth::guard('admin')->user();
+    // ── Audit Log BEFORE session is destroyed ────────────────────────────
+    if ($admin) {
+        \App\Models\AuditLog::create([
+            'event'           => 'Logout',
+>>>>>>> 14b4245 (full updated code)
             'module'          => 'Auth',
             'module_icon'     => 'ri-shield-check-line',
             'admin_id'        => $admin->id,
             'admin_name'      => $admin->name,
             'admin_role'      => optional($admin->roles)->rolename ?? 'Admin',
             'admin_initials'  => strtoupper(substr($admin->name, 0, 2)),
+<<<<<<< HEAD
             'admin_color'     => '#2563eb',
             'admin_bg'        => '#dbeafe',
             'ip_address'      => $request->ip(),
@@ -141,6 +227,28 @@ class AdminController extends Controller
 
         return redirect()->route('admin.login');
     }
+=======
+            'admin_color'     => '#6b7280',
+            'admin_bg'        => '#f3f4f6',
+            'ip_address'      => $request->ip(),
+            'changes_summary' => 'Session Ended',
+            'changes_detail'  => json_encode([
+                ['field' => 'Name',       'old' => $admin->name,                                'new' => null],
+                ['field' => 'Role',       'old' => optional($admin->roles)->rolename ?? 'Admin', 'new' => null],
+                ['field' => 'IP Address', 'old' => $request->ip(),                              'new' => null],
+            ]),
+        ]);
+    }
+
+    // ── Logout AFTER log is saved ─────────────────────────────────────────
+    Auth::guard('admin')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('admin.login');
+}
+
+>>>>>>> 14b4245 (full updated code)
 
     public function adminDashboard(Request $request)
     {
@@ -155,10 +263,14 @@ class AdminController extends Controller
 
     public function storeForgotPassword(Request $request)
     {
+<<<<<<< HEAD
 
         $emailNotification = Setting::where('group', 'notification')
             ->where('key', 'email_notifications')
             ->value('value');
+=======
+         
+>>>>>>> 14b4245 (full updated code)
         try {
             // ── Validate ─────────────────────────────────────────────────────
             $validator = \Validator::make($request->all(), [
@@ -206,7 +318,11 @@ class AdminController extends Controller
             );
 
             // ── Send mail ─────────────────────────────────────────────────────
+<<<<<<< HEAD
             if ($emailNotification == 1) {
+=======
+           
+>>>>>>> 14b4245 (full updated code)
                 \Mail::send('emails.admin_reset_link', [
                     'admin' => $admin,
                     'token' => $token,
@@ -215,7 +331,11 @@ class AdminController extends Controller
                     $message->to($request->email);
                     $message->subject('Admin Password Reset Link');
                 });
+<<<<<<< HEAD
             }
+=======
+             
+>>>>>>> 14b4245 (full updated code)
 
             return response()->json([
                 'status'  => true,
@@ -282,11 +402,21 @@ class AdminController extends Controller
                 'confirmed',
                 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/'
             ],
+<<<<<<< HEAD
+=======
+            'new_password_confirmation' => [
+                'required'
+            ]
+>>>>>>> 14b4245 (full updated code)
         ], [
             'new_password.required' => 'New password is required',
             'new_password.min' => 'Password must be at least 8 characters',
             'new_password.confirmed' => 'Passwords do not match',
             'new_password.regex' => 'Password must contain uppercase, lowercase, number and special character',
+<<<<<<< HEAD
+=======
+            'new_password_confirmation.required' => 'Confirm password is required',
+>>>>>>> 14b4245 (full updated code)
         ]);
 
         if ($validator->fails()) {
@@ -574,4 +704,7 @@ class AdminController extends Controller
         ]);
     }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14b4245 (full updated code)

@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.winngoodreminder",
+      "sha256_cert_fingerprints": [
+ "AC:4C:4F:6E:BA:0C:19:D9:99:D2:2D:00:75:E6:C3:E4:A7:75:69:DA:3D:CE:44:24:22:C3:99:69:8D:99:51:6C"
+      ]
+    }
+  }
+]

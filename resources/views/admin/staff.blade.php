@@ -95,6 +95,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th>S.No</th>
                         <th>Staff Member</th>
                         <th class="hide-mobile">Role</th>
                         <th class="hide-mobile">Permissions</th>

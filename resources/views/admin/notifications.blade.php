@@ -2,7 +2,12 @@
 @section('content')
 
 <!-- ═══ NOTIFICATIONS ═══ -->
+<<<<<<< HEAD
  @if(!auth('admin')->user()->hasPermission('Notifications','notifications.action'))
+=======
+
+@if(!auth('admin')->user()->hasPermission('Notifications','notifications.action'))
+>>>>>>> 14b4245 (full updated code)
 <style>
 .action-btn {
     display: none !important;
@@ -42,7 +47,11 @@
         <button class="tab-btn hidden" onclick="swTab('notif','broadcast',this)">Broadcast</button>
     </div>
    <div id="notif-actions" style="display:flex;justify-content:flex-end;gap:8px;margin:12px 0">
+<<<<<<< HEAD
       @if(auth('admin')->user()->hasPermission('Notifications', 'notifications.action'))
+=======
+        @if(auth('admin')->user()->hasPermission('Notifications', 'notifications.action'))
+>>>>>>> 14b4245 (full updated code)
     <button class="btn btn-success btn-sm" onclick="markAllNotificationsRead()">
         <i class="ri-check-double-line"></i> Mark All Read
     </button>

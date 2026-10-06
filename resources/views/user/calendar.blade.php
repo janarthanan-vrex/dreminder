@@ -243,8 +243,13 @@
     .month-ev-item:hover {
         border-color: rgba(124, 58, 237, .3);
         background: rgba(124, 58, 237, .06);
-        transform: translateX(3px);
+        /*transform: translateX(3px);*/
+    }@media (hover: hover) and (pointer: fine) {
+    .month-ev-item:hover {
+        border-color: rgba(124, 58, 237, .3);
+        background: rgba(124, 58, 237, .06);
     }
+}
 
     /* Category legend */
     .cat-legend-item {
@@ -431,6 +436,60 @@
             display: block !important;
         }
     }
+    /* ── Stat cards: prevent number overflow ── */
+.cal-stat {
+    min-width: 64px;
+}
+
+.cal-stat-num {
+    font-size: clamp(0.95rem, 4vw, 1.3rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+@media (max-width: 640px) {
+    #cal-stats-row {
+        flex-wrap: wrap;
+    }
+
+    .cal-stat {
+        flex: 1 1 calc(33.333% - 10px);
+        min-width: 80px;
+        padding: 8px 10px;
+    }
+
+    .cal-stat-num {
+        font-size: 1.05rem;
+    }
+
+    .cal-stat-lbl {
+        font-size: .62rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .cal-stat {
+        flex: 1 1 calc(50% - 10px);
+    }
+}
+@media (max-width: 640px) {
+    #month-events-v2 .month-ev-item > div[style*="flex:1"] > div:first-child {
+        white-space: normal !important;
+        word-break: break-all !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+}
+@media (max-width: 640px) {
+    .day-ev-card > div[style*="align-items:flex-start"] > div[style*="flex:1"] > div:first-child {
+        white-space: normal !important;
+        word-break: break-all !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+}
 </style>
 
 <section id="page-calendar">
@@ -441,14 +500,16 @@
 
             <!-- Nav arrows -->
             <div style="display:flex;gap:6px;align-items:center">
-                <button class="btn btn-ghost btn-xs" id="cal-prev" onclick="calPrev()" style="padding:7px 10px !important"><i class="ri-arrow-left-s-line" style="font-size:1rem"></i></button>
-                <button class="btn btn-ghost btn-xs" id="cal-today-btn" onclick="calGoToday()" style="padding:6px 12px !important;font-size:.75rem">Today</button>
-                <button class="btn btn-ghost btn-xs" id="cal-next" onclick="calNext()" style="padding:7px 10px !important"><i class="ri-arrow-right-s-line" style="font-size:1rem"></i></button>
+                <button class="btn btn-ghost btn-xs" id="cal-today-btn" onclick="calGoToday()" style="padding:8px 12px !important;font-size:.75rem">Today</button>
+                <button class="btn btn-ghost btn-xs" id="cal-prev" onclick="calPrev()" style="padding:5px 10px !important"><i class="ri-arrow-left-s-line" style="font-size:1rem"></i></button>
+                
+                <select class="cal-jump-select" id="cal-month-sel" onchange="calJump()"></select>
+                <button class="btn btn-ghost btn-xs" id="cal-next" onclick="calNext()" style="padding:5px 10px !important"><i class="ri-arrow-right-s-line" style="font-size:1rem"></i></button>
             </div>
 
             <!-- Month + Year jump -->
             <div style="display:flex;gap:6px;align-items:center">
-                <select class="cal-jump-select" id="cal-month-sel" onchange="calJump()"></select>
+                
                 <select class="cal-jump-select" id="cal-year-sel" onchange="calJump()"></select>
             </div>
 
@@ -519,7 +580,8 @@
             <div class="day-panel">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
                     <h3 class="font-jakarta" id="sel-day-title-v2" style="font-weight:700;font-size:.87rem;color:#f1f5f9">Select a day</h3>
-                    <button class="btn btn-primary btn-xs" id="sel-day-add-btn" style="display:none;padding:5px 10px !important;font-size:.72rem" onclick="openReminderModal()"><i class="ri-add-line"></i></button>
+                    <!--<button class="btn btn-primary btn-xs" id="sel-day-add-btn" style="display:none;padding:5px 10px !important;font-size:.72rem" onclick="openReminderModal()"><i class="ri-add-line"></i></button>-->
+                    <button class="btn btn-primary btn-xs" id="sel-day-add-btn" style="display:none;padding:5px 10px !important;font-size:.72rem" onclick="openReminderModal(null,null,window._selDay)"><i class="ri-add-line"></i></button>
                 </div>
                 <div id="sel-day-events-v2">
                     <div style="text-align:center;padding:32px 0;color:#64748b">

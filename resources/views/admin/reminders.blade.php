@@ -1,6 +1,14 @@
 @extends('admin.layouts.app')
 @section('content')
 <!-- ═══ REMINDERS ═══ -->
+<style>
+    td div {
+        white-space: break-spaces;
+        max-width: 260px;
+        overflow: hidden;
+        word-break: break-all;
+    }
+</style>
 <section id="page-reminders" class="page active">
     <div
         style="

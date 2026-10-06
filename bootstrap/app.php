@@ -11,6 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
             __DIR__.'/../routes/web.php',
             __DIR__.'/../routes/admin.php',
         ],
+<<<<<<< HEAD
+=======
+        api: __DIR__.'/../routes/api.php',   // ✅ ADD THIS LINE
+>>>>>>> 14b4245 (full updated code)
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )

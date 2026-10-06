@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>D-Remind — Winngoo</title>
+    <title>Winngoo D-Remind</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/images/common/favicon.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
@@ -24,7 +24,16 @@
             font-size: .72rem;
             margin-top: 4px;
         }
-
+        #sidebar,
+.sidebar {
+    height: 100vh;
+    height: 100dvh; /* dynamic viewport height — accounts for Safari's toolbar */
+}
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    max-height: 100dvh;
+}
         /* ─── Page Loader Overlay ─── */
         #page-loader {
             position: fixed;
@@ -226,7 +235,7 @@
     <!-- Mobile Sidebar Overlay -->
     <div id="sb-overlay" onclick="closeMobile()"></div>
 
-    <div style="display:flex;height:100vh;overflow:hidden">
+    <div style="display:flex;height:100vh;height:100dvh;overflow:hidden">
 
         <!-- ========== SIDEBAR ========== -->
         @include('user.components.sidebar')
@@ -328,14 +337,14 @@
     </div>
 
     <!-- Add Subcategory Modal — FIXED -->
-    <div class="modal-bg" id="add-sub-modal">
-        <div class="modal-box" style="max-width:500px">
+    <div class="modal-bg" id="add-sub-modal" >
+        <div class="modal-box" style="max-width:500px;" >
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
                 <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9;display:flex;align-items:center;gap:8px"><i class="ri-folder-add-line" style="color:#2dd4bf"></i> Add Custom Subcategory</h3>
                 <button onclick="closeModal('add-sub-modal')" class="btn btn-icon btn-ghost btn-sm"><i class="ri-close-line"></i></button>
             </div>
             <div style="margin-bottom:14px">
-                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Parent Category <span style="color:#f43f5e">*</span></label>
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Parent Category <span style="color:#f43f5e !important">*</span></label>
                 <select class="inp" id="sub-cat-parent">
 
                     <option value="">Select parent category…</option>
@@ -354,8 +363,8 @@
                 <div class="error-text" id="err-category_id"></div>
             </div>
             <div style="margin-bottom:14px">
-                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Subcategory Name <span style="color:#f43f5e">*</span></label>
-                <input class="inp" id="sub-cat-name" placeholder="Enter name (3–50 characters)" maxlength="50">
+                <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin-bottom:6px">Subcategory Name <span style="color:#f43f5e !important">*</span></label>
+                <input class="inp" id="sub-cat-name" placeholder="Enter subcategory name" maxlength="20">
                 <div class="error-text" id="err-name"></div>
 
             </div>
@@ -403,7 +412,7 @@
                     Subcategory Name
                 </label>
 
-                <input class="inp" id="edit-sub-name" maxlength="50">
+                <input class="inp" id="edit-sub-name" maxlength="20">
 
                 <div class="error-text" id="edit-err-name"></div>
             </div>
@@ -458,15 +467,16 @@
     </div>
 
     <!-- Reminder Detail Modal -->
-    <div class="modal-bg" id="detail-modal">
-        <div class="modal-box">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-                <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9;display:flex;align-items:center;gap:8px"><i class="ri-information-line" style="color:#2dd4bf"></i> Reminder Details</h3>
-                <button onclick="closeModal('detail-modal')" class="btn btn-icon btn-ghost btn-sm"><i class="ri-close-line"></i></button>
-            </div>
-            <div id="detail-content"></div>
+   <div class="modal-bg" id="detail-modal">
+    <div class="modal-box" style="display:flex;flex-direction:column;max-height:85vh;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-shrink:0;position:sticky;top:0;z-index:10;padding-bottom:12px;">
+            <h3 class="font-jakarta" style="font-weight:700;font-size:.95rem;color:#f1f5f9;display:flex;align-items:center;gap:8px"><i class="ri-information-line" style="color:#2dd4bf"></i> Reminder Details</h3>
+            <button onclick="closeModal('detail-modal')" class="btn btn-icon btn-ghost btn-sm"><i class="ri-close-line"></i></button>
         </div>
+        <div id="detail-modal-group-header" style="flex-shrink:0;margin-bottom:12px;"></div>
+        <div id="detail-content" style="overflow-y:auto;flex:1;padding-right:4px;"></div>
     </div>
+</div>
 
     <!-- Confirm Modal -->
     <div class="modal-bg" id="confirm-modal">
@@ -495,14 +505,14 @@
             <div class="modal-body">
                 <form id="rem-form" onsubmit="return false;">
                     <div style="margin-bottom:18px">
-                        <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Title <span style="color:#f43f5e">*</span></label>
-                        <input class="inp" id="r-title" maxlength="35" placeholder="e.g. Car Insurance Renewal" maxlength="100">
+                        <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Title <span style="color:#f43f5e !important">*</span></label>
+                        <input class="inp" id="r-title" maxlength="50" placeholder="Enter your title">
                         <div class="error-text" id="err-title"></div>
-                        <div style="font-size:.72rem;color:#475569;margin-top:4px">3–100 characters</div>
+                        <div style="font-size:.72rem;color:#475569;margin-top:4px">3–50 characters</div>
                     </div>
                     <div class="g2" style="margin-bottom:18px">
                         <div>
-                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Category <span style="color:#f43f5e">*</span></label>
+                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Category <span style="color:#f43f5e !important">*</span></label>
                             <select class="inp" id="r-cat" onchange="updateSubs()">
                                 <option value="">Select category…</option>
                             </select>
@@ -510,7 +520,7 @@
                         </div>
 
                         <div>
-                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Subcategory <span style="color:#f43f5e">*</span></label>
+                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Subcategory <span style="color:#f43f5e !important">*</span></label>
                             <div style="display:flex;gap:6px;align-items:center">
                                 <select class="inp" id="r-sub" disabled style="flex:1">
                                     <option value="">Select category first…</option>
@@ -526,12 +536,12 @@
                     </div>
                     <div class="g2" style="margin-bottom:18px">
                         <div>
-                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e">*</span></label>
+                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Date <span style="color:#f43f5e !important">*</span></label>
                             <input class="inp" type="date" id="r-date" min="{{ date('Y-m-d') }}">
                             <div class="error-text" id="err-end_reminder_date"></div>
                         </div>
                         <div>
-                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Time <span style="color:#f43f5e">*</span></label>
+                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Time <span style="color:#f43f5e !important">*</span></label>
                             <input class="inp" type="time" id="r-time" value="09:00">
                             <div class="error-text" id="err-reminder_time"></div>
                         </div>
@@ -551,12 +561,12 @@
                             </div>
                             <div>
                                 <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Cost (£)</label>
-                                <input class="inp" type="number" id="r-cost" placeholder="0.00" min="0" step="0.01">
+                                <input class="inp" type="text" id="r-cost" placeholder="0" oninput="this.value=this.value.replace(/\D/g,'').slice(0,8)">
                                 <div class="error-text" id="err-cost"></div>
                             </div>
                         </div>
                         <div style="margin-bottom:18px">
-                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Payment Frequency</label>
+                            <label style="display:block;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:7px">Payment Frequency  <span style="color:#f43f5e !important">*</span> </label>
                             <select class="inp" id="r-freq">
                                 <option value="">—</option>
                                 <option>Monthly</option>
@@ -596,38 +606,23 @@
 
     <!-- Sub-category Create Modal -->
     <div id="sub-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
-        <div style="width:320px;background:#0f172a;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
-            <h3 style="font-size:.9rem;font-weight:700;color:#fff !important;margin-bottom:10px">Add Subcategory</h3>
-            <input id="new-sub-input" maxlength="40" placeholder="Enter subcategory..."
-                style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:.8rem">
+        <div class="modal-box" style="width:320px;padding:18px">
+            <h3 class="font-jakarta" style="font-size:.9rem;font-weight:700;margin-bottom:10px">Add Subcategory</h3>
+    
+            <input
+                id="new-sub-input"
+                class="inp"
+                maxlength="20"
+                placeholder="Enter subcategory..."
+                style="font-size:.8rem"
+            >
+    
             <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
-                <button onclick="closeSubPopup()" class="btn btn-ghost btn-sm">Cancel</button>
-                <button onclick="saveSubcategory()" class="btn btn-primary btn-sm">Add</button>
+                <button type="button" onclick="closeSubPopup()" class="btn btn-ghost btn-sm">Cancel</button>
+                <button type="button" onclick="saveSubcategory()" class="btn btn-primary btn-sm">Add</button>
             </div>
         </div>
     </div>
-
-    <!-- Sub-category Create Modal -->
-    <div id="sub-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
-
-        <div style="width:320px;background:#0f172a;padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,.1)">
-
-            <h3 style="font-size:.9rem;font-weight:700;color:#fff !important;margin-bottom:10px">
-                Add Subcategory
-            </h3>
-
-            <input id="new-sub-input" maxlength="45" placeholder="Enter subcategory..."
-                style="width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.1);
-                    background:rgba(255,255,255,.05);color:#fff;font-size:.8rem">
-
-            <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end">
-                <button onclick="closeSubPopup()" class="btn btn-ghost btn-sm">Cancel</button>
-                <button onclick="saveSubcategory()" class="btn btn-primary btn-sm">Add</button>
-            </div>
-        </div>
-
-    </div>
-
     <script>
         const typeSelect = document.getElementById('r-type');
         const customInput = document.getElementById('r-custom');
@@ -843,7 +838,11 @@ $cats = $categories->mapWithKeys(function ($category) use ($user) {
 window.CATS = @json($cats);
 </script>
 
+<<<<<<< HEAD
     <script>
+=======
+     <script>
+>>>>>>> 14b4245 (full updated code)
        // Store instances
 const tomSubParent = new TomSelect("#sub-cat-parent", {
     create: false,

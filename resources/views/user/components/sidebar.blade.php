@@ -13,8 +13,13 @@
     $user = Auth::user();
 
     $unreadCount = Activity::where('user_id', $user->id)
-        ->where('is_seen', 0)
-        ->count();
+    ->where(function ($query) {
+        $query->where('notify_for', '!=', 'admin')
+              ->orWhereNull('notify_for')
+              ->orWhere('notify_for', '');
+    })
+    ->count();
+         
 @endphp
 
 <aside id="sidebar" class="sidebar flex flex-col">
@@ -46,7 +51,7 @@
         <!-- <a class="nav-link" href="user-shared-reminders"><i class="ri-share-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Shared Reminders</span></a> -->
         <div class="section-lbl" style="margin-top:4px"><span>Account</span></div>
         <a class="nav-link" href="{{ route('user.profile') }}"><i class="ri-user-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Settings</span></a>
-        <a class="nav-link" href="{{ route('user.notifications') }}"><i class="ri-notification-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl" style="flex:1">Notifications</span><span class="nav-notif-badge badge badge-red" id="notif-count" style="font-size:.58rem">{{$unreadCount}}</span></a>
+        <a class="nav-link" href="{{ route('user.notifications') }}"><i class="ri-notification-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl" style="flex:1">Notifications</span><span class="nav-notif-badge badge badge-red" id="sidebar-notif-badge" style="font-size:.58rem">{{$unreadCount}}</span></a>
         <!-- <a class="nav-link" href="user-membership"><i class="ri-vip-crown-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Membership</span></a> -->
         <!-- <a class="nav-link" href="user-transaction"><i class="ri-exchange-dollar-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transaction</span></a> -->
         <a class="nav-link" href="{{ route('user.transactions') }}"><i class="ri-shopping-bag-3-line" style="font-size:1.05rem;flex-shrink:0"></i><span class="lbl">Transactions</span></a>
@@ -59,14 +64,16 @@
     <!-- User -->
     <div style="padding:10px 8px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0">
         <div class="user-row" style="display:flex;align-items:center;gap:9px;overflow:hidden">
+        <a href="{{ route('user.profile') }}" style="display:flex;align-items:center;gap:9px;flex:1;min-width:0;text-decoration:none;color:inherit;overflow:hidden">
             <div id="av-box" style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#0d9488);display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;cursor:pointer;overflow:hidden" onclick="go('profile')">
 
               {{ strtoupper(substr($user->first_name ?? '', 0, 1) . substr($user->last_name ?? '', 0, 1)) }}
             </div>
             <div class="user-meta lbl" style="flex:1;min-width:0;overflow:hidden">
-                <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="user-name">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</div>
+                <div style="font-size:.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="user-name" title="{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}">{{$user->first_name ?? ''}} {{$user->last_name ?? ''}}</div>
                 <div style="font-size:.7rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{$user->email}}</div>
             </div>
+        </a>
             <button class="logout-btn btn btn-xs btn-ghost" onclick="handleLogout()" style="flex-shrink:0;padding:5px 7px" title="Logout"><i class="ri-logout-box-r-line"></i></button>
         </div>
     </div>

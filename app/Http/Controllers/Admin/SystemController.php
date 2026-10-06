@@ -7,6 +7,12 @@ use App\Models\Feedback;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\AuditLog;
+<<<<<<< HEAD
+=======
+use App\Models\Activity;
+use App\Models\Admin;
+use App\Models\Setting;
+>>>>>>> 14b4245 (full updated code)
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Models\BlogPost;
@@ -24,9 +30,17 @@ class SystemController extends Controller
             ->map(function ($f) {
                 return [
                     'id' => $f->id,
+<<<<<<< HEAD
                     'user' => $f->user->first_name . ' ' . $f->user->last_name,
                     'email' => $f->user->email,
                     'phone' => $f->user->phone,
+=======
+                    'user' => optional($f->user)->first_name
+                                ? $f->user->first_name . ' ' . $f->user->last_name
+                                : 'Deleted User',
+                    'email' => $f->user?->email ?? '-',
+                    'phone' => $f->user?->phone ?? '-',
+>>>>>>> 14b4245 (full updated code)
                     'subject' => $f->subject,
                     'category' => $f->priority,
                     'type' => strtolower($f->priority),
@@ -60,6 +74,7 @@ class SystemController extends Controller
         ));
     }
 
+<<<<<<< HEAD
     public function sendVerificationMail(Request $request)
     {
         $user = User::findOrFail($request->id);
@@ -72,6 +87,23 @@ class SystemController extends Controller
             $m->to($user->email, $user->first_name . ' ' . $user->last_name)
                 ->subject('Verify Your Email');
         });
+=======
+   public function sendVerificationMail(Request $request)
+    {
+
+        $user = User::findOrFail($request->id);
+        $verifyUrl = route('verify.email', $user->email);
+      
+            Mail::send('emails.verify_mail', [
+                'user' => $user,
+                'verifyUrl' => $verifyUrl
+            ], function ($m) use ($user) {
+                $m->from(config('mail.from.address'), config('mail.from.name'));
+                $m->to($user->email, $user->first_name . ' ' . $user->last_name)
+                    ->subject('Verify Your Email');
+            });
+        
+>>>>>>> 14b4245 (full updated code)
 
         return response()->json([
             'status' => true,
@@ -79,6 +111,7 @@ class SystemController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
     public function replyFeedback(Request $request)
     {
         $request->validate([
@@ -121,14 +154,77 @@ class SystemController extends Controller
             'message' => 'Reply sent successfully',
         ]);
     }
+=======
+     public function replyFeedback(Request $request)
+        {
+    $request->validate([
+        'id'    => 'required|exists:feedback,id',
+        'reply' => 'required|string',
+    ]);
+
+    $feedback = Feedback::findOrFail($request->id);
+
+    $feedback->update([
+        'admin_reply'     => $request->reply,
+        'feedback_status' => 'resolved',
+        'is_receive'      => 1,
+    ]);
+    
+    Activity::create([
+            'user_id'  =>  $feedback->user->id,
+            'title' => 'Feedback Reply received',
+            'description' => 'An administrator has replied to your feedback regarding "' . $feedback->subject . '". Please check your email to view the response.',
+            'notify_for'  => 'user',
+        ]);
+
+    Mail::send(
+        'emails.feedback_reply',
+        [
+            'user'     => $feedback->user,
+            'feedback' => $feedback,
+            'reply'    => $request->reply,
+            'subject'  => $feedback->subject,
+        ],
+        function ($mail) use ($feedback) {
+            $mail->to($feedback->user->email)
+                ->subject($feedback->subject);
+        }
+    );
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    AuditLog::record('Updated', 'Feedback', 'Reply Sent', [
+        // ['field' => 'User',    'old' => null, 'new' => optional($feedback->user)->name ?? '—'],
+        ['field' => 'Subject', 'old' => null, 'new' => $feedback->subject],
+        ['field' => 'Status',  'old' => 'Pending', 'new' => 'Resolved'],
+        ['field' => 'Reply',   'old' => null, 'new' => \Str::limit($request->reply, 60)],
+    ]);
+
+    return response()->json([
+        'status'  => true,
+        'message' => 'Reply sent successfully',
+    ]);
+}
+
+>>>>>>> 14b4245 (full updated code)
 
     /* ── List page ── */
     public function index()
     {
+<<<<<<< HEAD
 
         return view('admin.audit');
     }
 
+=======
+        $admins = Admin::where('status','active')
+                    ->latest()
+                    ->get();
+                    
+        return view('admin.audit',compact('admins'));
+    }
+
+
+>>>>>>> 14b4245 (full updated code)
     /* ── Paginated JSON for the JS table ── */
     public function fetch(Request $request)
     {
@@ -241,8 +337,37 @@ class SystemController extends Controller
         return view('admin.blog.admin-blog-create');
     }
 
+<<<<<<< HEAD
     public function store(Request $request)
     {
+=======
+  public function store(Request $request)
+    {
+                $messages = [
+            // Core details
+            'title.required'            => 'Post title is required',
+            'title.max'                 => 'Post title cannot be longer than 80 characters',
+            'excerpt.required'          => 'Summary is required',
+            'excerpt.max'               => 'Summary cannot exceed 200 characters',
+            'content.required'          => 'Description is required',
+            'category.required'         => 'Category is required',
+        
+            // Image upload
+            'featured_image.required'   => 'Featured image is required.',
+            'featured_image.image'      => 'The file must be a valid image.',
+            'featured_image.mimes'      => 'Only JPG, JPEG, PNG, and WEBP formats are allowed.',
+            'featured_image.max'        => 'The image size cannot exceed 5MB.',
+        
+            // SEO Meta info
+            'meta_description.max'      => 'SEO meta description should not exceed 160 characters.',
+            'seo_title.max'             => 'SEO title should not exceed 60 characters.',
+            'focus_keyword.max'         => 'The focus keyword must be under 100 characters.',
+            'keywords.max'              => 'Keywords string cannot exceed 255 characters.',
+            'canonical.url'             => 'Please enter a valid URL for the canonical link.',
+            'canonical.max'             => 'The canonical URL is too long.',
+        ];
+        
+>>>>>>> 14b4245 (full updated code)
         $validator = Validator::make($request->all(), [
             'title'            => 'required|string|max:80',
             'excerpt'          => 'required|string|max:200',
@@ -255,8 +380,12 @@ class SystemController extends Controller
             'keywords'         => 'nullable|string|max:255',
             'canonical'        => 'nullable|url|max:255',
             'robots'           => 'nullable|string',
+<<<<<<< HEAD
         ]);
 
+=======
+        ], $messages); // <-- Passed right here
+>>>>>>> 14b4245 (full updated code)
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
@@ -306,6 +435,7 @@ class SystemController extends Controller
         return response()->json(['success' => true, 'message' => 'Blog post published successfully.']);
     }
     // Controller method
+<<<<<<< HEAD
     public function toggleStatus(Request $request, BlogPost $post)
     {
         $oldStatus = $post->is_active ? 'Published' : 'Draft';
@@ -342,29 +472,109 @@ class SystemController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Post deleted successfully.']);
     }
+=======
+   public function toggleStatus(Request $request, BlogPost $post)
+{
+    $oldStatus = $post->is_active ? 'Published' : 'Draft';
+
+    $post->update(['is_active' => $request->is_active]);
+
+    $newStatus = $request->is_active ? 'Published' : 'Draft';
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    AuditLog::record('Updated', 'Blog', 'Status Changed', [
+        ['field' => 'Title',  'old' => $post->title, 'new' => null],
+        ['field' => 'Status', 'old' => $oldStatus,   'new' => $newStatus],
+    ]);
+
+    return response()->json(['success' => true, 'message' => 'Status updated successfully.']);
+}
+    public function destroy(BlogPost $post)
+{
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    AuditLog::record('Deleted', 'Blog', 'Deleted Record', [
+        ['field' => 'Title',    'old' => $post->title,                                    'new' => null],
+        ['field' => 'Category', 'old' => $post->category,                                 'new' => null],
+        ['field' => 'Status',   'old' => $post->is_active ? 'Published' : 'Draft',        'new' => null],
+        ['field' => 'Image',    'old' => $post->featured_image ? basename($post->featured_image) : '—', 'new' => null],
+        ['field' => 'Action',   'old' => 'Post & Image Permanently Removed',              'new' => null],
+    ]);
+
+    $imagePath = public_path($post->featured_image);
+    if ($post->featured_image && file_exists($imagePath)) {
+        unlink($imagePath);
+    }
+
+    $post->delete();
+
+    return response()->json(['success' => true, 'message' => 'Post deleted successfully.']);
+}
+>>>>>>> 14b4245 (full updated code)
     public function editBlogs(BlogPost $post)
     {
 
         return view('admin.blog.admin-blog-edit', compact('post'));
     }
 
+<<<<<<< HEAD
     public function update(Request $request, BlogPost $post)
     {
         $hasExistingImage = $post->featured_image && $request->input('remove_image') !== '1';
         $imageRule        = $hasExistingImage ? 'nullable' : 'required';
 
+=======
+   public function update(Request $request, BlogPost $post)
+{
+    $hasExistingImage = $post->featured_image && $request->input('remove_image') !== '1';
+    $imageRule        = $hasExistingImage ? 'nullable' : 'required';
+
+   // 1. Define your custom error messages
+        $messages = [
+            // Core details
+            'title.required'            => 'Post title is required',
+            'title.max'                 => 'Post title cannot be longer than 80 characters',
+            'excerpt.required'          => 'Summary is required',
+            'excerpt.max'               => 'Summary cannot exceed 200 characters',
+            'content.required'          => 'Description is required',
+            'category.required'         => 'Category is required',
+
+            // Image upload
+            'featured_image.required'   => 'Featured image is required.',
+            'featured_image.image'      => 'The file must be a valid image.',
+            'featured_image.mimes'      => 'Only JPG, JPEG, PNG, and WEBP formats are allowed.',
+            'featured_image.max'        => 'The image size cannot exceed 5MB.',
+
+            // SEO Meta info
+            'meta_description.max'      => 'SEO meta description should not exceed 160 characters.',
+            'seo_title.max'             => 'SEO title should not exceed 60 characters.',
+            'focus_keyword.max'         => 'The focus keyword must be under 100 characters.',
+            'keywords.max'              => 'Keywords string cannot exceed 255 characters.',
+            'canonical.url'             => 'Please enter a valid URL for the canonical link.',
+            'canonical.max'             => 'The canonical URL is too long.',
+        ];
+
+        // 2. Run the Validator for the Edit operation
+>>>>>>> 14b4245 (full updated code)
         $validator = Validator::make($request->all(), [
             'title'            => 'required|string|max:80',
             'excerpt'          => 'required|string|max:200',
             'content'          => 'required|string|min:1',
             'category'         => 'required|string',
+<<<<<<< HEAD
             'featured_image'   => $imageRule . '|image|mimes:jpg,jpeg,png,webp|max:5120',
+=======
+            
+            // Using your dynamic string concatenation for the image rule
+            'featured_image'   => $imageRule . '|image|mimes:jpg,jpeg,png,webp|max:5120',
+            
+>>>>>>> 14b4245 (full updated code)
             'meta_description' => 'nullable|string|max:160',
             'seo_title'        => 'nullable|string|max:60',
             'focus_keyword'    => 'nullable|string|max:100',
             'keywords'         => 'nullable|string|max:255',
             'canonical'        => 'nullable|url|max:255',
             'robots'           => 'nullable|string',
+<<<<<<< HEAD
         ]);
 
         if ($validator->fails()) {
@@ -456,4 +666,97 @@ class SystemController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Blog post updated successfully.']);
     }
+=======
+        ], $messages); // <-- This hooks up the messages array right here
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $validated = $validator->validated();
+
+    // ── Snapshot BEFORE ───────────────────────────────────────────────────
+    $before = [
+        'title'    => $post->title,
+        'excerpt'  => $post->excerpt,
+        'category' => $post->category,
+        'status'   => $post->is_active ? 'Published' : 'Draft',
+        'image'    => $post->featured_image ? basename($post->featured_image) : '—',
+    ];
+
+    // Handle image removal
+    if ($request->input('remove_image') === '1') {
+        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+            unlink(public_path($post->featured_image));
+        }
+        $validated['featured_image'] = null;
+    }
+
+    // Handle new image upload
+    if ($request->hasFile('featured_image')) {
+        if ($post->featured_image && file_exists(public_path($post->featured_image))) {
+            unlink(public_path($post->featured_image));
+        }
+        $file                        = $request->file('featured_image');
+        $fileName                    = time() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('assets/blogPost'), $fileName);
+        $validated['featured_image'] = 'assets/blogPost/' . $fileName;
+    }
+
+    // Regenerate slug only if title changed
+    if ($post->title !== $validated['title']) {
+        $slug     = Str::slug($validated['title']);
+        $original = $slug;
+        $i        = 1;
+        while (BlogPost::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+            $slug = $original . '-' . $i++;
+        }
+        $validated['slug'] = $slug;
+    }
+
+    $validated['is_active'] = $request->boolean('is_active');
+
+    $post->update($validated);
+
+    // ── Snapshot AFTER ────────────────────────────────────────────────────
+    $after = [
+        'title'    => $validated['title'],
+        'excerpt'  => $validated['excerpt'],
+        'category' => $validated['category'],
+        'status'   => $request->boolean('is_active') ? 'Published' : 'Draft',
+        'image'    => isset($validated['featured_image'])
+                        ? ($validated['featured_image'] ? basename($validated['featured_image']) : '—')
+                        : $before['image'],
+    ];
+
+    $fieldLabels = [
+        'title'    => 'Title',
+        'excerpt'  => 'Excerpt',
+        'category' => 'Category',
+        'status'   => 'Status',
+        'image'    => 'Image',
+    ];
+
+    $changedFields = [];
+    foreach ($before as $key => $oldVal) {
+        if ((string) $oldVal !== (string) $after[$key]) {
+            $changedFields[] = [
+                'field' => $fieldLabels[$key],
+                'old'   => $oldVal,
+                'new'   => $after[$key],
+            ];
+        }
+    }
+
+    if (!empty($changedFields)) {
+        $summary = count($changedFields) === 1
+            ? '1 Field Updated'
+            : count($changedFields) . ' Fields Updated';
+
+        AuditLog::record('Updated', 'Blog', $summary, $changedFields);
+    }
+
+    return response()->json(['success' => true, 'message' => 'Blog post updated successfully.']);
+}
+>>>>>>> 14b4245 (full updated code)
 }

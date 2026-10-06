@@ -2,7 +2,7 @@
 @section('content')
 
 
-
+<style>.nav-desktop .nav-link:nth-child(1){color: #fff;background: rgba(124, 58, 237, 0.25);border: 1px solid rgba(124, 58, 237, 0.25);}</style>
 <!-- ===== HERO ===== -->
 <section id="hero" class="relative min-h-screen flex items-center overflow-hidden section-dark">
   <canvas id="plasmaC" class="section-canvas"></canvas>
@@ -14,64 +14,208 @@
   <div class="hero-shape w-12 h-12 border-2 border-accent/15 top-[30%] left-[8%]" style="animation-delay:4s;border-radius:50%"></div>
   <div class="hero-shape w-8 h-8 bg-primary/10 bottom-[25%] left-[15%]" style="animation-delay:1s"></div>
 
-  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full py-32 lg:py-0 top-[60px]">
+  <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 w-full pt-[50px] pb-32 lg:pt-0 lg:pb-0 top-[60px]">
     <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-12 xl:gap-20">
       <div class="flex-1 max-w-2xl reveal-left">
         <h1 class="text-[44px] sm:text-[56px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-black leading-[1.05] tracking-tight mb-6">
-          Never Miss<br>
-          <span class="grad-text">A Payment</span><br>
-          Again.
+          Stay Ahead<br> of Every
+          <span class="grad-text">Reminder</span>
+         
         </h1>
-        <p class="text-lg md:text-xl text-white/40 mb-4 max-w-lg leading-relaxed">
-          Winngoo DRemind intelligently tracks your bills, subscriptions, insurance renewals, and important dates — so you don't have to.
+        <p class="text-lg md:text-xl text-white/90 mb-4 max-w-lg leading-relaxed text-justify">
+          <strong>Winngoo D-Remind </strong>helps you manage bills, subscriptions, renewals, and important events with timely, reliable notifications keeping your commitments on track.
         </p>
-        <p class="text-sm text-white/30 mb-10 max-w-lg">
-          Join 50,000+ users who save an average of $480/year by never missing payments or catching better renewal deals.
+        <p class="text-sm text-white/80 mb-10 max-w-lg text-justify">
+          A simple, dependable way to stay focused across your daily responsibilities.
         </p>
-        <div class="flex flex-wrap gap-4 mb-10">
-          <a href="#cta" class="btn-primary">
-            <i class="ri-download-cloud-line text-xl"></i>
-            Download 
-          </a>
-          <a href="#features" class="btn-secondary">
-            Explore Features <i class="ri-arrow-right-line"></i>
-          </a>
-        </div>
+        <!--<div class="flex flex-wrap gap-4 mb-10">-->
+        <!--  <a href="#cta" class="btn-primary">-->
+        <!--    <i class="ri-download-cloud-line text-xl"></i>-->
+        <!--    Get Started -->
+        <!--  </a>-->
+        <!--  <a href="#features" class="btn-secondary">-->
+        <!--    Discover More <i class="ri-arrow-right-line"></i>-->
+        <!--  </a>-->
+        <!--</div>-->
         <!-- Trust row -->
-        <div class="flex flex-wrap items-center gap-6 text-xs text-white/30">
-          <div class="flex items-center gap-1.5">
-            <span class="text-yellow-400 text-sm">★★★★★</span>
-            <span>4.9 Rating</span>
-          </div>
+        <div class="flex flex-wrap items-center gap-6 text-xs text-white/80">
           <div class="flex items-center gap-1.5">
             <i class="ri-shield-check-line text-accent text-sm"></i>
-            <span>Bank-Grade Security</span>
+            <span>Data Protection</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <i class="ri-notification-4-line text-accent text-sm"></i>
+            <span>Multi-Channel Alerts</span>
           </div>
         </div>
       </div>
-      <!-- Phone -->
-      <div class="flex-shrink-0 reveal-right" data-delay="2">
-        <div class="phone-float relative">
-          <div class="phone-glow"></div>
-          <div class="phone-mock">
-            <div class="phone-notch"></div>
-            <div class="phone-screen" id="phoneScreen"></div>
-          </div>
-          <!-- Floating notification badges around phone -->
-          <div class="absolute -top-4 -right-8 glass px-4 py-2 !rounded-xl animate-bounce" style="animation-duration:3s">
-            <div class="flex items-center gap-2 text-xs">
-              <i class="ri-notification-3-fill text-yellow-400"></i>
-              <span class="text-white/70">Netflix due tomorrow!</span>
-            </div>
-          </div>
-          <div class="absolute -bottom-2 -left-12 glass px-4 py-2 !rounded-xl animate-bounce" style="animation-duration:4s;animation-delay:1.5s">
-            <div class="flex items-center gap-2 text-xs">
-              <i class="ri-money-dollar-circle-fill text-accent"></i>
-              <span class="text-white/70">$34 saved this month</span>
-            </div>
-          </div>
-        </div>
+      <!-- Phone --><!-- Slide Carousel -->
+<div class="flex-shrink-0 reveal-right" data-delay="2">
+  <div class="slide-carousel">
+    <div class="phone-glow"></div>
+    <div class="slide-track" id="slideTrack">
+      <div class="slide-item active">
+        <img src="/assets/images/mobile/1.webp" alt="Preview 1">
       </div>
+      <div class="slide-item">
+        <img src="/assets/images/mobile/2.webp" alt="Preview 2">
+      </div>
+      <div class="slide-item">
+        <img src="/assets/images/mobile/3.webp" alt="Preview 3">
+      </div>
+    </div>
+    <div class="slide-dots" id="slideDots">
+      <span class="slide-dot active"></span>
+      <span class="slide-dot"></span>
+      <span class="slide-dot"></span>
+    </div>
+  </div>
+</div>
+
+<style>
+.slide-carousel {
+  position: relative;
+  width: 280px;
+}
+
+.slide-track {
+  justify-self: center;
+    /*position: relative;*/
+    width: 85%;
+    aspect-ratio: 7 / 16;
+  border-radius: 24px;
+  overflow: visible;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  /*background: #0a0a1f;*/
+}
+
+/* ── base state: GPU layer forced ── */
+.slide-item {
+  position: absolute;
+  /*inset: 0;*/
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate3d(0, 0, 0) rotate(0deg);
+  transition: none;
+}
+
+.slide-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 24px;
+}
+
+/* ── visible state ── */
+.slide-item.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ── EXIT: sweeps left + bends + fades ── */
+.slide-item.is-exiting {
+  transition:
+    transform 0.82s cubic-bezier(0.55, 0, 0.65, 1),
+    opacity   0.75s cubic-bezier(0.55, 0, 0.65, 1);
+  transform: translate3d(-118%, 42px, 0) rotate(-26deg) !important;
+  opacity: 0 !important;
+  z-index: 2;
+}
+
+/* ── ENTER start position (no transition yet) ── */
+.slide-item.enter-start {
+  transform: translate3d(0, 18px, 0) scale(0.96);
+  opacity: 0;
+  z-index: 1;
+}
+
+/* ── ENTER: smooth fade + rise ── */
+.slide-item.is-entering {
+  transition:
+    transform 1s cubic-bezier(0.15, 0, 0.2, 1),
+    opacity   0.95s cubic-bezier(0.15, 0, 0.2, 1);
+  transform: translate3d(0, 0, 0) scale(1) !important;
+  opacity: 1 !important;
+}
+
+/* ── dots ── */
+.slide-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+.slide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: width 0.3s ease, background 0.3s ease;
+  cursor: pointer;
+}
+.slide-dot.active {
+  width: 20px;
+  border-radius: 3px;
+  background: #7c3aed;
+}
+</style>
+
+<script>
+(function () {
+  const track = document.getElementById('slideTrack');
+  const dots  = document.querySelectorAll('#slideDots .slide-dot');
+  if (!track) return;
+
+  const items = Array.from(track.querySelectorAll('.slide-item'));
+  const total = items.length;
+  let current     = 0;
+  let isAnimating = false;
+
+  function goTo(next) {
+    if (isAnimating || next === current) return;
+    isAnimating = true;
+
+    const outItem = items[current];
+    const inItem  = items[next];
+
+    /* ── step 1: kick off exit on current ── */
+    outItem.classList.add('is-exiting');
+
+    /* ── step 2: set enter-start (no transition) ── */
+    inItem.classList.add('active', 'enter-start');
+
+    /* ── step 3: double rAF so browser paints enter-start
+          before we add is-entering transition ── */
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        inItem.classList.remove('enter-start');
+        inItem.classList.add('is-entering');
+      });
+    });
+
+    /* ── step 4: update dots ── */
+    dots.forEach((d, i) => d.classList.toggle('active', i === next));
+
+    /* ── step 5: cleanup after transition finishes ── */
+    setTimeout(() => {
+      outItem.classList.remove('active', 'is-exiting');
+      inItem.classList.remove('is-entering');
+      current     = next;
+      isAnimating = false;
+    }, 1050);
+  }
+
+  /* auto rotate every 3s */
+  setInterval(() => goTo((current + 1) % total), 3000);
+
+  /* dot click */
+  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+})();
+</script>
     </div>
   </div>
 </section>
@@ -83,49 +227,122 @@
   <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
     <div class="text-center mb-20">
       <div class="badge bg-secondary/10 border border-secondary/20 text-cyan-300 mx-auto mb-6 reveal">
-        <span class="w-2 h-2 rounded-full bg-secondary"></span> Simple Process
+        <span class="w-2 h-2 rounded-full bg-secondary"></span> Process Overview
       </div>
       <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 reveal" data-delay="1">
         How <span class="grad-text">It Works</span>
       </h2>
-      <p class="text-base md:text-lg text-white/35 max-w-xl mx-auto reveal" data-delay="2">
-        Register in three simple steps and take control of your payments forever.
+      <p class="text-base md:text-lg text-white/90 max-w-xl mx-auto reveal" data-delay="2">
+        Create and manage reminders through a structured process designed for clarity and timely notifications.
       </p>
     </div>
     <div class="relative">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 relative z-10">
         <!-- Step 1 -->
         <div class="step-card reveal" data-delay="1">
-          <div class="p-5 step-icon bg-primary/10 text-primary icon-pulse"><i class="text-5xl ri-add-circle-line"></i></div>
-          <h3 class="text-xl font-bold mb-3">Add Your Reminders</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-5">Set up your bills, subscriptions, insurance policies, and any important dates you want to track.</p>
-          <div class="flex flex-wrap justify-center gap-2">
-            <span class="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5"><i class="ri-bank-card-line text-[10px]"></i>Bills</span>
-            <span class="text-xs px-3 py-1.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 flex items-center gap-1.5"><i class="ri-play-circle-line text-[10px]"></i>Subscriptions</span>
-            <span class="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/20 flex items-center gap-1.5"><i class="ri-shield-line text-[10px]"></i>Insurance</span>
-          </div>
-        </div>
+
+  <div class="step-icon">
+    <img 
+      src="{{ asset('assets/images/home/add-remind.webp') }}" 
+      alt="Add Reminder" 
+      class="step-img"
+    >
+  </div>
+
+  <h3 class="text-xl font-bold mb-3">Add Your Reminders</h3>
+
+  <p class="text-sm text-white/85 leading-relaxed mb-5">
+    Add your bills, subscriptions, renewals, and important events 
+    to keep everything organised in one place
+  </p>
+
+  <div class="flex flex-wrap justify-center gap-2">
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5">
+      Bills
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-secondary/10 text-secondary border border-secondary/20 flex items-center gap-1.5">
+      Subscriptions
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-accent/10 text-accent border border-accent/20 flex items-center gap-1.5">
+      Events
+    </span>
+
+  </div>
+
+</div>
         <!-- Step 2 -->
-        <div class="step-card reveal" data-delay="2">
-          <div class="p-5 step-icon bg-secondary/10 text-secondary icon-pulse"><i class="text-5xl ri-notification-badge-line"></i></div>
-          <h3 class="text-xl font-bold mb-3">Get Smart Alerts</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-5">Receive intelligent notifications days before Dates. Our AI learns your preferred timing for alerts.</p>
-          <div class="flex flex-wrap justify-center gap-2">
-            <span class="text-xs px-3 py-1.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-1.5"><i class="ri-smartphone-line text-[10px]"></i>Push</span>
-            <span class="text-xs px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1.5"><i class="ri-mail-line text-[10px]"></i>Email</span>
-            <span class="text-xs px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center gap-1.5"><i class="ri-message-2-line text-[10px]"></i>SMS</span>
-          </div>
-        </div>
+       <div class="step-card reveal" data-delay="2">
+
+  <div class="step-icon">
+    <img 
+      src="{{ asset('assets/images/home/receive-time-alerts.webp') }}" 
+      alt="Receive Alerts" 
+      class="step-img"
+    >
+  </div>
+
+  <h3 class="text-xl font-bold mb-3">Receive Timely Alerts</h3>
+
+  <p class="text-sm text-white/85 leading-relaxed mb-5">
+    Get notified before due dates through your preferred channels, 
+    so you never miss an important update.
+  </p>
+
+  <div class="flex flex-wrap justify-center gap-2">
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center gap-1.5">
+      Push
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center gap-1.5">
+      Email
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center gap-1.5">
+      Alerts
+    </span>
+
+  </div>
+
+</div>
         <!-- Step 3 -->
         <div class="step-card reveal" data-delay="3">
-          <div class="p-5 step-icon bg-accent/10 text-accent icon-pulse"><i class="text-5xl ri-wallet-3-line"></i></div>
-          <h3 class="text-xl font-bold mb-3">Save Money</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-5">Compare prices before renewals, avoid late fees, and save hundreds of dollars every year effortlessly.</p>
-          <div class="flex flex-wrap justify-center gap-2">
-            <span class="text-xs px-3 py-1.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1.5"><i class="ri-close-circle-line text-[10px]"></i>No Late Fees</span>
-            <span class="text-xs px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-1.5"><i class="ri-trophy-line text-[10px]"></i>Best Deals</span>
-          </div>
-        </div>
+
+  <div class="step-icon">
+    <img 
+      src="{{ asset('assets/images/home/manage-track.webp') }}" 
+      alt="Manage and Track" 
+      class="step-img"
+    >
+  </div>
+
+  <h3 class="text-xl font-bold mb-3">Manage and Track</h3>
+
+  <p class="text-sm text-white/85 leading-relaxed mb-5">
+    Monitor upcoming, completed, and overdue reminders 
+    from a single dashboard.
+  </p>
+
+  <div class="flex flex-wrap justify-center gap-2">
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 flex items-center gap-1.5">
+      Dashboard
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 flex items-center gap-1.5">
+      Tracking
+    </span>
+
+    <span class="text-xs px-3 py-1.5 rounded-full bg-pink-500/10 text-pink-400 border border-pink-500/20 flex items-center gap-1.5">
+      Updates
+    </span>
+
+  </div>
+
+</div>
       </div>
     </div>
   </div>
@@ -214,13 +431,13 @@
   <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
     <div class="text-center mb-20">
       <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 reveal">
-        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Global Network
+        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Platform Features
       </div>
       <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 reveal" data-delay="1">
-        Trusted <span class="grad-text">Worldwide</span>
+        Control Your <span class="grad-text">Reminders</span>
       </h2>
-      <p class="text-base md:text-lg text-white/35 max-w-xl mx-auto reveal" data-delay="2">
-        Our intelligent network spans the globe, protecting users' finances across 140+ countries.
+      <p class="text-base md:text-lg text-white/90 max-w-xl mx-auto reveal" data-delay="2">
+        Simple features that give you flexibility, control, and better visibility over your reminders.
       </p>
     </div>
     <div class="flex flex-col lg:flex-row items-center gap-16">
@@ -232,42 +449,91 @@
       </div>
       <!-- Content -->
       <div class="flex-1 order-1 lg:order-2 space-y-5">
+       
         <div class="glass p-7 reveal" data-delay="1">
-          <div class="flex items-start gap-4">
-            <div class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center text-xl flex-shrink-0 mt-0.5 text-purple-400"><i class="ri-brain-line"></i></div>
-            <div>
-              <h3 class="text-lg font-bold mb-2">Predictive Analytics</h3>
-              <p class="text-sm text-white/40 leading-relaxed">Analyzes your spending patterns to predict upcoming payments and suggest budget optimizations before you even think about them.</p>
-            </div>
-          </div>
-        </div>
+  <div class="flex items-start gap-4">
+
+    <!-- Image with Existing Icon Background -->
+    <div class="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <img 
+        src="{{ asset('assets/images/home/category-based.webp') }}" 
+        alt="Category Icon"
+        class="w-6 h-6 object-contain"
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-2">Category-Based Organisation</h3>
+      <p class="text-sm text-white/80 leading-relaxed text-justify">
+        Organise reminders across categories like bills, insurance, subscriptions, travel, health, and other daily needs.
+      </p>
+    </div>
+
+  </div>
+</div>
         <div class="glass p-7 reveal" data-delay="2">
-          <div class="flex items-start gap-4">
-            <div class="w-11 h-11 rounded-xl bg-secondary/15 flex items-center justify-center text-xl flex-shrink-0 mt-0.5 text-cyan-400"><i class="ri-flashlight-line"></i></div>
-            <div>
-              <h3 class="text-lg font-bold mb-2">Real-Time Monitoring</h3>
-              <p class="text-sm text-white/40 leading-relaxed">Continuously monitors subscription price changes, new competitor offers, and policy updates so you always have the best deal.</p>
-            </div>
-          </div>
-        </div>
-        <div class="glass p-7 reveal" data-delay="3">
-          <div class="flex items-start gap-4">
-            <div class="w-11 h-11 rounded-xl bg-accent/15 flex items-center justify-center text-xl flex-shrink-0 mt-0.5 text-emerald-400"><i class="ri-lock-2-line"></i></div>
-            <div>
-              <h3 class="text-lg font-bold mb-2">Bank-Grade Security</h3>
-              <p class="text-sm text-white/40 leading-relaxed">256-bit AES encryption, biometric authentication, and zero-knowledge architecture. We never store sensitive payment data.</p>
-            </div>
-          </div>
-        </div>
+  <div class="flex items-start gap-4">
+
+    <!-- Image with Existing Icon Background -->
+    <div class="w-11 h-11 rounded-xl bg-secondary/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <img 
+        src="{{ asset('assets/images/home/custom-remind.webp') }}" 
+        alt="Reminder Details Icon"
+        class="w-6 h-6 object-contain"
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-2">Custom Reminder Details</h3>
+      <p class="text-sm text-white/80 leading-relaxed text-justify">
+        Add descriptions, date and time, and set frequency as daily, weekly, or monthly for better planning.
+      </p>
+    </div>
+
+  </div>
+</div>
+       <div class="glass p-7 reveal" data-delay="3">
+  <div class="flex items-start gap-4">
+
+    <!-- Image with Existing Icon Background -->
+    <div class="w-11 h-11 rounded-xl bg-accent/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <img 
+        src="{{ asset('assets/images/home/notify-prefer.webp') }}" 
+        alt="Notification Preferences Icon"
+        class="w-6 h-6 object-contain"
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-2">Notification Preferences</h3>
+      <p class="text-sm text-white/80 leading-relaxed text-justify">
+        Choose preferred alert channels and set reminder timing based on your schedule and personal priorities.
+      </p>
+    </div>
+
+  </div>
+</div>
         <div class="glass p-7 reveal" data-delay="4">
-          <div class="flex items-start gap-4">
-            <div class="w-11 h-11 rounded-xl bg-pink-500/15 flex items-center justify-center text-xl flex-shrink-0 mt-0.5 text-pink-400"><i class="ri-bar-chart-grouped-line"></i></div>
-            <div>
-              <h3 class="text-lg font-bold mb-2">Spending Insights Dashboard</h3>
-              <p class="text-sm text-white/40 leading-relaxed">Visual breakdowns of where your money goes each month. Track trends, identify wasteful subscriptions, and optimize expenses.</p>
-            </div>
-          </div>
-        </div>
+  <div class="flex items-start gap-4">
+
+    <!-- Image with Existing Icon Background -->
+    <div class="w-11 h-11 rounded-xl bg-pink-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+      <img 
+        src="{{ asset('assets/images/home/calender-view.webp') }}" 
+        alt="Calendar View Icon"
+        class="w-6 h-6 object-contain"
+      />
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold mb-2">Calendar View</h3>
+      <p class="text-sm text-white/80 leading-relaxed text-justify">
+        View reminders in a structured calendar to plan and manage upcoming tasks more effectively.
+      </p>
+    </div>
+
+  </div>
+</div>
       </div>
     </div>
   </div>
@@ -315,109 +581,126 @@
         <span class="w-2 h-2 rounded-full bg-secondary"></span> Use Cases
       </div>
       <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-5 reveal" data-delay="1">
-        Built For <span class="grad-text">Everyone</span>
+        Built For <span class="grad-text">Everyday Needs</span>
       </h2>
-      <p class="text-base md:text-lg text-white/35 max-w-xl mx-auto reveal" data-delay="2">
-        From individuals to families and small businesses — DRemind adapts to your life.
+      <p class="text-base md:text-lg text-white/90 max-w-xl mx-auto reveal" data-delay="2">
+        Manage reminders across multiple categories with timely alerts to help you stay organised and never miss an important date.
       </p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bentoGrid">
-      <!-- Featured large card -->
-      <div class="bento-card lg:col-span-2 lg:row-span-2 reveal" data-particles="white" data-p-direction="down" data-p-speed="0.8" data-p-connect="false" data-p-count="100" data-p-shape="circle">
+   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bentoGrid">
+      <!-- Track Subscriptions -->
+      <div class="bento-card reveal" data-delay="1" data-tilt>
         <div class="bento-shine"></div>
         <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-primary/20 to-purple-600/20 text-purple-400"><i class="ri-smartphone-line"></i></div>
-          <h3 class="text-2xl font-bold mb-3 text-white">Track All Subscriptions</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-6 max-w-md">Keep all your streaming, software, and membership subscriptions organized in one unified dashboard. See exactly what you're paying and when.</p>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <div class="glass !rounded-xl p-3 text-center">
-              <div class="text-2xl mb-1"><i class="ri-netflix-fill text-red-500"></i></div>
-              <div class="text-xs text-white/40">Netflix</div>
-              <div class="text-xs font-bold text-white/70">$15.99</div>
-            </div>
-            <div class="glass !rounded-xl p-3 text-center">
-              <div class="text-2xl mb-1"><i class="ri-spotify-fill text-green-500"></i></div>
-              <div class="text-xs text-white/40">Spotify</div>
-              <div class="text-xs font-bold text-white/70">$9.99</div>
-            </div>
-            <div class="glass !rounded-xl p-3 text-center">
-              <div class="text-2xl mb-1"><i class="ri-cloud-line text-blue-400"></i></div>
-              <div class="text-xs text-white/40">iCloud</div>
-              <div class="text-xs font-bold text-white/70">$2.99</div>
-            </div>
-            <div class="glass !rounded-xl p-3 text-center">
-              <div class="text-2xl mb-1"><i class="ri-gamepad-line text-purple-400"></i></div>
-              <div class="text-xs text-white/40">PS Plus</div>
-              <div class="text-xs font-bold text-white/70">$13.99</div>
-            </div>
+          <div class="bento-icon bg-gradient-to-br from-primary/20 to-purple-600/20">
+            <img src="{{ asset('assets/images/home/track-sub.webp') }}" 
+                 alt="Track Subscriptions" 
+                 class="w-9 h-10 object-contain">
           </div>
-          <div class="flex items-center gap-4 text-xs text-white/30">
-            <span class="flex items-center gap-1"><i class="ri-check-line text-accent"></i> Auto-detect 200+ services</span>
-            <span class="flex items-center gap-1"><i class="ri-check-line text-accent"></i> Cancel unused subs</span>
+          <h3 class="text-lg font-bold mb-2 text-white">Track All Subscriptions</h3>
+          <p class="text-sm text-white/80 leading-relaxed mb-4 text-justify">Keep all your subscriptions organised with clear visibility of renewal dates and active plans.</p>
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/15">Streaming Media</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/15">Software Apps</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/15">Memberships Clubs</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/15">Services Utilities</span>
           </div>
         </div>
       </div>
+
       <!-- Insurance -->
       <div class="bento-card reveal" data-delay="2" data-tilt>
         <div class="bento-shine"></div>
         <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-red-500/20 to-orange-500/20 text-red-400"><i class="ri-shield-check-line"></i></div>
-          <h3 class="text-lg font-bold mb-2 text-white">Insurance Alerts</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-4">Get warned 30, 14, and 3 days before any insurance policy expires.</p>
+         <div class="bento-icon bg-gradient-to-br from-red-500/20 to-orange-500/20">
+  <img src="{{ asset('assets/images/home/insurance-alert.webp') }}" 
+       alt="Insurance Alerts" 
+       class="w-9 h-10 object-contain">
+</div>
+<h3 class="text-lg font-bold mb-2 text-white">Insurance Alerts</h3>
+          <p class="text-sm text-white/80 leading-relaxed mb-4 text-justify">Receive alerts before policy expiry dates to maintain continuous coverage without missed renewals.</p>
           <div class="flex gap-2 flex-wrap">
-            <span class="text-[10px] px-2 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/15">Auto</span>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/15">Vechicle</span>
             <span class="text-[10px] px-2 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/15">Health</span>
             <span class="text-[10px] px-2 py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/15">Home</span>
             <span class="text-[10px] px-2 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/15">Life</span>
           </div>
         </div>
       </div>
+
       <!-- Price Compare -->
-      <div class="bento-card reveal" data-delay="3" data-tilt>
+       <div class="bento-card reveal" data-delay="3" data-tilt>
         <div class="bento-shine"></div>
         <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-yellow-500/20 to-amber-500/20 text-yellow-400"><i class="ri-exchange-dollar-line"></i></div>
-          <h3 class="text-lg font-bold mb-2 text-white">Price Comparison</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-4">Before auto-renew, DRemind checks if there's a better deal available.</p>
-          <div class="glass !rounded-xl p-3">
-            <div class="flex justify-between items-center text-xs"><span class="text-white/50">Avg. saving per switch</span><span class="text-accent font-bold">$120</span></div>
-            <div class="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden"><div class="h-full w-3/4 rounded-full bg-gradient-to-r from-accent to-emerald-400"></div></div>
-          </div>
+         <div class="bento-icon bg-gradient-to-br from-yellow-500/20 " style="background: linear-gradient(135deg, rgba(236, 72, 153, .15), rgba(244, 63, 94, .15));">
+  <img src="{{ asset('assets/images/home/payment-plan.webp') }}" 
+       alt="Payment Planning" 
+       class="w-9 h-10 object-contain">
+</div>
+<h3 class="text-lg font-bold mb-2 text-white">Payment Planning</h3>
+          <p class="text-sm text-white/80 leading-relaxed mb-3 text-justify">Plan upcoming bills and recurring payments with clear timelines to stay prepared and organised.</p>
+          <div class="text-xs text-pink-400/60 flex items-center gap-1"><i class="ri-calendar-check-line"></i> Organised Payment Schedules</div>
         </div>
       </div>
       <!-- Renewal -->
       <div class="bento-card reveal" data-delay="4" data-tilt>
         <div class="bento-shine"></div>
         <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-cyan-500/20 to-blue-500/20 text-cyan-400"><i class="ri-alarm-warning-line"></i></div>
-          <h3 class="text-lg font-bold mb-2 text-white">Renewal Notifications</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-3">Annual domains, software licenses, warranties — nothing slips through.</p>
-          <div class="text-xs text-cyan-400/60 flex items-center gap-1"><i class="ri-timer-flash-line"></i> Smart timing alerts</div>
+         <div class="bento-icon bg-gradient-to-br from-cyan-500/20 to-blue-500/20 ">
+  <img src="{{ asset('assets/images/home/renewal-notify.webp') }}" 
+       alt="Renewal Notifications" 
+       class="w-9 h-10 object-contain">
+</div>
+<h3 class="text-lg font-bold mb-2 text-white">Renewal Notifications</h3>
+          <p class="text-sm text-white/80 leading-relaxed mb-3 text-justify">Track renewals for services, plans, and documents to keep everything updated and current.</p>
+          <div class="text-xs text-cyan-400/60 flex items-center gap-1"><i class="ri-timer-flash-line"></i> Smart Timing Alerts</div>
         </div>
       </div>
+
       <!-- Budget -->
       <div class="bento-card reveal" data-delay="5" data-tilt>
-        <div class="bento-shine"></div>
-        <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-pink-500/20 to-rose-500/20 text-pink-400"><i class="ri-funds-line"></i></div>
-          <h3 class="text-lg font-bold mb-2 text-white">Smart Budget Alerts</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-3">Set monthly spending limits and get alerted when near your cap.</p>
-          <div class="text-xs text-pink-400/60 flex items-center gap-1"><i class="ri-sparkling-line"></i> AI-powered insights</div>
-        </div>
-      </div>
+
+  <div class="bento-shine"></div>
+
+  <div class="relative z-10">
+
+    <div class="bento-icon bg-gradient-to-br from-yellow-500/20 to-amber-500/20">
+      <img 
+        src="{{ asset('assets/images/home/budget-aware.webp') }}" 
+        alt="Budget Awareness" 
+        class="w-9 h-10 object-contain"
+      >
+    </div>
+
+    <h3 class="text-lg font-bold mb-2 text-white">
+      Budget Awareness
+    </h3>
+
+    <p class="text-sm text-white/80 leading-relaxed mb-3 text-justify">
+      Stay aware of recurring expenses and monitor your spending 
+      patterns for better financial control.
+    </p>
+
+    <div class="text-xs text-yellow-400/60 flex items-center gap-1">
+      <i class="ri-line-chart-line"></i> Spending Control Insights
+    </div>
+
+  </div>
+
+</div>
+
       <!-- Family -->
       <div class="bento-card reveal" data-delay="6" data-tilt>
         <div class="bento-shine"></div>
         <div class="relative z-10">
-          <div class="bento-icon bg-gradient-to-br from-green-500/20 to-emerald-500/20 text-green-400"><i class="ri-parent-line"></i></div>
-          <h3 class="text-lg font-bold mb-2 text-white">Family Management</h3>
-          <p class="text-sm text-white/40 leading-relaxed mb-3">Share household bills and subscriptions with up to 6 family members.</p>
-          <div class="flex -space-x-2 mt-2">
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-card"></div>
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 border-2 border-card"></div>
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-emerald-400 border-2 border-card"></div>
-            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-yellow-400 to-orange-400 border-2 border-card flex items-center justify-center text-[9px] font-bold text-dark">+3</div>
-          </div>
+        <div class="bento-icon bg-gradient-to-br from-green-500/20 to-emerald-500/20">
+  <img src="{{ asset('assets/images/home/family.webp') }}" 
+       alt="Family Management" 
+       class="w-9 h-10 object-contain">
+</div>
+<h3 class="text-lg font-bold mb-2 text-white">Family Management</h3>
+          <p class="text-sm text-white/80 leading-relaxed mb-3 text-justify">Manage shared reminders across household members for better coordination and organised responsibilities.</p>
+         <div class="text-xs text-green-400/60 flex items-center gap-1"><i class="ri-sparkling-line"></i> Shared Household Management</div>
         </div>
       </div>
     </div>
@@ -513,14 +796,12 @@
 
     <!-- Header -->
     <div class="text-center mb-14">
-      <div class="badge bg-accent/10 border border-accent/20 text-emerald-300 mx-auto mb-6 w-fit reveal">
-        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span> Interactive Demo
-      </div>
+      
       <h2 class="text-4xl md:text-5xl font-black text-white leading-tight mb-4 reveal" data-delay="1">
-        See It In <span class="grad-text">Action</span>
+        Explore How It <span class="grad-text">Works</span>
       </h2>
-      <p class="text-white/35 text-base max-w-md mx-auto leading-relaxed reveal" data-delay="2">
-        Watch how BillAlert keeps you ahead of every renewal, deadline, and subscription — in under 2 minutes.
+      <p class="text-white/90 text-base max-w-md mx-auto leading-relaxed reveal" data-delay="2">
+        Watch how reminders are created, tracked, and managed in one place. Get a quick overview of how the system works in real use. 
       </p>
     </div>
 
@@ -549,26 +830,128 @@
           </div>
 
           <!-- Video Wrapper -->
-          <div class="relative bg-black" style="aspect-ratio:16/9" id="demoVideoWrap">
-            <video id="demoVideo" preload="metadata"
-              src="{{ asset('assets/video/demo.mp4') }}"
-              class="w-full h-full object-cover block">
-            </video>
+         <div class="relative bg-black" style="aspect-ratio:16/9" id="demoVideoWrap">
 
-            <!-- Play Overlay -->
-            <div id="demoPlayOverlay" onclick="togglePlay()"
-                 class="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer
-                        transition-opacity duration-300
-                        bg-gradient-to-br from-[rgba(3,0,20,.7)] to-[rgba(15,15,42,.5)] backdrop-blur-sm">
-              <div class="w-[72px] h-[72px] rounded-full flex items-center justify-center mb-3.5
-                          transition-transform duration-200 hover:scale-110"
-                   style="background:linear-gradient(135deg,#7c3aed,#06b6d4);animation:playPulse 2.5s ease-in-out infinite">
-                <i class="ri-play-fill text-3xl text-white ml-1" id="overlayPlayIcon"></i>
+              <!-- VIDEO with poster frame image -->
+              <video id="demoVideo" preload="metadata"
+                poster="{{ asset('assets/images/home/demo-frame.webp') }}"
+                src="{{ asset('assets/video/demo.mp4') }}"
+                class="w-full h-full object-cover block">
+              </video>
+            
+              <!-- Play Overlay -->
+              <div id="demoPlayOverlay" onclick="showComingSoon()"
+                   class="absolute inset-0 z-10 flex flex-col items-center justify-center cursor-pointer
+                          transition-opacity duration-300">
+            
+                <!-- Gradient overlay — sits ON TOP of poster image -->
+                <div class="absolute inset-0"
+                     style="background: linear-gradient(135deg, rgba(3,0,20,0.55), rgba(15,15,42,0.4));
+                            backdrop-filter: blur(2px);
+                            -webkit-backdrop-filter: blur(2px);">
+                </div>
+            
+                <!-- Play button content — above the gradient -->
+                <div class="relative z-10 flex flex-col items-center">
+                  <div class="w-[72px] h-[72px] rounded-full flex items-center justify-center mb-3.5
+                              transition-transform duration-200 hover:scale-110"
+                       style="background: linear-gradient(135deg, #7c3aed, #06b6d4);
+                              animation: playPulse 2.5s ease-in-out infinite">
+                    <i class="ri-play-fill text-3xl text-white ml-1" id="overlayPlayIcon"></i>
+                  </div>
+                  <span class="text-[13px] font-bold text-white/70 tracking-widest uppercase">Watch Demo</span>
+                  <span class="text-[11px] text-white/35 mt-1">1 min 58 sec · No signup required</span>
+                </div>
               </div>
-              <span class="text-[13px] font-bold text-white/70 tracking-widest uppercase">Watch Demo</span>
-              <span class="text-[11px] text-white/35 mt-1">1 min 58 sec · No signup required</span>
+            
+              <!-- Video Controls (hidden until first play) -->
+              <div id="demoControls"
+                   class="absolute bottom-0 left-0 right-0 z-20 px-4 py-3
+                          bg-gradient-to-t from-black/80 to-transparent
+                          opacity-0 transition-opacity duration-300"
+                   style="display: none;">
+            
+                <!-- Progress Bar -->
+                <div id="demoProgress"
+                     class="w-full h-1.5 bg-white/20 rounded-full cursor-pointer mb-3 relative"
+                     onclick="scrubVideo(event)">
+                  <div id="demoProgressFill"
+                       class="h-full rounded-full"
+                       style="width: 0%; background: linear-gradient(90deg, #7c3aed, #06b6d4);">
+                  </div>
+                </div>
+            
+                <!-- Controls Row -->
+                <div class="flex items-center gap-3">
+            
+                  <!-- Skip Back -->
+                  <button onclick="skipBack()" class="text-white/70 hover:text-white transition-colors" title="Back 10s">
+                    <i class="ri-skip-back-mini-fill text-lg"></i>
+                  </button>
+            
+                  <!-- Play / Pause -->
+                  <button onclick="togglePlay()" class="text-white hover:text-white/80 transition-colors" title="Play/Pause">
+                    <i class="ri-play-fill text-xl" id="ctrlPlayIcon"></i>
+                  </button>
+            
+                  <!-- Skip Forward -->
+                  <button onclick="skipForward()" class="text-white/70 hover:text-white transition-colors" title="Forward 10s">
+                    <i class="ri-skip-forward-mini-fill text-lg"></i>
+                  </button>
+            
+                  <!-- Time -->
+                  <span id="demoTime" class="text-[11px] text-white/50 ml-1 tabular-nums">0:00 / 0:00</span>
+            
+                  <div class="flex-1"></div>
+            
+                  <!-- Volume Toggle -->
+                  <button onclick="toggleMute()" class="text-white/70 hover:text-white transition-colors" title="Mute">
+                    <i class="ri-volume-up-line text-lg" id="muteIcon"></i>
+                  </button>
+            
+                  <!-- Volume Slider -->
+                  <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1"
+                         class="w-16 accent-violet-500"
+                         oninput="setVolume(this.value)" />
+            
+                  <!-- Speed -->
+                  <button id="speedBtn" onclick="cycleSpeed()"
+                          class="text-[11px] font-bold text-white/60 hover:text-white transition-colors w-8 text-center">
+                    1×
+                  </button>
+            
+                  <!-- PiP -->
+                  <button onclick="togglePiP()" class="text-white/70 hover:text-white transition-colors hidden sm:block" title="Picture in Picture">
+                    <i class="ri-picture-in-picture-line text-lg"></i>
+                  </button>
+            
+                  <!-- Fullscreen -->
+                  <button onclick="toggleFullscreen()" class="text-white/70 hover:text-white transition-colors" title="Fullscreen">
+                    <i class="ri-fullscreen-line text-lg" id="fsIcon"></i>
+                  </button>
+            
+                </div>
+              </div>
             </div>
-          </div>
+            
+            <!-- ============================================================
+                 Styles
+                 ============================================================ -->
+            <style>
+              @keyframes playPulse {
+                0%, 100% { box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4); }
+                50%       { box-shadow: 0 0 0 14px rgba(124, 58, 237, 0); }
+              }
+            
+              #demoControls.visible {
+                display: block !important;
+                opacity: 1 !important;
+              }
+            
+              #demoVideoWrap:hover #demoControls.visible {
+                opacity: 1;
+              }
+            </style>
 
           <!-- Controls — hidden until first play -->
           <div id="demoControls" class="flex-col gap-2 px-4 py-3 bg-[rgba(10,10,28,.95)] border-t border-white/[.06]">
@@ -626,8 +1009,8 @@
         <!-- What You'll See -->
         <div class="rounded-2xl border border-white/[.07] bg-[rgba(10,10,31,.7)] backdrop-blur-xl p-[18px]
                     hover:border-purple-500/30 hover:shadow-[0_8px_30px_rgba(124,58,237,.08)] transition-all duration-200">
-          <h4 class="flex items-center gap-2 text-[11px] font-bold text-white/50 uppercase tracking-widest mb-3">
-            <i class="ri-star-line text-purple-500"></i>What You'll See
+          <h4 class="flex items-center gap-2 text-[11px] font-bold text-white/90 uppercase tracking-widest mb-3">
+            <i class="ri-star-line text-purple-500"></i>Demo Highlights
           </h4>
           <div class="flex flex-col gap-2.5">
             <div class="flex items-start gap-2.5">
@@ -635,8 +1018,8 @@
                 <i class="ri-layout-grid-line text-purple-400"></i>
               </div>
               <div>
-                <strong class="block text-[12px] text-white font-bold mb-0.5">Smart Dashboard</strong>
-                <span class="text-[10px] text-white/30 leading-snug">All bills at a glance with urgency sorting</span>
+                <strong class="block text-[12px] text-white font-bold mb-0.5">Reminder Dashboard</strong>
+                <span class="text-[10px] text-white/80 leading-snug">Overview of upcoming, completed, and overdue reminders.</span>
               </div>
             </div>
             <div class="flex items-start gap-2.5">
@@ -645,7 +1028,7 @@
               </div>
               <div>
                 <strong class="block text-[12px] text-white font-bold mb-0.5">Multi-Channel Alerts</strong>
-                <span class="text-[10px] text-white/30 leading-snug">Push, email and SMS in one tap</span>
+                <span class="text-[10px] text-white/80 leading-snug">Receive alerts via email and push notifications.</span>
               </div>
             </div>
             <div class="flex items-start gap-2.5">
@@ -653,8 +1036,8 @@
                 <i class="ri-group-line text-cyan-400"></i>
               </div>
               <div>
-                <strong class="block text-[12px] text-white font-bold mb-0.5">Family Mode</strong>
-                <span class="text-[10px] text-white/30 leading-snug">Share reminders across 5 members</span>
+                <strong class="block text-[12px] text-white font-bold mb-0.5">Shared Reminders</strong>
+                <span class="text-[10px] text-white/80 leading-snug">Coordinate reminders across family or shared responsibilities.</span>
               </div>
             </div>
             <div class="flex items-start gap-2.5">
@@ -662,8 +1045,8 @@
                 <i class="ri-bar-chart-2-line text-amber-400"></i>
               </div>
               <div>
-                <strong class="block text-[12px] text-white font-bold mb-0.5">Savings Tracker</strong>
-                <span class="text-[10px] text-white/30 leading-snug">See exactly how much you've saved</span>
+                <strong class="block text-[12px] text-white font-bold mb-0.5">Activity Overview</strong>
+                <span class="text-[10px] text-white/80 leading-snug">Track reminder status and recent activity in one place.</span>
               </div>
             </div>
           </div>
@@ -673,20 +1056,58 @@
         <div class="rounded-2xl border border-purple-500/30 p-5 text-center"
              style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(6,182,212,.08))">
           <i class="ri-vip-crown-line text-3xl text-purple-300 block mb-2.5"></i>
-          <p class="text-[11px] text-white/40 mb-3 leading-relaxed">
-            Ready to never miss a renewal again? Start for just <strong class="text-white">£2.40/year</strong>.
+          <p class="text-[11px] text-white/80 mb-3 leading-relaxed">
+            Ready to get started with your <strong class="text-white">reminders?</strong>.
           </p>
           <a href="register"
              class="flex items-center justify-center gap-2 w-full px-5 py-2.5 rounded-xl text-white text-[12px] font-bold
                     transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(124,58,237,.4)]"
              style="background:linear-gradient(135deg,#7c3aed,#6d28d9)">
-            <i class="ri-arrow-right-circle-line"></i>Get Started Now
+            <i class="ri-arrow-right-circle-line"></i>Create Your Account Now
           </a>
         </div>
 
       </div>
     </div>
   </div>
+  
+  <!-- Coming Soon Modal -->
+    <div id="comingSoonModal" class="fixed inset-0 z-[999] flex items-center justify-center px-4" style="display:none;">
+      <div id="csOverlay" class="absolute inset-0 bg-black/70" style="backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);" onclick="closeComingSoon()"></div>
+    
+      <div class="relative z-10 w-full max-w-sm rounded-2xl border border-purple-500/25 p-8 text-center"
+           style="background:linear-gradient(145deg,rgba(15,15,42,.97),rgba(10,10,31,.97));
+                  box-shadow:0 0 0 1px rgba(255,255,255,.05),0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(124,58,237,.15);
+                  animation:csPop .35s cubic-bezier(.34,1.56,.64,1);">
+    
+        <button onclick="closeComingSoon()"
+                class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all duration-150">
+          <i class="ri-close-line text-lg"></i>
+        </button>
+    
+        <div class="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-5"
+             style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(6,182,212,.12));
+                    border:1px solid rgba(124,58,237,.25);">
+          <i class="ri-rocket-2-line text-3xl" style="color:#c4b5fd;"></i>
+        </div>
+    
+        <h3 class="text-xl font-bold text-white mb-2">Demo Launching Soon</h3>
+        <p class="text-sm text-white/40 leading-relaxed mb-6">
+          We're finalising our interactive demo to give you the best experience. It will be available shortly.
+        </p>
+    
+        <button onclick="closeComingSoon()"
+                class="w-full px-5 py-2.5 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2
+                       transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(124,58,237,.4)]"
+                style="background:linear-gradient(135deg,#7c3aed,#06b6d4);">
+          <i class="ri-check-line"></i> Got It
+        </button>
+      </div>
+    </div>
+    
+    <style>
+      @keyframes csPop { from { opacity:0; transform:scale(.9) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    </style>
 
   <script>
     (function () {
@@ -716,6 +1137,16 @@
         ctrlPlayIcon.className = icon;
         overlayIcon.className  = icon;
       }
+      
+      window.showComingSoon = function () {
+          document.getElementById('comingSoonModal').style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+        };
+        
+        window.closeComingSoon = function () {
+          document.getElementById('comingSoonModal').style.display = 'none';
+          document.body.style.overflow = '';
+        };
 
       window.togglePlay = function () {
         if (!video || video.tagName !== 'VIDEO') return;

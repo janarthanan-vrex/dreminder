@@ -21,8 +21,12 @@ use App\Models\ReminderHistory;
 use Carbon\Carbon;
 use App\Models\Activity;
 use App\Models\AuditLog;
+<<<<<<< HEAD
 
 
+=======
+use Illuminate\Validation\Rule;
+>>>>>>> 14b4245 (full updated code)
 
 
 class ManagementController extends Controller
@@ -63,7 +67,15 @@ class ManagementController extends Controller
 
     public function adminCategory(Request $request)
     {
+<<<<<<< HEAD
         $categories = Category::with(['subcategories'])
+=======
+         $categories = Category::with([
+            'subcategories' => function ($query) {
+                $query->where('role', 'admin');
+            }
+        ])
+>>>>>>> 14b4245 (full updated code)
             ->withCount('reminders')
             ->where('status', 'Active')
             ->orderBy('name')
@@ -76,7 +88,11 @@ class ManagementController extends Controller
                     'icon'          => $category->icon,
                     'color'         => $category->color,
                     'bg'            => $category->color . '20',
+<<<<<<< HEAD
                     'desc'          => $category->description,
+=======
+                    'desc'          => $category->description ?? '',
+>>>>>>> 14b4245 (full updated code)
                     'total'         => $category->reminders_count,
 
                     'subcategories' => $category->subcategories->map(function ($sub) {
@@ -103,10 +119,21 @@ class ManagementController extends Controller
             'icon'        => 'required',
             'color'       => 'required',
             'description' => 'nullable',
+<<<<<<< HEAD
         ]);
 
         Category::create([
             'name'          => $request->name,
+=======
+        ],
+        [
+            'name.required' => 'Category name is required',
+            'name.unique' => 'Category name is already exists'
+        ]);
+
+        Category::create([
+             'name'        => ucfirst($request->name),
+>>>>>>> 14b4245 (full updated code)
             'description'   => $request->description,
             'icon'          => $request->icon,
             'color'         => $request->color,
@@ -133,7 +160,15 @@ class ManagementController extends Controller
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
+<<<<<<< HEAD
             'name'        => 'required|unique:sub_categories,name',
+=======
+             'name' => [
+                        'required',
+                        Rule::unique('sub_categories', 'name')
+                            ->where(fn ($query) => $query->where('role', 'admin')),
+                    ],
+>>>>>>> 14b4245 (full updated code)
             'description' => 'nullable',
         ], [
             'category_id.required' => 'Parent category is required.',
@@ -142,7 +177,11 @@ class ManagementController extends Controller
 
         SubCategory::create([
             'category_id' => $request->category_id,
+<<<<<<< HEAD
             'name'        => $request->name,
+=======
+             'name'        => ucfirst($request->name),
+>>>>>>> 14b4245 (full updated code)
             'description' => $request->description,
             'role'        => 'admin',
             'created_by'  => Auth::guard('admin')->id(),
@@ -209,7 +248,13 @@ class ManagementController extends Controller
 
         return view('admin.users', compact('users', 'plans'));
     }
+<<<<<<< HEAD
     public function deleteUser($id)
+=======
+    
+    
+   public function deleteUser($id)
+>>>>>>> 14b4245 (full updated code)
     {
         $user = User::findOrFail($id);
 
@@ -237,6 +282,10 @@ class ManagementController extends Controller
         $user->reminders()->delete();
         $user->payments()->delete();
         $user->invoices()->delete();
+<<<<<<< HEAD
+=======
+        $user->feedbacks()->delete(); 
+>>>>>>> 14b4245 (full updated code)
 
         if ($user->notificationSetting) {
             $user->notificationSetting()->delete();
@@ -250,6 +299,7 @@ class ManagementController extends Controller
             'message' => 'User deleted successfully',
         ]);
     }
+<<<<<<< HEAD
     public function toggleUserStatus(Request $request)
     {
         $user = User::findOrFail($request->id);
@@ -271,10 +321,35 @@ class ManagementController extends Controller
             'message'     => 'User status updated successfully',
         ]);
     }
+=======
+    
+   public function toggleUserStatus(Request $request)
+    {
+    $user = User::findOrFail($request->id);
+
+    $oldStatus = $user->status;
+
+    $user->status = $user->status === 'active' ? 'suspended' : 'active';
+    $user->save();
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    AuditLog::record('Updated', 'Users', 'Status Changed', [
+        ['field' => 'Name',   'old' => trim($user->first_name . ' ' . $user->last_name), 'new' => null],
+        ['field' => 'Status', 'old' => ucfirst($oldStatus), 'new' => ucfirst($user->status)],
+    ]);
+
+    return response()->json([
+        'status'      => true,
+        'user_status' => $user->status,
+        'message'     => 'User status updated successfully',
+    ]);
+}
+>>>>>>> 14b4245 (full updated code)
 
     public function updateUser(Request $request)
     {
         $request->validate([
+<<<<<<< HEAD
             'id'        => 'required|exists:users,id',
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -284,6 +359,37 @@ class ManagementController extends Controller
             'status'    => 'required|in:active,suspended',
             'postcode'  => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
         ]);
+=======
+        'id'         => 'required|exists:users,id',
+        'first_name' => 'required|max:255',
+        'last_name'  => 'required|max:255',
+        'phone'      => [
+            'required', 
+            'digits_between:10,15', 
+            Rule::unique('users', 'phone')->ignore($request->id)
+        ],
+        'plan'       => 'required',
+        'address1'   => 'required|max:255',
+        'status'     => 'required|in:active,suspended',
+        'postcode'   => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2}$/i'],
+    ], [
+        'id.required' => 'User ID is required',
+        'id.exists'   => 'User not found',
+        'first_name.required' => 'First name is required',
+        'first_name.max'      => 'First name cannot exceed 255 characters',
+        'last_name.required'  => 'Last name is required',
+        'last_name.max'       => 'Last name cannot exceed 255 characters',
+        'phone.digits_between' => 'Phone number must be between 10 to 15 digits',
+        'phone.unique'         => 'Phone number is already registered',
+        'plan.required'       => 'Please select a plan',
+        'address1.required'   => 'Address is required',
+        'address1.max'        => 'Address cannot exceed 255 characters',
+        'status.required'     => 'Status is required',
+        'status.in'           => 'Status must be active or suspended',
+        'postcode.required'   => 'Postal code is required',
+        'postcode.regex'      => 'Invalid postal code format',
+    ]);
+>>>>>>> 14b4245 (full updated code)
 
         $user = User::findOrFail($request->id);
         $plan = PlanPrice::where('plan_name', $request->plan)->first();
@@ -303,8 +409,13 @@ class ManagementController extends Controller
 
         // ── Perform update ──
         $user->update([
+<<<<<<< HEAD
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
+=======
+            'first_name' => ucfirst($request->first_name),
+            'last_name'  => ucfirst($request->last_name),
+>>>>>>> 14b4245 (full updated code)
             'phone'      => $request->phone,
             'status'     => $request->status,
             'plan_id'    => $plan?->id,
@@ -314,8 +425,13 @@ class ManagementController extends Controller
 
         // ── Snapshot AFTER values ──
         $after = [
+<<<<<<< HEAD
             'first_name' => $request->first_name,
             'last_name'  => $request->last_name,
+=======
+            'first_name' => ucfirst($request->first_name),
+            'last_name'  => ucfirst($request->last_name),
+>>>>>>> 14b4245 (full updated code)
             'phone'      => $request->phone      ?? '—',
             'status'     => $request->status,
             'plan'       => $plan?->plan_name    ?? '—',
@@ -359,6 +475,7 @@ class ManagementController extends Controller
             'message' => 'User updated successfully',
         ]);
     }
+<<<<<<< HEAD
 
     public function storeUser(Request $request)
     {
@@ -380,6 +497,59 @@ class ManagementController extends Controller
             'postcode'        => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i'],
         ]);
 
+=======
+    
+    public function storeUser(Request $request)
+    {
+
+         $request->validate([
+                'first_name' => 'required|max:255',
+                'last_name'  => 'required|max:255',
+                'email'      => [
+                    'required',
+                    'email:rfc,dns',
+                    'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',
+                    'unique:users,email',
+                    'max:255'
+                ],
+                'phone' => 'required|digits_between:10,15|unique:users,phone',
+                'plan'       => 'required',
+                'status'     => 'required|in:active,suspended',
+                'address1'   => 'required|max:255',
+                'postcode'   => ['required', 'regex:/^[A-Z]{1,2}\d[A-Z\d]?\s\d[A-Z]{2}$/i'],
+            ], [
+                'first_name.required' => 'First name is required',
+                'first_name.max'      => 'First name cannot exceed 255 characters',
+            
+                'last_name.required'  => 'Last name is required',
+                'last_name.max'       => 'Last name cannot exceed 255 characters',
+            
+                'email.required'      => 'Email is required',
+                'email.email'         => 'Please enter a valid email address',
+                'email.regex'         => 'Email format is invalid',
+                'email.unique'        => 'This email is already registered',
+            
+               'phone.required'      => 'Phone number is required',
+            'phone.digits_between' => 'Phone number must be between 10 to 15 digits',
+            'phone.unique'         => 'Phone number is already registered',
+            
+                'plan.required'       => 'Please select a plan',
+            
+                'status.required'     => 'Status is required',
+                'status.in'           => 'Status must be active or suspended',
+            
+                'address1.required'   => 'Address is required',
+            
+                'postcode.required'   => 'Postal code is required',
+                'postcode.regex'      => 'Invalid postal code format',
+            ]);
+            
+            // Email Verification GUID
+        $data    = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+        $guid    = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+>>>>>>> 14b4245 (full updated code)
         // Generate Secure Password
         $password =
             Str::upper(Str::random(2)) .
@@ -399,6 +569,10 @@ class ManagementController extends Controller
             'first_name' => ucfirst($request->first_name),
             'last_name' => ucfirst($request->last_name),
             'email' => $request->email,
+<<<<<<< HEAD
+=======
+            'email_verification_code' => $guid,
+>>>>>>> 14b4245 (full updated code)
             'phone' => $request->phone,
             'address1' => $request->address1,
             'status' => $request->status,
@@ -475,7 +649,36 @@ class ManagementController extends Controller
                 ->subject('Payment Successful - Invoice ' . $invoiceId)
                 ->attachData($pdf->output(), $invoiceId . '.pdf', ['mime' => 'application/pdf']);
         });
+<<<<<<< HEAD
         // ── End Invoice + PDF + Email ──────────────────────────────────
+=======
+        
+         $verifyUrl = route('verify.email',$user->email);
+
+            Mail::send('emails.verify_mail', [
+                'user' => $user,
+                'verifyUrl' => $verifyUrl
+            ], function ($m) use ($user) {
+                $m->from(config('mail.from.address'), config('mail.from.name'));
+                $m->to($user->email, $user->first_name . ' ' . $user->last_name)
+                ->subject('Verify Your Email');
+            });
+        // ── End Invoice + PDF + Email ──────────────────────────────────
+        
+          // ── Audit Log ────────────────────────────────────────────────────────
+    AuditLog::record('Created', 'User', 'Created Record', [
+        ['field' => 'First Name', 'old' => null, 'new' => ucfirst($request->first_name)],
+        ['field' => 'Last Name',  'old' => null, 'new' => ucfirst($request->last_name)],
+        ['field' => 'Email',      'old' => null, 'new' => $request->email],
+        ['field' => 'Phone',      'old' => null, 'new' => $request->phone],
+        ['field' => 'Plan',       'old' => null, 'new' => $plan?->plan_name ?? '—'],
+        ['field' => 'Status',     'old' => null, 'new' => ucfirst($request->status)],
+        ['field' => 'Address',    'old' => null, 'new' => $request->address1],
+        ['field' => 'Postcode',   'old' => null, 'new' => strtoupper($request->postcode)],
+    ]);
+    // ── End Audit Log ────────────────────────────────────────────────────
+
+>>>>>>> 14b4245 (full updated code)
 
 
         return response()->json([
@@ -622,7 +825,11 @@ class ManagementController extends Controller
         return response()->json(['status' => true, 'histories' => $histories]);
     }
 
+<<<<<<< HEAD
    public function deleteCategory(Request $request)
+=======
+     public function deleteCategory(Request $request)
+>>>>>>> 14b4245 (full updated code)
 {
     $request->validate([
         'id' => 'required|exists:categories,id'
@@ -824,11 +1031,16 @@ class ManagementController extends Controller
                     'unread' => !$n->admin_seen,
                 ];
             });
+<<<<<<< HEAD
 
+=======
+           
+>>>>>>> 14b4245 (full updated code)
         return view('admin.notifications', compact('notifications'));
     }
 
     public function markNotificationRead(Request $request)
+<<<<<<< HEAD
     {
         Activity::where('id', $request->id)
             ->update(['admin_seen' => 1]);
@@ -870,4 +1082,47 @@ class ManagementController extends Controller
             'status' => true
         ]);
     }
+=======
+{
+    Activity::where('id', $request->id)
+        ->update(['admin_seen' => 1]);
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function deleteNotification(Request $request)
+{
+    Activity::where('id', $request->id)
+        ->delete();
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function markAllNotificationsRead()
+{
+    Activity::where('notify_for', 'admin')
+        ->where('admin_seen', 0)
+        ->update([
+            'admin_seen' => 1
+        ]);
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+
+public function deleteAllNotifications()
+{
+    Activity::where('notify_for', 'admin')
+        ->delete();
+
+    return response()->json([
+        'status' => true
+    ]);
+}
+>>>>>>> 14b4245 (full updated code)
 }

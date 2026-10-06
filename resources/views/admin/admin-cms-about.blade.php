@@ -60,7 +60,7 @@
             <div class="field-group"><label class="label">Headline (before gradient)</label><input class="inp" value="Built to help you keep"></div>
         </div>
         <div class="field-group"><label class="label">Headline Gradient Text</label><input class="inp" value="more of your money."></div>
-        <div class="field-group"><label class="label">Subheadline</label><textarea class="inp-area inp" rows="2">DRemind was born from a simple frustration — too many people lose thousands every year to forgotten renewals and loyalty tax. We decided to fix that.</textarea></div>
+        <div class="field-group"><label class="label">Subheadline</label><textarea class="inp-area inp" rows="2">D-Remind was born from a simple frustration — too many people lose thousands every year to forgotten renewals and loyalty tax. We decided to fix that.</textarea></div>
     </div>
 
     <!-- Mission -->
@@ -81,7 +81,7 @@
             <div class="field-group"><label class="label">Founded Year</label><input class="inp" value="2022" type="number"></div>
         </div>
         <div class="field-group"><label class="label">Paragraph 1</label><textarea class="inp-area inp" rows="2">We believe every household deserves to know when their insurance, energy contracts, and subscriptions are up for renewal — and to have enough time to switch to a better deal.</textarea></div>
-        <div class="field-group"><label class="label">Paragraph 2</label><textarea class="inp-area inp" rows="2">DRemind is the intelligent reminder platform that works silently in the background, so you never pay the loyalty tax again.</textarea></div>
+        <div class="field-group"><label class="label">Paragraph 2</label><textarea class="inp-area inp" rows="2">D-Remind is the intelligent reminder platform that works silently in the background, so you never pay the loyalty tax again.</textarea></div>
 
         <div class="section-title" style="margin:14px 0 10px">Stats Badges (right card)</div>
         <div class="stat-grid">
@@ -164,7 +164,7 @@
             </div>
         </div>
         <div class="g2" style="margin-bottom:12px">
-            <div class="field-group"><label class="label">Section Title</label><input class="inp" value="The people behind DRemind"></div>
+            <div class="field-group"><label class="label">Section Title</label><input class="inp" value="The people behind D-Remind"></div>
         </div>
         <div id="team-members">
             <div class="team-card">
@@ -246,15 +246,15 @@
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-file-text-line"></i> Page Meta</div>
                 <div class="field-group">
                     <label class="label">Meta Title</label>
-                    <input class="inp" id="meta-title" value="About DRemind — Our Story & Mission" oninput="updateCharCount('meta-title','tc-title',60)">
+                    <input class="inp" id="meta-title" value="About D-Remind — Our Story & Mission" oninput="updateCharCount('meta-title','tc-title',60)">
                     <div class="char-count" id="tc-title">37/60</div>
                 </div>
                 <div class="field-group">
                     <label class="label">Meta Description</label>
-                    <textarea class="inp-area inp" id="meta-desc" rows="3" oninput="updateCharCount('meta-desc','tc-desc',160)">Learn about DRemind's mission to help households save money on insurance, subscriptions and renewals. Founded 2022, serving 8 countries.</textarea>
+                    <textarea class="inp-area inp" id="meta-desc" rows="3" oninput="updateCharCount('meta-desc','tc-desc',160)">Learn about D-Remind's mission to help households save money on insurance, subscriptions and renewals. Founded 2022, serving 8 countries.</textarea>
                     <div class="char-count" id="tc-desc">141/160</div>
                 </div>
-                <div class="field-group"><label class="label">Meta Keywords</label><input class="inp" value="about DRemind, our mission, subscription tracker, payment reminder app"></div>
+                <div class="field-group"><label class="label">Meta Keywords</label><input class="inp" value="about D-Remind, our mission, subscription tracker, payment reminder app"></div>
                 <div class="field-group"><label class="label">Canonical URL</label><input class="inp" value="https://dremin.co.uk/about"></div>
                 <div class="g2">
                     <div class="field-group"><label class="label">Robots</label><select class="inp"><option>index, follow</option><option>noindex, follow</option></select></div>
@@ -269,7 +269,7 @@
                     <textarea class="inp-area inp" rows="6" style="font-family:monospace;font-size:.8rem">{
                         "@context": "https://schema.org",
                         "@type": "Organization",
-                        "name": "DRemind",
+                        "name": "D-Remind",
                         "url": "https://dremin.co.uk",
                         "foundingDate": "2022",
                         "address": {
@@ -287,8 +287,8 @@
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-google-line"></i> SERP Preview</div>
                 <div style="background:var(--bg2);border-radius:12px;padding:16px 18px;border:1px solid var(--border)">
                     <div style="font-size:.68rem;color:var(--text4);margin-bottom:5px">https://dremin.co.uk › about</div>
-                    <div style="font-size:1rem;color:#8ab4f8;font-weight:500;margin-bottom:6px">About DRemind — Our Story & Mission</div>
-                    <div style="font-size:.82rem;color:var(--text3);line-height:1.6">Learn about DRemind's mission to help households save money on insurance, subscriptions and renewals...</div>
+                    <div style="font-size:1rem;color:#8ab4f8;font-weight:500;margin-bottom:6px">About D-Remind — Our Story & Mission</div>
+                    <div style="font-size:.82rem;color:var(--text3);line-height:1.6">Learn about D-Remind's mission to help households save money on insurance, subscriptions and renewals...</div>
                 </div>
             </div>
         </div>

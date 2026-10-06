@@ -48,6 +48,13 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+<<<<<<< HEAD
+=======
+         'api' => [
+        'driver' => 'sanctum',
+        'provider' => 'users',
+    ],
+>>>>>>> 14b4245 (full updated code)
     ],
 
     /*

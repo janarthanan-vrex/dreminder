@@ -2,6 +2,33 @@
 @section('content')
 <!-- ═══ USERS ═══ -->
  <style>
+<<<<<<< HEAD
+=======
+ html.dark #eu-plan {
+    background: var(--ctrl-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--border) !important;
+}
+
+html.dark #eu-plan option {
+    background: var(--ctrl-bg) !important;
+    color: var(--text) !important;
+}
+ #users-table td:nth-child(2){
+    max-width:150px;
+    padding-right:16px;
+}
+#users-table td:nth-child(2) *{
+    display:block;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+#users-table td:nth-child(5){
+    padding-left:12px;
+}
+>>>>>>> 14b4245 (full updated code)
 .err{
     color:red;
     font-size:12px;
@@ -11,12 +38,35 @@
 .spinner{
     animation:spin 1s linear infinite;
 }
+<<<<<<< HEAD
 
+=======
+#eu-email {
+    background: var(--ctrl-bg) !important;
+    color: var(--text3) !important;
+   
+}
+
+#eu-email:focus {
+    outline: none !important;
+    border-color: var(--border) !important;
+    box-shadow: none !important;
+}
+>>>>>>> 14b4245 (full updated code)
 @keyframes spin{
     100%{
         transform:rotate(360deg);
     }
 }
+<<<<<<< HEAD
+=======
+.data-table thead th{
+    text-align:center !important;
+}
+.data-table tbody td{
+    text-align:center !important;
+}
+>>>>>>> 14b4245 (full updated code)
 </style>
 @if(!auth('admin')->user()->hasPermission('Users','users.edit'))
 <style>
@@ -52,7 +102,12 @@
             </p>
         </div>
         <div style="display: flex; gap: 8px">
+<<<<<<< HEAD
           @if(auth('admin')->user()->hasPermission('Users', 'users.create'))
+=======
+            @if(auth('admin')->user()->hasPermission('Users', 'users.create'))
+           
+>>>>>>> 14b4245 (full updated code)
             <button class="btn btn-primary btn-sm" onclick="openModal('add-user-modal')">
                 <i class="ri-user-add-line"></i> Add User
             </button>
@@ -140,6 +195,10 @@
                 .then(data => {
                     if (data.status) {
                         toast(data.message, 'success');
+<<<<<<< HEAD
+=======
+                        document.getElementById('users-search-inp').value = '';
+>>>>>>> 14b4245 (full updated code)
                         setTimeout(() => {
                             location.reload();
                         }, 1500)

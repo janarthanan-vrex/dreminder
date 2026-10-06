@@ -8,7 +8,7 @@
     --border2: rgba(255, 255, 255, 0.04);
     --text: #e2e8f0;
     --text2: #94a3b8;
-    --text3: #64748b;
+    --text3: #a7b0be;
     --text4: #475569;
     --purple: #7c3aed;
     --purple-light: #a78bfa;
@@ -1171,4 +1171,61 @@ select.inp {
 .light h4,
 .light h5 {
     color: var(--text) !important;
+}@media (max-width: 640px) {
+    /* Target the label/value detail rows inside the drawer */
+    #drawer-content div[style*="justify-content:space-between"][style*="border-radius:8px"] {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+    }
+
+    /* Value should take full width and wrap under the label */
+    #drawer-content div[style*="justify-content:space-between"][style*="border-radius:8px"] > span:last-child {
+        text-align: left !important;
+        word-break: break-word;
+        max-width: 100%;
+    }
+}
+@media (max-width: 640px) {
+    /* Stack the 3 action buttons (Send Mail / Edit Profile / Suspend) on mobile */
+    #drawer-content div[style*="grid-template-columns: 2fr 2fr 2fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 8px !important;
+    }
+}
+
+
+/* Header row (icon+text on left, buttons on right) */
+#admin-cat-grid .card > div:first-child {
+    min-width: 0;
+}
+
+/* icon+text flex container */
+#admin-cat-grid .card > div:first-child > div:first-child {
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* the text block (name + desc) next to the icon */
+#admin-cat-grid .card > div:first-child > div:first-child > div:last-child {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* name and desc lines truncate instead of wrapping/pushing */
+#admin-cat-grid .card > div:first-child > div:first-child > div:last-child > div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* button group never shrinks or gets pushed out */
+#admin-cat-grid .card > div:first-child > div:last-child {
+    flex-shrink: 0;
+}
+
+/* hard safety clip on the card itself */
+#admin-cat-grid .card {
+    overflow: hidden;
 }

@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
   <title>Forgot Password — DRemind Admin</title>
+=======
+  <title>Forgot Password — Winngoo D-Remind Admin</title>
+>>>>>>> 14b4245 (full updated code)
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -26,11 +30,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
   <style>
+<<<<<<< HEAD
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0
     }
+=======
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+>>>>>>> 14b4245 (full updated code)
 
     .field-error {
       display: none;
@@ -39,7 +47,10 @@
       margin-top: 6px;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14b4245 (full updated code)
     body {
       background: #030014;
       font-family: 'Inter', sans-serif;
@@ -86,9 +97,13 @@
       box-shadow: 0 0 0 3px rgba(124, 58, 237, .1)
     }
 
+<<<<<<< HEAD
     .auth-input::placeholder {
       color: rgba(255, 255, 255, .25)
     }
+=======
+    .auth-input::placeholder { color: rgba(255, 255, 255, .25) }
+>>>>>>> 14b4245 (full updated code)
 
     .auth-label {
       display: block;
@@ -122,10 +137,14 @@
       box-shadow: 0 8px 30px rgba(124, 58, 237, .4)
     }
 
+<<<<<<< HEAD
     .btn-primary:disabled {
       opacity: .6;
       cursor: not-allowed
     }
+=======
+    .btn-primary:disabled { opacity: .6; cursor: not-allowed }
+>>>>>>> 14b4245 (full updated code)
 
     .btn-ghost {
       display: inline-flex;
@@ -151,6 +170,7 @@
       background: rgba(255, 255, 255, .04)
     }
 
+<<<<<<< HEAD
     .icon-ring {
       width: 72px;
       height: 72px;
@@ -165,6 +185,8 @@
       box-shadow: 0 0 50px rgba(6, 182, 212, .15)
     }
 
+=======
+>>>>>>> 14b4245 (full updated code)
     .step-dot {
       width: 8px;
       height: 8px;
@@ -179,6 +201,7 @@
       display: none
     }
 
+<<<<<<< HEAD
     .form-err.show {
       display: block
     }
@@ -186,6 +209,11 @@
     .input-wrap {
       position: relative
     }
+=======
+    .form-err.show { display: block }
+
+    .input-wrap { position: relative }
+>>>>>>> 14b4245 (full updated code)
 
     .input-icon {
       position: absolute;
@@ -197,12 +225,39 @@
       pointer-events: none
     }
 
+<<<<<<< HEAD
+=======
+    .resend-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #34d399;
+      padding: 0;
+      transition: color .2s;
+    }
+
+    .resend-btn:hover:not(:disabled) { color: #6ee7b7 }
+
+    .resend-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+>>>>>>> 14b4245 (full updated code)
     canvas {
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 0
     }
+<<<<<<< HEAD
+=======
+
+    @keyframes spin { to { transform: rotate(360deg) } }
+>>>>>>> 14b4245 (full updated code)
   </style>
 </head>
 
@@ -214,7 +269,11 @@
   <div style="width:100%;max-width:460px;position:relative;z-index:10">
     <div style="text-align:center;margin-bottom:28px">
       <a href="admin-login" style="display:inline-block;margin-bottom:16px">
+<<<<<<< HEAD
         <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:34px;margin:auto" alt="DRemind">
+=======
+        <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:34px;margin:auto" alt="D-Remind">
+>>>>>>> 14b4245 (full updated code)
       </a>
       <h1 style="font-size:1.5rem;font-weight:900;margin-bottom:6px">Forgot Password?</h1>
       <p style="font-size:.82rem;color:rgba(255,255,255,.35);max-width:300px;margin:0 auto">Enter your admin email and we'll send a secure password reset link.</p>
@@ -244,7 +303,11 @@
           <label class="auth-label">Admin Email Address</label>
           <div class="input-wrap">
             <i class="input-icon ri-mail-line"></i>
+<<<<<<< HEAD
             <input type="email" id="resetEmail" class="auth-input" placeholder="admin@dremind.co.uk" required>
+=======
+            <input type="email" id="resetEmail" class="auth-input" placeholder="Enter your email" required>
+>>>>>>> 14b4245 (full updated code)
             @if(session('error'))
             <div class="field-error" id="sessionError" style="display:block;">
               {{ session('error') }}
@@ -263,10 +326,22 @@
         <div style="width:64px;height:64px;border-radius:20px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 16px">
           <i class="ri-mail-check-line" style="color:#34d399"></i>
         </div>
+<<<<<<< HEAD
         <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:8px;color:#fff">Reset Email Sent!</h3>
         <p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:4px">We've sent a password reset link to</p>
         <p id="sentTo" style="font-size:.85rem;color:#a78bfa;font-weight:600;margin-bottom:20px"></p>
 
+=======
+        <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:8px;color:#fff">Reset Email Sent</h3>
+        <p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:4px">We've sent a password reset link to</p>
+        <p id="sentTo" style="font-size:.85rem;color:#a78bfa;font-weight:600;margin-bottom:20px"></p>
+
+        <!-- Resend row -->
+        <p style="font-size:.78rem;color:rgba(255,255,255,.35)">
+          Didn't receive it?
+          <button class="resend-btn" id="resendBtn" disabled>Resend (60s)</button>
+        </p>
+>>>>>>> 14b4245 (full updated code)
       </div>
 
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.07);text-align:center">
@@ -277,15 +352,71 @@
     </div>
 
     <p style="text-align:center;font-size:.7rem;color:rgba(255,255,255,.15);margin-top:20px">
+<<<<<<< HEAD
       © 2026 Winngoo DRemind — Admin Panel
+=======
+      © 2026 Winngoo D-Remind — Admin Panel
+>>>>>>> 14b4245 (full updated code)
     </p>
   </div>
 
   <script>
+<<<<<<< HEAD
     let sentEmail = '';
 
 
     document.getElementById('sendBtn')?.addEventListener('click', function() {
+=======
+
+    /* =========================
+       RESEND TIMER HELPER
+    ========================= */
+    let resendInterval = null;
+
+    function startResendTimer(seconds = 60) {
+      const resendBtn = document.getElementById('resendBtn');
+      if (!resendBtn) return;
+
+      let timeLeft = seconds;
+      resendBtn.disabled = true;
+      resendBtn.textContent = `Resend (${timeLeft}s)`;
+
+      clearInterval(resendInterval);
+
+      resendInterval = setInterval(() => {
+        timeLeft--;
+        resendBtn.textContent = `Resend (${timeLeft}s)`;
+
+        if (timeLeft <= 0) {
+          clearInterval(resendInterval);
+          resendBtn.disabled = false;
+          resendBtn.textContent = 'Resend';
+        }
+      }, 1000);
+    }
+
+
+    /* =========================
+       SHARED API CALL
+    ========================= */
+    function sendResetLink(email) {
+      return fetch('{{ route("admin.forgot-password.post") }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        body: JSON.stringify({ email }),
+      }).then(res => res.json());
+    }
+
+
+    /* =========================
+       SEND BUTTON — FIRST SEND
+    ========================= */
+    document.getElementById('sendBtn')?.addEventListener('click', function () {
+>>>>>>> 14b4245 (full updated code)
       const email = document.getElementById('resetEmail').value.trim();
       const errEl = document.getElementById('emailErr');
 
@@ -300,6 +431,7 @@
       btn.innerHTML = '<i class="ri-loader-4-line" style="animation:spin .7s linear infinite"></i> Sending...';
       btn.disabled = true;
 
+<<<<<<< HEAD
       fetch('{{ route("admin.forgot-password.post") }}', {
           method: 'POST',
           headers: {
@@ -323,6 +455,16 @@
             document.getElementById('formStep').style.display = 'none';
             document.getElementById('sentTo').textContent = email;
             document.getElementById('successStep').style.display = 'block';
+=======
+      sendResetLink(email)
+        .then(data => {
+          if (data.status) {
+            // ✅ Success — switch to success step and start timer
+            document.getElementById('formStep').style.display = 'none';
+            document.getElementById('sentTo').textContent = email;
+            document.getElementById('successStep').style.display = 'block';
+            startResendTimer(60);
+>>>>>>> 14b4245 (full updated code)
           } else {
             // ❌ Error — show below input
             errEl.textContent = data.message;
@@ -340,6 +482,7 @@
     });
 
 
+<<<<<<< HEAD
 
     function resend() {
       const btn = document.createElement('button');
@@ -347,6 +490,48 @@
     }
     // Particles
     (function() {
+=======
+    /* =========================
+       RESEND BUTTON
+    ========================= */
+    document.getElementById('resendBtn')?.addEventListener('click', function () {
+      const email = document.getElementById('resetEmail').value.trim();
+
+      this.innerHTML = '<i class="ri-loader-4-line" style="animation:spin .7s linear infinite"></i>';
+      this.disabled = true;
+
+      sendResetLink(email)
+        .then(() => {
+          // Restart the 60s timer after resend
+          startResendTimer(60);
+        })
+        .catch(() => {
+          // On failure, re-enable so user can try again
+          this.disabled = false;
+          this.textContent = 'Resend';
+        });
+    });
+
+
+    /* =========================
+       HIDE SESSION ERROR ON INPUT
+    ========================= */
+    const emailInput = document.getElementById('resetEmail');
+    const sessionError = document.getElementById('sessionError');
+
+    if (emailInput && sessionError) {
+      emailInput.addEventListener('input', function () {
+        sessionError.style.display = 'none';
+        document.getElementById('emailErr')?.classList.remove('show');
+      });
+    }
+
+
+    /* =========================
+       PARTICLES
+    ========================= */
+    (function () {
+>>>>>>> 14b4245 (full updated code)
       const c = document.getElementById('pC');
       if (!c) return;
       const ctx = c.getContext('2d');
@@ -364,10 +549,19 @@
           s: Math.random() * 1.5 + .5,
           a: Math.random() * .15 + .03,
           h: 190
+<<<<<<< HEAD
         })
       }
       rz();
       window.addEventListener('resize', rz);
+=======
+        });
+      }
+
+      rz();
+      window.addEventListener('resize', rz);
+
+>>>>>>> 14b4245 (full updated code)
       (function draw() {
         ctx.clearRect(0, 0, c.width, c.height);
         pts.forEach(p => {
@@ -380,6 +574,7 @@
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
           ctx.fillStyle = `hsla(${p.h},75%,65%,${p.a})`;
+<<<<<<< HEAD
           ctx.fill()
         });
         requestAnimationFrame(draw)
@@ -403,6 +598,15 @@
       }
     }
   </style>
+=======
+          ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      })();
+    })();
+
+  </script>
+>>>>>>> 14b4245 (full updated code)
 </body>
 
 </html>

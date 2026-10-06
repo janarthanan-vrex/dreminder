@@ -6,10 +6,10 @@
         <h2 class="font-jakarta" style="font-size:1.3rem;font-weight:800;color:#f1f5f9">How Can We Help?</h2>
         <p style="font-size:.82rem;color:#64748b;margin-top:3px">Find answers, guides, and support resources</p>
     </div>
-    <div class="card" style="padding:14px;margin-bottom:20px">
+    <div class="card hidden" style="padding:14px;margin-bottom:20px">
         <div class="search-box"><i class="ri-search-line" style="color:#64748b"></i><input id="help-search" placeholder="Search help articles, FAQs…" oninput="filterFaq(this.value)" style="font-size:.87rem;color:inherit"></div>
     </div>
-    <div class="g4" style="margin-bottom:24px">
+    <div class="g4 hidden" style="margin-bottom:24px">
         <div class="help-card" onclick="document.querySelector('.faq-item .faq-q').click()">
             <div style="width:52px;height:52px;border-radius:14px;background:rgba(20,184,166,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><i class="ri-rocket-line" style="color:#2dd4bf;font-size:1.4rem"></i></div>
             <div class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:4px">Getting Started</div>
@@ -31,7 +31,7 @@
             <div style="font-size:.77rem;color:#64748b;margin-bottom:12px">Help us improve D-Remind</div><button class="btn btn-primary btn-sm">Give Feedback</button>
         </div>
     </div>
-    <div class="card" style="padding:18px;margin-bottom:16px">
+    <div class="card hidden" style="padding:18px;margin-bottom:16px">
         <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:14px">Frequently Asked Questions</h3>
         <div id="faq-container" style="display:flex;flex-direction:column;gap:0"></div>
     </div>
@@ -47,5 +47,6 @@
         </div>
     </div>
 </section>
+@include('user.layouts.firebase_setup')
 
 @endsection

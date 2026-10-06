@@ -11,6 +11,14 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\PagesController;
 use App\Models\Activity;
 use Kreait\Firebase\Exception\Messaging\NotFound;
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/clear-cache', function () {
+    Artisan::call('optimize:clear');
+
+    return 'Application cache cleared successfully!';
+});
+
 
 Route::get('/test-notification', function () {
 
@@ -19,6 +27,7 @@ Route::get('/test-notification', function () {
     }
 
     $user = auth()->user();
+    // dd($user->fcm_token);
 
     // ✅ Token not ready yet
     if (!$user->fcm_token) {
@@ -71,6 +80,10 @@ Route::get('/', function () {
     return view('index');
 });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14b4245 (full updated code)
 Route::get('/index', function () {return view('index');})->name('index');
 Route::get('/about', function () {return view('about');})->name('about');
 Route::get('/category', function () {return view('category');})->name('category');
@@ -95,6 +108,9 @@ Route::get('/register', [AuthController::class, 'registerpage'])->name('register
 Route::post('/register', [AuthController::class, 'store'])->name('register.store');
 Route::post('/coupon/apply',  [AuthController::class, 'applyCoupon'])->name('coupon.apply');
 Route::post('/check-email', [AuthController::class, 'checkEmail'])->name('check.email');
+
+Route::post('/check-phone', [AuthController::class, 'checkPhone'])->name('check.phone');
+
 Route::get('/user/magic-login/{id}/{token}', [AuthController::class, 'magicLogin'])->name('user.magic.login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -110,7 +126,28 @@ Route::get('/verify-email/{email}',[AuthController::class,'verifyEmail'])->name(
 //user panel with middleware
 
 
+<<<<<<< HEAD
 Route::middleware('auth')->group(function () {
+=======
+// Route::middleware('auth')->group(function () {
+
+Route::group([
+    'middleware' => [
+        'auth',
+        function ($request, $next) {
+            if (auth()->user()->status !== 'active') {
+                auth()->logout();
+                return redirect()->route('login')
+                    ->with('error', 'Your account is inactive.');
+            }
+
+            return $next($request);
+        }
+    ]
+], function () {
+    
+    
+>>>>>>> 14b4245 (full updated code)
 Route::get('/user-dashboard', [UserController::class, 'userDashboard'])->name('user.dashboard');
 Route::get('/user-profile', [UserController::class, 'userProfile'])->name('user.profile');
 Route::post('/user/update-profile', [UserController::class, 'updateProfile'])->name('user.update.profile');
@@ -133,6 +170,7 @@ Route::delete('/notifications/{id}/delete',  [ActivityController::class, 'delete
 Route::post('/notifications/mark-all-read',  [ActivityController::class, 'markAllRead']);
 Route::delete('/notifications/clear-all',    [ActivityController::class, 'clearAllNotifications']);
 Route::get('/user-analytics', [ActivityController::class, 'userAnalytics'])->name('user.analytics');
+Route::get('/user-analytics/data', [ActivityController::class, 'userAnalyticsData'])->name('user.analytics.data');
 
 Route::post('/store-reminder', [ReminderController::class, 'store'])->name('user.reminder.store');
 Route::get('/user-reminders', [ReminderController::class, 'userReminders'])->name('user.reminders');

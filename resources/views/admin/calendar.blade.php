@@ -30,6 +30,12 @@
     --row-bg: rgba(255, 255, 255, 0.03);
     --ctrl-bg: rgba(255, 255, 255, 0.05);
   }
+<<<<<<< HEAD
+=======
+  .cal-side, .day-panel, #month-events-v2, .month-ev-item {
+  min-width: 0;
+}
+>>>>>>> 14b4245 (full updated code)
 
   .light {
     --bg: #f0f0fa;
@@ -45,6 +51,12 @@
     --row-bg: rgba(0, 0, 0, 0.03);
     --ctrl-bg: rgba(0, 0, 0, 0.04);
   }
+<<<<<<< HEAD
+=======
+  #confirm-modal{
+      z-index: 9000 !important;
+  }
+>>>>>>> 14b4245 (full updated code)
 
   .font-jakarta {
     font-family: 'Plus Jakarta Sans', sans-serif
@@ -536,7 +548,12 @@
     background: var(--row-bg);
     border: 1px solid var(--border);
     flex: 1;
+<<<<<<< HEAD
     min-width: 0
+=======
+    min-width: 0;
+    overflow: hidden;
+>>>>>>> 14b4245 (full updated code)
   }
 
   .cal-stat-num {
@@ -544,7 +561,18 @@
     font-weight: 800;
     font-family: 'Plus Jakarta Sans', sans-serif;
     line-height: 1;
+<<<<<<< HEAD
     margin-bottom: 3px
+=======
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  .cal-stat-num[data-long="true"] {
+    font-size: 0.92rem;
+>>>>>>> 14b4245 (full updated code)
   }
 
   .cal-stat-lbl {
@@ -560,7 +588,11 @@
     gap: 6px;
     overflow-x: auto;
     padding-bottom: 2px;
+<<<<<<< HEAD
     scrollbar-width: none
+=======
+    scrollbar-width: thin
+>>>>>>> 14b4245 (full updated code)
   }
 
   .cat-filter-bar::-webkit-scrollbar {
@@ -836,6 +868,54 @@
   #mark-btn {
     display: none !important;
   }
+<<<<<<< HEAD
+=======
+  
+  .modal-bg {
+    z-index: -4 !important;
+  }
+  
+  @media (max-width: 640px) {
+    #cal-stats-row {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+        overflow-x: visible !important;
+    }
+
+    .cal-stat {
+        padding: 8px 6px;
+        flex: unset; /* grid handles sizing now, not flex */
+    }
+
+    .cal-stat-num {
+        font-size: 1.05rem;
+    }
+
+    .cal-stat-num[data-long="true"] {
+        font-size: 0.85rem;
+    }
+
+    .cal-stat-lbl {
+        font-size: 0.62rem;
+        white-space: normal; /* allow labels like "Categories" to wrap if needed */
+    }
+}
+
+@media (max-width: 480px) {
+    #cal-stats-row {
+        grid-template-columns: repeat(1, 1fr) !important;
+    }
+
+    .cal-stat-num {
+        font-size: 0.95rem;
+    }
+
+    .cal-stat-num[data-long="true"] {
+        font-size: 0.78rem;
+    }
+}
+>>>>>>> 14b4245 (full updated code)
 </style>
 
 <section id="page-calendar" style="max-width:1280px;margin:0 auto">
@@ -886,12 +966,15 @@
   <div class="card" style="padding:14px 16px;margin-bottom:14px">
     <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
       <div style="display:flex;gap:6px;align-items:center">
-        <button class="btn btn-ghost btn-xs" onclick="calPrev()" style="padding:7px 10px!important"><i class="ri-arrow-left-s-line" style="font-size:1rem"></i></button>
-        <button class="btn btn-ghost btn-xs" onclick="calGoToday()" style="padding:6px 12px!important;font-size:.75rem">Today</button>
-        <button class="btn btn-ghost btn-xs" onclick="calNext()" style="padding:7px 10px!important"><i class="ri-arrow-right-s-line" style="font-size:1rem"></i></button>
+        
+        <button class="btn btn-ghost btn-xs" onclick="calGoToday()" style="padding:8px 12px!important;font-size:.75rem">Today</button>
+        <button class="btn btn-ghost btn-xs" onclick="calPrev()" style="padding:5px 10px!important"><i class="ri-arrow-left-s-line" style="font-size:1rem"></i></button>
+        <select class="cal-jump-select" id="cal-month-sel" onchange="calJump()"></select>
+        <button class="btn btn-ghost btn-xs" onclick="calNext()" style="padding:5px 10px!important"><i class="ri-arrow-right-s-line" style="font-size:1rem"></i></button>
       </div>
       <div style="display:flex;gap:6px;align-items:center">
-        <select class="cal-jump-select" id="cal-month-sel" onchange="calJump()"></select>
+          
+        
         <select class="cal-jump-select" id="cal-year-sel" onchange="calJump()"></select>
       </div>
       <div id="cal-label-v2" class="font-jakarta" style="font-weight:800;font-size:1rem;color:var(--text);flex:1;text-align:center;min-width:120px"></div>
@@ -941,7 +1024,7 @@
           <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:var(--text)">This Month</h3>
           <span class="badge badge-purple" id="month-ev-cnt-v2">0</span>
         </div>
-        <div id="month-events-v2" style="max-height:500px;overflow-y:auto"></div>
+        <div id="month-events-v2" style="max-height:500px;overflow-y:auto;overflow-x:hidden"></div>
       </div>
     </div>
 
@@ -951,7 +1034,7 @@
 <!-- ══════════════════════════════════
      DAY DETAIL MODAL
 ══════════════════════════════════ -->
-<div class="cal-overlay" id="day-overlay" onclick="if(event.target===this)closeDayModal()">
+<div class="cal-overlay" id="day-overlay" ">
   <div class="cal-modal-box" id="day-modal-box">
     <div class="day-modal-header">
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -976,7 +1059,7 @@
 <!-- ══════════════════════════════════
      QUICK CREATE MODAL
 ══════════════════════════════════ -->
-<div class="cal-overlay" id="qc-overlay" onclick="if(event.target===this)closeQuickCreate()">
+<div class="cal-overlay" id="qc-overlay" >
   <div class="cal-modal-box" id="qc-box">
     <div class="qc-header">
       <div style="display:flex;align-items:center;justify-content:space-between">
@@ -1887,6 +1970,7 @@
     _calM = n.getMonth();
     _buildJumpSelects();
     _buildCatFilter();
+<<<<<<< HEAD
     // Load default user (first user)
    if (DEFAULT_USER_ID)
 {
@@ -1894,16 +1978,46 @@
         DEFAULT_USER_ID
     );
 }
+=======
+    if (!DEFAULT_USER_ID) {
+      document.getElementById('cal-user-hint-text').textContent = 'Select a user to view the calendar';
+    }
+    _renderAll();
+    // Load default user (first user)
+    if (DEFAULT_USER_ID) {
+      adminCalSelectUser(
+        DEFAULT_USER_ID
+      );
+    }
+>>>>>>> 14b4245 (full updated code)
   }
 
   function _buildJumpSelects() {
     const ms = document.getElementById('cal-month-sel');
     const ys = document.getElementById('cal-year-sel');
+<<<<<<< HEAD
     ms.innerHTML = CAL_MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
     const cy = new Date().getFullYear();
     ys.innerHTML = '';
     for (let y = cy - 5; y <= cy + 10; y++) ys.innerHTML += `<option value="${y}">${y}</option>`;
   }
+=======
+
+    ms.innerHTML = CAL_MONTHS.map((m, i) =>
+        `<option value="${i}">${m}</option>`
+    ).join('');
+
+    const startYear = 2026;
+    const endYear = new Date().getFullYear() + 100; // 100 years into the future
+
+    ys.innerHTML = '';
+
+    for (let y = startYear; y <= endYear; y++) {
+        ys.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+}
+
+>>>>>>> 14b4245 (full updated code)
 
   function _syncJumpSelects() {
     document.getElementById('cal-month-sel').value = _calM;
@@ -1934,6 +2048,11 @@
     _renderAll();
   }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 14b4245 (full updated code)
   function calGoToday() {
     const n = new Date();
     _calY = n.getFullYear();
@@ -2010,9 +2129,29 @@
     _renderStats();
   }
 
+<<<<<<< HEAD
   function _renderGrid() {
     const grid = document.getElementById('cal-grid-v2');
     grid.innerHTML = '';
+=======
+   function _renderGrid() {
+    const grid = document.getElementById('cal-grid-v2');
+    grid.innerHTML = '';
+    if (!_selUserId) {
+      const placeholder = document.createElement('div');
+      placeholder.style.gridColumn = '1 / -1';
+      placeholder.style.padding = '36px 16px';
+      placeholder.style.textAlign = 'center';
+      placeholder.style.color = 'var(--text3)';
+      placeholder.style.fontSize = '0.95rem';
+      placeholder.style.background = 'rgba(255,255,255,0.04)';
+      placeholder.style.borderRadius = 'var(--radius-sm)';
+      placeholder.style.border = '1px dashed rgba(148,163,184,0.35)';
+      placeholder.innerHTML = '<div style="font-weight:700;color:var(--text);margin-bottom:6px">Select a user to see the calendar</div><div style="font-size:.84rem">Search for a user above to load their reminders.</div>';
+      grid.appendChild(placeholder);
+      return;
+    }
+>>>>>>> 14b4245 (full updated code)
     const first = new Date(_calY, _calM, 1).getDay();
     const days = new Date(_calY, _calM + 1, 0).getDate();
     const tod = new Date();
@@ -2116,7 +2255,7 @@
           <i class="ri-calendar-check-line" style="font-size:1.5rem;color:rgba(124,58,237,.45)"></i>
         </div>
         <p class="font-jakarta" style="font-size:.88rem;font-weight:700;color:var(--text2);margin-bottom:6px">No reminders on this day</p>
-        <p style="font-size:.78rem;color:var(--text3);margin-bottom:16px">Click the button below to add one</p>
+        
         </div>`;
     }
     // <button class="btn btn-primary btn-xs" onclick="openQuickCreateFromDay()"><i class="ri-add-line"></i> Add Reminder</button>
@@ -2140,7 +2279,11 @@
         if (r.subcategory) meta.push(`<i class="ri-price-tag-3-line"></i>${r.subcategory}`);
         if (r.dueTime) meta.push(`<i class="ri-time-line"></i>${r.dueTime}`);
         if (r.provider) meta.push(`<i class="ri-building-line"></i>${r.provider}`);
+<<<<<<< HEAD
         if (r.cost) meta.push(`<i class="ri-money-rupee-circle-line"></i>₹${Number(r.cost).toLocaleString('en-IN')}`);
+=======
+        if (r.cost) meta.push(`£ ${Number(r.cost).toLocaleString('en-IN')}`);
+>>>>>>> 14b4245 (full updated code)
         if (r.frequency) meta.push(`<i class="ri-repeat-line"></i>${r.frequency}`);
 
         return `<div class="day-ev-card">
@@ -2149,15 +2292,15 @@
             <i class="${cat.icon}" style="color:${cat.color};font-size:.95rem"></i>
           </div>
           <div style="flex:1;min-width:0">
-            <div style="font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:2px">${r.title}</div>
-            <div style="font-size:.72rem;color:var(--text3)">${cat.name}</div>
+            <div style="font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:2px;word-break:break-all;">${r.title}</div>
+            <div style="font-size:.72rem;color:var(--text3);word-break:break-all;">${cat.name}</div>
           </div>
           ${pill}
         </div>
         ${meta.length>0?`<div style="display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:10px">
-          ${meta.map(m=>`<div style="display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--text3)">${m}</div>`).join('')}
+          ${meta.map(m=>`<div style="display:flex;align-items:center;gap:4px;font-size:.72rem;color:var(--text3);word-break:break-all;">${m}</div>`).join('')}
         </div>`:''}
-        ${r.description?`<div style="font-size:.78rem;color:var(--text3);background:var(--row-bg);border-radius:6px;padding:8px 10px;margin-bottom:10px">${r.description}</div>`:''}
+        ${r.description?`<div style="font-size:.78rem;color:var(--text3);background:var(--row-bg);border-radius:6px;padding:8px 10px;margin-bottom:10px;word-break:break-all;">${r.description}</div>`:''}
         <div style="display:flex;gap:6px">
           ${r.status==='active'?`<button class="btn btn-teal btn-xs" id="mark-btn" onclick="markDone('${r.id}');_refreshDayModal('${ds}','${d}')"><i class="ri-check-line"></i> Mark Completed</button>`:''}
           <button class="btn btn-danger btn-xs" id="remove-btn" onclick="deleteRem('${r.id}');_refreshDayModal('${ds}','${d}')"><i class="ri-delete-bin-line"></i> Remove</button>
@@ -2214,8 +2357,18 @@
       };
       const n = daysUntil(r.dueDate);
       const dn = parseInt(r.dueDate.split('-')[2]);
+<<<<<<< HEAD
       const dp = r.status === 'completed' ? `<span class="pill-done" style="font-size:.58rem">Completed</span>` :
         n < 0 ? `<span class="pill-urgent" style="font-size:.58rem">Overdue</span>` :
+=======
+      const dp = r.status === 'completed' ? `<span class="pill-done" style="font-size:.58rem">Completed</span>` 
+      : n < 0
+    ? `<span class="pill-urgent" style="font-size:.58rem">Overdue</span>`
+    : n === 0
+      ? `<span class="pill-urgent" style="font-size:.58rem">Today</span>`
+        
+        :
+>>>>>>> 14b4245 (full updated code)
         n <= 7 ? `<span class="pill-soon" style="font-size:.58rem">In ${n}d</span>` :
         `<span class="pill-ok" style="font-size:.58rem">In ${n}d</span>`;
       return `<div class="month-ev-item" onclick="_selectDay('${r.dueDate}',${dn})">
@@ -2349,6 +2502,7 @@
 
     ];
 
+<<<<<<< HEAD
     document.getElementById('cal-stats-row').innerHTML =
         stats.map(s => `
 
@@ -2356,6 +2510,36 @@
 
             <div class="cal-stat-num"
                 style="color:${s.color}">
+=======
+    <!--document.getElementById('cal-stats-row').innerHTML =-->
+    <!--    stats.map(s => `-->
+
+    <!--    <div class="cal-stat">-->
+
+    <!--        <div class="cal-stat-num"-->
+    <!--            style="color:${s.color}">-->
+    <!--            ${s.num}-->
+    <!--        </div>-->
+
+    <!--        <div class="cal-stat-lbl">-->
+    <!--            ${s.lbl}-->
+    <!--        </div>-->
+
+    <!--    </div>-->
+
+    <!--`).join('');-->
+    document.getElementById('cal-stats-row').innerHTML =
+    stats.map(s => {
+        const numStr = String(s.num);
+        const isLong = numStr.length > 6; // e.g. £97802080.00 → shrink
+
+        return `
+        <div class="cal-stat">
+
+            <div class="cal-stat-num"
+                style="color:${s.color}"
+                data-long="${isLong}">
+>>>>>>> 14b4245 (full updated code)
                 ${s.num}
             </div>
 
@@ -2364,8 +2548,13 @@
             </div>
 
         </div>
+<<<<<<< HEAD
 
     `).join('');
+=======
+    `;
+    }).join('');
+>>>>>>> 14b4245 (full updated code)
 
 }
 
@@ -2496,7 +2685,11 @@
 
     // rems.push(newRem);
     // saveRems(rems);
+<<<<<<< HEAD
     // toast('Reminder created! 🎉','success');
+=======
+    // toast('Reminder created 🎉','success');
+>>>>>>> 14b4245 (full updated code)
     // closeQuickCreate();
     // _renderAll();
     // // Re-open day modal if we were on that day
@@ -2532,6 +2725,7 @@
 
  
 </script>
+<<<<<<< HEAD
 <script>
 
 document.addEventListener(
@@ -2543,5 +2737,18 @@ document.addEventListener(
 );
 
 </script>
+=======
+<!--<script>-->
+
+<!--document.addEventListener(-->
+<!--    'DOMContentLoaded',-->
+<!--    function ()-->
+<!--    {-->
+<!--        initCalendarV2();-->
+<!--    }-->
+<!--);-->
+
+<!--</script>-->
+>>>>>>> 14b4245 (full updated code)
 
 @endsection

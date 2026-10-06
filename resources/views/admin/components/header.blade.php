@@ -20,10 +20,7 @@ $notificationCount = \App\Models\Activity::where('notify_for','admin')
         <a class="tb-btn notif-btn" href="index">
             <i class="ri-global-line"></i><span class="notif-dot"></span>
         </a>
-        <div class="search-box hide-mobile" style="width: 200px">
-            <i class="ri-search-line" style="color: var(--text3); font-size: 0.85rem"></i>
-            <input placeholder="Quick search…" />
-        </div>
+       
         <div class="tb-divider hide-mobile"></div>
          @if(auth('admin')->user()->hasPermission('Notifications', 'notifications.view'))
         <a class="tb-btn notif-btn" href="{{route('admin.notifications')}}">

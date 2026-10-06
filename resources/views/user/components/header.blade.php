@@ -4,12 +4,12 @@
         <h1 id="page-title" class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#f1f5f9"></h1>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
-        <button onclick="window.location.href='index'"
-            class="btn btn-icon btn-ghost"
-            style="position:relative"
-            title="Home">
-            <i class="ri-global-line" style="font-size:1rem"></i>
-        </button>
+        <a href="index" target="_blank"
+    class="btn btn-icon btn-ghost"
+    style="position:relative"
+    title="Home">
+    <i class="ri-global-line" style="font-size:1rem"></i>
+</a>
 
         <!-- Help -->
         <button onclick="window.location.href='user-help'"
@@ -28,7 +28,7 @@
         </a>
 
         <!-- Reminder Modal Button -->
-        <button class="btn btn-primary btn-sm mobile-hide-xs" onclick="openReminderModal()" style="padding:7px 14px">
+        <button class="btn btn-primary btn-sm mobile-hide-sm" onclick="openReminderModal()" style="padding:7px 14px">
             <i class="ri-add-line"></i>
             <span class="mobile-hide-sm">New Reminder</span>
         </button>
@@ -38,8 +38,12 @@
         $user = Auth::user();
 
         $unreadCount = Activity::where('user_id', $user->id)
-        ->where('is_seen', 0)
-        ->count();
+->where(function ($query) {
+$query->where('notify_for', '!=', 'admin')
+->orWhereNull('notify_for')
+->orWhere('notify_for', '');
+})
+->count();
         @endphp
         <!-- Theme Button -->
         <a href="{{route('user.notifications')}}" class="btn btn-icon btn-ghost" style="position:relative" title="Notifications">

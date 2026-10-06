@@ -76,11 +76,19 @@
                             </div>
 
                             <div style="font-size: 0.75rem; color: var(--text3); margin-top: 2px">
+<<<<<<< HEAD
                                 System Administrator
                             </div>
 
                             <span class="badge badge-purple" style="margin-top: 6px">
                                 <i class="ri-shield-flash-line"></i> Full Access
+=======
+                                 WDRS-00{{$admin->id}}
+                            </div>
+
+                            <span class="badge badge-purple" style="margin-top: 6px">
+                                <i class="ri-shield-flash-line"></i> {{ $admin->roles?->rolename}}
+>>>>>>> 14b4245 (full updated code)
                             </span>
                         </div>
                     </div>
@@ -88,14 +96,22 @@
                     <div style="display: flex; flex-direction: column; gap: 13px">
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">Full Name</label>
+=======
+                            <label class="label">Full Name <span style="color:#f43f5e !important">*</span></label>
+>>>>>>> 14b4245 (full updated code)
 
                             <input class="inp" type="text" name="name" value="{{ $admin->name }}" maxlength="25" oninput="this.value=this.value.replace(/[^a-zA-Z\s]/g,'')">
                             <small class="err" id="name-error"></small>
                         </div>
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">Email Address</label>
+=======
+                            <label class="label">Email Address <span style="color:#f43f5e !important">*</span></label>
+>>>>>>> 14b4245 (full updated code)
 
                             <input
                                 class="inp"
@@ -105,7 +121,11 @@
                         </div>
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">Phone</label>
+=======
+                            <label class="label">Phone </label>
+>>>>>>> 14b4245 (full updated code)
 
                             <input class="inp" type="tel" name="phone" value="{{ $admin->phone }}" oninput="this.value=this.value.replace(/[^0-9]/g,'')" maxlength="15">
                             <small class="err" id="phone-error"></small>
@@ -136,27 +156,54 @@
                     <div style="display:flex;flex-direction:column;gap:12px">
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">Current Password</label>
                             <div style="position:relative">
                                 <input class="inp" id="current_password" type="password" name="current_password" placeholder="••••••••" style="padding-right:45px">
+=======
+                            <label class="label">
+        Current Password <span style="color:#f43f5e !important">*</span>
+        
+    </label>
+                            <div style="position:relative">
+                                <input class="inp" id="current_password" type="password" name="current_password" placeholder="Enter your current password" style="padding-right:45px">
+>>>>>>> 14b4245 (full updated code)
                                 <i class="ri-eye-line" onclick="togglePassword('current_password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;font-size:18px"></i>
                             </div>
                             <small class="err" id="current_password-error"></small>
                         </div>
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">New Password</label>
                             <div style="position:relative">
                                 <input class="inp" id="new_password" type="password" name="new_password" placeholder="Min 8 characters" style="padding-right:45px">
+=======
+                             <label class="label" style="display:flex;align-items:center;gap:6px">
+        New Password <span style="color:#f43f5e !important">*</span>
+        <i class="ri-information-line" title="Password must be at least 8 characters and contain uppercase, lowercase, number and special character" style="font-size:14px;color:#888;cursor:pointer"></i>
+    </label>
+                            <div style="position:relative">
+                                <input class="inp" id="new_password" type="password" name="new_password" placeholder="Enter your new password" style="padding-right:45px">
+>>>>>>> 14b4245 (full updated code)
                                 <i class="ri-eye-line" onclick="togglePassword('new_password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;font-size:18px"></i>
                             </div>
                             <small class="err" id="new_password-error"></small>
                         </div>
 
                         <div>
+<<<<<<< HEAD
                             <label class="label">Confirm Password</label>
                             <div style="position:relative">
                                 <input class="inp" id="confirm_password" type="password" name="confirm_password" placeholder="Repeat password" style="padding-right:45px">
+=======
+                             <label class="label">
+        Confirm Password <span style="color:#f43f5e !important">*</span>
+        
+    </label>
+                            <div style="position:relative">
+                                <input class="inp" id="confirm_password" type="password" name="confirm_password" placeholder="Confirm your new password" style="padding-right:45px">
+>>>>>>> 14b4245 (full updated code)
                                 <i class="ri-eye-line" onclick="togglePassword('confirm_password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:#888;font-size:18px"></i>
                             </div>
                             <small class="err" id="confirm_password-error"></small>

@@ -21,13 +21,22 @@ $catLabels = [
 <script>tailwind.config={theme:{extend({colors:{primary:'#7c3aed',secondary:'#06b6d4',accent:'#10b981',dark:'#030014',surface:'#0a0a1f',card:'#0f0f2a'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}}</script>
 <style>
   .article-hero { position:relative; padding:140px 0 80px; background:linear-gradient(180deg,rgba(3,0,20,0) 0%,rgba(3,0,20,1) 100%); }
+<<<<<<< HEAD
   .article-hero-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.15; z-index:0; }
   .article-hero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(3,0,20,0.7) 0%,rgba(3,0,20,0.85) 40%,rgba(3,0,20,0.95) 70%,rgba(3,0,20,1) 100%); z-index:1; }
+=======
+  .article-hero-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.2; z-index:0; }
+  .article-hero-overlay { position:absolute; inset:0;  z-index:1; }
+>>>>>>> 14b4245 (full updated code)
   .article-meta { display:flex; align-items:center; gap:20px; flex-wrap:wrap; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,.06); margin-bottom:32px; }
   .article-stats { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
   .article-stat { display:flex; align-items:center; gap:6px; font-size:.8rem; color:rgba(255,255,255,.4); font-weight:600; }
   .article-stat i { font-size:1.1rem; color:rgba(124,58,237,.6); }
+<<<<<<< HEAD
   .article-body { color:rgba(255,255,255,.75); line-height:1.85; font-size:1.05rem; }
+=======
+  .article-body { color:rgba(255,255,255,.75); line-height:1.85; font-size:1.05rem; text-align:justify;}
+>>>>>>> 14b4245 (full updated code)
   .article-body h2 { font-size:1.85rem; font-weight:800; color:#fff; margin:48px 0 20px; line-height:1.3; scroll-margin-top:100px; }
   .article-body h3 { font-size:1.45rem; font-weight:700; color:#e2e8f0; margin:36px 0 16px; line-height:1.4; scroll-margin-top:100px; }
   .article-body h4 { font-size:1.2rem; font-weight:700; color:#cbd5e1; margin:28px 0 14px; scroll-margin-top:100px; }
@@ -50,6 +59,13 @@ $catLabels = [
   .article-body pre { margin:32px 0; padding:24px; background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow-x:auto; font-size:.88rem; line-height:1.7; }
   .article-body code { font-family:'Monaco','Courier New',monospace; color:#67e8f9; }
   .article-body p code { padding:3px 8px; background:rgba(124,58,237,.15); border-radius:6px; font-size:.9em; color:#c4b5fd; border:1px solid rgba(124,58,237,.2); }
+<<<<<<< HEAD
+=======
+  .article-body span span{
+      color:rgb(255 255 255 / 0.85) !important;
+      font-family: 'Inter', sans-serif !important;
+  }
+>>>>>>> 14b4245 (full updated code)
   .share-box { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:20px; padding:24px; margin-bottom:24px; }
   .share-title { font-size:.9rem; font-weight:800; color:#fff; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; display:flex; align-items:center; gap:10px; }
   .share-title i { font-size:1.1rem; color:#06b6d4; }
@@ -116,6 +132,7 @@ $catLabels = [
   <div class="article-hero-overlay"></div>
 
   <div class="max-w-[860px] mx-auto px-6 relative z-10">
+<<<<<<< HEAD
     <div class="page-breadcrumb reveal">
       <a href="{{ url('index') }}">Home</a>
       <span class="sep">/</span>
@@ -123,6 +140,15 @@ $catLabels = [
       <span class="sep">/</span>
       <span>{{ Str::limit($post->title, 40) }}</span>
     </div>
+=======
+    <!--<div class="page-breadcrumb reveal">-->
+    <!--  <a href="{{ url('index') }}">Home</a>-->
+    <!--  <span class="sep">/</span>-->
+    <!--  <a href="{{ url('blog') }}">Blog</a>-->
+    <!--  <span class="sep">/</span>-->
+    <!--  <span>{{ Str::limit($post->title, 40) }}</span>-->
+    <!--</div>-->
+>>>>>>> 14b4245 (full updated code)
 
     <div class="mb-5 reveal">
       <span class="cat-badge {{ $post->category }}">
@@ -131,12 +157,20 @@ $catLabels = [
       </span>
     </div>
 
+<<<<<<< HEAD
     <h1 class="text-3xl md:text-5xl font-black text-white leading-tight mb-6 reveal" data-delay="1">
+=======
+    <h1 class="text-3xl md:text-5xl font-black text-white leading-tight mb-6 reveal" data-delay="1" >
+>>>>>>> 14b4245 (full updated code)
       {{ $post->title }}
     </h1>
 
     @if($post->excerpt)
+<<<<<<< HEAD
     <p class="text-lg text-white/65 leading-relaxed mb-8 reveal" data-delay="2">
+=======
+    <p class="text-lg text-white/65 leading-relaxed mb-8 reveal" data-delay="2" style="word-break:break-all;">
+>>>>>>> 14b4245 (full updated code)
       {{ $post->excerpt }}
     </p>
     @endif
@@ -144,7 +178,11 @@ $catLabels = [
     <div class="article-meta reveal" data-delay="3">
       <div class="article-stats">
         <div class="article-stat"><i class="ri-calendar-line"></i><span>{{ $post->created_at->format('F d, Y') }}</span></div>
+<<<<<<< HEAD
         <div class="article-stat"><i class="ri-time-line"></i><span>{{ $readTime }} min read</span></div>
+=======
+        <!--<div class="article-stat"><i class="ri-time-line"></i><span>{{ $readTime }} min read</span></div>-->
+>>>>>>> 14b4245 (full updated code)
       </div>
     </div>
   </div>

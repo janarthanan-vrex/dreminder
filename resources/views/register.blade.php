@@ -2,6 +2,25 @@
 @section('content')
 <style>
     .o2{display: none !important;}
+    .auth-submit-dark{
+        min-width: fit-content !important;
+        padding: 16px 10px !important;
+    }
+    .btn-secondary{
+        padding: 16px 10px !important;
+    }
+    @media(min-width:767px){
+        .success-toast-dark.show {
+            width: max-content;
+            left: 20%;
+        }
+    }
+  .plan-feature-text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;   /* ✅ preferred over word-break: break-all */
+}
+
 </style>
 
 <script>
@@ -47,9 +66,9 @@
     }
     .step-circle {
       width: 40px; height: 40px; border-radius: 50%;
-      background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.3);
       display: flex; align-items: center; justify-content: center;
-      font-weight: 700; color: rgba(255,255,255,.3); font-size: 0.9rem;
+      font-weight: 700; color: rgba(255,255,255,.5); font-size: 0.9rem;
       transition: all 0.3s; position: relative;
     }
     .step-item.active .step-circle {
@@ -65,7 +84,7 @@
       content: '\e5ca'; font-family: 'remixicon';
       position: absolute; font-size: 1.2rem;
     }
-    .step-label { font-size: 0.7rem; color: rgba(255,255,255,.3); font-weight: 600; text-align: center; transition: color 0.3s; }
+    .step-label { font-size: 0.7rem; color: rgba(255,255,255,.6); font-weight: 600; text-align: center; transition: color 0.3s; }
     .step-item.active .step-label, .step-item.completed .step-label { color: rgba(255,255,255,.8); }
 
     /* Field error — use JS to toggle, NOT a CSS class toggle, to avoid Blade conflicts */
@@ -117,7 +136,7 @@
       content: ''; width: 6px; height: 6px; border-radius: 50%; background: white;
     }
     .plan-badge {
-      display: inline-block; font-size: 9px; font-weight: 700;
+      display: inline-block; font-size: 9px; font-weight: 700;max-width:90%;
       letter-spacing: 0.06em; padding: 2px 8px; border-radius: 20px; text-transform: uppercase;
     }
 
@@ -166,13 +185,13 @@
       <a href="index">Home</a><span class="sep">/</span><span>Register</span>
     </div>
     <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 w-fit reveal">
-      <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Create your account
+      <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Begin Setup
     </div>
     <h1 class="reveal">
-      Join for just <span class="grad-text">£{{ number_format($first_plan->total_price, 2) }}/year</span>
+     Organise Everything  <br><span class="grad-text">Easily</span>
     </h1>
     <p class="reveal" data-delay="1">
-      Complete access to all features. Set up your account in minutes and never miss a deadline again.
+      Register your account to organise reminders, track upcoming dates, and manage everything in a single, clear view.
     </p>
   </div>
 </section>
@@ -189,33 +208,34 @@
             <i class="ri-vip-crown-line text-2xl text-white"></i>
           </div>
           <div>
-            <h3 class="text-base font-bold text-white">What's included</h3>
-            <p class="text-[11px] text-white/40">Everything from £{{ number_format($first_plan->total_price, 2) }}/year</p>
+            <h3 class="text-base font-bold text-white">Your Plan at a Glance</h3>
+            
+           
           </div>
         </div>
-        <ul class="space-y-3 text-xs text-white/60">
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Unlimited reminders</strong> — track every bill & subscription</span></li>
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Smart notifications</strong> — push, email & SMS alerts</span></li>
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Family sharing</strong> — up to 5 household members</span></li>
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Savings dashboard</strong> — see how much you save</span></li>
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Priority support</strong> — get help when you need it</span></li>
-          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">All future updates</strong> — new features automatically included</span></li>
+        <ul class="space-y-3 text-xs text-white/80">
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Unlimited reminders</strong> — manage tasks and renewals easily</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Multi-channel alerts</strong> — email and push notifications</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Shared access</strong> — manage reminders across your household</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Clear overview</strong> — view upcoming and completed reminders</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Dedicated support</strong> — support available whenever you need</span></li>
+          <li class="flex items-start gap-2"><i class="ri-check-line text-accent mt-0.5 flex-shrink-0"></i><span><strong class="text-white">Continuous updates</strong> — new features added without extra</span></li>
         </ul>
       </div>
 
       <div class="glass-strong rounded-3xl p-6">
-        <h3 class="text-sm font-semibold text-white mb-4">What happens next?</h3>
+        <h3 class="text-sm font-semibold text-white mb-4">Your Next Steps to Begin</h3>
         <ol class="space-y-3">
-          <li class="flex gap-3 text-[11px] text-white/40"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">1</span><span>Payment is processed securely and your account is created instantly.</span></li>
-          <li class="flex gap-3 text-[11px] text-white/40"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">2</span><span>Confirm your email address via the verification link we send.</span></li>
-          <li class="flex gap-3 text-[11px] text-white/40"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">3</span><span>Add your first reminders — insurance, energy, subscriptions, etc.</span></li>
-          <li class="flex gap-3 text-[11px] text-white/40"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">4</span><span>Relax! We'll notify you before anything renews.</span></li>
+          <li class="flex gap-3 text-[11px] text-white/80"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">1</span><span>Complete your registration and secure payment</span></li>
+          <li class="flex gap-3 text-[11px] text-white/80"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">2</span><span>Verify your email to activate your account</span></li>
+          <li class="flex gap-3 text-[11px] text-white/80"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">3</span><span>Add your reminders based on your needs</span></li>
+          <li class="flex gap-3 text-[11px] text-white/80"><span class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-[11px] text-purple-300 font-bold flex-shrink-0">4</span><span>Stay informed with timely alerts before due dates</span></li>
         </ol>
       </div>
 
       <div class="glass-strong rounded-2xl p-4 bg-gradient-to-br from-accent/10 to-accent/5 border border-accent/20 text-center">
         <i class="ri-medal-line text-3xl text-accent mb-2"></i>
-        <p class="text-[10px] text-white/40">Not happy? Get a full refund within 30 days, no questions asked.</p>
+        <p class="text-[10px] text-white/80">Everything you need to manage reminders in one place</p>
       </div>
     </div>
 
@@ -229,10 +249,7 @@
             <a href="login" class="text-purple-300 hover:text-white transition">Login here</a>
           </p>
         </div>
-        <div class="text-right">
-          <div class="text-2xl font-black" id="headerPrice">£{{ number_format($first_plan->total_price, 2) }}</div>
-          <p class="text-[10px] text-white/40">per year</p>
-        </div>
+        
       </div>
 
       <!-- Progress Indicator -->
@@ -264,66 +281,82 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="auth-label">First name <span style="color:red;">*</span></label>
-                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="firstName" id="firstName" class="auth-input" placeholder="Enter Your First Name">
+                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="firstName" id="firstName" class="auth-input" placeholder="Enter your first name">
                 <p class="field-error" id="err-firstName">First name is required.</p>
               </div>
               <div>
                 <label class="auth-label">Last name <span style="color:red;">*</span></label>
-                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="lastName" id="lastName" class="auth-input" placeholder="Enter Your Last Name">
+                <input type="text" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="lastName" id="lastName" class="auth-input" placeholder="Enter your last name">
                 <p class="field-error" id="err-lastName">Last name is required.</p>
               </div>
             </div>
 
             <div>
               <label class="auth-label">Email address <span style="color:red;">*</span></label>
-              <input maxlength="40" type="email" name="email" id="email" class="auth-input" placeholder="Enter Your Email">
+              <input maxlength="40" type="email" name="email" id="email" class="auth-input" placeholder="Enter your email">
               <p class="field-error" id="err-email">Please enter a valid email address.</p>
-              <p class="text-[11px] text-white/30 mt-1">We'll send important account updates and reminders here.</p>
+              <p class="text-[11px] text-white/60 mt-1">We'll send important account updates and reminders here.</p>
             </div>
 
             <div>
-              <label class="auth-label flex items-center gap-2">
-                Password <span style="color:red;">*</span>
-                <span class="text-[10px] text-white/30 font-normal">(min 8 chars, 1 uppercase, 1 lowercase, 1 number)</span>
-              </label>
-              <div class="relative">
-                <input maxlength="100" type="password" name="password" id="password" class="auth-input pr-10" placeholder="Create a strong password">
-                <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
-                  <i class="ri-eye-off-line"></i>
-                </button>
-              </div>
-              <div class="strength-bar-dark" id="strengthBar">
-                <div class="strength-seg-dark"></div>
-                <div class="strength-seg-dark"></div>
-                <div class="strength-seg-dark"></div>
-                <div class="strength-seg-dark"></div>
-              </div>
-              <p id="strengthLabel" class="text-[11px] text-white/35 mt-1">Password strength: weak</p>
-              <p class="field-error" id="err-password">Password must be at least 8 chars, include uppercase, lowercase and a number.</p>
-            </div>
+  <label class="auth-label flex items-center gap-2">
+    Password <span style="color:red;">*</span>
+    <!--<span class="text-[10px] text-white/30 font-normal">(min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special character)</span>-->
+    <span class="relative inline-flex items-center group">
+      <i class="ri-information-line text-white/40 hover:text-white/70 cursor-pointer text-sm"></i>
+      <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 bg-black/90 border border-white/10 text-white/70 text-[11px] rounded-md px-3 py-2 z-10 shadow-lg normal-case">
+  Password must contain at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 special character, and 1 number.
+  <span class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-black/90 border-r border-b border-white/10 rotate-45 -mt-1"></span>
+</span>
+    </span>
+  </label>
+  <div class="relative">
+    <input maxlength="100" type="password" name="password" id="password" class="auth-input pr-10" placeholder="Create a strong password">
+    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
+      <i class="ri-eye-line"></i>
+    </button>
+  </div>
+  <div class="strength-bar-dark" id="strengthBar">
+    <div class="strength-seg-dark"></div>
+    <div class="strength-seg-dark"></div>
+    <div class="strength-seg-dark"></div>
+    <div class="strength-seg-dark"></div>
+  </div>
+  <p id="strengthLabel" class="text-[11px] text-white/60 mt-1">Password strength: weak</p>
+  <p class="field-error" id="err-password">Password must be at least 8 chars, include uppercase, lowercase and a number.</p>
+</div>
 
-            <div>
-              <label class="auth-label">Confirm password <span style="color:red;">*</span></label>
-              <div class="relative">
-                <input maxlength="100" type="password" name="confirmPassword" id="confirmPassword" class="auth-input pr-10" placeholder="Re-enter your password">
-                <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
-                  <i class="ri-eye-off-line"></i>
-                </button>
-              </div>
-              <p class="field-error" id="err-confirmPassword">Passwords do not match.</p>
-            </div>
+           <div>
+  <label class="auth-label flex items-center gap-2">
+    Confirm password <span style="color:red;">*</span>
+    <span class="relative inline-flex items-center group">
+      <i class="ri-information-line text-white/40 hover:text-white/70 cursor-pointer text-sm"></i>
+      <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 hidden group-hover:block w-56 bg-black/90 border border-white/10 text-white/70 text-[11px] rounded-md px-3 py-2 z-10 shadow-lg normal-case">
+  Password must contain at least 8 characters, including 1 uppercase letter, 1 lowercase letter, 1 special character, and 1 number.
+  <span class="absolute left-1/2 -translate-x-1/2 top-full w-2 h-2 bg-black/90 border-r border-b border-white/10 rotate-45 -mt-1"></span>
+</span>
+    </span>
+  </label>
+  <div class="relative">
+    <input maxlength="100" type="password" name="confirmPassword" id="confirmPassword" class="auth-input pr-10" placeholder="Confirm your password">
+    <button type="button" id="toggleConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70 text-lg">
+      <i class="ri-eye-line"></i>
+    </button>
+  </div>
+  <p class="field-error" id="err-confirmPassword">Passwords do not match.</p>
+</div>
 
             <div class="space-y-3">
               <div class="flex items-start gap-3">
                 <input type="checkbox" id="termsChk" name="terms" style="accent-color:#7c3aed" class="mt-1">
-                <label for="termsChk" class="text-[11px] text-white/40 leading-relaxed">
+                <label for="termsChk" class="text-[11px] text-white/60 leading-relaxed">
                   I agree to the
-                  <a href="terms" target="_blank" class="text-purple-300 hover:text-white transition">Terms & Conditions</a>
+                  <a href="{{ asset('assets/pdf/terms-condition.pdf') }}" target="_blank" class="text-purple-300 hover:text-white transition">Terms & Conditions</a>
                   and
-                  <a href="privacy" target="_blank" class="text-purple-300 hover:text-white transition">Privacy Policy</a>.
+                  <a href="{{ asset('assets/pdf/privacypolicy.pdf') }}" target="_blank" class="text-purple-300 hover:text-white transition">Privacy Policy</a>.
                 </label>
               </div>
-              <p class="field-error" id="err-terms">You must accept the Terms & Conditions.</p>
+              <p class="field-error" id="err-terms">You must accept the Terms & Conditions and the Privacy Policy.</p>
             </div>
           </div>
         </div>
@@ -336,19 +369,19 @@
           <div class="space-y-4">
             <div>
               <label class="auth-label">Address Line 1 <span style="color:red;">*</span></label>
-              <input maxlength="100" type="text" name="address1" id="address1" class="auth-input" placeholder="123 High Street">
+              <input maxlength="100" type="text" name="address1" id="address1" class="auth-input" placeholder="Enter your address">
               <p class="field-error" id="err-address1">Address line 1 is required.</p>
             </div>
 
             <div>
               <label class="auth-label">Address Line 2 <span class="text-white/25 text-xs">(optional)</span></label>
-              <input maxlength="100" type="text" name="address2" id="address2" class="auth-input" placeholder="Apartment, suite, etc.">
+              <input maxlength="100" type="text" name="address2" id="address2" class="auth-input" placeholder="Enter your address">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="auth-label">Post code <span style="color:red;">*</span></label>
-                <input maxlength="8" type="text" name="postcode" id="postcode" class="auth-input" placeholder="SW1A 1AA">
+                <label class="auth-label">Postal code <span style="color:red;">*</span></label>
+                <input maxlength="8" type="text" name="postcode" id="postcode" class="auth-input" placeholder="Enter your postal code">
                 <p class="field-error" id="err-postcode">Please enter a valid UK postcode (e.g. SW1A 1AA).</p>
               </div>
               <div>
@@ -362,9 +395,9 @@
 
             <div>
               <label class="auth-label">Phone number <span style="color:red;">*</span></label>
-              <input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" type="tel" name="phone" id="phone" class="auth-input" placeholder="+44 7123 456789">
+              <input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" type="tel" name="phone" id="phone" class="auth-input" placeholder="Enter your phone number">
               <p class="field-error" id="err-phone">Please enter a valid phone number (10–15 digits).</p>
-              <p class="text-[11px] text-white/30 mt-1">10–15 digits, including country code.</p>
+              <p class="text-[11px] text-white/60 mt-1">10–15 digits, including country code.</p>
             </div>
           </div>
         </div>
@@ -381,10 +414,10 @@
 
           <div class="grid grid-cols-1 gap-3 mb-6">
             @foreach($plans as $plan)
-            <div class="plan-card {{ $loop->first ? 'selected' : '' }}"
+            <div class="plan-card {{ ($selectedPlan && $selectedPlan->id == $plan->id) ? 'selected' : ($loop->first && !$selectedPlan ? 'selected' : '') }}"
                  data-plan="{{ $plan->plan_name }}"
                  data-plan-id="{{ $plan->id }}"
-                 data-price="{{ number_format($plan->total_price, 2) }}"
+                 data-price="{{ number_format($plan->total_price, 2, '.', '') }}"
                  onclick="selectPlan(this)">
               <div class="plan-radio"></div>
               <div class="mb-2">
@@ -399,9 +432,9 @@
               <div class="text-xl font-black text-white">£{{ number_format($plan->total_price, 2) }}</div>
               <div class="text-[10px] text-white/35 mb-3">{{ $plan->range }}</div>
               @if($plan->features)
-              <ul class="space-y-1.5 text-[10px] text-white/40">
+              <ul class="space-y-1.5 text-[12px] text-white/80">
                 @foreach(is_array($plan->features) ? $plan->features : json_decode($plan->features, true) ?? [] as $feature)
-                <li class="flex items-center gap-1.5"><i class="ri-check-line text-accent text-xs"></i>{{ $feature }}</li>
+                <li class="flex items-center gap-1.5" style="overflow-wrap: anywhere;"><i class="ri-check-line text-accent text-xs"></i>{{ $feature }}</li>
                 @endforeach
               </ul>
               @endif
@@ -418,7 +451,7 @@
                 </div>
                 <div>
                   <h4 class="font-bold text-white text-sm" id="selectedPlanName">Select a Plan</h4>
-                  <p class="text-[10px] text-white/40">Full access to all features</p>
+                  <p class="text-[10px] text-white/80">Full access to all features</p>
                 </div>
               </div>
               <div class="text-right">
@@ -432,8 +465,9 @@
           <div class="mb-5">
             <label class="auth-label">Coupon code <span class="text-white/25 text-xs">(optional)</span></label>
             <div class="flex gap-2">
-              <input type="text" name="coupon" id="couponInput" class="auth-input flex-1" placeholder="Enter coupon code">
-              <button type="button" id="applyCoupon" class="btn-secondary !py-3 !px-6 whitespace-nowrap">Apply</button>
+                <input type="text" name="coupon" id="couponInput" class="auth-input flex-1" placeholder="Enter coupon code" autocomplete="off">
+                <button type="button" id="applyCoupon" class="btn-secondary !py-3 !px-6 whitespace-nowrap">Apply</button>
+                <button type="button" id="cancelCoupon" class="btn-secondary !py-3 !px-6 whitespace-nowrap hidden" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.3);color:#f87171;">Cancel</button>
             </div>
             <p id="couponMessage" class="text-[11px] mt-1" style="display:none;"></p>
           </div>
@@ -444,12 +478,13 @@
               <i class="ri-checkbox-circle-line text-primary"></i> Review & Confirm
             </h3>
             <div class="glass rounded-2xl p-5 space-y-3">
-              <div class="flex items-center justify-between text-sm"><span class="text-white/50">Name:</span><span class="text-white font-semibold" id="summaryName">-</span></div>
-              <div class="flex items-center justify-between text-sm"><span class="text-white/50">Email:</span><span class="text-white font-semibold" id="summaryEmail">-</span></div>
-              <div class="flex items-center justify-between text-sm"><span class="text-white/50">Phone:</span><span class="text-white font-semibold" id="summaryPhone">-</span></div>
-              <div class="flex items-center justify-between text-sm"><span class="text-white/50">Plan:</span><span class="text-white font-semibold capitalize" id="summaryPlan">-</span></div>
-              <div class="flex items-center justify-between text-sm pt-3 border-t border-white/10" id="summaryTotalRow">
-                <span class="text-white/50">Total Amount:</span>
+              <div class="flex items-center justify-between text-sm gap-[40px]"><span class="text-white/60">Name:</span><span class="text-white font-semibold" id="summaryName">-</span></div>
+              <div class="flex items-center justify-between text-sm gap-[40px]"><span class="text-white/60">Email:</span><span class="text-white font-semibold" id="summaryEmail">-</span></div>
+              <div class="flex items-center justify-between text-sm gap-[40px]"><span class="text-white/60">Phone:</span><span class="text-white font-semibold" id="summaryPhone">-</span></div>
+              <div class="flex items-center justify-between text-sm gap-[40px]"><span class="text-white/60">Plan:</span><span class="text-white font-semibold capitalize" id="summaryPlan">-</span></div>
+               <div class="flex items-center justify-between pt-3 text-sm border-t border-white/10"><span class="text-white/50">Plan Price:</span><span class="text-white font-semibold capitalize" id="summaryPrice">-</span></div>
+              <div class="flex items-center justify-between text-sm  " id="summaryTotalRow">
+                <span class="text-white/80 font-bold">Grand Total:</span>
                 <span class="text-xl font-black text-accent" id="summaryTotal">£0.00</span>
               </div>
             </div>
@@ -457,7 +492,7 @@
 
           <!-- Card Details via Stripe Elements -->
           <div class="space-y-4 pt-4 border-t border-white/10 mb-5">
-            <h3 class="text-sm font-semibold text-white/70 flex items-center gap-2">
+            <h3 class="text-sm font-semibold text-white/80 flex items-center gap-2">
               <i class="ri-secure-payment-line text-primary"></i> Card Details
             </h3>
             <div class="flex items-center gap-2">
@@ -467,7 +502,7 @@
 
             <div>
               <label class="auth-label">Name on card <span style="color:red;">*</span></label>
-              <input type="text" maxlength="100" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="cardName" id="cardName" class="auth-input" placeholder="Enter Your Card Name">
+              <input type="text" maxlength="100" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" name="cardName" id="cardName" class="auth-input" placeholder="Enter your card name">
               <p class="field-error" id="err-cardName">Name on card is required.</p>
             </div>
 
@@ -484,9 +519,9 @@
                 <p class="field-error" id="err-expiry">Please enter a valid expiry date.</p>
               </div>
               <div>
-                <label class="auth-label">CVV <span style="color:red;">*</span></label>
+                <label class="auth-label">CVC <span style="color:red;">*</span></label>
                 <div id="stripe-card-cvc" class="stripe-element-wrapper"></div>
-                <p class="field-error" id="err-cvv">Please enter the CVV.</p>
+                <p class="field-error" id="err-cvv">Please enter the CVC.</p>
               </div>
             </div>
             <!-- Hidden inputs to send to server for storage reference only -->
@@ -526,10 +561,20 @@
     <i class="ri-check-line"></i>
   </div>
   <div>
+<<<<<<< HEAD
     <div class="font-bold">Payment successful!</div>
     <div class="text-xs text-white/40">Redirecting to your login page...</div>
+=======
+    <div class="font-bold">Payment successful</div>
+    <div class="text-xs text-white/60">Redirecting to dashboard...</div>
+>>>>>>> 14b4245 (full updated code)
   </div>
 </div>
+
+
+@php
+  $preselectedPlanId = optional($selectedPlan ?? $first_plan)->id ?? '';
+@endphp
 
 <script src="{{ asset('assets/js/script.js') }}"></script>
 <script>
@@ -581,7 +626,11 @@
     hideFieldError('terms');
   });
 
+<<<<<<< HEAD
  // ─── Password Strength ────────────────────────────────────────────
+=======
+  // ─── Password Strength ────────────────────────────────────────────
+>>>>>>> 14b4245 (full updated code)
 var pwdInput      = document.getElementById('password');
 var strengthBar   = document.getElementById('strengthBar');
 var strengthLabel = document.getElementById('strengthLabel');
@@ -665,68 +714,82 @@ if (pwdInput) {
       var inp      = document.getElementById(inputId);
       var isHidden = inp.type === 'password';
       inp.type      = isHidden ? 'text' : 'password';
-      btn.innerHTML = isHidden ? '<i class="ri-eye-line"></i>' : '<i class="ri-eye-off-line"></i>';
+      btn.innerHTML = isHidden ? '<i class="ri-eye-off-line"></i>' : '<i class="ri-eye-line"></i>';
     });
   });
 
   // ─── Plan Selection ────────────────────────────────────────────────
-  function selectPlan(card) {
+//   function selectPlan(card) {
+//     document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
+//     card.classList.add('selected');
+//     selectedPlan = {
+//       id:    card.dataset.planId,
+//       name:  card.dataset.plan,
+//       price: card.dataset.price
+//     };
+//     document.getElementById('planIdInput').value             = selectedPlan.id;
+//     document.getElementById('selectedPlanName').textContent  = selectedPlan.name + ' Plan';
+//     document.getElementById('selectedPlanPrice').textContent = '£' + selectedPlan.price;
+//     document.getElementById('headerPrice').textContent       = '£' + selectedPlan.price;
+//     document.getElementById('summaryPlan').textContent       = selectedPlan.name;
+//     document.getElementById('summaryPrice').textContent       = selectedPlan.price;
+//     hideFieldError('plan');
+
+   
+//     recalculateTotal();
+//   }
+
+function selectPlan(card) {
     document.querySelectorAll('.plan-card').forEach(function(c) { c.classList.remove('selected'); });
     card.classList.add('selected');
     selectedPlan = {
-      id:    card.dataset.planId,
-      name:  card.dataset.plan,
-      price: card.dataset.price
+        id:    card.dataset.planId,
+        name:  card.dataset.plan,
+        price: card.dataset.price
     };
     document.getElementById('planIdInput').value             = selectedPlan.id;
     document.getElementById('selectedPlanName').textContent  = selectedPlan.name + ' Plan';
     document.getElementById('selectedPlanPrice').textContent = '£' + selectedPlan.price;
-    document.getElementById('headerPrice').textContent       = '£' + selectedPlan.price;
-    document.getElementById('summaryPlan').textContent       = selectedPlan.name;
+
+    // ✅ Remove this line — headerPrice doesn't exist
+    // document.getElementById('headerPrice').textContent = '£' + selectedPlan.price;
+
+    document.getElementById('summaryPlan').textContent  = selectedPlan.name;
+    document.getElementById('summaryPrice').textContent = '£' + selectedPlan.price; // ✅ add £ prefix
     hideFieldError('plan');
-
-    // Recalculate if a coupon is already applied
     recalculateTotal();
-  }
-
+}
   // ─── Price Calculation ─────────────────────────────────────────────
-  function recalculateTotal() {
-    var basePrice = parseFloat(selectedPlan.price) || 0;
-    var discount  = 0;
-    var finalPrice = basePrice;
+ function recalculateTotal() {
+  var basePrice  = parseFloat(selectedPlan.price) || 0;
+  var discount   = 0;
+  var finalPrice = basePrice;
 
-    if (appliedCoupon.code) {
-      if (appliedCoupon.type === 'percentage') {
-        discount   = parseFloat((basePrice * appliedCoupon.discount / 100).toFixed(2));
-        finalPrice = parseFloat((basePrice - discount).toFixed(2));
-      } else { // fixed
-        discount   = parseFloat(appliedCoupon.discount.toFixed(2));
-        finalPrice = parseFloat(Math.max(0, basePrice - discount).toFixed(2));
-      }
-    }
-
-    appliedCoupon.finalPrice = finalPrice;
-
-    // Update summary
-    var discountRow = document.getElementById('summaryDiscountRow');
-    if (appliedCoupon.code && discount > 0) {
-      if (!discountRow) {
-        // Insert discount row before total row
-        var totalRow = document.getElementById('summaryTotalRow');
-        var row      = document.createElement('div');
-        row.id       = 'summaryDiscountRow';
-        row.className = 'flex items-center justify-between text-sm';
-        row.innerHTML = '<span class="text-white/50">Discount:</span><span class="text-accent font-semibold" id="summaryDiscount">-£0.00</span>';
-        totalRow.parentNode.insertBefore(row, totalRow);
-      }
-      var discEl = document.getElementById('summaryDiscount');
-      if (discEl) discEl.textContent = '-£' + discount.toFixed(2);
-    } else {
-      if (discountRow) discountRow.remove();
-    }
-
-    document.getElementById('summaryTotal').textContent = '£' + finalPrice.toFixed(2);
+  if (appliedCoupon.code) {
+    // Use server-computed values — never recalculate on frontend
+    discount   = appliedCoupon.discountAmount || 0;
+    finalPrice = appliedCoupon.finalPrice     || basePrice;
   }
+
+  // Update discount row
+  var discountRow = document.getElementById('summaryDiscountRow');
+  if (appliedCoupon.code && discount > 0) {
+    if (!discountRow) {
+      var totalRow = document.getElementById('summaryTotalRow');
+      var row      = document.createElement('div');
+      row.id        = 'summaryDiscountRow';
+      row.className = 'flex items-center justify-between text-sm';
+      row.innerHTML = '<span class="text-white/50">Discount:</span><span class="text-accent font-semibold" id="summaryDiscount">-£0.00</span>';
+      totalRow.parentNode.insertBefore(row, totalRow);
+    }
+    var discEl = document.getElementById('summaryDiscount');
+    if (discEl) discEl.textContent = '-£' + discount.toFixed(2);
+  } else {
+    if (discountRow) discountRow.remove();
+  }
+
+  document.getElementById('summaryTotal').textContent = '£' + finalPrice.toFixed(2);
+}
 
   // ─── Stripe Lazy Init (only when step 3 is shown) ─────────────────
   function initStripe() {
@@ -825,7 +888,7 @@ if (pwdInput) {
         var json = await response.json();
 
         if (json.success) {
-          payBtn.innerHTML        = '<i class="ri-check-line mr-2"></i>Payment successful!';
+          payBtn.innerHTML        = '<i class="ri-check-line mr-2"></i> successful';
           payBtn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
           successToast.classList.add('show');
           setTimeout(function() { window.location.href = json.redirect; }, 2000);
@@ -861,6 +924,7 @@ if (pwdInput) {
       if (!ln) { showFieldError('lastName', 'Last name is required.');    valid = false; }
       else hideFieldError('lastName');
 
+<<<<<<< HEAD
       // var emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       // if (!em)               { showFieldError('email', 'Email address is required.');       valid = false; }
       // else if (!emailRx.test(em)) { showFieldError('email', 'Please enter a valid email.'); valid = false; }
@@ -876,13 +940,32 @@ if (!em) {
 } else {
     hideFieldError('email');
 }
+=======
+    //   var emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //   if (!em)               { showFieldError('email', 'Email address is required.');       valid = false; }
+    //   else if (!emailRx.test(em)) { showFieldError('email', 'Please enter a valid email.'); valid = false; }
+    //   else hideFieldError('email');
+    
+    const emailRx = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+        if (!em) {
+            showFieldError('email', 'Email address is required.');
+            valid = false;
+        } else if (!emailRx.test(em)) {
+            showFieldError('email', 'Please enter a valid email.');
+            valid = false;
+        } else {
+            hideFieldError('email');
+        }
+
+>>>>>>> 14b4245 (full updated code)
 
       var pwRx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
       if (!pw)             { showFieldError('password', 'Password is required.');           valid = false; }
       else if (!pwRx.test(pw)) { showFieldError('password', 'Min 8 chars, uppercase, lowercase and a number.'); valid = false; }
       else hideFieldError('password');
 
-      if (!cp)        { showFieldError('confirmPassword', 'Please confirm your password.'); valid = false; }
+      if (!cp)        { showFieldError('confirmPassword', 'Confirm Password is required.'); valid = false; }
       else if (pw !== cp) { showFieldError('confirmPassword', 'Passwords do not match.');   valid = false; }
       else hideFieldError('confirmPassword');
 
@@ -899,9 +982,14 @@ if (!em) {
       if (!a1) { showFieldError('address1', 'Address line 1 is required.'); valid = false; }
       else hideFieldError('address1');
 
+<<<<<<< HEAD
      var pcRx = /^[A-Z]{1,2}[0-9][A-Z0-9]?\s[0-9][A-Z]{2}$/i;
 
       if (!pc)              { showFieldError('postcode', 'Post code is required.'); valid = false; }
+=======
+      var pcRx = /^[A-Z]{1,2}[0-9][A-Z0-9]?\s[0-9][A-Z]{2}$/i;
+      if (!pc)              { showFieldError('postcode', 'Postal code is required.'); valid = false; }
+>>>>>>> 14b4245 (full updated code)
       else if (!pcRx.test(pc)) { showFieldError('postcode', 'Please enter a valid standard UK postcode (e.g. SW1A 1AA).'); valid = false; }
       else hideFieldError('postcode');
 
@@ -926,7 +1014,7 @@ if (!em) {
       else hideFieldError('cardNumber');
       if (!stripeState.cardExpiry) { showFieldError('expiry', 'Please enter card expiry date.'); valid = false; }
       else hideFieldError('expiry');
-      if (!stripeState.cardCvc)    { showFieldError('cvv', 'Please enter the CVV.'); valid = false; }
+      if (!stripeState.cardCvc)    { showFieldError('cvv', 'Please enter the CVC.'); valid = false; }
       else hideFieldError('cvv');
     }
 
@@ -962,8 +1050,10 @@ if (!em) {
       // Init Stripe NOW — the elements are visible in the DOM
       initStripe();
       // Always pre-select the first plan card if none manually chosen yet
-      var preSelected = document.querySelector('.plan-card.selected') || document.querySelector('.plan-card');
-      if (preSelected && !selectedPlan.id) selectPlan(preSelected);
+    //   var preSelected = document.querySelector('.plan-card.selected') || document.querySelector('.plan-card');
+    //   if (preSelected && !selectedPlan.id) selectPlan(preSelected);
+    var preSelected = document.querySelector('.plan-card.selected') || document.querySelector('.plan-card');
+    if (preSelected) selectPlan(preSelected); 
     }
 
     hideGlobalError();
@@ -1028,6 +1118,52 @@ if (!em) {
 
       return; // wait for async result
     }
+    
+     // ON STEP 2 — Check phone uniqueness via AJAX before advancing
+  if (currentStep === 2) {
+    var phone = document.getElementById('phone').value.trim();
+
+    // Disable button and show loading state
+    nextBtn.disabled  = true;
+    nextBtn.innerHTML = '<i class="ri-loader-4-line ri-spin mr-2"></i>Checking...';
+
+    fetch('{{ route("check.phone") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ phone: phone })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      // Restore button
+      nextBtn.disabled  = false;
+      nextBtn.innerHTML = 'Next<i class="ri-arrow-right-line ml-2"></i>';
+
+      if (data.exists) {
+        // Show inline error under phone field and block progression
+        showFieldError('phone', 'This phone number is already registered. Please use a different phone number.');
+        document.getElementById('phone').focus();
+      } else {
+        // Phone is available — advance to step 3
+        hideFieldError('phone');
+        currentStep++;
+        updateStepUI();
+      }
+    })
+    .catch(function() {
+      // Network/server error fallback — allow user to advance (server side handles the hard fail if needed)
+      nextBtn.disabled  = false;
+      nextBtn.innerHTML = 'Next<i class="ri-arrow-right-line ml-2"></i>';
+      currentStep++;
+      updateStepUI();
+    });
+
+    return; // wait for async result
+  }
+
 
     // Steps 2+ — advance immediately (no async check needed)
     currentStep++;
@@ -1043,10 +1179,18 @@ if (!em) {
   var applyCouponBtn = document.getElementById('applyCoupon');
   var couponInput    = document.getElementById('couponInput');
   var couponMessage  = document.getElementById('couponMessage');
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 14b4245 (full updated code)
   couponInput.addEventListener('input', function () {
     couponMessage.textContent = '';
     couponMessage.style.display = 'none';
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14b4245 (full updated code)
 
   if (applyCouponBtn) {
     applyCouponBtn.addEventListener('click', function() {
@@ -1084,26 +1228,26 @@ if (!em) {
       .then(function(res) { return res.json(); })
       .then(function(data) {
         if (data.success) {
-          appliedCoupon = {
-            code:       data.coupon.code,
-            discount:   parseFloat(data.coupon.discount),
-            type:       data.coupon.coupon_type,  // 'fixed' or 'percentage'
-            finalPrice: 0
-          };
-          // Store hidden coupon code for server submission
-          document.getElementById('appliedCouponCode').value = appliedCoupon.code;
-          recalculateTotal();
+  appliedCoupon = {
+    code:           data.coupon.code,
+    discount:       parseFloat(data.coupon.discount),
+    type:           data.coupon.coupon_type,
+    finalPrice:     parseFloat(data.preview.final_price),
+    discountAmount: parseFloat(data.preview.discount_amount),  // ← use server value
+  };
+  document.getElementById('appliedCouponCode').value = appliedCoupon.code;
+  recalculateTotal();
 
           var label = appliedCoupon.type === 'percentage'
             ? appliedCoupon.discount + '% off'
             : '£' + parseFloat(appliedCoupon.discount).toFixed(2) + ' off';
 
-          couponMessage.textContent   = '✓ Coupon applied! ' + label;
-          couponMessage.style.color   = '#10b981';
-          couponMessage.style.display = 'block';
-          applyCouponBtn.disabled     = true;
-          applyCouponBtn.textContent  = 'Applied ✓';
-          couponInput.disabled        = true;
+          couponMessage.textContent   = '✓ Coupon applied — ' + label;
+            couponMessage.style.color   = '#10b981';
+            couponMessage.style.display = 'block';
+            applyCouponBtn.classList.add('hidden');
+            document.getElementById('cancelCoupon').classList.remove('hidden');
+            couponInput.disabled        = true;
         } else {
           couponMessage.textContent   = '✗ ' + (data.message || 'Invalid coupon code.');
           couponMessage.style.color   = '#f87171';
@@ -1121,7 +1265,35 @@ if (!em) {
       });
     });
   }
+    // ─── Cancel Coupon ────────────────────────────────────────────────
+    document.getElementById('cancelCoupon').addEventListener('click', function() {
+      appliedCoupon = { code: '', discount: 0, type: '', finalPrice: 0 };
+      document.getElementById('appliedCouponCode').value = '';
+      couponInput.value    = '';
+      couponInput.disabled = false;
+      couponMessage.textContent   = '';
+      couponMessage.style.display = 'none';
+      document.getElementById('cancelCoupon').classList.add('hidden');
+      applyCouponBtn.classList.remove('hidden');
+        applyCouponBtn.textContent = 'Apply';
+        applyCouponBtn.disabled    = false;
 
+      recalculateTotal();
+    });
+    
+var preselectedPlanId = "{{ optional($selectedPlan ?? $first_plan)->id ?? '' }}";
+  if (preselectedPlanId) {
+    var preselectedPlanCard = document.querySelector('.plan-card[data-plan-id="' + preselectedPlanId + '"]');
+    if (preselectedPlanCard) {
+      selectPlan(preselectedPlanCard);
+    }
+  } else {
+    var firstPlanCard = document.querySelector('.plan-card');
+    if (firstPlanCard) {
+      selectPlan(firstPlanCard);
+    }
+  }
+    
   // ─── Init ─────────────────────────────────────────────────────────
   updateStepUI();
 </script>

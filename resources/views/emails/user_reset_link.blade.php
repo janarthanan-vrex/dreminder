@@ -4,7 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>DRemind — Forgot Password</title>
+=======
+    <title>D-Remind — Forgot Password</title>
+>>>>>>> 14b4245 (full updated code)
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 
@@ -28,7 +32,11 @@
                             <table cellpadding="0" cellspacing="0" border="0">
                                 <tr>
                                     <td align="center" style="padding-bottom:20px;">
+<<<<<<< HEAD
                                         <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="" width="200" style="width:200px;border-radius:18px;display:block;">
+=======
+                                        <img src="https://dreminder.wimbgo.com/assets/images/common/d-remind.png" alt="" width="200" style="width:200px;border-radius:18px;display:block;">
+>>>>>>> 14b4245 (full updated code)
                                     </td>
                                 </tr>
                                 <tr>
@@ -38,12 +46,20 @@
                                 </tr>
                                 <tr>
                                     <td align="center">
+<<<<<<< HEAD
                                         <h1 style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.15;color:#1A1916;margin:0 0 12px 0;letter-spacing:-.4px;">Update Your <br><em style="font-style:italic;">D Remind Account Password.</em></h1>
+=======
+                                        <h1 style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.15;color:#1A1916;margin:0 0 12px 0;letter-spacing:-.4px;">Update Your <br><span>D-Remind Account Password.</span></h1>
+>>>>>>> 14b4245 (full updated code)
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="center">
+<<<<<<< HEAD
                                         <p style="font-size:14.5px;color:#6B6860;line-height:1.65;max-width:400px;margin:0 auto;">Dear <strong style="color:#1A1916;font-weight:600;">{{ $user->first_name }} {{ $user->last_name }}</strong>, your password reset request has been received. Use the button below to securely update your password.</p>
+=======
+                                        <p style="font-size:14.5px;color:#6B6860;line-height:1.65;max-width:400px;margin:0 auto;">Dear <strong style="color:#1A1916;font-weight:600;">{{ $user->first_name }} {{ $user->last_name }}</strong>,<br> Your password reset request has been received. Use the button below to securely update your password.</p>
+>>>>>>> 14b4245 (full updated code)
                                     </td>
                                 </tr>
                             </table>

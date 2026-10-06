@@ -7,7 +7,43 @@ window.addEventListener("load", () => {
 /* ══════════════════════════════════════════
 DATA
 ══════════════════════════════════════════ */
+<<<<<<< HEAD
+=======
+document.addEventListener("DOMContentLoaded", () => {
+    const applyModalPointerEvents = () => {
+        document.querySelectorAll(".modal-bg").forEach((modal) => {
+            const modalBox = modal.querySelector(".modal-box");
+>>>>>>> 14b4245 (full updated code)
 
+            if (modal.classList.contains("open")) {
+                modal.style.setProperty("pointer-events", "none", "important");
+
+                if (modalBox) {
+                    modalBox.style.setProperty("pointer-events", "all", "important");
+                }
+            } else {
+                modal.style.removeProperty("pointer-events");
+
+                if (modalBox) {
+                    modalBox.style.removeProperty("pointer-events");
+                }
+            }
+        });
+    };
+
+    // Initial run
+    applyModalPointerEvents();
+
+    // Watch all modals for class changes
+    document.querySelectorAll(".modal-bg").forEach((modal) => {
+        new MutationObserver(() => {
+            applyModalPointerEvents();
+        }).observe(modal, {
+            attributes: true,
+            attributeFilter: ["class"]
+        });
+    });
+});
 const ALL_PERMS = [
     { key: "users.view", label: "View Users", group: "Users" },
     { key: "users.create", label: "Create Users", group: "Users" },
@@ -236,116 +272,20 @@ const TXN_DATA = Array.from({ length: 30 }, (_, i) => ({
 
 let CATS_DATA = window.CATS_DATA || [];
 
-const AUDIT_DATA = [
-    {
-        icon: "ri-user-add-line",
-        col: "#10b981",
-        action: "User Created",
-        detail: "Created user Emma Williams (emma@example.com)",
-        actor: "Super Admin",
-        time: "Today 14:32",
-        type: "Create",
-    },
-    {
-        icon: "ri-key-2-line",
-        col: "#7c3aed",
-        action: "Role Updated",
-        detail: "Updated Support role permissions — added feedback.write",
-        actor: "Alex Morgan",
-        time: "Today 12:15",
-        type: "Update",
-    },
-    {
-        icon: "ri-delete-bin-line",
-        col: "#f43f5e",
-        action: "Reminder Deleted",
-        detail: "Deleted reminder #4821 for user ID 148",
-        actor: "Super Admin",
-        time: "Today 09:44",
-        type: "Delete",
-    },
-    {
-        icon: "ri-login-box-line",
-        col: "#06b6d4",
-        action: "Admin Login",
-        detail: "Logged in from 192.168.1.10 — London, UK",
-        actor: "Super Admin",
-        time: "Today 09:30",
-        type: "Login",
-    },
-    {
-        icon: "ri-settings-3-line",
-        col: "#f59e0b",
-        action: "Settings Updated",
-        detail: "Changed SMTP host to smtp.mailgun.org",
-        actor: "Alex Morgan",
-        time: "Yesterday 16:50",
-        type: "Update",
-    },
-    {
-        icon: "ri-user-unfollow-line",
-        col: "#f43f5e",
-        action: "User Suspended",
-        detail: "Suspended account user ID 23 — policy violation",
-        actor: "Priya Patel",
-        time: "Yesterday 14:10",
-        type: "Update",
-    },
-    {
-        icon: "ri-send-plane-line",
-        col: "#10b981",
-        action: "Broadcast Sent",
-        detail: "Email broadcast sent to 1,284 users — Q2 update",
-        actor: "Super Admin",
-        time: "2 days ago",
-        type: "Create",
-    },
-    {
-        icon: "ri-team-line",
-        col: "#a78bfa",
-        action: "Staff Added",
-        detail: "Added Nina Johansson as Analyst",
-        actor: "Super Admin",
-        time: "3 days ago",
-        type: "Create",
-    },
-    {
-        icon: "ri-bank-card-line",
-        col: "#10b981",
-        action: "Plan Updated",
-        detail: "Basic Annual price adjusted to £2.40/year",
-        actor: "Super Admin",
-        time: "3 days ago",
-        type: "Update",
-    },
-    {
-        icon: "ri-shield-check-line",
-        col: "#06b6d4",
-        action: "2FA Enforced",
-        detail: "Forced 2FA for all admin accounts",
-        actor: "Super Admin",
-        time: "4 days ago",
-        type: "Update",
-    },
-    {
-        icon: "ri-folder-add-line",
-        col: "#f59e0b",
-        action: "Category Created",
-        detail: "Added new category: Fitness",
-        actor: "Alex Morgan",
-        time: "5 days ago",
-        type: "Create",
-    },
-    {
-        icon: "ri-user-settings-line",
-        col: "#7c3aed",
-        action: "Profile Updated",
-        detail: "Super Admin updated email address",
-        actor: "Super Admin",
-        time: "6 days ago",
-        type: "Update",
-    },
-];
+
+<<<<<<< HEAD
+// const FEEDBACK_DATA = [
+//     {
+//         type: "bug",
+//         icon: "ri-bug-line",
+//         col: "#f43f5e",
+//         user: "Kishore Rex",
+//         msg: "Push notifications not working on iOS 17",
+//         status: "open",
+//         time: "Apr 25",
+//     },
+
+=======
 
 // const FEEDBACK_DATA = [
 //     {
@@ -358,6 +298,7 @@ const AUDIT_DATA = [
 //         time: "Apr 25",
 //     },
 
+>>>>>>> 14b4245 (full updated code)
 // ];
 let FEEDBACK_DATA = window.FEEDBACK_DATA || [];
 const ROLE_COLORS = [
@@ -389,9 +330,7 @@ let staffPageNum = 1,
 let remPageNum = 1,
     remPerPage = 8,
     remFiltered = [...REMINDERS_DATA];
-let auditPageNum = 1,
-    auditPerPage = 8,
-    auditFiltered = [...AUDIT_DATA];
+
 
 /* ══════════════════════════════════════════
 GENERIC PAGINATION BUILDER
@@ -945,6 +884,7 @@ function initAnalytics() {
 
                 cutout: "62%",
 
+<<<<<<< HEAD
                 plugins: {
                     legend: {
                         position: "right",
@@ -962,6 +902,28 @@ function initAnalytics() {
                         },
                     },
                 },
+=======
+                // plugins: {
+                //     legend: {
+                //         position: "right",
+
+                //         labels: {
+                //             color: tc,
+
+                //             font: {
+                //                 size: 11,
+
+                //                 family: "DM Sans",
+                //             },
+
+                //             boxWidth: 12,
+                //         },
+                //     },
+                // },
+                plugins: {
+                legend: { display: false }, // ✅ hides the legend
+            },
+>>>>>>> 14b4245 (full updated code)
             },
         });
 
@@ -1063,7 +1025,10 @@ USERS
 function goToUserCalendar(userId) {
     window.location.href = "/admin-calendar?user_id=" + userId;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 14b4245 (full updated code)
 function renderUsers() {
     var data = usersFiltered;
     var totalPages = Math.ceil(data.length / usersPerPage);
@@ -1071,8 +1036,26 @@ function renderUsers() {
     var slice = data.slice(start, start + usersPerPage);
     document.getElementById("users-showing").textContent = slice.length;
     document.getElementById("users-total").textContent = data.length;
+<<<<<<< HEAD
     document.getElementById("users-tbody").innerHTML = slice
         .map(function (u, index) {
+=======
+    if (slice.length === 0) {
+    var colspan = 7;
+    document.getElementById("users-tbody").innerHTML =
+        '<tr><td colspan="' + colspan + '" style="text-align:center;padding:40px 20px">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:8px">' +
+        '<i class="ri-user-search-line" style="font-size:2rem;color:var(--text4)"></i>' +
+        '<div style="font-size:.88rem;font-weight:700;color:var(--text2)">No users found</div>' +
+        
+        '</div></td></tr>';
+    buildPagination("users-pagination", usersPageNum, 0, "setUsersPage");
+    return;
+}
+
+document.getElementById("users-tbody").innerHTML = slice
+    .map(function (u, index) {
+>>>>>>> 14b4245 (full updated code)
             var planBadge =
                 u.plan === "Pro"
                     ? "purple"
@@ -1098,7 +1081,11 @@ function renderUsers() {
                       ';width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:600">' +
                       u.initials +
                       "</div>") +
+<<<<<<< HEAD
                 '<div><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
+=======
+                '<div style="text-align:left"><div style="font-size:.83rem;font-weight:600;color:var(--text)">' +
+>>>>>>> 14b4245 (full updated code)
                 u.first_name +
                 " " +
                 u.last_name +
@@ -1473,6 +1460,7 @@ function openUserDrawer(id) {
 
     openDrawer(
         '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px"><h2 class="font-jakarta" style="font-size:1rem;font-weight:800;color:var(--text)">User Details</h2><button onclick="closeDrawer()" style="background:var(--ctrl-bg);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer"><i class="ri-close-line"></i></button></div>' +
+<<<<<<< HEAD
             '<div style="text-align:center;margin-bottom:20px"><div class="avatar avatar-lg" style="background:' +
             u.color +
             "22;color:" +
@@ -1480,6 +1468,23 @@ function openUserDrawer(id) {
             ';margin:0 auto 10px">' +
             u.initials +
             '</div><div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
+=======
+            '<div style="text-align:center;margin-bottom:20px">' +
+(
+    u.profile
+        ? '<img src="' +
+          u.profile +
+          '" class="avatar avatar-lg" style="width:70px;height:70px;border-radius:14px;object-fit:cover;margin:0 auto 10px;display:block">'
+        : '<div class="avatar avatar-lg" style="background:' +
+          u.color +
+          '22;color:' +
+          u.color +
+          ';margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-weight:600">' +
+          u.initials +
+          '</div>'
+) +
+'<div class="font-jakarta" style="font-weight:700;font-size:1rem;color:var(--text)">' +
+>>>>>>> 14b4245 (full updated code)
             u.first_name +
             " " +
             u.last_name +
@@ -1499,15 +1504,20 @@ function openUserDrawer(id) {
             u.status +
             "</span></div></div>" +
             '<div style="display: grid;grid-template-columns: 2fr 2fr;gap:10px;margin-bottom:20px">' +
+<<<<<<< HEAD
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Total Reminders</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+=======
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Total Reminders</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
+>>>>>>> 14b4245 (full updated code)
             u.rems +
             "</span></div>" +
-            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Member Since</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Member Since</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
             u.joined +
             "</span></div>" +
-            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Phone</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Phone</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
             (u.phone || "N/A") +
             "</span></div>" +
+<<<<<<< HEAD
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Address1</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
             (u.address1 || "N/A") +
             "</span></div>" +
@@ -1515,6 +1525,15 @@ function openUserDrawer(id) {
             (u.address2 || "N/A") +
             "</span></div>" +
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text)">' +
+=======
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Address1</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
+            (u.address1 || "N/A") +
+            "</span></div>" +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Address2</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
+            (u.address2 || "N/A") +
+            "</span></div>" +
+            '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Postal code</span><span style="font-size:1.20re;font-weight:700;color:var(--text);word-break:break-all;">' +
+>>>>>>> 14b4245 (full updated code)
             (u.postcode || "N/A") +
             "</span></div>" +
             '</div><div style="display: grid;grid-template-columns: 2fr 2fr 2fr;gap:8px">' +
@@ -1541,7 +1560,11 @@ function openUserDrawer(id) {
             "</div>" +
             '<table style="width:100%;border-collapse:collapse;font-size:.78rem;table-layout:fixed">' +
             '<thead><tr style="background:var(--row-bg);border-bottom:1px solid var(--border)">' +
+<<<<<<< HEAD
             '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;width:44px">#</th>' +
+=======
+            '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;width:44px">S.No</th>' +
+>>>>>>> 14b4245 (full updated code)
             '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;width:38%">Category</th>' +
             '<th style="padding:8px 12px;text-align:left;font-weight:700;color:var(--text2);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase">Sub Category</th>' +
             "</tr></thead>" +
@@ -1582,7 +1605,7 @@ function renderStaff(data) {
     if (document.getElementById("staff-count-roles"))
         document.getElementById("staff-count-roles").textContent = uniqueRoles;
     document.getElementById("staff-tbody").innerHTML = slice
-        .map(function (s) {
+        .map(function (s, index) {
             var role = ROLES_DATA.find(function (r) {
                 return r.id === s.role;
             }) || { name: s.role, color: "#94a3b8", perms: [] };
@@ -1605,6 +1628,7 @@ function renderStaff(data) {
                     : "";
             return (
                 "<tr>" +
+                 "<td>" + (start + index + 1) + "</td>" +
                 '<td><div style="display:flex;align-items:center;gap:9px"><div class="avatar avatar-sm" style="background:' +
                 s.color +
                 "22;color:" +
@@ -1629,7 +1653,11 @@ function renderStaff(data) {
                 permBadges +
                 morePerms +
                 "</div></td>" +
+<<<<<<< HEAD
                 '<td><span class="badge badge-' +
+=======
+                '<td style="text-transform: capitalize;"><span class="badge badge-' +
+>>>>>>> 14b4245 (full updated code)
                 (s.status === "active" ? "green" : "red") +
                 '">' +
                 s.status +
@@ -1690,7 +1718,11 @@ function removeStaff(id) {
         })
         .then(function (result) {
             if (result.status !== 200) {
+<<<<<<< HEAD
                 toast(result.data.message || "Something went wrong!", "error");
+=======
+                toast(result.data.message || "Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
                 return;
             }
             staffData = staffData.filter(function (s) {
@@ -1704,7 +1736,11 @@ function removeStaff(id) {
         })
         .catch(function (error) {
             console.error(error);
+<<<<<<< HEAD
             toast("Something went wrong!", "error");
+=======
+            toast("Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
         });
 }
 
@@ -1771,7 +1807,11 @@ function addStaffMember() {
                 return;
             }
             if (result.status !== 200 && result.status !== 201) {
+<<<<<<< HEAD
                 toast(result.data.message || "Something went wrong!", "error");
+=======
+                toast(result.data.message || "Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
                 return;
             }
             toast(
@@ -1789,7 +1829,11 @@ function addStaffMember() {
         })
         .catch(function (error) {
             console.error(error);
+<<<<<<< HEAD
             toast("Something went wrong!", "error");
+=======
+            toast("Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
         });
 }
 
@@ -1875,7 +1919,11 @@ function saveEditStaff() {
                 return;
             }
             if (result.status !== 200) {
+<<<<<<< HEAD
                 toast(result.data.message || "Something went wrong!", "error");
+=======
+                toast(result.data.message || "Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
                 return;
             }
 
@@ -1898,13 +1946,22 @@ function saveEditStaff() {
             }
             staffFiltered = [...staffData];
 
+<<<<<<< HEAD
             toast("Staff updated!", "success");
+=======
+            toast("Staff updated", "success");
+            location.reload();
+>>>>>>> 14b4245 (full updated code)
             closeModal("edit-staff-modal");
             renderStaff(staffData);
         })
         .catch(function (error) {
             console.error(error);
+<<<<<<< HEAD
             toast("Something went wrong!", "error");
+=======
+            toast("Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
         });
 }
 
@@ -1966,6 +2023,7 @@ function openStaffDrawer(id) {
                 .join("") +
             "</div>" +
             "</div>" +
+<<<<<<< HEAD
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
             '<span style="font-size:.78rem;color:var(--text3)">Phone</span>' +
             '<span style="font-size:.78rem;font-weight:600;color:var(--text)">' +
@@ -1974,6 +2032,16 @@ function openStaffDrawer(id) {
             "</div>" +
             '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
             '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">' +
+=======
+           '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">' +
+'<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">' +
+'<span style="font-size:.78rem;color:var(--text3)">Phone</span>' +
+'<span style="font-size:.78rem;font-weight:600;color:var(--text)">' +
+(s.phone || "-") +
+"</span>" +
+"</div>" +
+'<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">' +
+>>>>>>> 14b4245 (full updated code)
             '<span style="font-size:.78rem;color:var(--text3)">Status</span>' +
             '<span class="badge badge-' +
             (s.status === "active" ? "green" : "red") +
@@ -1988,6 +2056,7 @@ function openStaffDrawer(id) {
             ')">' +
             '<i class="ri-pencil-line"></i> Edit Role' +
             "</button>" +
+<<<<<<< HEAD
             '<button class="btn btn-danger btn-sm delete-btn" style="width:100%;justify-content:center" onclick="openConfirm(\'Remove ' +
             s.name +
             "?',function(){removeStaff(" +
@@ -1995,6 +2064,15 @@ function openStaffDrawer(id) {
             ');closeDrawer()})">' +
             '<i class="ri-delete-bin-line"></i> Remove' +
             "</button>" +
+=======
+           '<button class="btn btn-danger btn-sm delete-btn" style="width:100%;justify-content:center" onclick="closeDrawer();openConfirm(\'Remove ' +
+s.name +
+"?',function(){removeStaff(" +
+s.id +
+")})\">" +
+'<i class="ri-delete-bin-line"></i> Remove' +
+"</button>" +
+>>>>>>> 14b4245 (full updated code)
             "</div>",
     );
 }
@@ -2265,7 +2343,11 @@ function renderReminders() {
                       '">' +
                       u.initials +
                       "</div>") +
+<<<<<<< HEAD
                 '<span style="font-size:.78rem;color:var(--text2)">' +
+=======
+                '<span style="font-size:.78rem;color:var(--text2);word-break: break-all;white-space: break-spaces;">' +
+>>>>>>> 14b4245 (full updated code)
                 u.name +
                 "</span></div></td>" +
                 '<td class="hide-mobile"><span class="badge badge-purple" style="font-size:.65rem">' +
@@ -2379,6 +2461,7 @@ function filterReminders(q) {
 //         r.category +
 //         "</div></div></div>" +
 //         '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">' +
+<<<<<<< HEAD
 //         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">User</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
 //         r.user.name +
 //         "</span></div>" +
@@ -2386,6 +2469,15 @@ function filterReminders(q) {
 //         due +
 //         "</span></div>" +
 //         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
+=======
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">User</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+//         r.user.name +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Date</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+//         due +
+//         "</span></div>" +
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Status</span><span class="badge badge-' +
+>>>>>>> 14b4245 (full updated code)
 //         (r.status === "active"
 //             ? "teal"
 //             : r.status === "completed"
@@ -2394,7 +2486,11 @@ function filterReminders(q) {
 //         '">' +
 //         r.status +
 //         "</span></div>" +
+<<<<<<< HEAD
 //         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Priority</span><span class="badge badge-' +
+=======
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Priority</span><span class="badge badge-' +
+>>>>>>> 14b4245 (full updated code)
 //         (r.priority === "high"
 //             ? "red"
 //             : r.priority === "medium"
@@ -2403,7 +2499,11 @@ function filterReminders(q) {
 //         '">' +
 //         r.priority +
 //         "</span></div>" +
+<<<<<<< HEAD
 //         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)"><span style="font-size:.78rem;color:var(--text3)">Created</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+=======
+//         '<div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);max-width:400px;border:1px solid var(--border2);gap:10px;"><span style="font-size:.78rem;color:var(--text3)">Created</span><span style="font-size:1.20re;font-weight:600;color:var(--text)">' +
+>>>>>>> 14b4245 (full updated code)
 //         created +
 //         "</span></div>" +
 //         "</div>" +
@@ -2465,7 +2565,11 @@ function openViewReminder(id) {
         rowItem("End Reminder Date", endDate) +
         rowItem("Reminder Time", r.reminder_time || "N/A") +
         rowItem("Provider", r.provider || "N/A") +
+<<<<<<< HEAD
         rowItem("Cost", `€ ${r.cost || "0"}`) +
+=======
+        rowItem("Cost", `£ ${r.cost || "0"}`) +
+>>>>>>> 14b4245 (full updated code)
         rowItem("Payment Frequency", r.payment_frequency || "N/A") +
         rowItem("Reminder Status", r.reminder_status || "N/A") +
         rowItem("Created", created) +
@@ -2550,12 +2654,38 @@ function renderTransactions() {
 
     if (showingEl) showingEl.textContent = slice.length;
     if (totalEl) totalEl.textContent = data.length;
+<<<<<<< HEAD
 
     tbody.innerHTML = slice
         .map(function (t, index) {
             const serialNo = start + index + 1;
             return `
             <tr>
+=======
+    
+     if (slice.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" style="text-align:center;padding:48px 20px;color:var(--text3)">
+                    <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+                        <i class="ri-file-search-line" style="font-size:2rem;opacity:.4"></i>
+                        <span style="font-size:.92rem;font-weight:500">No transactions found</span>
+                       
+                    </div>
+                </td>
+            </tr>
+        `;
+        renderTxnStats(data);
+        buildTxnPagination(totalPages);
+        return;
+    }
+
+    tbody.innerHTML = slice
+        .map(function (t, index) {
+            const serialNo = start + index + 1;
+            return `
+            <tr>
+>>>>>>> 14b4245 (full updated code)
               <td>
             <span style="font-weight:600">
                 ${serialNo}
@@ -2723,37 +2853,37 @@ function openViewTxn(txnId) {
         </div>
 
         <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Customer</span>
                 <span style="font-size:.92rem;font-weight:600;color:var(--text)">${t.user_name}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Email</span>
                 <span style="font-size:.92rem;font-weight:600;color:var(--text)">${t.user_email}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Order Ref</span>
                 <span style="font-size:.92rem;font-weight:600;color:var(--text)">${t.order_ref}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Amount</span>
                 <span style="font-size:.95rem;font-weight:800;color:var(--green)">£${Number(t.amount).toFixed(2)}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Status</span>
                 <span class="badge badge-${getBadgeClass(t.status)}">${t.status}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Payment Method</span>
                 <span style="font-size:.92rem;font-weight:600;color:var(--text)">${t.method}</span>
             </div>
 
-            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2)">
+            <div style="display:flex;justify-content:space-between;padding:10px;border-radius:8px;background:var(--row-bg);border:1px solid var(--border2);gap:10px;">
                 <span style="font-size:.78rem;color:var(--text3)">Date</span>
                 <span style="font-size:.92rem;font-weight:600;color:var(--text)">${t.date}</span>
             </div>
@@ -2932,7 +3062,11 @@ function renderAdminCategories() {
                 ')">' +
                 '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px">' +
                 '<div style="display:flex;align-items:center;gap:10px">' +
+<<<<<<< HEAD
                 '<div style="width:44px;height:44px;border-radius:12px;background:' +
+=======
+                '<div style="min-width:44px;height:44px;border-radius:12px;background:' +
+>>>>>>> 14b4245 (full updated code)
                 c.bg +
                 ';display:flex;align-items:center;justify-content:center">' +
                 '<i class="' +
@@ -2945,7 +3079,11 @@ function renderAdminCategories() {
                 '<div style="font-weight:800;font-size:.92rem;color:var(--text)">' +
                 c.name +
                 "</div>" +
+<<<<<<< HEAD
                 '<div style="font-size:.72rem;color:var(--text3);margin-top:2px">' +
+=======
+                '<div style="font-size:.72rem;color:var(--text3);margin-top:2px;word-break:break-all;">' +
+>>>>>>> 14b4245 (full updated code)
                 c.desc +
                 "</div>" +
                 "</div>" +
@@ -3024,6 +3162,14 @@ function deleteCategory(id) {
                     }
                     renderAdminCategories();
                     toast(data.message, "success");
+<<<<<<< HEAD
+=======
+                    
+                    setTimeout(()=>{
+                        location.reload();
+                    },1500);
+                    
+>>>>>>> 14b4245 (full updated code)
                 } else {
                     toast(data.message || "Something went wrong", "error");
                 }
@@ -3045,7 +3191,11 @@ function openCategoryDetail(categoryId) {
         .map(function (s) {
             return (
                 '<div class="card" style="padding:12px;border-radius:12px;background:var(--row-bg);border:1px solid var(--border2)">' +
+<<<<<<< HEAD
                 '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px">' +
+=======
+                '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-direction: column;align-items: start;">' +
+>>>>>>> 14b4245 (full updated code)
                 "<div>" +
                 '<div style="font-size:.86rem;font-weight:700;color:var(--text)">' +
                 s.name +
@@ -3107,6 +3257,7 @@ function openCategoryDetail(categoryId) {
         "</div>" +
         "</div>" +
         '<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px">' +
+<<<<<<< HEAD
         '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Category</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
         c.name +
         "</div></div>" +
@@ -3114,6 +3265,15 @@ function openCategoryDetail(categoryId) {
         c.subcategories.length +
         "</div></div>" +
         '<div class="card" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Reminder</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+=======
+        '<div class="card break-all" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Category</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        c.name +
+        "</div></div>" +
+        '<div class="card break-all" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Subcategories</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+        c.subcategories.length +
+        "</div></div>" +
+        '<div class="card break-all" style="padding:12px"><div style="font-size:.72rem;color:var(--text3)">Reminder</div><div style="font-weight:800;color:var(--text);margin-top:4px">' +
+>>>>>>> 14b4245 (full updated code)
         c.total.toLocaleString() +
         "</div></div>" +
         "</div>" +
@@ -3176,6 +3336,12 @@ function deleteSubcategory(categoryId, subId) {
                     renderAdminCategories();
                     closeModal("category-detail-modal");
                     toast(data.message, "success");
+<<<<<<< HEAD
+=======
+                    setTimeout(()=>{
+                        location.reload();
+                    },1500);
+>>>>>>> 14b4245 (full updated code)
                 } else {
                     toast(data.message || "Something went wrong", "error");
                 }
@@ -3233,7 +3399,10 @@ function createCategory() {
         subcategories: [],
     });
 
-    toast("Category created!", "success");
+    toast("Category created", "success");
+   setTimeout(()=>{
+        location.reload();
+    },1500);
     closeModal("add-category-modal");
     renderAdminCategories();
 
@@ -3535,21 +3704,36 @@ function renderNotifications() {
     document.getElementById("admin-notif-list").innerHTML = notifs
         .map(function (n) {
             return (
+<<<<<<< HEAD
                 '<div class="act-item" style="' +
                 (n.unread
                     ? "background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.2)"
                     : "") +
                 '">' +
+=======
+               '<div class="act-item" style="' +
+(n.unread
+     ? "background:rgba(124,58,237,.06);border-color:rgba(124,58,237,.2)"
+     : "background:var(--row-bg);border-color:var(--border2)") +
+'">' +
+>>>>>>> 14b4245 (full updated code)
                 '<div style="width:36px;height:36px;border-radius:10px;background:' +
                 n.bg +
                 ';display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
                 '<i class="' + n.icon + '" style="color:' + n.col + '"></i>' +
                 '</div>' +
                 '<div style="flex:1;min-width:0">' +
+<<<<<<< HEAD
                 '<div style="font-size:.84rem;font-weight:600;color:var(--text)">' +
                 n.title +
                 '</div>' +
                 '<div style="font-size:.75rem;color:var(--text3);margin-top:2px">' +
+=======
+                '<div style="font-size:.84rem;font-weight:600;color:var(--text);word-break:break-all">' +
+                n.title +
+                '</div>' +
+                '<div style="font-size:.75rem;color:var(--text3);margin-top:2px;word-break:break-all">' +
+>>>>>>> 14b4245 (full updated code)
                 n.desc +
                 '</div>' +
                 '<div style="font-size:.7rem;color:var(--text4);margin-top:4px">' +
@@ -3568,6 +3752,37 @@ function renderNotifications() {
         .join("");
 }
 
+<<<<<<< HEAD
+=======
+// function markNotificationRead(id, btn) {
+//     fetch("/admin/notification/read", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+//                 .content,
+//         },
+//         body: JSON.stringify({
+//             id: id,
+//         }),
+//     })
+//         .then((r) => r.json())
+//         .then((data) => {
+//             if (data.status) {
+//                 var n = NOTIFICATIONS_DATA.find((x) => x.id == id);
+
+//                 if (n) n.unread = false;
+
+//                 btn.closest(".act-item").style.background = "";
+//                 btn.closest(".act-item").style.borderColor = "";
+
+//                 btn.remove();
+
+//                 toast("Marked as read", "success");
+//             }
+//         });
+// }
+>>>>>>> 14b4245 (full updated code)
 function markNotificationRead(id, btn) {
     fetch("/admin/notification/read", {
         method: "POST",
@@ -3587,8 +3802,13 @@ function markNotificationRead(id, btn) {
 
                 if (n) n.unread = false;
 
+<<<<<<< HEAD
                 btn.closest(".act-item").style.background = "";
                 btn.closest(".act-item").style.borderColor = "";
+=======
+                btn.closest(".act-item").style.background = "var(--row-bg)";
+btn.closest(".act-item").style.borderColor = "var(--border2)";
+>>>>>>> 14b4245 (full updated code)
 
                 btn.remove();
 
@@ -3768,7 +3988,11 @@ function renderFeedback() {
                 '">' +
                 f.status +
                 "</span></div>" +
+<<<<<<< HEAD
                 '<div style="font-size:.79rem;color:var(--text3)">' +
+=======
+                '<div style="font-size:.79rem;color:var(--text3);word-break:break-all;">' +
+>>>>>>> 14b4245 (full updated code)
                 f.msg +
                 "</div>" +
                 '<div style="font-size:.7rem;color:var(--text4);margin-top:4px">' +
@@ -4264,3 +4488,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (id === "page-profile") renderProfileActivity();
     if (id === "page-settings") initSettings();
 });
+<<<<<<< HEAD
+=======
+
+// new script
+
+document.addEventListener('click', function (e) {
+    var openModalEl = document.querySelector('.modal-bg.open');
+    if (openModalEl && !openModalEl.contains(e.target)) {
+        e.stopPropagation();
+        e.preventDefault();
+    }
+}, true);
+>>>>>>> 14b4245 (full updated code)

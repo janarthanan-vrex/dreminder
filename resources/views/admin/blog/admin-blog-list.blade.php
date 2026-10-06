@@ -6,8 +6,13 @@
 .blog-status-dot.active{background:var(--green)}
 .blog-status-dot.inactive{background:var(--text4)}
 .filter-pill{padding:6px 14px;border-radius:100px;font-size:.75rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text3);transition:all .2s;white-space:nowrap}
+<<<<<<< HEAD
 .filter-pill:hover{border-color:rgba(124,58,237,.3);color:var(--text2)}
 .filter-pill.active{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.35);color:var(--purple-light)}
+=======
+/*.filter-pill:hover{border-color:rgba(124,58,237,.3);color:var(--text2)}*/
+/*.filter-pill.active{background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.35);color:var(--purple-light)}*/
+>>>>>>> 14b4245 (full updated code)
 .blog-thumb{width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid var(--border);flex-shrink:0}
 .blog-thumb-placeholder{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--ctrl-bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text4);flex-shrink:0}
 .cat-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:100px;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
@@ -18,6 +23,20 @@
 .cat-pill.finance{background:rgba(239,68,68,.1);color:#fca5a5}
 .bulk-bar{display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;margin-bottom:14px}
 .bulk-bar.show{display:flex}
+<<<<<<< HEAD
+=======
+/* Safari fix: force fixed column widths so pills don't crowd neighboring columns */
+#blog-table{table-layout:fixed;width:100%}
+#blog-table td,#blog-table th{overflow:hidden;vertical-align:middle}
+
+@media (max-width:768px){
+    #blog-table{min-width:720px}
+    #blog-table th,#blog-table td{padding:10px 14px;white-space:nowrap}
+    #blog-table td:nth-child(2){padding-right:16px;text-overflow:ellipsis}
+    #blog-table td:nth-child(3){padding-left:16px;padding-right:20px}
+    .cat-pill{margin-right:8px}
+}
+>>>>>>> 14b4245 (full updated code)
 </style>
 
 <!-- Header -->
@@ -36,9 +55,18 @@
 <!-- Filters & Search -->
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
     <div style="display:flex;gap:6px;overflow-x:auto;flex-wrap:wrap" id="blog-filter-pills">
+<<<<<<< HEAD
         <button class="filter-pill active" data-filter="all" onclick="filterPosts('all',this)">All <span style="opacity:.5">({{ $posts->count() }})</span></button>
         <button class="filter-pill" data-filter="active" onclick="filterPosts('active',this)"><span class="blog-status-dot active" style="display:inline-block;margin-right:4px"></span>Active <span style="opacity:.5">({{ $posts->where('is_active',true)->count() }})</span></button>
         <button class="filter-pill" data-filter="inactive" onclick="filterPosts('inactive',this)"><span class="blog-status-dot inactive" style="display:inline-block;margin-right:4px"></span>Inactive <span style="opacity:.5">({{ $posts->where('is_active',false)->count() }})</span></button>
+=======
+        <!--<button class="filter-pill active" data-filter="all" onclick="filterPosts('all',this)">All <span style="opacity:.5">({{ $posts->count() }})</span></button>-->
+        <!--<button class="filter-pill" data-filter="active" onclick="filterPosts('active',this)"><span class="blog-status-dot active" style="display:inline-block;margin-right:4px"></span>Active <span style="opacity:.5">({{ $posts->where('is_active',true)->count() }})</span></button>-->
+        <!--<button class="filter-pill" data-filter="inactive" onclick="filterPosts('inactive',this)"><span class="blog-status-dot inactive" style="display:inline-block;margin-right:4px"></span>Inactive <span style="opacity:.5">({{ $posts->where('is_active',false)->count() }})</span></button>-->
+        <button class="filter-pill" data-filter="all" onclick="filterPosts('all',this)">All <span style="opacity:.5">({{ $posts->count() }})</span></button>
+<span class="filter-pill" style="cursor:default;pointer-events:none"><span class="blog-status-dot active" style="display:inline-block;margin-right:4px"></span>Active <span style="opacity:.5">({{ $posts->where('is_active',true)->count() }})</span></span>
+<span class="filter-pill" style="cursor:default;pointer-events:none"><span class="blog-status-dot inactive" style="display:inline-block;margin-right:4px"></span>Inactive <span style="opacity:.5">({{ $posts->where('is_active',false)->count() }})</span></span>
+>>>>>>> 14b4245 (full updated code)
     </div>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <select class="inp" style="width:130px;font-size:.78rem" onchange="filterByCategory(this.value)">
@@ -66,8 +94,16 @@
 </div>
 
 <!-- Table -->
-<div class="card" style="padding:0;overflow:hidden">
+<div class="card" style="padding:0;overflow:auto">
     <table class="data-table" id="blog-table">
+        <colgroup>
+        <col style="width:36px">
+        <col style="width:48%">
+        <col style="width:100px">
+        <col style="width:120px">
+        <col style="width:90px">
+        <col style="width:90px">
+    </colgroup>
         <thead>
             <tr>
                 <th style="width:36px">S.No</th>
@@ -81,7 +117,11 @@
         <tbody id="blog-tbody">
             @forelse($posts as $post)
             <tr class="blog-row" data-status="{{ $post->is_active ? 'active' : 'inactive' }}" data-cat="{{ $post->category }}">
+<<<<<<< HEAD
                 <td>{{$loop->iteration}}</td>
+=======
+               <td class="serial">{{$loop->iteration}}</td>
+>>>>>>> 14b4245 (full updated code)
                 <td>
                     <div style="display:flex;align-items:center;gap:12px">
                         @if($post->featured_image)
@@ -90,10 +130,19 @@
                             <div class="blog-thumb-placeholder"><i class="ri-image-line" style="font-size:1.2rem"></i></div>
                         @endif
                         <div>
+<<<<<<< HEAD
                             <div style="font-weight:700;font-size:.85rem;color:var(--text);line-height:1.4;max-width:320px">{{ $post->title }}</div>
                             <div style="font-size:.72rem;color:var(--text4);margin-top:3px;display:flex;align-items:center;gap:8px">
                                 <i class="ri-link"></i>
                                 <span style="color:var(--text4)">/blog/{{ $post->slug }}</span>
+=======
+                            <!--<div style="font-weight:700;font-size:.85rem;color:var(--text);line-height:1.4;max-width:320px">{{ $post->title }}</div>-->
+                             <div style="font-weight:700;font-size:.85rem;color:var(--text);line-height:1.4;max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $post->title }}</div>
+                            <div style="font-size:.72rem;color:var(--text4);margin-top:3px;display:flex;align-items:center;gap:8px">
+                                <i class="ri-link"></i>
+                                <!--<span style="color:var(--text4)">/blog/{{ $post->slug }}</span>-->
+                                <span style="color:var(--text4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;display:inline-block">/blog/{{ $post->slug }}</span>
+>>>>>>> 14b4245 (full updated code)
                             </div>
                         </div>
                     </div>
@@ -130,7 +179,23 @@
                     No blog posts found. <a href="{{ route('admin.blog.create') }}" style="color:var(--purple)">Create your first post</a>
                 </td>
             </tr>
+<<<<<<< HEAD
             @endforelse
+=======
+            <tr>
+    <td colspan="6" style="text-align:center;padding:40px;color:var(--text4);font-size:.85rem">
+        <i class="ri-article-line" style="font-size:2rem;display:block;margin-bottom:8px"></i>
+        No blog posts found. <a href="{{ route('admin.blog.create') }}" style="color:var(--purple)">Create your first post</a>
+    </td>
+</tr>
+            @endforelse
+            <tr id="no-results-row" style="display:none">
+    <td colspan="6" style="text-align:center;padding:48px;color:var(--text4);font-size:.85rem">
+        <i class="ri-search-line" style="font-size:2rem;display:block;margin-bottom:8px;opacity:.4"></i>
+        <span id="no-results-msg">No posts found</span>
+    </td>
+</tr>
+>>>>>>> 14b4245 (full updated code)
         </tbody>
     </table>
 </div>
@@ -163,12 +228,14 @@ function filterPosts(status, btn){
     document.querySelectorAll('.blog-row').forEach(row=>{
         row.style.display = (status==='all' || row.dataset.status===status) ? '' : 'none';
     });
+    updateSerialNumbers();
 }
 
 function filterByCategory(cat){
     document.querySelectorAll('.blog-row').forEach(row=>{
         row.style.display = (!cat || row.dataset.cat.toLowerCase()===cat.toLowerCase()) ? '' : 'none';
     });
+    updateSerialNumbers();
 }
 
 function searchPosts(q){
@@ -176,6 +243,7 @@ function searchPosts(q){
     document.querySelectorAll('.blog-row').forEach(row=>{
         row.style.display = (!q || row.textContent.toLowerCase().includes(q)) ? '' : 'none';
     });
+    updateSerialNumbers();
 }
 
 function selectAll(cb){
@@ -252,6 +320,58 @@ function deletePost(id, btn){
         });
     };
     openModal('delete-confirm-modal');
+}
+</script>
+
+<!--new script-->
+<script>
+    function checkEmpty(msg) {
+    var visible = [].filter.call(
+        document.querySelectorAll('.blog-row'),
+        function(r){ return r.style.display !== 'none'; }
+    ).length;
+    var row = document.getElementById('no-results-row');
+    var msgEl = document.getElementById('no-results-msg');
+    row.style.display = visible === 0 ? '' : 'none';
+    if (msg) msgEl.textContent = msg;
+    
+    updateSerialNumbers();
+}
+
+function filterPosts(status, btn) {
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.blog-row').forEach(row => {
+        row.style.display = (status === 'all' || row.dataset.status === status) ? '' : 'none';
+    });
+    var label = status === 'active' ? 'No active posts'
+              : status === 'inactive' ? 'No inactive posts'
+              : 'No posts found';
+    checkEmpty(label);
+}
+
+function filterByCategory(cat) {
+    document.querySelectorAll('.blog-row').forEach(row => {
+        row.style.display = (!cat || row.dataset.cat.toLowerCase() === cat.toLowerCase()) ? '' : 'none';
+    });
+    checkEmpty(cat ? 'No posts in this category' : 'No posts found');
+}
+
+function searchPosts(q) {
+    q = q.toLowerCase().trim();
+    document.querySelectorAll('.blog-row').forEach(row => {
+        row.style.display = (!q || row.textContent.toLowerCase().includes(q)) ? '' : 'none';
+    });
+    checkEmpty(q ? 'No posts matching "' + q + '"' : 'No posts found');
+}
+
+function updateSerialNumbers() {
+    let i = 1;
+    document.querySelectorAll('.blog-row').forEach(row => {
+        if (row.style.display !== 'none') {
+            row.querySelector('.serial').textContent = i++;
+        }
+    });
 }
 </script>
 

@@ -18,10 +18,10 @@
             <option value="completed">Completed</option>
         </select>
         <select class="inp" style="width:auto;min-width:160px" id="rem-sort" onchange="loadReminders()">
+            <option value="created-desc">Recently Added</option>
             <option value="date-asc">Date ↑</option>
             <option value="date-desc">Date ↓</option>
             <option value="title-asc">Title A–Z</option>
-            <option value="created-desc">Recently Added</option>
         </select>
         <button class="btn btn-ghost btn-sm" onclick="resetFilters()" title="Reset filters"><i class="ri-refresh-line"></i></button>
     </div>
@@ -30,7 +30,7 @@
             <button class="view-btn active" id="vg" onclick="setView('grid')"><i class="ri-grid-line"></i> Grid</button>
             <button class="view-btn" id="vl" onclick="setView('list')"><i class="ri-list-check"></i> List</button>
         </div>
-        <span style="font-size:.75rem;color:#64748b;font-weight:600"><span id="rem-display-count">0</span> reminders</span>
+        <span style="font-size:.75rem;color:#64748b;font-weight:600" ><span id="rem-display-count">0</span> <span id="rem-display-text">reminders</span></span>
     </div>
     <div id="rem-list" style="display:flex;flex-direction:column;gap:8px"></div>
     <div id="rem-grid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>

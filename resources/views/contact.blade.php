@@ -21,12 +21,12 @@
     height: 44px;
     border-radius: 12px;
     background: rgba(255,255,255,.03);
-    border: 1px solid rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.3);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.1rem;
-    color: rgba(255,255,255,.5);
+    color: rgba(255,255,255,.9);
     transition: all .3s;
   }
   .social:hover {
@@ -156,6 +156,8 @@
 
 <!-- ===================== HERO ===================== -->
 <section class="page-hero-dark section-alt relative" data-particles="cyan" data-p-count="40" data-p-connect="false">
+      <div class="hero-bg-image contact-bnr"></div>
+     <div class="hero-overlay"></div>
   <div class="gradient-blob w-[400px] h-[400px] bg-secondary top-[-15%] right-[10%]"></div>
   <div class="max-w-[800px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb"><a href="index">Home</a><span class="sep">/</span><span>Contact</span></div>
@@ -177,10 +179,10 @@
             <i class="ri-map-pin-line"></i>
           </div>
           <h4 class="font-bold text-white mb-2">Our Office</h4>
-          <p class="text-sm text-white/40 leading-relaxed">
+          <p class="text-sm text-white/80 leading-relaxed">
             Unit 5, Martinbridge Trading Estate,<br>
-            240–242 Lincoln Road,<br>
-            Enfield, United Kingdom, EN1 1SP.
+            240–242 Lincoln Road, Enfield,<br>
+             United Kingdom, EN1 1SP.
           </p>
         </div>
         
@@ -190,9 +192,9 @@
           </div>
           <h4 class="font-bold text-white mb-2">Email Us</h4>
           <a href="mailto:info@winngoodremind.co.uk" class="text-sm text-purple-400 hover:text-purple-300 transition block mb-1">info@winngoodremind.co.uk</a>
-          <p class="text-xs text-white/30 mb-3">General enquiries &amp; support</p>
-          <a href="mailto:support@winngoodremind.co.uk" class="text-sm text-purple-400 hover:text-purple-300 transition block mb-1">support@winngoodremind.co.uk</a>
-          <p class="text-xs text-white/30">Technical support</p>
+          <p class="text-xs text-white/80 mb-3">General enquiries &amp; support</p>
+          <!--<a href="mailto:support@winngoodremind.co.uk" class="text-sm text-purple-400 hover:text-purple-300 transition block mb-1">support@winngoodremind.co.uk</a>-->
+          <!--<p class="text-xs text-white/30">Technical support</p>-->
         </div>
         
         <div class="contact-card-dark reveal d3">
@@ -201,16 +203,15 @@
           </div>
           <h4 class="font-bold text-white mb-2">Call Us</h4>
           <a href="tel:+02033765250" class="text-sm text-purple-400 hover:text-purple-300 transition block mb-1">+020 3376 5250</a>
-          <p class="text-xs text-white/30">Mon–Fri, 9am–6pm GMT</p>
+          <p class="text-xs text-white/80">Mon-Fri: 9am - 6pm</p>
         </div>
         
         <div class="contact-card-dark reveal d4">
           <h4 class="font-bold text-white mb-4">Follow Us</h4>
           <div class="flex gap-3">
-            <a href="#" class="social" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
-            <a href="#" class="social" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-            <a href="#" class="social" aria-label="Twitter"><i class="ri-twitter-x-line"></i></a>
-            <a href="#" class="social" aria-label="LinkedIn"><i class="ri-linkedin-fill"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61590622686585" target="_blank" class="social" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+            <a href="https://www.instagram.com/winngoodremind/" class="social" target="_blank" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+           <a href="https://www.youtube.com/@winngoodremind" class="social" target="_blank" aria-label="YouTube"><i class="ri-youtube-line"></i></a>
           </div>
         </div>
       </div>
@@ -219,43 +220,63 @@
       <div class="lg:col-span-2">
         <div class="glass-strong reveal-right !rounded-3xl p-8 md:p-10">
           <h3 class="text-2xl font-bold text-white mb-2">Complete the Enquiry Form</h3>
+<<<<<<< HEAD
           <p class="text-sm text-white/40 mb-8">Let us know what you need assistance with, and our team will get back to you with the right support.</p>
+=======
+          <p class="text-sm text-white/80 mb-8">Let us know what you need assistance with, and our team will get back to you with the right support.</p>
+>>>>>>> 14b4245 (full updated code)
           
           <form id="contactForm" class="flex flex-col gap-5" onsubmit="return false;">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label class="auth-label">First Name <span class="text-red-400">*</span></label>
+<<<<<<< HEAD
                 <input type="text" name="first_name" id="first_name" placeholder="Enter Your First Name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+=======
+                <input type="text" name="first_name" id="first_name" placeholder="Enter your first name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+>>>>>>> 14b4245 (full updated code)
 <div id="err-first_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
               <div>
                 <label class="auth-label">Last Name <span class="text-red-400">*</span></label>
+<<<<<<< HEAD
               <input type="text" name="last_name" id="last_name" placeholder="Enter Your Last Name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+=======
+              <input type="text" name="last_name" id="last_name" placeholder="Enter your last name" class="auth-input" maxlength="20" oninput="this.value = this.value.replace(/[^a-zA-Z ]/g, '')">
+>>>>>>> 14b4245 (full updated code)
 <div id="err-last_name" class="text-red-400 text-xs mt-1 hidden"></div>
               </div>
             </div>
             
             <div>
               <label class="auth-label">Email Address <span class="text-red-400">*</span></label>
-              <input type="email" name="email" id="email" placeholder="Enter Your Email" class="auth-input">
+              <input type="email" name="email" id="email" placeholder="Enter your email" class="auth-input">
 <div id="err-email" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Phone Number <span class="text-red-400">*</span></label>
+<<<<<<< HEAD
               <input type="tel" name="phone" id="phone" placeholder="+44 020 0000 0000" class="auth-input" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+=======
+              <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" class="auth-input" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+>>>>>>> 14b4245 (full updated code)
 <div id="err-phone" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Subject <span class="text-red-400">*</span></label>
+<<<<<<< HEAD
              <input type="text" name="subject" id="subject" placeholder="Enter Your Subject" class="auth-input"maxlength="50" >
+=======
+             <input type="text" name="subject" id="subject" placeholder="Enter your subject" class="auth-input"maxlength="50" >
+>>>>>>> 14b4245 (full updated code)
 <div id="err-subject" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
             <div>
               <label class="auth-label">Message <span class="text-red-400">*</span></label>
-              <textarea name="message" id="message" placeholder="Tell us how we can help you..." class="textarea-dark" rows="5"></textarea>
+              <textarea name="message" id="message" placeholder="Enter your message" class="textarea-dark" rows="5"></textarea>
 <div id="err-message" class="text-red-400 text-xs mt-1 hidden"></div>
             </div>
             
@@ -290,7 +311,7 @@
       <h2 class="text-3xl md:text-4xl font-black text-white mb-4">
         Visit our <span class="grad-text">office</span>
       </h2>
-      <p class="text-base text-white/40 max-w-2xl mx-auto">
+      <p class="text-base text-white/80 max-w-2xl mx-auto">
         We're located in Enfield, North London. Drop by for a coffee or schedule a meeting with our team.
       </p>
     </div>
@@ -310,9 +331,9 @@
         <h4><i class="ri-map-pin-2-fill"></i> Our Location</h4>
         <p>
           Unit 5, Martinbridge Trading Estate<br>
-          240–242 Lincoln Road<br>
-          Enfield, United Kingdom<br>
-          EN1 1SP
+          240–242 Lincoln Road, Enfield,<br>
+          United Kingdom, EN1 1SP
+          
         </p>
         <a href="https://maps.google.com/?q=240-242+Lincoln+Road+Enfield+EN1+1SP+UK" target="_blank" class="directions-btn">
           <i class="ri-navigation-line"></i>
@@ -351,7 +372,7 @@
     <i class="ri-check-line"></i>
   </div>
   <div>
-    <div class="font-bold">Message sent successfully!</div>
+    <div class="font-bold">Message sent successfully</div>
     <div class="text-xs text-white/40">We'll get back to you within 24 hours.</div>
   </div>
 </div>
@@ -461,7 +482,7 @@ btn?.addEventListener('click', async () => {
 
         // ✅ success ui
         btn.innerHTML =
-            '<i class="ri-check-line mr-2"></i>Sent Successfully!';
+            '<i class="ri-check-line mr-2"></i>Sent Successfully';
 
         btn.style.background =
             'linear-gradient(135deg,#10b981,#059669)';

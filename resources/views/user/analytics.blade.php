@@ -46,10 +46,8 @@
         All Time
     </button>
 
-    <a href="{{ route('user.analytics') }}"
-       class="period-btn">
-        Reset
-    </a>
+    <!--<button class="period-btn" onclick="setPeriod(this, 7)">Reset</button>-->
+
 
 </div>
 
@@ -92,11 +90,11 @@
             <div style="position:relative;height:250px"><canvas id="cat-dist-chart"></canvas></div>
         </div>
     </div>
-    <div class="g2" style="margin-bottom:16px">
+      <div class="g2" style="margin-bottom:16px">
         <div class="card" style="padding:18px">
             <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:14px">Completion Status</h3>
             <div style="position:relative;height:210px"><canvas id="comp-chart"></canvas></div>
-            <div class="g2" style="margin-top:14px">
+            <div id="comp-stats" class="g2" style="margin-top:14px">
                 <div style="text-align:center;padding:12px;background:rgba(16,185,129,.1);border-radius:10px">
                     <div style="font-size:.72rem;color:#64748b;margin-bottom:3px">Completed</div>
                     <div class="font-jakarta" style="font-size:1.3rem;font-weight:800;color:#10b981">{{ $completedReminders }}</div>
@@ -108,7 +106,7 @@
             </div>
         </div>
         <div class="card" style="padding:18px">
-            <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:14px">Monthly Spending (£)</h3>
+            <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:14px">Monthly Spending (£) — {{ $currentYear }}</h3>
             <div style="position:relative;height:210px"><canvas id="spend-chart"></canvas></div>
         </div>
     </div>

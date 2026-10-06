@@ -70,6 +70,7 @@
     transform:translateX(24px);
 }
 </style>
+<<<<<<< HEAD
 @if(!auth('admin')->user()->hasPermission('System','system.action'))
 <style>
 .action-btn {
@@ -77,7 +78,17 @@
 }
 </style>
 @endif
+=======
+
+>>>>>>> 14b4245 (full updated code)
 <section id="page-settings" class="page active">
+    @if(!auth('admin')->user()->hasPermission('System','system.action'))
+<style>
+.action-btn {
+    display: none !important;
+}
+</style>
+@endif
     <div style="margin-bottom: 20px">
         <h2 class="font-jakarta" style="font-size: 1.3rem; font-weight: 800">System Settings</h2>
         <p style="font-size: 1.2re; color: var(--text3); margin-top: 3px">

@@ -18,7 +18,7 @@
                 {{-- SUBJECT --}}
                 <div style="margin-bottom:16px">
                     <label style="display:block;font-size:.67rem;font-weight:700;color:#64748b;margin-bottom:6px">
-                        Subject <span style="color:#f43f5e">*</span>
+                        Subject <span style="color:#f43f5e !important;" >*</span>
                     </label>
                     <input
                         class="inp"
@@ -33,7 +33,7 @@
                 {{-- MESSAGE --}}
                 <div style="margin-bottom:16px">
                     <label style="display:block;font-size:.67rem;font-weight:700;color:#64748b;margin-bottom:6px">
-                        Message <span style="color:#f43f5e">*</span>
+                        Message <span style="color:#f43f5e !important;">*</span>
                     </label>
                     <textarea
                         class="inp"
@@ -44,7 +44,7 @@
                         minlength="10"
 
                         style="resize:vertical"></textarea>
-                    <div style="font-size:.72rem;color:#475569;margin-top:4px;text-align:right">
+                    <div style="display:none;font-size:.72rem;color:#475569;margin-top:4px;text-align:right">
                         <span id="fb-len">0</span> characters
                     </div>
                     <div id="err-message" style="display:none;margin-top:6px;font-size:.74rem;color:#ef4444;font-weight:500"></div>
@@ -66,9 +66,9 @@
                 </div>
 
                 {{-- CHECKBOX --}}
-                <div style="margin-bottom:20px">
+                <div class="hidden" style="margin-bottom:20px">
                     <label style="display:flex;align-items:center;gap:8px;color:#64748b">
-                        <input type="checkbox" id="fb-receive" name="is_receive">
+                        <input type="checkbox"  id="fb-receive" name="is_receive">
                         Allow team to contact me
                     </label>
                 </div>
@@ -86,7 +86,7 @@
             </form>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:14px;display:none" >
 
             <div class="card" style="padding:18px">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
@@ -161,6 +161,7 @@
         </div>
     </div>
 </section>
+@include('user.layouts.firebase_setup')
 
 <script>
     // ✅ Entire block is wrapped in an IIFE so nothing leaks into global scope
@@ -335,9 +336,9 @@
                     return;
                 }
                 toast(data.message || 'Feedback submitted successfully','success');
-                setTimeout(()=>{
-                    location.reload();
-                },1500)
+                // setTimeout(()=>{
+                //     location.reload();
+                // },1500)
                 // ── success ──
                 if (successBox) {
                     successBox.style.display = 'block';

@@ -29,7 +29,11 @@
         padding: 12px 16px; background: var(--row-bg); border: 1px solid var(--border);
         border-radius: 12px; margin-bottom: 8px; cursor: pointer;
     }
+<<<<<<< HEAD
     .faq-cat-header h4 { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 700; color: var(--text); }
+=======
+    .faq-cat-header h4 { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 700; color: var(--text);word-break:break-all; }
+>>>>>>> 14b4245 (full updated code)
     .faq-item-row {
         display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px;
         background: var(--bg2); border: 1px solid var(--border2);
@@ -140,7 +144,11 @@
             <div class="faq-item-row" data-faq-id="{{ $faq->id }}">
                 <i class="ri-draggable drag-handle"></i>
                 <div class="faq-item-body">
+<<<<<<< HEAD
                     <input class="inp faq-question" value="{{ $faq->question }}" style="margin-bottom:8px;font-weight:600" readonly/>
+=======
+                    <input class="inp faq-question" maxlength="100" value="{{ $faq->question }}" style="margin-bottom:8px;font-weight:600" readonly/>
+>>>>>>> 14b4245 (full updated code)
                     <textarea class="inp-area inp faq-answer" rows="2" readonly>{{ $faq->answer }}</textarea>
                 </div>
                 <div class="faq-item-actions">
@@ -167,13 +175,21 @@
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
         <div class="section-title" style="margin:0">Manage Categories</div>
         <!-- <button class="btn btn-primary btn-sm" onclick="openModal('add-cat-modal')">
+<<<<<<< HEAD
             <i class="ri-add-line"></i> New Category
+=======
+            <i class="ri-add-line"></i> aategory
+>>>>>>> 14b4245 (full updated code)
         </button> -->
         <button class="btn btn-primary btn-sm create-btn" onclick="openNewCategoryModal()">
     <i class="ri-add-line"></i> New Category
 </button>
     </div>
+<<<<<<< HEAD
     <div class="card" style="padding:0;overflow:hidden">
+=======
+    <div class="card" style="padding:0;overflow-x:scroll">
+>>>>>>> 14b4245 (full updated code)
         <table class="data-table" id="cat-table">
             <thead>
                 <tr>
@@ -297,8 +313,13 @@
 </div>
 
 <!-- Add/Edit Category Modal -->
+<<<<<<< HEAD
 <div class="modal-bg" id="add-cat-modal">
     <div class="modal-box" style="max-width:480px">
+=======
+<div class="modal-bg" id="add-cat-modal" style="z-index:999 !important; pointer-events:none !important;">
+    <div class="modal-box" style="max-width: 480px; position: relative; z-index: 9999 !important; pointer-events: all;">
+>>>>>>> 14b4245 (full updated code)
         <div class="modal-header">
             <h3 class="font-jakarta" style="font-weight:700;font-size:0.95rem">
                 <i class="ri-folder-add-line" style="color:var(--purple);margin-right:6px"></i>
@@ -309,16 +330,28 @@
         <input type="hidden" id="edit-cat-id" value=""/>
         <div class="field-group">
     <label class="label">Category Name <span style="color:var(--red)">*</span></label>
+<<<<<<< HEAD
     <input class="inp" id="cat-name" maxlength="100" placeholder="e.g. Technical Support" oninput="clearCategoryError()"/>
+=======
+    <input class="inp" id="cat-name" maxlength="20" placeholder="Enter category name" oninput="clearCategoryError()"/>
+>>>>>>> 14b4245 (full updated code)
     <small id="cat-name-error" style="color:red;display:none"></small>
 </div>
         <div class="field-group">
             <label class="label">Description</label>
+<<<<<<< HEAD
             <input class="inp" id="cat-desc" placeholder="Short description..."/>
         </div>
         <div class="field-group">
             <label class="label">Icon (Remix Icon class)</label>
             <input class="inp" id="cat-icon" value="ri-question-line"/>
+=======
+            <input class="inp" id="cat-desc" maxlength="70" placeholder="Short description..."/>
+        </div>
+        <div class="field-group">
+            <label class="label">Icon (Remix Icon class)</label>
+            <input class="inp" maxlength="20" id="cat-icon" value="ri-question-line"/>
+>>>>>>> 14b4245 (full updated code)
         </div>
         <div class="field-group">
             <label class="label">Color</label>
@@ -340,9 +373,20 @@
 <script>
 const CSRF = '{{ csrf_token() }}';
 let selectedCatColor = '#7c3aed';
+<<<<<<< HEAD
 
 /* ── Tab switching ── */
 function switchTab(t) {
+=======
+document.addEventListener('DOMContentLoaded', function () {
+    const activeTab = localStorage.getItem('cms_active_tab') || 'content';
+    switchTab(activeTab);
+});
+
+/* ── Tab switching ── */
+function switchTab(t) {
+    localStorage.setItem('cms_active_tab', t);
+>>>>>>> 14b4245 (full updated code)
     document.querySelectorAll('.cms-tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.cms-tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + t).classList.add('active');
@@ -356,10 +400,51 @@ function toggleCat(slug) {
 }
 
 /* ── Filter FAQs ── */
+<<<<<<< HEAD
+=======
+// function filterFAQs(search) {
+//     search = search.toLowerCase().trim();
+
+//     document.querySelectorAll('.faq-item-row').forEach(row => {
+
+//         const question = row.querySelector('.faq-question')?.value.toLowerCase() || '';
+//         const answer = row.querySelector('.faq-answer')?.value.toLowerCase() || '';
+
+//         const match =
+//             question.includes(search) ||
+//             answer.includes(search);
+
+//         row.style.display = match || search === '' ? '' : 'none';
+//     });
+// }
+
+// new script
+// function filterFAQs(search) {
+//     search = search.toLowerCase().trim();
+
+//     document.querySelectorAll('.faq-item-row').forEach(row => {
+//         const question = row.querySelector('.faq-question')?.value.toLowerCase() || '';
+//         const answer   = row.querySelector('.faq-answer')?.value.toLowerCase() || '';
+//         const match    = !search || question.includes(search) || answer.includes(search);
+
+//         row.style.display = match ? '' : 'none';
+
+//         // if matched, make sure parent items container is visible
+//         if (match && search) {
+//             const itemsContainer = row.closest('[id$="-items"]');
+//             if (itemsContainer) itemsContainer.style.display = '';
+//         }
+//     });
+
+//     // if search cleared, don't force-close anything (leave as-is)
+// }
+
+>>>>>>> 14b4245 (full updated code)
 function filterFAQs(search) {
     search = search.toLowerCase().trim();
 
     document.querySelectorAll('.faq-item-row').forEach(row => {
+<<<<<<< HEAD
 
         const question = row.querySelector('.faq-question')?.value.toLowerCase() || '';
         const answer = row.querySelector('.faq-answer')?.value.toLowerCase() || '';
@@ -369,6 +454,39 @@ function filterFAQs(search) {
             answer.includes(search);
 
         row.style.display = match || search === '' ? '' : 'none';
+=======
+        const question = row.querySelector('.faq-question')?.value.toLowerCase() || '';
+        const answer   = row.querySelector('.faq-answer')?.value.toLowerCase() || '';
+        const match    = !search || question.includes(search) || answer.includes(search);
+
+        row.style.display = match ? '' : 'none';
+
+        // if matched, make sure parent items container is visible
+        if (match && search) {
+            const itemsContainer = row.closest('[id$="-items"]');
+            if (itemsContainer) itemsContainer.style.display = '';
+        }
+    });
+
+    // Show "No data found" per category when search yields 0 matches in that category
+    document.querySelectorAll('[id$="-items"]').forEach(container => {
+        // remove any existing empty-state message first
+        const existingMsg = container.querySelector('.faq-no-results');
+        if (existingMsg) existingMsg.remove();
+
+        if (!search) return; // don't show empty message when search is cleared
+
+        const visibleRows = container.querySelectorAll('.faq-item-row:not([style*="display: none"])');
+
+        if (visibleRows.length === 0) {
+            container.insertAdjacentHTML('beforeend',
+                '<div class="faq-no-results" style="text-align:center;padding:20px;color:var(--text3);font-size:.82rem">' +
+                '<i class="ri-question-answer-line" style="font-size:1.3rem;display:block;margin-bottom:6px;opacity:.5"></i>' +
+                'No questions found in this category' +
+                '</div>'
+            );
+        }
+>>>>>>> 14b4245 (full updated code)
     });
 }
 function filterByCategory(slug) {
@@ -538,7 +656,11 @@ if (hasError) {
             document.getElementById('faq-a').value = '';
             closeModal('add-faq-modal');
             updateTotalCount();
+<<<<<<< HEAD
             if (typeof toast === 'function') toast('FAQ added!', 'success');
+=======
+            if (typeof toast === 'function') toast('FAQ added', 'success');
+>>>>>>> 14b4245 (full updated code)
             setTimeout(()=>{
                     location.reload();
             },1500);
@@ -560,7 +682,11 @@ function buildFaqRow(faq) {
     <div class="faq-item-row" data-faq-id="${faq.id}">
         <i class="ri-draggable drag-handle"></i>
         <div class="faq-item-body">
+<<<<<<< HEAD
             <input class="inp faq-question" value="${escHtml(faq.question)}" style="margin-bottom:8px;font-weight:600" readonly/>
+=======
+            <input class="inp faq-question" maxlength="100" value="${escHtml(faq.question)}" style="margin-bottom:8px;font-weight:600" readonly/>
+>>>>>>> 14b4245 (full updated code)
             <textarea class="inp-area inp faq-answer" rows="2" readonly>${escHtml(faq.answer)}</textarea>
         </div>
         <div class="faq-item-actions">
@@ -660,6 +786,10 @@ function clearCategoryError() {
 }
 
 function saveCategory() {
+<<<<<<< HEAD
+=======
+     localStorage.setItem('cms_active_tab', 'categories');
+>>>>>>> 14b4245 (full updated code)
     const editId = document.getElementById('edit-cat-id').value;
     const name   = document.getElementById('cat-name').value.trim();
     const desc   = document.getElementById('cat-desc').value.trim();
@@ -705,7 +835,11 @@ function saveCategory() {
         if (data.success) {
             closeModal('add-cat-modal');
             if (typeof toast === 'function') {
+<<<<<<< HEAD
                 toast(isEdit ? 'Category updated!' : 'Category created!', 'success');
+=======
+                toast(isEdit ? 'Category updated' : 'Category created', 'success');
+>>>>>>> 14b4245 (full updated code)
             }
             setTimeout(() => location.reload(), 800);
         }

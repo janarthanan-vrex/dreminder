@@ -4,13 +4,15 @@
 
 <!-- PAGE HERO -->
 <section class="page-hero-dark section-alt relative" data-particles="purple" data-p-count="50" data-p-connect="false" data-p-glow="true">
+    <div class="hero-bg-image abt-bnr"></div>
+<div class="hero-overlay"></div>
   <div class="gradient-blob w-[500px] h-[500px] bg-primary top-[-20%] left-[10%]"></div>
   <div class="gradient-blob w-[400px] h-[400px] bg-secondary bottom-[-20%] right-[5%]"></div>
   <div class="max-w-[800px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb"><a href="index">Home</a><span class="sep">/</span><span>About</span></div>
-    <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 w-fit reveal"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Our Story</div>
-    <h1 class="reveal">Built to help you keep <span class="grad-text">more of your money.</span></h1>
-    <p class="reveal" data-delay="1">DRemind was born from a simple frustration — too many people lose thousands every year to forgotten renewals and loyalty tax. We decided to fix that.</p>
+    <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 w-fit reveal"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span> Who We Are</div>
+    <h1 class="reveal">Built to keep Your Daily <span class="grad-text">Commitments on Track</span></h1>
+    <p class="reveal" data-delay="1"><Strong>Winngoo D-Remind</Strong> is a UK-based smart reminder platform built to help individuals stay organised. It delivers timely alerts for bills, subscriptions, renewals, and important events, helping reduce missed due dates, penalties, and unnecessary charges.</p>
   </div>
 </section>
 
@@ -20,18 +22,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       <div class="reveal-left">
         <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mb-6 w-fit">Our Mission</div>
-        <h2 class="text-3xl lg:text-4xl font-black tracking-tight mb-6 text-white">Empowering people to be <span class="grad-text-alt">financially savvy</span></h2>
-        <p class="text-base text-white/45 leading-relaxed mb-5">We believe every household deserves to know when their insurance, energy contracts, and subscriptions are up for renewal — and to have enough time to switch to a better deal.</p>
-        <p class="text-base text-white/45 leading-relaxed mb-8">DRemind is the intelligent reminder platform that works silently in the background, so you never pay the loyalty tax again.</p>
+        <h2 class="text-3xl lg:text-4xl font-black tracking-tight mb-6 text-white">Supporting better awareness of <span class="grad-text-alt">daily tasks</span></h2>
+        <p class="text-base text-white/80 leading-relaxed mb-5 text-justify">We believe people should be aware of their upcoming responsibilities without needing to track everything manually. Important dates often go unnoticed when life gets busy, and having a clear view helps people stay prepared and avoid last-minute pressure.</p>
+        <p class="text-base text-white/80 leading-relaxed mb-8 text-justify">Winngoo D-Remind brings these details together in one place. It helps users stay informed and manage their responsibilities with greater control.</p>
         <div class="flex flex-col gap-5">
-          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-xl text-purple-400 flex-shrink-0"><i class="ri-crosshair-line"></i></div><div><h4 class="font-bold mb-1 text-white">Purpose-driven</h4><p class="text-sm text-white/40">Every feature we build is aimed at putting money back in your pocket.</p></div></div>
-          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center text-xl text-emerald-400 flex-shrink-0"><i class="ri-shield-check-line"></i></div><div><h4 class="font-bold mb-1 text-white">Privacy first</h4><p class="text-sm text-white/40">Your data is encrypted, never sold, fully GDPR &amp; APPs compliant.</p></div></div>
-          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-secondary/15 flex items-center justify-center text-xl text-cyan-400 flex-shrink-0"><i class="ri-global-line"></i></div><div><h4 class="font-bold mb-1 text-white">Global reach</h4><p class="text-sm text-white/40">Available in 8 countries with full local privacy compliance.</p></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-primary/15 flex items-center justify-center text-xl text-purple-400 flex-shrink-0"><i class="ri-crosshair-line"></i></div><div><h4 class="font-bold mb-1 text-white">User-Focused</h4><p class="text-sm text-white/80">Designed around real user needs and everyday responsibilities.</p></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center text-xl text-emerald-400 flex-shrink-0"><i class="ri-shield-check-line"></i></div><div><h4 class="font-bold mb-1 text-white">Privacy-Minded</h4><p class="text-sm text-white/80">Your data is handled securely with care and protection.</p></div></div>
+          <div class="flex items-start gap-4"><div class="w-12 h-12 rounded-xl bg-secondary/15 flex items-center justify-center text-xl text-cyan-400 flex-shrink-0"><i class="ri-global-line"></i></div><div><h4 class="font-bold mb-1 text-white">Wide Accessibility</h4><p class="text-sm text-white/80">Suitable for individuals, families, and different everyday needs.</p></div></div>
         </div>
       </div>
       <div class="reveal-right">
         <div class="glass-strong p-10 text-center">
-          <img src="https://img.freepik.com/premium-vector/notifications-page-with-floating-elements-business-planning-events-reminder-timetable_183665-586.jpg?semt=ais_hybrid&w=740&q=80" alt="">
+          <img src="{{ asset('assets/images/about/our-mission.webp') }}" alt="">
         </div>
       </div>
     </div>
@@ -43,13 +45,45 @@
   <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
     <div class="text-center mb-14">
       <div class="badge bg-secondary/10 border border-secondary/20 text-cyan-300 mx-auto mb-6 reveal"><span class="w-2 h-2 rounded-full bg-secondary"></span> Our Values</div>
-      <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-4 text-white reveal" data-delay="1">What we <span class="grad-text">stand for</span></h2>
+      <h2 class="text-3xl md:text-4xl font-black tracking-tight mb-4 text-white reveal" data-delay="1">Driven by <span class="grad-text">Clear Principles</span></h2>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      <div class="feature-card reveal d1 text-center"><div class="text-4xl mb-4">💡</div><h4 class="font-bold mb-2 text-white">Transparency</h4><p class="text-sm text-white/40">No hidden fees, no data selling. What you see is what you get.</p></div>
-      <div class="feature-card reveal d2 text-center"><div class="text-4xl mb-4">🚀</div><h4 class="font-bold mb-2 text-white">Simplicity</h4><p class="text-sm text-white/40">Set up in under 2 minutes. No complicated settings.</p></div>
-      <div class="feature-card reveal d3 text-center"><div class="text-4xl mb-4">🔒</div><h4 class="font-bold mb-2 text-white">Security</h4><p class="text-sm text-white/40">Bank-level encryption on all your data, always.</p></div>
-      <div class="feature-card reveal d4 text-center"><div class="text-4xl mb-4">🌍</div><h4 class="font-bold mb-2 text-white">Accessibility</h4><p class="text-sm text-white/40"> forever plan so everyone can benefit.</p></div>
+    <div class="feature-card reveal d1 text-center">
+  <div class="mb-4">
+    <img src="{{ asset('assets/images/about/clarity.webp') }}" 
+         alt="Clarity" 
+         class="w-10 h-10 object-contain mx-auto">
+  </div>
+  <h4 class="font-bold mb-2 text-white">Clarity</h4>
+  <p class="text-sm text-white/85">Information is presented clearly so users can understand reminders at a glance.</p>
+</div>
+      <div class="feature-card reveal d2 text-center">
+  <div class="mb-4">
+    <img src="{{ asset('assets/images/about/depend.webp') }}" 
+         alt="Dependability" 
+         class="w-10 h-10 object-contain mx-auto">
+  </div>
+  <h4 class="font-bold mb-2 text-white">Dependability</h4>
+  <p class="text-sm text-white/85">Reminders are structured to support consistent tracking and better planning.</p>
+</div>
+      <div class="feature-card reveal d3 text-center">
+  <div class="mb-4">
+    <img src="{{ asset('assets/images/about/respect.webp') }}" 
+         alt="Respect" 
+         class="w-10 h-10 object-contain mx-auto">
+  </div>
+  <h4 class="font-bold mb-2 text-white">Respect</h4>
+  <p class="text-sm text-white/85">User information is handled carefully with attention to privacy and responsibility.</p>
+</div>
+     <div class="feature-card reveal d4 text-center">
+  <div class="mb-4">
+    <img src="{{ asset('assets/images/about/practical.webp') }}" 
+         alt="Practicality" 
+         class="w-10 h-10 object-contain mx-auto">
+  </div>
+  <h4 class="font-bold mb-2 text-white">Practicality</h4>
+  <p class="text-sm text-white/85">Features are designed to fit naturally into everyday routines and usage.</p>
+</div>
     </div>
   </div>
 </section>

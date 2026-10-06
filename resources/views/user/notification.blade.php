@@ -2,6 +2,7 @@
 @section('content')
 
 <style>
+<<<<<<< HEAD
     .tabs-header {
         position: relative;
     }
@@ -10,8 +11,22 @@
         display: grid;
         grid-template-columns: repeat(1, 1fr);
         gap: 20px;
+=======
+@media (max-width: 640px) {
+    .card > div[style*="grid-template-columns: repeat(2, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+    .tabs-header {
+        position: relative;
+>>>>>>> 14b4245 (full updated code)
     }
 
+    /*.g2 .g2-noti {*/
+    /*    display: grid;*/
+    /*    grid-template-columns: repeat(1, 1fr) !important;*/
+    /*    gap: 20px;*/
+    /*}*/
 
     .tab-btn {
         display: flex;
@@ -167,7 +182,7 @@
 
             <form id="notification-form">
 
-                <div class="g2" style="margin-bottom:16px">
+                <div class="" style="margin-bottom:16px">
 
                     <!-- CHANNELS -->
                     <div class="card" style="padding:18px">
@@ -183,7 +198,7 @@
                         <div style="display: grid;gap:10px;grid-template-columns: repeat(2, 1fr);">
 
                             <!-- EMAIL -->
-                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgb(195 195 195 / 23%)">
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <div class="cat-ico" style="width:36px;height:36px;background:rgba(20,184,166,.12)">
                                         <i class="ri-mail-line" style="color:#2dd4bf;font-size:.95rem"></i>
@@ -204,7 +219,7 @@
                             </div>
 
                             <!-- PUSH -->
-                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgb(195 195 195 / 23%)">
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <div class="cat-ico" style="width:36px;height:36px;background:rgba(124,58,237,.15)">
                                         <i class="ri-notification-3-line" style="color:#a78bfa;font-size:.95rem"></i>
@@ -281,11 +296,13 @@
                             <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">Start Time</label>
                             <input class="inp" type="time" name="start_time" id="start_time"
                                 value="{{ $settings->start_time ?? '' }}">
+                                <small id="start_time_error" style="color:red" class="text-danger"></small>
                         </div>
                         <div>
                             <label style="display:block;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64748b;margin-bottom:5px">End Time</label>
                             <input class="inp" type="time" name="end_time" id="end_time"
                                 value="{{ $settings->end_time ?? '' }}">
+                                <small id="end_time_error" style="color:red" class="text-danger"></small>
                         </div>
                     </div>
                 </div>
@@ -298,9 +315,9 @@
                         </div>
                         <div>
                             <h4 style="font-size:.87rem;font-weight:700;color:#f1f5f9;margin-bottom:6px">Delivery &amp; Reliability</h4>
-                            <ul style="font-size:.78rem;color:#94a3b8;line-height:1.7;padding-left:18px">
+                            <ul style="font-size:.78rem;color:#94a3b8;line-height:1.7;">
                                 <li>Email notifications are sent instantly but may take 1–5 minutes to arrive</li>
-                                <li>Push notifications work on devices with the DRemind app installed</li>
+                                <li>Push notifications work on devices with the D-Remind app installed</li>
                             </ul>
                         </div>
                     </div>
@@ -340,11 +357,11 @@
                     <option value="unread">Unread Only</option>
                     <option value="read">Read Only</option>
                 </select>
-
+                @if($unreadCount > 0)
                 <button class="btn btn-ghost btn-sm" onclick="markAllReadAjax()">
                     <i class="ri-check-double-line"></i> Mark All Read
                 </button>
-
+                @endif
             </div>
 
             <!-- Count row -->
@@ -355,9 +372,11 @@
                         @if($unreadCount > 0)({{ $unreadCount }} unread)@endif
                     </span>
                 </span>
+                @if($activities->count() > 0)
                 <button class="btn btn-ghost btn-sm" onclick="clearAllAjax()">
                     <i class="ri-delete-bin-line"></i> Clear All
                 </button>
+                @endif
             </div>
 
             <!-- Notification list -->
@@ -392,12 +411,12 @@
                         <div style="flex:1">
 
                             @if($reminder)
-                            <div style="font-size:.87rem;font-weight:600;color:{{ $isUnread ? '#f1f5f9' : '#94a3b8' }}">
+                            <div style="font-size:.87rem;word-break:break-all;font-weight:600;color:{{ $isUnread ? '#f1f5f9' : '#94a3b8' }}">
                                 {{ $reminder['title'] }}
                             </div>
                             @endif
 
-                            <div style="font-size:.76rem;color:#64748b;margin-top:2px">
+                            <div style="font-size:.76rem;color:#64748b;margin-top:2px;word-break:break-all;">
                                 {{ $activity['description'] }}
                             </div>
 
@@ -440,9 +459,8 @@
                 <div class="notif-empty-state" id="notif-empty-initial">
                     <i class="ri-notification-off-line"></i>
                     <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#94a3b8;margin-bottom:6px">
-                        No Notifications
+                        No Notifications Found
                     </div>
-                    <div style="font-size:.83rem;color:#64748b">You're all caught up!</div>
                 </div>
 
                 @endforelse
@@ -455,7 +473,13 @@
                 <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#94a3b8;margin-bottom:6px">
                     No Notifications
                 </div>
-                <div style="font-size:.83rem;color:#64748b">You're all caught up!</div>
+                <div style="font-size:.83rem;color:#64748b">You're all caught up</div>
+            </div>
+            
+             {{-- ADD THIS --}}
+            <div id="notif-no-results" style="display:none;padding:40px 20px;text-align:center">
+                <i class="ri-search-line" style="font-size:2rem;color:#475569;display:block;margin-bottom:8px"></i>
+                <div style="font-size:.9rem;font-weight:600;color:#94a3b8">No notifications match your search.</div>
             </div>
 
         </div>
@@ -463,8 +487,15 @@
     </div>
 </section>
 
+@include('user.layouts.firebase_setup')
+
 <script>
     const CSRF = document.querySelector('meta[name="csrf-token"]').content;
+<<<<<<< HEAD
+=======
+    let currentFilter = 'all';
+    let currentSearch = '';
+>>>>>>> 14b4245 (full updated code)
 
     /* ─── Tab switching ──────────────────────────────────── */
     function switchTab(tabName) {
@@ -483,6 +514,7 @@
     /* ─── Counts ─────────────────────────────────────────── */
     function refreshCounts() {
         const items = document.querySelectorAll('#notif-list .notif-item');
+<<<<<<< HEAD
         const visible = [...items].filter(i => i.style.display !== 'none');
         const unread = visible.filter(i => i.classList.contains('unread'));
 
@@ -502,6 +534,56 @@
         const initial = document.getElementById('notif-empty-initial');
         if (initial) initial.style.display = 'none';
     }
+=======
+        const total = items.length;
+        const visible = [...items].filter(i => i.style.display !== 'none');
+        const unread = [...items].filter(i => i.classList.contains('unread')); // total unread, not filtered
+        const isFiltering = currentSearch.length > 0 || currentFilter !== 'all';
+
+        // Count label: "3 of 28" when filtering, "28" when not
+        document.getElementById('notif-count').textContent = isFiltering ?
+            `${visible.length} of ${total}` :
+            total;
+
+        document.getElementById('unread-label').textContent =
+            unread.length > 0 ? `(${unread.length} unread)` : '';
+
+        const badge = document.getElementById('tab-unread-badge');
+        if (badge) {
+            badge.textContent = unread.length;
+            badge.style.display = unread.length > 0 ? 'inline-block' : 'none';
+        }
+
+        // Empty state: only show when truly no items left (not just filtered out)
+        document.getElementById('notif-empty').style.display = total === 0 ? 'block' : 'none';
+        document.getElementById('notif-list').style.display = total === 0 ? 'none' : 'flex';
+
+        // No-results message when filter yields nothing but items exist
+        const noResults = document.getElementById('notif-no-results');
+        if (noResults) {
+            noResults.style.display = (isFiltering && visible.length === 0 && total > 0) ? 'block' : 'none';
+        }
+
+        const initial = document.getElementById('notif-empty-initial');
+        if (initial) initial.style.display = 'none';
+    }
+    /* ─── Filter ─────────────────────────────────────────── */
+  function filterNotifications() {
+    currentSearch = document.getElementById('notif-search').value.toLowerCase(); // ✅ ADD
+    currentFilter = document.getElementById('notif-filter').value;               // ✅ ADD
+
+    const q = currentSearch;
+    const filter = currentFilter;
+
+    document.querySelectorAll('#notif-list .notif-item').forEach(item => {
+        const text = item.textContent.toLowerCase();
+        const isUnread = item.classList.contains('unread');
+
+        let show = true;
+        if (q && !text.includes(q)) show = false;
+        if (filter === 'unread' && !isUnread) show = false;
+        if (filter === 'read' && isUnread) show = false;
+>>>>>>> 14b4245 (full updated code)
 
     /* ─── Filter ─────────────────────────────────────────── */
     function filterNotifications() {
@@ -512,6 +594,7 @@
             const text = item.textContent.toLowerCase();
             const isUnread = item.classList.contains('unread');
 
+<<<<<<< HEAD
             let show = true;
             if (q && !text.includes(q)) show = false;
             if (filter === 'unread' && !isUnread) show = false;
@@ -539,6 +622,24 @@
                 return;
             }
 
+=======
+    /* ─── Mark single as read ────────────────────────────── */
+    async function markReadAjax(id, btn) {
+        try {
+            const res = await fetch(`/notifications/${id}/mark-read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+            const result = await res.json();
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
+
+>>>>>>> 14b4245 (full updated code)
             const item = btn.closest('.notif-item');
             item.classList.remove('unread');
             item.dataset.seen = '1';
@@ -618,6 +719,65 @@
             console.error(err);
             toast('Something went wrong', 'error');
         }
+<<<<<<< HEAD
+=======
+    }
+
+    /* ─── Clear ALL ──────────────────────────────────────── */
+    async function clearAllAjax() {
+    confirm_act('Clear all notifications? This cannot be undone.', async () => {
+        try {
+            const res = await fetch('/notifications/clear-all', {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const result = await res.json();
+
+            if (!res.ok) {
+                toast(result.message, 'error');
+                return;
+            }
+
+            const items = document.querySelectorAll('#notif-list .notif-item');
+
+            items.forEach((item, i) => {
+                setTimeout(() => {
+                    item.classList.add('removing');
+                    setTimeout(() => item.remove(), 300);
+                }, i * 40);
+            });
+
+            setTimeout(() => {
+                refreshCounts();
+                location.reload();
+            }, items.length * 40 + 350);
+
+            toast(result.message, 'success');
+
+        } catch (err) {
+            console.error(err);
+            toast('Something went wrong', 'error');
+        }
+    });
+}
+
+   function toggleQuietHours(el){
+    el.classList.toggle('on');
+    const isOn = el.classList.contains('on');
+    document.getElementById('quit_hours').value = isOn ? '1' : '0';
+    document.getElementById('quiet-cfg').style.display = isOn ? 'grid' : 'none';
+    if (!isOn) {
+        document.getElementById('start_time').value = '';
+        document.getElementById('end_time').value = '';
+        document.getElementById('start_time_error').textContent = '';
+        document.getElementById('end_time_error').textContent = '';
+        document.getElementById('start_time_error').style.display = 'none';
+        document.getElementById('end_time_error').style.display = 'none';
+>>>>>>> 14b4245 (full updated code)
     }
 
     /* ─── Clear ALL ──────────────────────────────────────── */
@@ -672,6 +832,7 @@
 }
 
     /* ─── Settings form ──────────────────────────────────── */
+<<<<<<< HEAD
     document.getElementById('notification-form').addEventListener('submit', async function(e) {
         e.preventDefault();
         const fd = new FormData(this);
@@ -698,6 +859,64 @@
         }
     });
 
+=======
+ const start = document.getElementById('start_time');
+const end = document.getElementById('end_time');
+
+function showError(input, message = '') {
+    const error = document.getElementById(input.id + '_error');
+    error.textContent = message;
+    error.style.display = message ? 'block' : 'none';
+}
+
+[start, end].forEach(input => {
+    input.addEventListener('input', () => showError(input));
+});
+
+document.getElementById('notification-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const fd = new FormData(this);
+
+    let hasError = false;
+
+    if (fd.get('quit_hours') == '1') {
+        if (!start.value) {
+            showError(start, 'Start time is required.');
+            hasError = true;
+        }
+
+        if (!end.value) {
+            showError(end, 'End time is required.');
+            hasError = true;
+        }
+    }
+
+    if (hasError) return;
+        const data = {
+            quit_hours: parseInt(fd.get('quit_hours') ?? 0),
+            start_time: fd.get('start_time') ?? null,
+            end_time: fd.get('end_time') ?? null,
+        };
+        try {
+            const res = await fetch('/notification-settings/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            toast(result.status ? result.message : 'Something went wrong', result.status ? 'success' : 'error');
+        } catch (err) {
+            console.error(err);
+            toast('Server error', 'error');
+        }
+    });
+
+>>>>>>> 14b4245 (full updated code)
     async function toggleNotification(el, id) {
 
         el.classList.toggle('on');

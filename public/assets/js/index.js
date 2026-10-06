@@ -116,6 +116,7 @@ window.addEventListener('load',()=>{
 /* ================================================================
    PHONE SCREEN RENDER
    ================================================================ */
+if(false){
 (function(){
   const scr=document.getElementById('phoneScreen');
   const cv=document.createElement('canvas');cv.width=360;cv.height=720;
@@ -167,7 +168,7 @@ window.addEventListener('load',()=>{
   }
   draw();
 })();
-
+}
 /* ================================================================
    RIPPLE GRID SHADER (Features BG)
    ================================================================ */

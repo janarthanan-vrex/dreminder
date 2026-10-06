@@ -23,7 +23,12 @@ class TeamController extends Controller
             ->with(['permissions' => function ($query) {
                 $query->wherePivot('is_checked', 1);
             }])
+<<<<<<< HEAD
             ->get();
+=======
+             ->latest() // Orders by created_at DESC
+        ->get();
+>>>>>>> 14b4245 (full updated code)
         $rolesData = $roles->map(function ($role) {
             return [
                 'id'    => $role->id,
@@ -39,6 +44,7 @@ class TeamController extends Controller
         return view('admin.roles', compact('rolesData'));
     }
 
+<<<<<<< HEAD
     public function store(Request $request)
     {
         $validator = \Validator::make($request->all(), [
@@ -213,6 +219,183 @@ class TeamController extends Controller
 
         return response()->json(['message' => 'Role deleted successfully']);
     }
+=======
+
+    public function store(Request $request)
+{
+    $validator = \Validator::make($request->all(), [
+        'rolename'    => 'required|string|unique:roles,rolename|max:255',
+        'description' => 'nullable|string|max:500',
+        'color'       => 'nullable|string|max:20',
+        'permissions' => 'nullable|array',
+    ], [
+        'rolename.required' => 'Role name is required.',
+        'rolename.unique'   => 'This role name already exists.',
+        'rolename.max'      => 'Role name must not exceed 255 characters.',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    $role = Role::create([
+        'rolename'    => $request->rolename,
+        'description' => $request->description,
+        'color'       => $request->color ?? '#7c3aed',
+        'status'      => $request->status ?? 'active',
+    ]);
+
+    $allPermissions = Permission::all();
+
+    $syncData = [];
+    foreach ($allPermissions as $permission) {
+        $isChecked = in_array($permission->permission_name, $request->permissions ?? []) ? 1 : 0;
+        $syncData[$permission->id] = ['is_checked' => $isChecked];
+    }
+
+    $role->permissions()->sync($syncData);
+
+    // ── Audit Log ────────────────────────────────────────────────────────
+    $assignedPermissions = collect($allPermissions)
+        ->filter(fn($p) => in_array($p->permission_name, $request->permissions ?? []))
+        ->pluck('permission_name')
+        ->implode(', ');
+
+    AuditLog::record('Created', 'Roles', 'Created Record', [
+        ['field' => 'Role Name',    'old' => null, 'new' => $request->rolename],
+        ['field' => 'Description',  'old' => null, 'new' => $request->description ?? '—'],
+        ['field' => 'Status',       'old' => null, 'new' => ucfirst($request->status ?? 'active')],
+        ['field' => 'Permissions',  'old' => null, 'new' => $assignedPermissions ?: 'None'],
+    ]);
+
+    return response()->json([
+        'role'    => $role,
+        'message' => 'Role created successfully',
+    ], 201);
+}
+public function update(Request $request, $id)
+{
+    $role = Role::findOrFail($id);
+
+    $validator = \Validator::make($request->all(), [
+        'rolename'    => 'required|string|max:255|unique:roles,rolename,' . $role->id,
+        'description' => 'nullable|string|max:500',
+        'color'       => 'nullable|string|max:20',
+        'permissions' => 'nullable|array',
+    ], [
+        'rolename.required' => 'Role name is required.',
+        'rolename.unique'   => 'This role name already exists.',
+        'rolename.max'      => 'Role name must not exceed 255 characters.',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+
+    // ── Snapshot BEFORE ───────────────────────────────────────────────────
+    $oldPermissions = $role->permissions()
+        ->wherePivot('is_checked', 1)
+        ->pluck('permission_name')
+        ->sort()
+        ->implode(', ');
+
+    $before = [
+        'rolename'    => $role->rolename,
+        'description' => $role->description ?? '—',
+        'status'      => ucfirst($role->status),
+        'permissions' => $oldPermissions ?: 'None',
+    ];
+
+    $role->update([
+        'rolename'    => $request->rolename,
+        'description' => $request->description,
+        'color'       => $request->color ?? $role->color,
+        'status'      => $request->status ?? 'active',
+    ]);
+
+    $allPermissions = Permission::all();
+
+    $syncData = [];
+    foreach ($allPermissions as $permission) {
+        $isChecked = in_array($permission->permission_name, $request->permissions ?? []) ? 1 : 0;
+        $syncData[$permission->id] = ['is_checked' => $isChecked];
+    }
+
+    $role->permissions()->sync($syncData);
+
+    // ── Snapshot AFTER ────────────────────────────────────────────────────
+    $newPermissions = collect($allPermissions)
+        ->filter(fn($p) => in_array($p->permission_name, $request->permissions ?? []))
+        ->pluck('permission_name')
+        ->sort()
+        ->implode(', ');
+
+    $after = [
+        'rolename'    => $request->rolename,
+        'description' => $request->description ?? '—',
+        'status'      => ucfirst($request->status ?? 'active'),
+        'permissions' => $newPermissions ?: 'None',
+    ];
+
+    $fieldLabels = [
+        'rolename'    => 'Role Name',
+        'description' => 'Description',
+        'status'      => 'Status',
+        'permissions' => 'Permissions',
+    ];
+
+    $changedFields = [];
+    foreach ($before as $key => $oldVal) {
+        if ((string) $oldVal !== (string) $after[$key]) {
+            $changedFields[] = [
+                'field' => $fieldLabels[$key],
+                'old'   => $oldVal,
+                'new'   => $after[$key],
+            ];
+        }
+    }
+
+    if (!empty($changedFields)) {
+        $summary = count($changedFields) === 1
+            ? '1 Field Updated'
+            : count($changedFields) . ' Fields Updated';
+
+        AuditLog::record('Updated', 'Roles', $summary, $changedFields);
+    }
+
+    return response()->json([
+        'role'    => $role,
+        'message' => 'Role updated successfully',
+    ]);
+}
+
+    public function destroy($id)
+{
+    $role = Role::findOrFail($id);
+
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    $permissions = $role->permissions()
+        ->wherePivot('is_checked', 1)
+        ->pluck('permission_name')
+        ->implode(', ');
+
+    AuditLog::record('Deleted', 'Roles', 'Deleted Record', [
+        ['field' => 'Role Name',   'old' => $role->rolename,              'new' => null],
+        ['field' => 'Description', 'old' => $role->description ?? '—',   'new' => null],
+        ['field' => 'Status',      'old' => ucfirst($role->status),       'new' => null],
+        ['field' => 'Permissions', 'old' => $permissions ?: 'None',       'new' => null],
+    ]);
+
+    $role->permissions()->detach();
+    $role->delete();
+
+    return response()->json(['message' => 'Role deleted successfully']);
+}
+>>>>>>> 14b4245 (full updated code)
 
     public function staffManagemant()
     {
@@ -320,7 +503,11 @@ class TeamController extends Controller
         ]);
     }
 
+<<<<<<< HEAD
     public function updateStaff(Request $request, $id)
+=======
+   public function updateStaff(Request $request, $id)
+>>>>>>> 14b4245 (full updated code)
     {
         $staff = Admin::findOrFail($id);
 
@@ -346,7 +533,11 @@ class TeamController extends Controller
         ];
 
         $staff->update([
+<<<<<<< HEAD
             'name'    => $request->name,
+=======
+            'name'    => ucfirst($request->name),
+>>>>>>> 14b4245 (full updated code)
             'email'   => $request->email,
             'role_id' => $request->role_id,
             'phone'   => $request->phone,
@@ -357,7 +548,11 @@ class TeamController extends Controller
         $newRole = Role::find($request->role_id);
 
         $after = [
+<<<<<<< HEAD
             'name'   => $request->name,
+=======
+            'name'   => ucfirst($request->name),
+>>>>>>> 14b4245 (full updated code)
             'email'  => $request->email,
             'role'   => $newRole?->rolename ?? '—',
             'phone'  => $request->phone ?? '—',
@@ -396,6 +591,7 @@ class TeamController extends Controller
 
     public function destroyStaff($id)
     {
+<<<<<<< HEAD
         $staff = Admin::findOrFail($id);
 
         // ── Audit Log BEFORE delete ───────────────────────────────────────────
@@ -410,6 +606,22 @@ class TeamController extends Controller
 
         return response()->json(['message' => 'Staff removed successfully']);
     }
+=======
+    $staff = Admin::findOrFail($id);
+
+    // ── Audit Log BEFORE delete ───────────────────────────────────────────
+    AuditLog::record('Deleted', 'Staff', 'Deleted Record', [
+        ['field' => 'Name',   'old' => $staff->name,                             'new' => null],
+        ['field' => 'Email',  'old' => $staff->email,                            'new' => null],
+        ['field' => 'Role',   'old' => optional($staff->roles)->rolename ?? '—', 'new' => null],
+        ['field' => 'Status', 'old' => ucfirst($staff->status),                  'new' => null],
+    ]);
+
+    $staff->delete();
+
+    return response()->json(['message' => 'Staff removed successfully']);
+}
+>>>>>>> 14b4245 (full updated code)
 
     private function generatePassword($length = 10)
     {

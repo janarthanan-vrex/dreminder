@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reset Password — DRemind Admin</title>
+<title>Reset Password — Winngoo D-Remind Admin</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{primary:'#7c3aed',secondary:'#06b6d4',accent:'#10b981',dark:'#030014'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
 <div style="width:100%;max-width:460px;position:relative;z-index:10">
   <div style="text-align:center;margin-bottom:28px">
     <a href="admin-login" style="display:inline-block;margin-bottom:16px">
-      <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:34px;margin:auto" alt="DRemind">
+      <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:34px;margin:auto" alt="D-Remind">
     </a>
     <h1 style="font-size:1.5rem;font-weight:900;margin-bottom:6px">Reset Your Password</h1>
     <p style="font-size:.82rem;color:rgba(255,255,255,.35)">Create a new secure password for your admin account</p>
@@ -74,7 +74,16 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
       <input type="hidden" id="resetEmail" value="{{ $email }}">
 
       <div>
-        <label class="auth-label">New Password</label>
+        <label class="auth-label flex items-center gap-1.5">
+  New Password <span style="color:#f43f5e">*</span>
+  <span class="relative inline-flex items-center group">
+    <i class="ri-information-line cursor-help text-sm transition" style="color:rgba(255,255,255,.3)"></i>
+    <span class="absolute left-0 top-full mt-2 hidden group-hover:block w-60 p-3 rounded-xl text-xs leading-relaxed shadow-xl z-20 glass-strong" style="color:rgba(255,255,255,.7);text-transform:none;font-weight:400;letter-spacing:0">
+  Must be at least 8 characters and include uppercase, lowercase, a number, and a special character.
+  <span class="absolute left-3 bottom-full w-2 h-2 -mb-1 rotate-45" style="background:rgba(255,255,255,.06);border-left:1px solid rgba(255,255,255,.12);border-top:1px solid rgba(255,255,255,.12)"></span>
+</span>
+  </span>
+</label>
         <div class="input-wrap">
           <i class="input-icon ri-lock-line"></i>
           <input type="password" id="newPwd" class="auth-input" placeholder="Create a strong password" required>
@@ -90,7 +99,7 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
       </div>
 
       <div>
-        <label class="auth-label">Confirm New Password</label>
+        <label class="auth-label">Confirm New Password <span style="color:#f43f5e">*</span></label>
         <div class="input-wrap">
           <i class="input-icon ri-lock-2-line"></i>
           <input type="password" id="confirmPwd" class="auth-input" placeholder="Re-enter new password" required>
@@ -112,14 +121,14 @@ canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
     <div style="width:72px;height:72px;border-radius:22px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 16px">
       <i class="ri-shield-check-fill" style="color:#34d399"></i>
     </div>
-    <h3 style="font-size:1.2rem;font-weight:900;margin-bottom:8px">Password Updated!</h3>
+    <h3 style="font-size:1.2rem;font-weight:900;margin-bottom:8px">Password Updated</h3>
     <p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:24px">Your admin password has been successfully changed. You can now log in with your new credentials.</p>
     <a href="{{ route('admin.login') }}" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:12px;font-weight:700;font-size:.875rem;color:#fff;background:linear-gradient(135deg,#7c3aed,#6d28d9);text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
       <i class="ri-login-box-line"></i> Go to Login
     </a>
   </div>
 
-  <p style="text-align:center;font-size:.7rem;color:rgba(255,255,255,.15);margin-top:20px">© 2026 Winngoo DRemind — Admin Panel</p>
+  <p style="text-align:center;font-size:.7rem;color:rgba(255,255,255,.15);margin-top:20px">© 2026 Winngoo D-Remind — Admin Panel</p>
 </div>
 
 <script>
@@ -165,6 +174,7 @@ document.getElementById('newPwd')?.addEventListener('input', function () {
     lbl.textContent = 'Strength: ' + labels[score - 1];
     lbl.style.color = colors[score - 1];
   }
+<<<<<<< HEAD
 });
 
 // ── Hide confirm error on typing ──────────────────────────────────────────────
@@ -241,6 +251,80 @@ document.getElementById('resetBtn')?.addEventListener('click', function () {
   });
 });
 
+=======
+});
+
+// ── Hide confirm error on typing ──────────────────────────────────────────────
+document.getElementById('confirmPwd')?.addEventListener('input', () => hideErr('matchErr'));
+
+// ── Submit ────────────────────────────────────────────────────────────────────
+document.getElementById('resetBtn')?.addEventListener('click', function () {
+    const token   = document.getElementById('resetToken').value;
+    const email   = document.getElementById('resetEmail').value;
+    const pwd     = document.getElementById('newPwd').value;
+    const confirm = document.getElementById('confirmPwd').value;
+
+    hideErr('newPwdErr');
+    hideErr('matchErr');
+    hideErr('tokenErr');
+
+    const btn = this;
+    btn.innerHTML = '<i class="ri-loader-4-line" style="animation:spin .7s linear infinite"></i> Updating...';
+    btn.disabled = true;
+
+    fetch('{{ route("admin.reset-password") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+        },
+        body: JSON.stringify({
+            token: token,
+            email: email,
+            new_password: pwd,
+            new_password_confirmation: confirm,
+        }),
+    })
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ data }) => {
+        btn.innerHTML = '<i class="ri-shield-check-line"></i> Update Password';
+        btn.disabled = false;
+
+        if (data.status) {
+            document.getElementById('resetForm').style.display = 'none';
+            document.getElementById('successBlock').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = '{{ route("admin.login") }}';
+            }, 2500);
+        } else {
+            if (data.errors) {
+                if (data.errors.new_password)
+                    showErr('newPwdErr', data.errors.new_password[0]);
+
+                if (data.errors.new_password_confirmation)
+                    showErr('matchErr', data.errors.new_password_confirmation[0]);
+
+                if (data.errors.token)
+                    showErr('tokenErr', data.errors.token[0]);
+
+                if (data.errors.email)
+                    showErr('tokenErr', data.errors.email[0]);
+            }
+
+            if (data.message) {
+                showErr('tokenErr', data.message);
+            }
+        }
+    })
+    .catch(() => {
+        btn.innerHTML = '<i class="ri-shield-check-line"></i> Update Password';
+        btn.disabled = false;
+        showErr('tokenErr', 'Network error. Please try again.');
+    });
+});
+
+>>>>>>> 14b4245 (full updated code)
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function showErr(id, msg) {
   const el     = document.getElementById(id);

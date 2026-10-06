@@ -4,7 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 <title>Verify Your Email — Winngoo D Remind</title>
+=======
+<title>Verify Your Email — Winngoo D-Remind</title>
+>>>>>>> 14b4245 (full updated code)
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background:#EFEDE8;font-family:'DM Sans',sans-serif;color:#1A1916;">
@@ -35,21 +39,33 @@
               <!-- logo -->
               <tr>
                 <td align="center" style="padding-bottom:28px;">
+<<<<<<< HEAD
                   <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="Winngoo D Remind" width="180" style="width:180px;border-radius:18px;display:block;">
+=======
+                  <img src="https://dreminder.wimbgo.com/assets/images/common/d-remind.png" alt="Winngoo D-Remind" width="180" style="width:180px;border-radius:18px;display:block;">
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
               <!-- h1 -->
               <tr>
                 <td align="center">
+<<<<<<< HEAD
                   <h1 style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.15;color:#1A1916;margin:0 0 16px 0;letter-spacing:-.4px;">Verify Your <br><em style="font-style:italic;color:#7C3AED;">Registered Email</em></h1>
+=======
+                  <h1 style="font-family:'Instrument Serif',serif;font-size:34px;line-height:1.15;color:#1A1916;margin:0 0 16px 0;letter-spacing:-.4px;">Verify Your <br><span style="color:#7C3AED;">Registered Email</span></h1>
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
               <!-- message -->
               <tr>
                 <td align="center">
+<<<<<<< HEAD
                   <p style="font-size:14.5px;color:#6B6860;line-height:1.75;max-width:420px;margin:0 auto 6px;">Dear <strong style="color:#4A4740;">{{ $user->first_name }} {{ $user->last_name }}</strong>, thank you for registering. Click the button below to verify your email address and activate your D Remind account.</p>
+=======
+                  <p style="font-size:14.5px;color:#6B6860;line-height:1.75;max-width:420px;margin:0 auto 6px;">Dear <strong style="color:#4A4740;">{{ $user->first_name }} {{ $user->last_name }}</strong>,<br> Thank you for registering. Click the button below to verify your email address and activate your D-Remind account.</p>
+>>>>>>> 14b4245 (full updated code)
                 </td>
               </tr>
 
@@ -68,7 +84,11 @@
           <td align="center" style="padding:10px 48px 24px;">
             <table cellpadding="0" cellspacing="0" border="0">
               <tr>
+<<<<<<< HEAD
                 <td align="center" style="background:linear-gradient(135deg,#7C3AED,#5B21B6);border-radius:100px;box-shadow:0 4px 18px rgba(124,58,237,.38);">
+=======
+                <td align="center" style="background:#7C3AED;;border-radius:100px;box-shadow:0 4px 18px rgba(124,58,237,.38);">
+>>>>>>> 14b4245 (full updated code)
                   <a href="{{ $verifyUrl }}" style="display:inline-block;padding:16px 52px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:.2px;color:#fff;">
                     Verify Email
                   </a>

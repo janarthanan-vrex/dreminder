@@ -82,7 +82,7 @@
                 </div>
                 <div class="field-group">
                     <label class="label">Subheadline</label>
-                    <input class="inp" value="Winngoo DRemind intelligently tracks your bills..." placeholder="Subheadline text">
+                    <input class="inp" value="Winngoo D-Remind intelligently tracks your bills..." placeholder="Subheadline text">
                 </div>
             </div>
             <div class="field-group">
@@ -194,13 +194,13 @@
         <div id="usecases-body">
             <div class="g2" style="margin-bottom:12px">
                 <div class="field-group"><label class="label">Section Title</label><input class="inp" value="Built For Everyone"></div>
-                <div class="field-group"><label class="label">Section Subtitle</label><input class="inp" value="From individuals to families and small businesses — DRemind adapts to your life."></div>
+                <div class="field-group"><label class="label">Section Subtitle</label><input class="inp" value="From individuals to families and small businesses — D-Remind adapts to your life."></div>
             </div>
             <div class="section-title" style="margin-bottom:10px">Bento Cards</div>
             <div id="bento-cards" class="sortable-list">
                 <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Track All Subscriptions"><input class="inp" value="Keep all your streaming, software..."></div><span class="badge badge-purple">Featured</span></div>
                 <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Insurance Alerts"><input class="inp" value="Get warned 30, 14, and 3 days before..."></div><span class="badge badge-red">Normal</span></div>
-                <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Price Comparison"><input class="inp" value="Before auto-renew, DRemind checks..."></div><span class="badge badge-amber">Normal</span></div>
+                <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Price Comparison"><input class="inp" value="Before auto-renew, D-Remind checks..."></div><span class="badge badge-amber">Normal</span></div>
                 <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Renewal Notifications"><input class="inp" value="Annual domains, licenses, warranties..."></div><span class="badge" style="background:rgba(6,182,212,.1);color:var(--secondary,#06b6d4)">Normal</span></div>
                 <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Smart Budget Alerts"><input class="inp" value="Set monthly spending limits..."></div><span class="badge" style="background:rgba(236,72,153,.1);color:#f472b6">Normal</span></div>
                 <div class="sortable-item"><i class="ri-draggable drag-handle"></i><div style="flex:1;display:grid;grid-template-columns:1fr 2fr;gap:8px"><input class="inp" value="Family Management"><input class="inp" value="Share household bills..."></div><span class="badge badge-green">Normal</span></div>
@@ -244,17 +244,17 @@
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-file-text-line"></i> Page Meta</div>
                 <div class="field-group">
                     <label class="label">Meta Title <span style="color:var(--text4);font-weight:400;text-transform:none">(50–60 chars recommended)</span></label>
-                    <input class="inp" id="meta-title" value="DRemind — Never Miss A Payment Again" oninput="updateCharCount('meta-title','tc-title',60)">
+                    <input class="inp" id="meta-title" value="D-Remind — Never Miss A Payment Again" oninput="updateCharCount('meta-title','tc-title',60)">
                     <div class="char-count" id="tc-title">37/60</div>
                 </div>
                 <div class="field-group">
                     <label class="label">Meta Description <span style="color:var(--text4);font-weight:400;text-transform:none">(150–160 chars recommended)</span></label>
-                    <textarea class="inp-area inp" id="meta-desc" rows="3" oninput="updateCharCount('meta-desc','tc-desc',160)">DRemind intelligently tracks your bills, subscriptions and insurance renewals. Join 50,000+ users saving an average of $480/year.</textarea>
+                    <textarea class="inp-area inp" id="meta-desc" rows="3" oninput="updateCharCount('meta-desc','tc-desc',160)">D-Remind intelligently tracks your bills, subscriptions and insurance renewals. Join 50,000+ users saving an average of $480/year.</textarea>
                     <div class="char-count" id="tc-desc">131/160</div>
                 </div>
                 <div class="field-group">
                     <label class="label">Meta Keywords</label>
-                    <input class="inp" value="payment reminders, subscription tracker, bill reminder, insurance renewal, DRemind" placeholder="keyword1, keyword2, ...">
+                    <input class="inp" value="payment reminders, subscription tracker, bill reminder, insurance renewal, D-Remind" placeholder="keyword1, keyword2, ...">
                 </div>
                 <div class="field-group">
                     <label class="label">Canonical URL</label>
@@ -307,7 +307,7 @@
                     <textarea class="inp-area inp" rows="6" style="font-family:monospace;font-size:.8rem">{
                         "@context": "https://schema.org",
                         "@type": "SoftwareApplication",
-                        "name": "DRemind",
+                        "name": "D-Remind",
                         "applicationCategory": "FinanceApplication",
                         "operatingSystem": "iOS, Android, Web",
                         "offers": {
@@ -327,15 +327,15 @@
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-google-line"></i> SERP Preview</div>
                 <div style="background:var(--bg2);border-radius:12px;padding:16px 18px;border:1px solid var(--border)">
                     <div style="font-size:.68rem;color:var(--text4);margin-bottom:5px">https://dremin.co.uk</div>
-                    <div style="font-size:1rem;color:#8ab4f8;font-weight:500;margin-bottom:6px;cursor:pointer" id="serp-title">DRemind — Never Miss A Payment Again</div>
-                    <div style="font-size:.82rem;color:var(--text3);line-height:1.6" id="serp-desc">DRemind intelligently tracks your bills, subscriptions and insurance renewals. Join 50,000+ users saving an average of $480/year.</div>
+                    <div style="font-size:1rem;color:#8ab4f8;font-weight:500;margin-bottom:6px;cursor:pointer" id="serp-title">D-Remind — Never Miss A Payment Again</div>
+                    <div style="font-size:.82rem;color:var(--text3);line-height:1.6" id="serp-desc">D-Remind intelligently tracks your bills, subscriptions and insurance renewals. Join 50,000+ users saving an average of $480/year.</div>
                 </div>
 
                 <div class="section-title" style="margin:18px 0 12px"><i class="ri-smartphone-line"></i> Mobile Preview</div>
                 <div style="background:var(--bg2);border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
                     <div style="font-size:.65rem;color:var(--text4);margin-bottom:4px">dremin.co.uk</div>
-                    <div style="font-size:.88rem;color:#8ab4f8;font-weight:500;margin-bottom:5px" id="serp-title-m">DRemind — Never Miss A Payment Again</div>
-                    <div style="font-size:.75rem;color:var(--text3);line-height:1.5" id="serp-desc-m">DRemind intelligently tracks your bills, subscriptions and insurance renewals...</div>
+                    <div style="font-size:.88rem;color:#8ab4f8;font-weight:500;margin-bottom:5px" id="serp-title-m">D-Remind — Never Miss A Payment Again</div>
+                    <div style="font-size:.75rem;color:var(--text3);line-height:1.5" id="serp-desc-m">D-Remind intelligently tracks your bills, subscriptions and insurance renewals...</div>
                 </div>
 
             </div>

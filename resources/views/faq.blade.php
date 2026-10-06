@@ -1,47 +1,78 @@
 <script>tailwind.config={theme:{extend:{colors:{primary:'#7c3aed',secondary:'#06b6d4',accent:'#10b981',dark:'#030014',surface:'#0a0a1f',card:'#0f0f2a'},fontFamily:{sans:['Inter','system-ui','sans-serif']}}}}</script>
 <style>
-.faq-cat-tab{padding:9px 18px;border-radius:10px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.3);cursor:pointer;border:1px solid transparent;background:transparent;transition:all .3s;white-space:nowrap;font-family:'Inter',sans-serif}
+.faq-cat-tab{padding:9px 18px;border-radius:10px;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.9);cursor:pointer;border:1px solid transparent;background:transparent;transition:all .3s;white-space:nowrap;font-family:'Inter',sans-serif}
 .faq-cat-tab.active{background:rgba(124,58,237,.12);color:#c4b5fd;border-color:rgba(124,58,237,.25)}
 .faq-section-group{display:none}.faq-section-group.show{display:block}
+#faqTabs {
+    scrollbar-color: #fff transparent;
+}
+
+#faqTabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+#faqTabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#faqTabs::-webkit-scrollbar-thumb {
+    background: #fff ;
+    border-radius: 999px;
+}
 </style>
 @extends('layouts.app')
 @section('content')
 
 
 <section class="page-hero-dark section-alt relative" data-particles="purple" data-p-count="40" data-p-connect="false">
+        <div class="hero-bg-image faq-bnr"></div>
   <div class="gradient-blob w-[400px] h-[400px] bg-primary top-[-20%] left-[20%]"></div>
   <div class="max-w-[800px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb"><a href="index">Home</a><span class="sep">/</span><span>FAQ</span></div>
     <div class="badge bg-primary/10 border border-primary/20 text-purple-300 mx-auto mb-6 w-fit reveal"><span class="w-2 h-2 rounded-full bg-primary"></span> Frequently Asked Questions</div>
-    <h1 class="reveal">Got questions? <span class="grad-text">We've got answers.</span></h1>
-    <p class="reveal mb-8" data-delay="1">Everything you need to know about DRemind — from getting started to managing your account.</p>
-    <div class="relative reveal" data-delay="2" style="max-width:500px;margin:0 auto">
-      <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-base z-10"></i>
-      <input type="text" id="faqSearch" placeholder="Search questions..." class="auth-input !pl-12 !text-base">
-    </div>
+    <h1 class="reveal">Quick Help for Your <span class="grad-text">Common Questions</span></h1>
+    <p class="reveal mb-8" data-delay="1">Find clear answers about using Winngoo D-Remind, from getting started to managing your reminders.</p>
+   
   </div>
 </section>
 
 <section class="relative py-20 section-dark overflow-hidden">
   <div class="max-w-[860px] mx-auto px-6 lg:px-8">
     <!-- Category Tabs -->
+<<<<<<< HEAD
     <div class="flex gap-2 overflow-x-auto pb-2 mb-10 reveal" id="faqTabs" style="scrollbar-width:none">
     <button class="faq-cat-tab active" data-cat="all">All Questions</button>
     @foreach($categories as $cat)
         <button class="faq-cat-tab" data-cat="{{ $cat->slug }}">{{ $cat->name }}</button>
     @endforeach
 </div>
+=======
+<!--    <div class="flex gap-2 overflow-x-auto pb-2 mb-10 reveal" id="faqTabs" style="scrollbar-width:thin">-->
+<!--    <button class="faq-cat-tab active" data-cat="all">All Questions</button>-->
+<!--    @foreach($categories as $cat)-->
+<!--        <button class="faq-cat-tab" data-cat="{{ $cat->slug }}">{{ $cat->name }}</button>-->
+<!--    @endforeach-->
+<!--</div>-->
+>>>>>>> 14b4245 (full updated code)
 
    <div id="faqContainer">
     @forelse($categories as $category)
         @if($category->faqs->count())
         <div data-category="{{ $category->slug }}" class="mb-10 faq-section-group show">
             <div class="flex items-center gap-3 mb-5">
+<<<<<<< HEAD
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm"
                     style="background:{{ $category->color }}22;color:{{ $category->color }}">
                     <i class="{{ $category->icon }}"></i>
                 </div>
                 <h3 class="text-lg font-bold text-white">{{ $category->name }}</h3>
+=======
+                <div class=" h-10 rounded-xl flex items-center justify-center text-sm"
+                    style="background:{{ $category->color }}22;color:{{ $category->color }};min-width:2.5rem;">
+                    <i class="{{ $category->icon }}"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white" style="word-break:break-all;">{{ $category->name }}</h3>
+>>>>>>> 14b4245 (full updated code)
             </div>
             <div class="faq-group-dark flex flex-col gap-2">
                 @foreach($category->faqs as $faq)
@@ -51,7 +82,11 @@
                         <i class="ri-add-line faq-icon-dark"></i>
                     </div>
                     <div class="faq-answer-dark">
+<<<<<<< HEAD
                         <p class="text-sm text-white/40 leading-relaxed">
+=======
+                        <p class="text-sm text-white/85 leading-relaxed" style="overflow-wrap: anywhere;">
+>>>>>>> 14b4245 (full updated code)
                             {!! nl2br(e($faq->answer)) !!}
                         </p>
                     </div>

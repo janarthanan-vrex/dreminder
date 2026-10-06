@@ -19,6 +19,11 @@ class ActivityController extends Controller
 
         $activities = Activity::with(['reminder.category', 'reminder.subcategory'])
             ->where('user_id', $user->id)
+            ->where(function ($query) {
+                $query->where('notify_for', '!=', 'admin')
+                    ->orWhereNull('notify_for')
+                    ->orWhere('notify_for', '');
+            })
             ->latest()
             ->get()
             ->map(function ($activity) {
@@ -71,38 +76,48 @@ class ActivityController extends Controller
             $request->merge(['end_time' => substr($request->end_time, 0, 5)]);
         }
 
-        $request->validate([
-            'email_notify'   => 'nullable|boolean',
-            'push_notify'    => 'nullable|boolean',
-            'before_30_days' => 'nullable|boolean',
-            'before_7_days'  => 'nullable|boolean',
-            'before_3_days'  => 'nullable|boolean',
-            'before_1_day'   => 'nullable|boolean',
-            'on_day'         => 'nullable|boolean',
-            'quit_hours'     => 'nullable|boolean',
-            'start_time'     => 'nullable|date_format:H:i',
-            'end_time'       => 'nullable|date_format:H:i',
-        ]);
+         $request->validate([
+                'email_notify'   => 'nullable|boolean',
+                'push_notify'    => 'nullable|boolean',
+                'before_30_days' => 'nullable|boolean',
+                'before_7_days'  => 'nullable|boolean',
+                'before_3_days'  => 'nullable|boolean',
+                'before_1_day'   => 'nullable|boolean',
+                'on_day'         => 'nullable|boolean',
+                'quit_hours'     => 'nullable|boolean',
+            
+                'start_time' => 'required_if:quit_hours,1|nullable|date_format:H:i',
+                'end_time'   => 'required_if:quit_hours,1|nullable|date_format:H:i',
+            ],[
+                'start_time.required_if' => 'Start time is required.',
+                'end_time.required_if'   => 'End time is required.',
+            ]);
 
         $quietOn = (bool) ($request->quit_hours ?? false);
+
+        $existingSetting = UserNotificationSetting::firstOrNew([
+            'user_id' => Auth::id()
+        ]);
 
         $setting = UserNotificationSetting::updateOrCreate(
             ['user_id' => Auth::id()],
             [
-                'email_notify'   => $request->email_notify   ?? false,
-                'push_notify'    => $request->push_notify    ?? false,
+                'email_notify' => $request->has('email_notify')
+                    ? $request->email_notify
+                    : $existingSetting->email_notify,
+
+                'push_notify' => $request->has('push_notify')
+                    ? $request->push_notify
+                    : $existingSetting->push_notify,
+
                 'before_30_days' => $request->before_30_days ?? false,
-                'before_7_days'  => $request->before_7_days  ?? false,
-                'before_3_days'  => $request->before_3_days  ?? false,
-                'before_1_day'   => $request->before_1_day   ?? false,
-                'on_day'         => $request->on_day         ?? false,
+                'before_7_days'  => $request->before_7_days ?? false,
+                'before_3_days'  => $request->before_3_days ?? false,
+                'before_1_day'   => $request->before_1_day ?? false,
+                'on_day'         => $request->on_day ?? false,
                 'quit_hours'     => $quietOn,
-                'start_time'     => $quietOn && $request->start_time
-                    ? $request->start_time . ':00'
-                    : null,
-                'end_time'       => $quietOn && $request->end_time
-                    ? $request->end_time . ':00'
-                    : null,
+                'start_time'     => $quietOn && $request->start_time ? $request->start_time . ':00' : null,
+                'end_time'       => $quietOn && $request->end_time ? $request->end_time . ':00' : null,
             ]
         );
 
@@ -219,7 +234,7 @@ class ActivityController extends Controller
         // Category Chart
         $categoryLabels = [];
         $categoryTotals = [];
-
+$excludedCategories = ['Aeeeeeeeeeeeeeeei Poooooo'];
         $categories = $reminders
             ->groupBy('category_id');
 
@@ -237,18 +252,62 @@ class ActivityController extends Controller
         ];
 
         // Monthly Spending
-        $monthlySpending = [];
+    // Monthly Spending — spread cost across current year based on payment_frequency
+$monthlySpending = array_fill(1, 12, 0.0);
+$currentYear = now()->year;
 
-        for ($m = 1; $m <= 12; $m++) {
+$allReminders = Reminder::where('user_id', $user->id)
+    ->whereNotNull('cost')
+    ->whereNotNull('reminder_date')
+    ->whereNotNull('end_reminder_date')
+    ->whereNotNull('payment_frequency')
+    ->get();
 
-            $monthlySpending[] = $reminders
-                ->filter(
-                    fn($r) =>
-                    $r->created_at->month == $m
-                )
-                ->sum('cost');
+foreach ($allReminders as $r) {
+    $cost      = (float) $r->cost;
+    $frequency = strtolower($r->payment_frequency);
+    $start     = \Carbon\Carbon::parse($r->reminder_date);
+    $end       = \Carbon\Carbon::parse($r->end_reminder_date);
+
+    $monthsMap = [
+        'monthly'     => 1,
+        'quarterly'   => 3,
+        'half-yearly' => 6,
+        'annually'    => 12,
+    ];
+
+    $interval = $monthsMap[$frequency] ?? null;
+
+    if ($interval === null) {
+        // One-time: only if reminder_date falls in current year
+        if ($start->year === $currentYear) {
+            $monthlySpending[$start->month] += $cost;
+        }
+        continue;
+    }
+
+    // Walk through payment months between start and end
+    $current = $start->copy();
+    while ($current->lte($end)) {
+        if ($current->year === $currentYear) {
+            $monthlySpending[$current->month] += $cost;
         }
 
+        // Advance by interval (safe from day overflow)
+        $firstOfMonth = \Carbon\Carbon::create($current->year, $current->month, 1)
+            ->addMonths($interval);
+        $originalDay = $start->day;
+        $lastDay     = $firstOfMonth->daysInMonth;
+        $current     = \Carbon\Carbon::create(
+            $firstOfMonth->year,
+            $firstOfMonth->month,
+            min($originalDay, $lastDay)
+        );
+    }
+}
+
+// Convert to 0-indexed array for JSON (Jan=index 0)
+$monthlySpending = array_values($monthlySpending);
         return view('user.analytics', compact(
             'totalReminders',
             'completedReminders',
@@ -261,9 +320,101 @@ class ActivityController extends Controller
             'categoryTotals',
             'completionChart',
             'monthlySpending',
+            'currentYear',
             'days'
         ));
     }
+    
+    public function userAnalyticsData(Request $request)
+{
+    $user = Auth::user();
+    $days = $request->days ?? 7;
+    $query = Reminder::where('user_id', $user->id);
+    if ($days != 'all') {
+        $query->whereDate('created_at', '>=', now()->subDays($days));
+    }
+    $reminders = $query->get();
+
+    $totalReminders    = $reminders->count();
+    $completedReminders = $reminders->where('reminder_status', 'completed')->count();
+    $pendingReminders  = $reminders->where('reminder_status', 'pending')->count();
+
+    // Total Cost
+    $totalCost = 0;
+    foreach ($reminders as $reminder) {
+        if (!$reminder->cost || !$reminder->reminder_date || !$reminder->end_reminder_date) continue;
+        $cost   = (float) $reminder->cost;
+        $start  = \Carbon\Carbon::parse($reminder->reminder_date);
+        $end    = \Carbon\Carbon::parse($reminder->end_reminder_date);
+        $months = $start->diffInMonths($end) + 1;
+        switch ($reminder->payment_frequency) {
+            case 'Monthly':     $totalCost += $cost * $months; break;
+            case 'Quarterly':   $totalCost += $cost * ceil($months / 3); break;
+            case 'Half-Yearly': $totalCost += $cost * ceil($months / 6); break;
+            case 'Annually':    $totalCost += $cost * ceil($months / 12); break;
+            default:            $totalCost += $cost;
+        }
+    }
+
+    // Activity Chart
+    $activityLabels = []; $createdData = []; $completedData = [];
+    $loopDays = $days == 'all' ? 30 : $days;
+    for ($i = $loopDays - 1; $i >= 0; $i--) {
+        $date = now()->subDays($i);
+        $activityLabels[] = $date->format('d M');
+        $createdData[]    = $reminders->filter(fn($r) => $r->created_at->format('Y-m-d') == $date->format('Y-m-d'))->count();
+        $completedData[]  = $reminders->filter(fn($r) => strtolower($r->reminder_status) == 'completed' && $r->updated_at->format('Y-m-d') == $date->format('Y-m-d'))->count();
+    }
+
+    // Category Chart
+    $categoryLabels = []; $categoryTotals = [];
+    foreach ($reminders->groupBy('category_id') as $group) {
+        $categoryLabels[] = optional($group->first()->category)->name ?? 'Unknown';
+        $categoryTotals[] = $group->count();
+    }
+
+    // Monthly Spending
+    $monthlySpending = array_fill(1, 12, 0.0);
+    $currentYear = now()->year;
+    $allReminders = Reminder::where('user_id', $user->id)
+        ->whereNotNull('cost')->whereNotNull('reminder_date')
+        ->whereNotNull('end_reminder_date')->whereNotNull('payment_frequency')->get();
+
+    foreach ($allReminders as $r) {
+        $cost = (float) $r->cost;
+        $frequency = strtolower($r->payment_frequency);
+        $start = \Carbon\Carbon::parse($r->reminder_date);
+        $end   = \Carbon\Carbon::parse($r->end_reminder_date);
+        $monthsMap = ['monthly' => 1, 'quarterly' => 3, 'half-yearly' => 6, 'annually' => 12];
+        $interval  = $monthsMap[$frequency] ?? null;
+        if ($interval === null) {
+            if ($start->year === $currentYear) $monthlySpending[$start->month] += $cost;
+            continue;
+        }
+        $current = $start->copy();
+        while ($current->lte($end)) {
+            if ($current->year === $currentYear) $monthlySpending[$current->month] += $cost;
+            $firstOfMonth = \Carbon\Carbon::create($current->year, $current->month, 1)->addMonths($interval);
+            $originalDay  = $start->day;
+            $lastDay      = $firstOfMonth->daysInMonth;
+            $current      = \Carbon\Carbon::create($firstOfMonth->year, $firstOfMonth->month, min($originalDay, $lastDay));
+        }
+    }
+
+    return response()->json([
+        'totalReminders'     => $totalReminders,
+        'completedReminders' => $completedReminders,
+        'pendingReminders'   => $pendingReminders,
+        'totalCost'          => number_format($totalCost, 2),
+        'activityLabels'     => $activityLabels,
+        'createdData'        => $createdData,
+        'completedData'      => $completedData,
+        'categoryLabels'     => $categoryLabels,
+        'categoryTotals'     => $categoryTotals,
+        'completionChart'    => [$completedReminders, $pendingReminders],
+        'monthlySpending'    => array_values($monthlySpending),
+    ]);
+}
 
    public function userFeedback(Request $request)
 {
@@ -274,7 +425,7 @@ class ActivityController extends Controller
     return view('user.feedback', compact('feedbacks'));
 }
 
-    public function storeFeedback(Request $request)
+     public function storeFeedback(Request $request)
     {
         $request->validate([
             'subject' => 'required|string|min:5|max:100',

@@ -26,5 +26,9 @@ class PlanPrice extends Model
         'expiry_date' => 'date',
         'features' => 'array',
     ];
+<<<<<<< HEAD
 }
 
+=======
+}
+>>>>>>> 14b4245 (full updated code)

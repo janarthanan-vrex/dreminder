@@ -45,8 +45,15 @@
       <div class="pb-6 pt-2 flex flex-col gap-1 px-2">
     <a href="{{ route('index') }}" class="nav-link block !text-base">Home</a>
     <a href="{{ route('about') }}" class="nav-link block !text-base">About</a>
+<<<<<<< HEAD
     <a href="{{ route('category') }}" class="nav-link block !text-base">Category</a>
     <a href="{{ route('faq.page') }}" class="nav-link block !text-base">FAQ</a>
+=======
+    <!--<a href="{{ route('category') }}" class="nav-link block !text-base">Category</a>-->
+    <a href="{{ route('faq.page') }}" class="nav-link block !text-base">FAQ</a>
+    <a href="{{ route('pricing.page') }}" class="nav-link block !text-base">Pricing</a>
+    <a href="{{ route('blog.page') }}" class="nav-link block !text-base">Blog</a>
+>>>>>>> 14b4245 (full updated code)
     <a href="{{ route('contact') }}" class="nav-link block !text-base">Contact</a>
 
     @if(Auth::guard('admin')->check())

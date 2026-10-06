@@ -376,7 +376,7 @@ const SECTION_DEFAULTS = {
   hero: {
     badge_icon:'ri-star-smile-line', badge_text:'Our Story', badge_color:'#7c3aed',
     heading:'Built to help you keep', heading_grad:'more of your money.',
-    subtext:'DRemind was born from a simple frustration — too many people lose thousands every year to forgotten renewals and loyalty tax. We decided to fix that.',
+    subtext:'D-Remind was born from a simple frustration — too many people lose thousands every year to forgotten renewals and loyalty tax. We decided to fix that.',
     breadcrumb_parent:'Home', breadcrumb_current:'About',
     particles:'purple', particle_count:'50', bg_blob1:'#7c3aed', bg_blob2:'#06b6d4',
     show_search: false, search_placeholder:'Search…',
@@ -387,7 +387,7 @@ const SECTION_DEFAULTS = {
     badge_text:'Our Mission', badge_color:'#7c3aed',
     heading:'Empowering people to be', heading_grad:'financially savvy',
     para1:'We believe every household deserves to know when their insurance, energy contracts, and subscriptions are up for renewal — and to have enough time to switch to a better deal.',
-    para2:'DRemind is the intelligent reminder platform that works silently in the background, so you never pay the loyalty tax again.',
+    para2:'D-Remind is the intelligent reminder platform that works silently in the background, so you never pay the loyalty tax again.',
     points:[
       {icon:'ri-bullseye-line', icon_color:'#a78bfa', icon_bg:'rgba(124,58,237,.15)', title:'Purpose-driven', text:'Every feature we build is aimed at putting money back in your pocket.'},
       {icon:'ri-shield-check-line', icon_color:'#6ee7b7', icon_bg:'rgba(16,185,129,.15)', title:'Privacy first', text:'Your data is encrypted, never sold, fully GDPR & APPs compliant.'},
@@ -406,7 +406,7 @@ const SECTION_DEFAULTS = {
   },
   team: {
     badge_text:'The Team', badge_color:'#7c3aed',
-    heading:'The people behind', heading_grad:'DRemind',
+    heading:'The people behind', heading_grad:'D-Remind',
     visible: false,
     members:[
       {initials:'JT', name:'Kishore Thompson', role:'CEO & Co-founder', role_color:'#c4b5fd', bio:'10+ years in fintech. Previously at Monzo and TransferWise.'},
@@ -425,7 +425,7 @@ const SECTION_DEFAULTS = {
   },
   cta: {
     heading:'Ready to start', heading_grad:'saving?',
-    subtext:'Join thousands of smart savers already using DRemind. Free forever plan available.',
+    subtext:'Join thousands of smart savers already using D-Remind. Free forever plan available.',
     btn1_text:'Register', btn1_icon:'ri-rocket-line', btn1_href:'register',
     btn2_text:'Contact Us', btn2_icon:'ri-mail-line', btn2_href:'contact',
   },
@@ -472,23 +472,23 @@ const SECTION_DEFAULTS = {
   },
   general: {
     items:[
-      {q:'What is DRemind?', a:'DRemind is a smart reminder web app that tracks expiry dates for your insurance, utility plans, subscriptions, vehicle registrations, passports, and more.'},
-      {q:'Who is DRemind for?', a:'DRemind is for anyone who wants to stay on top of recurring expenses. Homeowners, renters, families, business owners, and frequent travellers.'},
-      {q:'Which countries does DRemind support?', a:'Available in Australia, New Zealand, United States, United Kingdom, Canada, Ireland, India, and Singapore.'},
+      {q:'What is D-Remind?', a:'D-Remind is a smart reminder web app that tracks expiry dates for your insurance, utility plans, subscriptions, vehicle registrations, passports, and more.'},
+      {q:'Who is D-Remind for?', a:'D-Remind is for anyone who wants to stay on top of recurring expenses. Homeowners, renters, families, business owners, and frequent travellers.'},
+      {q:'Which countries does D-Remind support?', a:'Available in Australia, New Zealand, United States, United Kingdom, Canada, Ireland, India, and Singapore.'},
       {q:'How much money can I save?', a:'Our users save an average of $2,847 per year by switching to better deals across insurance, energy, telecom, and subscriptions.'},
     ]
   },
   account: {
     items:[
       {q:'How do I create an account?', a:'Click "Register", enter your name and email, choose a password — no credit card required. Setup takes under 2 minutes.'},
-      {q:'Can I use DRemind on multiple devices?', a:'Yes! DRemind syncs in real time across all your devices. Access via web app from any browser.'},
+      {q:'Can I use D-Remind on multiple devices?', a:'Yes! D-Remind syncs in real time across all your devices. Access via web app from any browser.'},
       {q:'I forgot my password. How do I reset it?', a:'On the login page, click "Forgot password?" and enter your email. You\'ll receive a reset link within a few minutes.'},
       {q:'How do I delete my account?', a:'Go to Settings → Account → Delete Account. All data will be permanently removed within 30 days.'},
     ]
   },
   content: {
     sections:[
-      {number:'1', heading:'Acceptance of Terms', type:'para', content:'By accessing, registering, or using DRemind ("Service"), you agree to be bound by these Terms of Use and all applicable laws and regulations.'},
+      {number:'1', heading:'Acceptance of Terms', type:'para', content:'By accessing, registering, or using D-Remind ("Service"), you agree to be bound by these Terms of Use and all applicable laws and regulations.'},
       {number:'2', heading:'Eligibility', type:'list', content:'You must be at least 16 years old.\nYou confirm you have legal capacity to enter a binding agreement.\nIf using on behalf of an organization, you agree on that entity\'s behalf.'},
       {number:'3', heading:'User Accounts', type:'list', content:'You are responsible for maintaining confidentiality of your credentials.\nYou agree to provide accurate and complete information during registration.\nYou are responsible for all activities that occur under your account.'},
     ]
@@ -516,7 +516,7 @@ const SECTION_DEFAULTS = {
   share: {
     show_twitter: true, show_linkedin: true, show_facebook: true,
     show_email: true, show_copy: true,
-    twitter_text:'Check this out from DRemind',
+    twitter_text:'Check this out from D-Remind',
   },
 };
 

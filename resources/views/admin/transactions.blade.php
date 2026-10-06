@@ -1,5 +1,10 @@
 @extends('admin.layouts.app')
-
+<style>.btn.btn-ghost.btn-xs.active {
+    background: var(--purple);
+    color: #fff;
+    border-color: var(--purple);
+    font-weight: 700;
+}</style>
 @section('content')
 <section id="page-transactions" class="page active">
     <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
@@ -9,7 +14,7 @@
                 All billing and payment records
             </p>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="exportTransactionsCSV()">
+        <button class="hidden btn btn-ghost btn-sm" onclick="exportTransactionsCSV()">
             <i class="ri-download-2-line"></i> Export CSV
         </button>
     </div>

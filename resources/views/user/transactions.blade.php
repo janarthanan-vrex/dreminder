@@ -188,6 +188,7 @@
         cursor: pointer;
         user-select: none;
         transition: color .15s;
+        text-align: left;
     }
 
     .dt-table thead tr th:hover {
@@ -251,6 +252,7 @@
         color: #94a3b8;
         vertical-align: middle;
         white-space: nowrap;
+        text-align: left; 
     }
 
     .light .dt-table tbody td {
@@ -394,6 +396,12 @@
         color: #10b981;
         border: 1px solid rgba(16, 185, 129, .2);
     }
+    
+    .dt-status.Paid {
+        background: rgba(16, 185, 129, .1);
+        color: #10b981;
+        border: 1px solid rgba(16, 185, 129, .2);
+    }
 
     .dt-status-dot.pending {
         background: #f59e0b;
@@ -405,6 +413,10 @@
         box-shadow: 0 0 6px rgba(16, 185, 129, .6);
     }
 
+.dt-status-dot.Paid {
+        background: #10b981;
+        box-shadow: 0 0 6px rgba(16, 185, 129, .6);
+    }
     .dt-row-actions {
         display: flex;
         align-items: center;
@@ -687,7 +699,7 @@
             <p style="font-size:.82rem;color:#64748b;margin-top:3px">Manage and track all your transactions</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-ghost btn-sm" onclick="exportTransactionsCSV()">
+            <button class="hidden btn btn-ghost btn-sm" onclick="exportTransactionsCSV()">
                 <i class="ri-download-2-line"></i> Export CSV
             </button>
         </div>
@@ -764,7 +776,7 @@
                         <th onclick="transactionsTable.sort('amount', this)">Amount <span class="dt-sort-icon">↕</span></th>
                         <th onclick="transactionsTable.sort('status', this)">Status <span class="dt-sort-icon">↕</span></th>
                         <th onclick="transactionsTable.sort('date', this)">Date <span class="dt-sort-icon">↕</span></th>
-                        <th style="text-align:right">Actions</th>
+                        <th >Actions</th>
                     </tr>
                 </thead>
                 <tbody id="transactions-tbody"></tbody>
@@ -924,7 +936,7 @@
         function rowHTML(r) {
             const statusLabel = {
                 pending: 'Pending',
-                completed: 'Completed'
+                completed: 'Paid'
             };
             const initials = r.customer.name.split(' ').filter(Boolean).map(w => w[0].toUpperCase()).slice(0, 2).join('');
             const safeId = r.txn_id.replace(/'/g, "\\'");
@@ -1100,7 +1112,7 @@
 
         const statusLabel = {
             pending: 'Pending',
-            completed: 'Completed'
+            completed: 'Paid'
         };
         const esc = str => String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 

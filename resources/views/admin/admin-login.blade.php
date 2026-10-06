@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
   <title>Login — DRemind Admin</title>
+=======
+  <title>Login — Winngoo D-Remind Admin</title>
+>>>>>>> 14b4245 (full updated code)
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -358,7 +362,11 @@
     <!-- Logo + heading -->
     <div style="text-align:center;margin-bottom:28px">
       <div style="margin-bottom:16px">
+<<<<<<< HEAD
         <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:54px;margin:auto" alt="DRemind" onerror="this.style.display='none'">
+=======
+        <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" style="height:54px;margin:auto" alt="D-Remind" onerror="this.style.display='none'">
+>>>>>>> 14b4245 (full updated code)
       </div>
       <h1 style="font-size:1.5rem;font-weight:900;margin-bottom:6px">Welcome Back</h1>
       <p style="font-size:.82rem;color:rgba(255,255,255,.35);max-width:300px;margin:0 auto">Sign in to your admin panel to manage.</p>
@@ -370,7 +378,11 @@
 
   <!-- Name field -->
   <div style="margin-bottom:18px">
+<<<<<<< HEAD
     <label class="auth-label" for="loginName">Admin Username</label>
+=======
+    <label class="auth-label" for="loginName">Admin Username <span style="color:#f43f5e">*</span></label>
+>>>>>>> 14b4245 (full updated code)
     <div class="input-wrap">
       <i class="input-icon ri-user-line"></i>
       <input type="text" autocomplete="off" id="loginName" name="name" class="auth-input" placeholder="Enter Username">
@@ -381,7 +393,11 @@
   <!-- Password field -->
   <div style="margin-bottom:20px">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+<<<<<<< HEAD
       <label class="auth-label" for="loginPassword" style="margin-bottom:0">Password</label>
+=======
+      <label class="auth-label" for="loginPassword" style="margin-bottom:0">Password <span style="color:#f43f5e">*</span></label>
+>>>>>>> 14b4245 (full updated code)
       <a href="{{ route('admin.forgotPage') }}" style="font-size:.73rem;color:#a78bfa;text-decoration:none;font-weight:500;transition:color .2s" onmouseover="this.style.color='#c4b5fd'" onmouseout="this.style.color='#a78bfa'">Forgot password?</a>
     </div>
     <div class="input-wrap">
@@ -398,7 +414,11 @@
   <div style="margin-bottom:22px">
     <label class="remember-wrap">
       <input type="checkbox" id="rememberMe">
+<<<<<<< HEAD
       <span>Remember me for 30 days</span>
+=======
+      <span>Keep me signed in</span>
+>>>>>>> 14b4245 (full updated code)
     </label>
   </div>
 
@@ -410,7 +430,11 @@
 </div>
 
     <p style="text-align:center;font-size:.7rem;color:rgba(255, 255, 255, 0.49);margin-top:20px">
+<<<<<<< HEAD
       &copy; 2026 Winngoo DRemind &mdash; Admin Panel
+=======
+      &copy; 2026 Winngoo D-Remind &mdash; Admin Panel
+>>>>>>> 14b4245 (full updated code)
     </p>
   </div>
 
@@ -486,9 +510,15 @@ function attemptLogin() {
   .then(res => res.json().then(data => ({ status: res.status, data })))
   .then(({ data }) => {
     if (data.success) {
+<<<<<<< HEAD
       btn.innerHTML        = '<i class="ri-check-line"></i> Signed In!';
       btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
       toast('Welcome back, Admin! Redirecting…', 'success');
+=======
+      btn.innerHTML        = '<i class="ri-check-line"></i> Signed In';
+      btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+      toast('Welcome back, Admin Redirecting…', 'success');
+>>>>>>> 14b4245 (full updated code)
       setTimeout(() => { window.location.href = data.redirect; }, 1500);
     } else {
       btn.innerHTML        = '<i class="ri-login-box-line"></i> Sign In to Admin Panel';

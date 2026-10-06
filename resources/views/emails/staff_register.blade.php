@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
   <title>DRemind — Premium Email Templates</title>
+=======
+  <title>D-Remind — Staff Registeration</title>
+>>>>>>> 14b4245 (full updated code)
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
  
 </head>
@@ -18,7 +22,11 @@
     <!-- Hero -->
     <div style="padding:44px 48px 36px;text-align:center;">
         <div style="width:200px;margin:0 auto;padding:10px 0 20px;">
+<<<<<<< HEAD
             <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png"
+=======
+            <img src="https://dreminder.wimbgo.com/assets/images/common/d-remind.png"
+>>>>>>> 14b4245 (full updated code)
                  alt="D-Remind"
                  style="width:100%;display:block;">
         </div>
@@ -29,8 +37,13 @@
         </h1>
 
         <p style="font-size:14.5px;color:#6B6860;line-height:1.65;margin:0;">
+<<<<<<< HEAD
             Dear <strong>{{ $staff->name }}</strong>,
             Your D Remind staff account has been created successfully.
+=======
+            Dear <strong>{{ $staff->name }}</strong>,<br>
+            Your D-Remind staff account has been created successfully.
+>>>>>>> 14b4245 (full updated code)
             You can now access the platform using the details below.
         </p>
     </div>
@@ -110,7 +123,11 @@
 
         <!-- Support -->
         <div style="text-align:center;margin-top:10px;">
+<<<<<<< HEAD
             <span style="font-size:12px;color:#B8B3AA;">
+=======
+            <span style="font-size:12px;color:#A39D8F;">
+>>>>>>> 14b4245 (full updated code)
                 Need assistance? Contact your administrator or
                 <a href="mailto:support@dremind.co.uk"
                    style="color:#7C3AED;text-decoration:none;font-weight:600;">
@@ -123,7 +140,11 @@
 
     <!-- Footer -->
     <div style="padding:20px 48px;background:#FAFAF7;border-top:1px solid #F0EDE8;text-align:center;">
+<<<<<<< HEAD
         <p style="font-size:11.5px;color:#B8B3AA;line-height:1.6;margin:0;">
+=======
+        <p style="font-size:11.5px;color:#A39D8F;line-height:1.6;margin:0;">
+>>>>>>> 14b4245 (full updated code)
             &copy; {{ date('Y') }} Winngoo Infotech. All rights reserved.
         </p>
     </div>

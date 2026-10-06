@@ -62,32 +62,39 @@
                 <input type="file" id="av-inp" style="display:none" accept="image/*" onchange="handleAvatar(event)">
                 <div class="error-text" id="err-profile"></div>
                 <div>
-                    <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#f1f5f9" id="profile-display-nam"> {{ $user->first_name }} {{ $user->last_name }}</div>
+                    <div class="font-jakarta" style="font-weight:700;font-size:1.05rem;color:#f1f5f9 text-transform: capitalize;word-break:break-all;" id="profile-display-nam"> {{ $user->first_name }} {{ $user->last_name }}</div>
                     <div style="font-size:.75rem;color:#64748b;margin-top:2px">{{ $user->plan->plan_name ?? 'Free ' }} Member · {{ $user->created_at->format('F Y') }}</div>
                     <button class="btn btn-ghost btn-xs" style="margin-top:8px" onclick="document.getElementById('av-inp').click()"><i class="ri-upload-line"></i> Change Photo</button>
                 </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:14px">
-                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Full Name <span style="color:#f43f5e">*</span></label><input class="inp" id="p-name" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" value="{{ $user->first_name ?? '' }}">
-                    <div class="error-text" id="err-first_name"></div>
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Full Name <span style="color:#f43f5e !important">*</span></label><input class="inp" id="p-name" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" value="{{ $user->first_name ?? '' }}">
+                    <div class="error-text" id="err-first_name" ></div>
                 </div>
-                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Last Name <span style="color:#f43f5e">*</span></label><input class="inp" id="p-lname" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" value="{{ $user->last_name ?? '' }}">
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Last Name <span style="color:#f43f5e !important">*</span></label><input class="inp" id="p-lname" maxlength="25" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g,'')" value="{{ $user->last_name ?? '' }}">
                     <div class="error-text" id="err-last_name"></div>
                 </div>
-                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Email <span style="color:#f43f5e">*</span></label><input class="inp" type="email" id="p-email" readonly value="{{$user->email ?? ''}}">
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Email <span style="color:#f43f5e !important">*</span></label><input class="inp" type="email" id="p-email" readonly value="{{$user->email ?? ''}}">
                     <div class="error-text" id="err-email"></div>
                 </div>
-                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Phone</label><input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" class="inp" type="tel" id="p-phone" value="{{$user->phone ?? ''}}">
+                <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Phone Number <span style="color:#f43f5e !important">*</span></label><input oninput="this.value = this.value.replace(/[^0-9]/g,'')" maxlength="15" class="inp" type="tel" id="p-phone" value="{{$user->phone ?? ''}}" readonly>
                     <div class="error-text" id="err-phone"></div>
                 </div>
+<<<<<<< HEAD
 
                 <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Address Line 1 <span style="color:#f43f5e">*</span></label><input class="inp" id="p-address1" maxlength="70"  value="{{ $user->address1 ?? '' }}">
+=======
+                
+                
+                 <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Address Line 1 <span style="color:#f43f5e !important">*</span></label><input class="inp" id="p-address1" maxlength="70"  value="{{ $user->address1 ?? '' }}">
+>>>>>>> 14b4245 (full updated code)
                     <div class="error-text" id="err-address1"></div>
                 </div>
 
                 <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Address Line 2 </label><input class="inp" id="p-address2" maxlength="70"  value="{{ $user->address2 ?? '' }}">
                     <div class="error-text" id="err-address2"></div>
                 </div>
+<<<<<<< HEAD
 
 
 
@@ -95,6 +102,15 @@
 
 
 
+=======
+                
+                
+                
+                
+                
+                
+                
+>>>>>>> 14b4245 (full updated code)
                 <div class="g2">
                     <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Country</label>
                         <select class="inp" disabled>
@@ -102,7 +118,7 @@
 
                         </select>
                     </div>
-                    <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Postcode</label><input maxlength="7" class="inp" value="{{$user->postcode ?? ''}}">
+                    <div><label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Postcode <span style="color:#f43f5e !important">*</span></label><input maxlength="8" class="inp" value="{{$user->postcode ?? ''}}">
                         <div class="error-text" id="err-postcode"></div>
                     </div>
                 </div>
@@ -113,38 +129,58 @@
             <div class="card" style="padding:22px">
                 <h3 class="font-jakarta" style="font-weight:700;font-size:.93rem;color:#f1f5f9;margin-bottom:16px">Security Settings</h3>
                <div style="display:flex;flex-direction:column;gap:12px">
-
-    <div>
-        <label>Current Password</label>
-        <div class="password-wrapper">
-            <input class="inp" type="password" id="current_password" placeholder="Enter current password">
-            <i class="ri-eye-off-line toggle-password" data-target="current_password"></i>
-        </div>
-        <div class="error-text" id="err-current_password"></div>
-    </div>
-
-    <div>
-        <label>New Password</label>
-        <div class="password-wrapper">
-            <input class="inp" type="password" id="new_password" placeholder="Min 8 chars, Atleast 1 upper,lower,number and special character">
-            <i class="ri-eye-off-line toggle-password" data-target="new_password"></i>
-        </div>
-        <div class="error-text" id="err-new_password"></div>
-    </div>
-
-    <div>
-        <label>Confirm Password</label>
-        <div class="password-wrapper">
-            <input class="inp" type="password" id="confirm_password" placeholder="Re-enter new password">
-            <i class="ri-eye-off-line toggle-password" data-target="confirm_password"></i>
-        </div>
-        <div class="error-text" id="err-confirm_password"></div>
-    </div>
-
-    <button class="btn btn-primary" style="justify-content:center;width:100%" onclick="changePassword()">
-        <i class="ri-lock-password-line"></i> Update Password
-    </button>
-</div>
+                    <div>
+                        <label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Current Password <span style="color:#f43f5e !important">*</span></label>
+                        <div class="password-wrapper">
+                            <input class="inp" type="password" id="current_password" placeholder="Enter current password">
+                            <i class="ri-eye-line toggle-password" data-target="current_password"></i>
+                        </div>
+                        <div class="error-text" id="err-current_password"></div>
+                    </div>
+                
+                    <div>
+                         <label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">
+                            New Password <span style="color:#f43f5e !important">*</span>
+                        
+                            <i class="ri-information-line pw-tip-trigger"
+                               style="font-size:.85rem;color:#94a3b8;cursor:pointer;vertical-align:middle;"
+                               data-msg="Password must be at least 8 characters with one uppercase letter, one number, and one special character.">
+                            </i>
+                        </label>
+                        
+                        <div id="pw-tooltip" style="
+                            display:none;
+                            position:absolute;
+                            background:#333;
+                            color:#fff;
+                            padding:8px 10px;
+                            border-radius:6px;
+                            font-size:12px;
+                            max-width:220px;
+                            z-index:9999;
+                        "></div>
+                        
+                        
+                        <div class="password-wrapper">
+                            <input class="inp" type="password" id="new_password" placeholder="Enter new password">
+                            <i class="ri-eye-line toggle-password" data-target="new_password"></i>
+                        </div>
+                        <div class="error-text" id="err-new_password"></div>
+                    </div>
+                
+                    <div>
+                        <label style="display:block;font-size:.67rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#64748b;margin-bottom:6px">Confirm Password <span style="color:#f43f5e !important">*</span></label>
+                        <div class="password-wrapper">
+                            <input class="inp" type="password" id="confirm_password" placeholder="Re-enter new password">
+                            <i class="ri-eye-line toggle-password" data-target="confirm_password"></i>
+                        </div>
+                        <div class="error-text" id="err-confirm_password"></div>
+                    </div>
+                
+                    <button class="btn btn-primary" style="justify-content:center;width:100%" onclick="changePassword()">
+                        <i class="ri-lock-password-line"></i> Update Password
+                    </button>
+                </div>
             </div>
             <div class="card hidden " style="padding:18px">
                 <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f1f5f9;margin-bottom:10px">Preferences</h3>
@@ -160,7 +196,7 @@
                     </div>
                 </div>
             </div>
-            <div class="danger-zone">
+            <div class="danger-zone hidden">
                 <h3 class="font-jakarta" style="font-weight:700;font-size:.87rem;color:#f43f5e;margin-bottom:6px"><i class="ri-alert-line" style="margin-right:4px"></i> Danger Zone</h3>
                 <p style="font-size:.8rem;color:#64748b;margin-bottom:10px">Permanently delete your account and all data. This cannot be undone.</p>
                 <button class="btn btn-danger btn-sm" onclick="confirm_act('Delete your account? All data will be permanently removed.',()=>toast('Account deletion initiated. You will receive an email confirmation.','warning'))"><i class="ri-delete-bin-2-line"></i> Delete Account</button>
@@ -171,6 +207,27 @@
 </section>
 @include('user.layouts.firebase_setup')
 
+<script>
+    const tooltip = document.getElementById('pw-tooltip');
+
+        document.querySelectorAll('.pw-tip-trigger').forEach(icon => {
+            icon.addEventListener('click', function (e) {
+                e.stopPropagation();
+        
+                tooltip.textContent = this.dataset.msg;
+                tooltip.style.display = 'block';
+        
+                const rect = this.getBoundingClientRect();
+        
+                tooltip.style.left = (rect.left + window.scrollX) + 'px';
+                tooltip.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+            });
+        });
+        
+        document.addEventListener('click', () => {
+            tooltip.style.display = 'none';
+        });
+</script>
 <script>
     function handleAvatar(event) {
         const file = event.target.files[0];
@@ -214,9 +271,16 @@
         formData.append('last_name', document.getElementById('p-lname').value || '');
         formData.append('email', document.getElementById('p-email').value);
         formData.append('phone', document.getElementById('p-phone').value);
+<<<<<<< HEAD
          formData.append('address1', document.getElementById('p-address1').value);
          formData.append('address2', document.getElementById('p-address2').value);
         formData.append('postcode', document.querySelector('input[value="{{ $user->postcode ?? '' }}"]')?.value || '');
+=======
+        formData.append('address1', document.getElementById('p-address1').value);
+         formData.append('address2', document.getElementById('p-address2').value);
+        formData.append('postcode', document.querySelector('input[value="{{ $user->postcode ?? '
+            ' }}"]')?.value || '');
+>>>>>>> 14b4245 (full updated code)
 
         const fileInput = document.getElementById('av-inp');
         if (fileInput.files[0]) {
@@ -268,7 +332,10 @@
             }
             // ✅ SUCCESS TOAST (only here)
             if (typeof toast === 'function') {
-                toast('Profile updated successfully!', 'success');
+                toast('Profile updated successfully', 'success');
+                setTimeout(()=>{
+                    location.reload();
+                },1500);
             }
 
 
@@ -284,7 +351,7 @@
             `;
             }
 
-            btn.innerHTML = '<i class="ri-check-line"></i> Saved!';
+            btn.innerHTML = '<i class="ri-check-line"></i> Saved';
             setTimeout(() => {
                 btn.innerHTML = '<i class="ri-save-line"></i> Save Changes';
                 btn.disabled = false;
@@ -391,12 +458,12 @@ document.querySelectorAll('.toggle-password').forEach(icon => {
 
         if (input.type === "password") {
             input.type = "text";
-            this.classList.remove('ri-eye-off-line');
-            this.classList.add('ri-eye-line');
-        } else {
-            input.type = "password";
             this.classList.remove('ri-eye-line');
             this.classList.add('ri-eye-off-line');
+        } else {
+            input.type = "password";
+            this.classList.remove('ri-eye-off-line');
+            this.classList.add('ri-eye-line');
         }
     });
 });

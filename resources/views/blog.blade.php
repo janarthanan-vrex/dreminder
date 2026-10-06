@@ -55,10 +55,10 @@
   .blog-card:hover .blog-card-img { transform: scale(1.08); }
   .blog-card-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(3,0,20,.6), transparent); }
   .blog-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
-  .blog-card-title { font-size: 1rem; font-weight: 700; color: #e2e8f0; line-height: 1.45; margin-bottom: 10px; transition: color .3s; }
+  .blog-card-title { font-size: 1rem; font-weight: 700; color: #e2e8f0; line-height: 1.45; margin-bottom: 10px; transition: color .3s;min-width:0; }
   .blog-card:hover .blog-card-title { color: #c4b5fd; }
-  .blog-card-excerpt { font-size: .8rem; color: rgba(255,255,255,.4); line-height: 1.75; flex: 1; margin-bottom: 18px; }
-  .blog-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.06); margin-top: auto; }
+  .blog-card-excerpt { font-size: .8rem; color: rgba(255,255,255,.8); line-height: 1.75; flex: 1; margin-bottom: 18px;word-break:break-all; }
+  .blog-card-footer { display: flex; align-items: center; justify-content: flex-end; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.06); margin-top: auto; }
 
   .cat-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 100px; font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
   .cat-badge.savings { background: rgba(16,185,129,.12); color: #6ee7b7; border: 1px solid rgba(16,185,129,.2); }
@@ -67,7 +67,12 @@
   .cat-badge.news { background: rgba(245,158,11,.1); color: #fcd34d; border: 1px solid rgba(245,158,11,.2); }
   .cat-badge.finance { background: rgba(239,68,68,.1); color: #fca5a5; border: 1px solid rgba(239,68,68,.2); }
 
+<<<<<<< HEAD
   .read-time { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 600; color: rgba(255,255,255,.3); }
+=======
+  /* Reading Time */
+  .read-time { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 600; color: rgba(255,255,255,.8); }
+>>>>>>> 14b4245 (full updated code)
 
   .load-more-wrap { text-align: center; padding-top: 48px; }
   @keyframes spinPulse { 0%,100%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.1)} }
@@ -87,22 +92,29 @@
 
 <!-- HERO -->
 <section class="page-hero-dark section-alt relative" data-particles="purple" data-p-count="40" data-p-connect="false">
+     <div class="hero-bg-image blog-bnr"></div>
+     <div class="hero-overlay"></div>
   <div class="gradient-blob w-[500px] h-[500px] bg-primary top-[-20%] left-[10%]"></div>
   <div class="gradient-blob w-[300px] h-[300px] bg-secondary top-[10%] right-[5%]"></div>
   <div class="max-w-[860px] mx-auto px-6 relative z-10">
     <div class="page-breadcrumb"><a href="index">Home</a><span class="sep">/</span><span>Blog</span></div>
     <div class="badge bg-secondary/10 border border-secondary/20 text-cyan-300 mx-auto mb-6 w-fit reveal">
-      <span class="w-2 h-2 rounded-full bg-secondary"></span> Insights &amp; Guides
+      <span class="w-2 h-2 rounded-full bg-secondary"></span> Blogs & Guides
     </div>
-    <h1 class="reveal">Smart money tips from <span class="grad-text">the DRemind team.</span></h1>
+    <h1 class="reveal">Practical Insights to Manage Your <span class="grad-text">Reminders and Tasks</span></h1>
     <p class="reveal mb-10" data-delay="1">
-      Practical guides on saving money, managing renewals, and getting the most out of every subscription — written for real people.
+      Explore helpful articles on tracking renewals, organising reminders, and staying aware of everyday commitments.
     </p>
+<<<<<<< HEAD
     <div class="relative reveal" data-delay="2" style="max-width:520px;margin:20px auto">
       <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-base z-10"></i>
       <input type="text" id="blogSearch" placeholder="Search articles, tips, guides…" class="auth-input !pl-12 !text-base !pr-32">
       <button class="absolute right-2 top-1/2 -translate-y-1/2 btn-primary !py-2 !px-4 text-xs !rounded-xl" id="blogSearchBtn">Search</button>
     </div>
+=======
+    <!-- Search Bar -->
+    
+>>>>>>> 14b4245 (full updated code)
   </div>
 </section>
 
@@ -110,7 +122,11 @@
 <section class="relative py-20 section-dark">
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
 
+<<<<<<< HEAD
     @if($posts->isNotEmpty())
+=======
+     @if($posts->isNotEmpty())
+>>>>>>> 14b4245 (full updated code)
 
     <!-- Category Filter -->
     <div class="hidden items-center gap-3 overflow-x-auto pb-3 mb-10 reveal" style="scrollbar-width:none" id="blogCatFilter">
@@ -145,6 +161,10 @@
     @endphp
 
     <!-- Featured Post -->
+<<<<<<< HEAD
+=======
+    {{--
+>>>>>>> 14b4245 (full updated code)
     @if($featured)
     <div class="mb-12 reveal" id="featuredPost" data-cat="{{ $featured->category }}">
       <a href="{{ url('blog/' . $featured->slug) }}" class="blog-featured">
@@ -169,7 +189,11 @@
             {{ $featured->title }}
           </h2>
           @if($featured->excerpt)
+<<<<<<< HEAD
           <p class="text-sm text-white/55 leading-relaxed mb-4" style="max-width:600px">
+=======
+          <p class="text-sm text-white/80 leading-relaxed mb-4" style="max-width:600px">
+>>>>>>> 14b4245 (full updated code)
             {{ $featured->excerpt }}
           </p>
           @endif
@@ -181,10 +205,18 @@
       </a>
     </div>
     @endif
+<<<<<<< HEAD
 
     <!-- Blog Grid -->
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="blogGrid">
       @foreach($rest as $post)
+=======
+    --}}
+
+    <!-- Blog Grid -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6" id="blogGrid">
+       @foreach($posts as $post)
+>>>>>>> 14b4245 (full updated code)
       <div class="blog-card blog-card-item reveal" data-cat="{{ $post->category }}">
         <div class="blog-card-img-wrap">
           @if($post->featured_image)
@@ -208,13 +240,18 @@
           <p class="blog-card-excerpt">{{ Str::limit($post->excerpt, 120) }}</p>
           @endif
           <div class="blog-card-footer">
+<<<<<<< HEAD
             <span class="read-time"><i class="ri-time-line"></i> {{ $readTime($post->content) }} min read</span>
+=======
+            <!--<span class="read-time"><i class="ri-time-line"></i> {{ $readTime($post->content) }} min read</span>-->
+>>>>>>> 14b4245 (full updated code)
             <span class="read-time">{{ $post->created_at->format('M d, Y') }}</span>
           </div>
         </div>
       </div>
       @endforeach
     </div>
+<<<<<<< HEAD
 
     @else
     <!-- Empty state -->
@@ -224,6 +261,28 @@
       <p class="text-sm text-white/35">Check back soon — we're working on some great content.</p>
     </div>
     @endif
+=======
+
+    @else
+    <!-- Empty state -->
+    <div class="text-center py-24">
+      <div class="text-6xl mb-6">📝</div>
+      <h3 class="text-2xl font-bold text-white mb-3">No articles yet</h3>
+      <p class="text-sm text-white/35">Check back soon — we're working on some great content.</p>
+    </div>
+    @endif
+
+    <!-- No search results -->
+    <div id="noBlogResults" class="text-center py-16">
+      <div class="text-5xl mb-4">📭</div>
+      <h3 class="text-xl font-bold mb-3 text-white">No articles found</h3>
+      <p class="text-sm text-white/35 mb-6">Try a different keyword or browse by category.</p>
+      <button onclick="resetBlog()" class="btn-secondary"><i class="ri-refresh-line"></i> Clear search</button>
+    </div>
+
+  </div>
+</section>
+>>>>>>> 14b4245 (full updated code)
 
     <!-- No search results -->
     <div id="noBlogResults" class="text-center py-16">

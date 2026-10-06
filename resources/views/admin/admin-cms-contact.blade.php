@@ -149,9 +149,9 @@ Enfield, United Kingdom, EN1 1SP.</textarea></div>
         <div style="flex:2">
             <div class="section-card">
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-file-text-line"></i> Page Meta</div>
-                <div class="field-group"><label class="label">Meta Title</label><input class="inp" id="meta-title" value="Contact DRemind — Get In Touch" oninput="cc('meta-title','tc-title',60)"><div class="char-count" id="tc-title">31/60</div></div>
-                <div class="field-group"><label class="label">Meta Description</label><textarea class="inp-area inp" id="meta-desc" rows="3" oninput="cc('meta-desc','tc-desc',160)">Contact DRemind's support team. We respond within 24 hours. Office at Enfield, London. Email info@winngoodremind.co.uk or call +020 3376 5250.</textarea><div class="char-count" id="tc-desc">143/160</div></div>
-                <div class="field-group"><label class="label">Keywords</label><input class="inp" value="contact DRemind, support, help, DRemind office London"></div>
+                <div class="field-group"><label class="label">Meta Title</label><input class="inp" id="meta-title" value="Contact D-Remind — Get In Touch" oninput="cc('meta-title','tc-title',60)"><div class="char-count" id="tc-title">31/60</div></div>
+                <div class="field-group"><label class="label">Meta Description</label><textarea class="inp-area inp" id="meta-desc" rows="3" oninput="cc('meta-desc','tc-desc',160)">Contact D-Remind's support team. We respond within 24 hours. Office at Enfield, London. Email info@winngoodremind.co.uk or call +020 3376 5250.</textarea><div class="char-count" id="tc-desc">143/160</div></div>
+                <div class="field-group"><label class="label">Keywords</label><input class="inp" value="contact D-Remind, support, help, D-Remind office London"></div>
                 <div class="field-group"><label class="label">Canonical URL</label><input class="inp" value="https://dremin.co.uk/contact"></div>
                 <div class="g2"><div class="field-group"><label class="label">Robots</label><select class="inp"><option>index, follow</option></select></div><div class="field-group"><label class="label">Priority</label><select class="inp"><option>0.5 — Normal</option></select></div></div>
             </div>
@@ -163,7 +163,7 @@ Enfield, United Kingdom, EN1 1SP.</textarea></div>
                     <textarea class="inp-area inp" rows="6" style="font-family:monospace;font-size:.78rem">{
                         "@context": "https://schema.org",
                         "@type": "ContactPage",
-                        "name": "Contact DRemind",
+                        "name": "Contact D-Remind",
                         "url": "https://dremin.co.uk/contact",
                         "contactPoint": {
                             "@type": "ContactPoint",
@@ -182,8 +182,8 @@ Enfield, United Kingdom, EN1 1SP.</textarea></div>
                 <div class="section-title" style="margin-bottom:14px"><i class="ri-google-line"></i> SERP Preview</div>
                 <div style="background:var(--bg2);border-radius:12px;padding:14px;border:1px solid var(--border)">
                     <div style="font-size:.65rem;color:var(--text4);margin-bottom:4px">dremin.co.uk › contact</div>
-                    <div style="font-size:.95rem;color:#8ab4f8;font-weight:500;margin-bottom:5px">Contact DRemind — Get In Touch</div>
-                    <div style="font-size:.8rem;color:var(--text3);line-height:1.6">Contact DRemind's support team. We respond within 24 hours. Office at Enfield, London...</div>
+                    <div style="font-size:.95rem;color:#8ab4f8;font-weight:500;margin-bottom:5px">Contact D-Remind — Get In Touch</div>
+                    <div style="font-size:.8rem;color:var(--text3);line-height:1.6">Contact D-Remind's support team. We respond within 24 hours. Office at Enfield, London...</div>
                 </div>
             </div>
         </div>

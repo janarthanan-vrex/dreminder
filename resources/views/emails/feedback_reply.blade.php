@@ -4,7 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 <title>DRemind — Feedback Email Templates</title>
+=======
+<title>D-Remind — Feedback Email Templates</title>
+>>>>>>> 14b4245 (full updated code)
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body style="box-sizing:border-box;margin:0;padding:40px 20px 60px;background:#EFEDE8;font-family:'DM Sans',sans-serif;color:#1A1916;min-height:100vh;">
@@ -21,6 +25,7 @@
   <div style="padding:44px 48px 36px;text-align:center;">
 
     <div style="width:200px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto;padding:10px 0 20px 0;">
+<<<<<<< HEAD
       <img src="https://www.vishakarex.in/assets/img/projects/d-remind.png" alt="D-Remind" style="width:100%;">
     </div>
 
@@ -30,6 +35,17 @@
 
     <p style="font-size:14.5px;color:#6B6860;line-height:1.65;max-width:440px;margin:0 auto;">
       Hi <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>, thank you for taking the time to share your thoughts. Our team has reviewed your submission and has a response for you.
+=======
+      <img src="https://dreminder.wimbgo.com/assets/images/common/d-remind.png" alt="D-Remind" style="width:100%;">
+    </div>
+
+    <h1 style="font-family:'Instrument Serif',serif;font-size:32px;line-height:1.15;color:#1A1916;margin-bottom:12px;letter-spacing:-.4px;">
+      Your Feedback Has Been<br>Reviewed
+    </h1>
+
+    <p style="font-size:14.5px;color:#6B6860;line-height:1.65;max-width:440px;margin:0 auto;">
+      Dear <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>,<br> Thank you for sharing your feedback. Our team has reviewed your submission and provided a response below.
+>>>>>>> 14b4245 (full updated code)
     </p>
 
   </div>
@@ -47,13 +63,21 @@
         <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="#9C9890" stroke-width="2.5">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
         </svg>
+<<<<<<< HEAD
         YOUR ORIGINAL FEEDBACK
+=======
+        YOUR FEEDBACK
+>>>>>>> 14b4245 (full updated code)
       </div>
 
       <!-- Date + Subject -->
       <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid #F0EDE8;">
         <div style="padding:14px 18px;">
+<<<<<<< HEAD
           <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">Subject</span>
+=======
+          <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:4px;text-transform:uppercase;">SUBJECT</span>
+>>>>>>> 14b4245 (full updated code)
           <span style="font-size:13.5px;font-weight:600;color:#1A1916;"> {{ $subject }}</span>
         </div>
         
@@ -61,8 +85,13 @@
 
       <!-- Original Message -->
       <div style="padding:18px;">
+<<<<<<< HEAD
         <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:10px;text-transform:uppercase;">Your Message</span>
         <div style="font-size:13.5px;color:#4A4740;line-height:1.7;background:#fff;border:1px solid #EDE9E0;border-radius:8px;padding:14px 16px;font-style:italic;">
+=======
+        <span style="font-size:10.5px;font-weight:600;color:#A09D96;letter-spacing:.3px;display:block;margin-bottom:10px;text-transform:uppercase;">SUBMITTED MESSAGE</span>
+        <div style="font-size:13.5px;color:#4A4740;line-height:1.7;background:#fff;border:1px solid #EDE9E0;border-radius:8px;padding:14px 16px;word-break:break-all;">
+>>>>>>> 14b4245 (full updated code)
            {{ $feedback->message }}
 
         </div>
@@ -72,7 +101,11 @@
 
     <!-- Admin Reply Box -->
     <p style="font-size:14px;color:#4A4740;line-height:1.7;margin-bottom:14px;">
+<<<<<<< HEAD
       <strong style="color:#1A1916;font-weight:600;">Response from our team:</strong>
+=======
+      <strong style="color:#1A1916;font-weight:600;">Response from D-Remind team:</strong>
+>>>>>>> 14b4245 (full updated code)
     </p>
 
     <div style="background:linear-gradient(135deg,#F8F5FF,#F0EBFF);border:1.5px solid #DDD6FE;border-radius:12px;padding:20px;margin-bottom:22px;position:relative;border-top:3px solid #7C3AED;">

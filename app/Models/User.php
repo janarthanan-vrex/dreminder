@@ -12,10 +12,11 @@ use App\Models\Payment;
 use App\Models\PlanPrice;
 use App\Models\Category;
 use App\Models\SubCategory;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * Mass assignable attributes
@@ -28,8 +29,10 @@ class User extends Authenticatable
         'is_verified',
         'password',
         'profile',
+        'is_verified',
         'phone',
         'fcm_token', 
+        'fcm_api',
         'address1',
         'address2',
         'postcode',
@@ -74,5 +77,9 @@ class User extends Authenticatable
     public function notificationSetting()
 {
     return $this->hasOne(UserNotificationSetting::class);
+}
+public function feedbacks()
+{
+    return $this->hasMany(Feedback::class);
 }
 }

@@ -387,6 +387,7 @@ select.inp {
     background: rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.1);
     color: #475569;
+    pointer-events:all;
 }
 
 .light .btn-ghost:hover {
@@ -592,7 +593,7 @@ select.inp {
     white-space: nowrap;
 }
 
-/* Modal */
+/* Modal - button fix*/
 .modal-bg {
     position: fixed;
     inset: 0;
@@ -603,9 +604,15 @@ select.inp {
     align-items: center;
     justify-content: center;
     opacity: 0;
+    visibility: hidden;      /* ✅ ADD THIS */
     pointer-events: none;
-    transition: opacity 0.25s;
+    transition: opacity 0.25s, visibility 0.25s;   /* ✅ include visibility */
     padding: 16px;
+}
+.modal-bg.open {
+    opacity: 1;
+    visibility: visible;     /* ✅ ADD THIS */
+    pointer-events: all;
 }
 
 .modal-bg.open {
@@ -661,7 +668,15 @@ select.inp {
     min-width: 250px;
     max-width: 340px;
     pointer-events: all;
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
+}
+
+/* Fallback: if backdrop-filter isn't supported at all, force a solid-ish background so text stays readable */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .toast {
+        background: var(--bg2, #1a1a2e) !important;
+    }
 }
 
 @keyframes slideIn {
@@ -1238,7 +1253,7 @@ select.inp {
     .sidebar {
         position: fixed;
         left: -280px;
-        z-index: 500;
+        z-index: 9999;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 

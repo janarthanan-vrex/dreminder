@@ -2,7 +2,11 @@
 @section('content')
 <!-- ═══ ROLES ═══ -->
 <section id="page-roles" class="page active">
+<<<<<<< HEAD
      @if(!auth('admin')->user()->hasPermission('Roles','roles.create'))
+=======
+    @if(!auth('admin')->user()->hasPermission('Roles','roles.create'))
+>>>>>>> 14b4245 (full updated code)
 <style>
 .create-btn {
     display: none !important;
@@ -22,6 +26,10 @@
 .delete-btn {
     display: none !important;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 14b4245 (full updated code)
 </style>
 @endif
     <div
@@ -73,7 +81,11 @@
         <div class="g2" style="margin-bottom: 14px">
             <div>
                 <label class="label">Role Name <span style="color: var(--red)">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="new-role-name" placeholder="e.g. Content Manager"  oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, ''); hideRoleError();" />
+=======
+                <input class="inp" id="new-role-name" maxlength="30" placeholder="e.g. Content Manager"  oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, ''); hideRoleError();" />
+>>>>>>> 14b4245 (full updated code)
 
                 <small id="role-name-error" style="color:#ef4444;font-size:.72rem;margin-top:4px;display:none;"></small>
             </div>
@@ -87,7 +99,7 @@
 
         <div style="margin-bottom: 14px">
             <label class="label">Description</label>
-            <input class="inp" id="new-role-desc" placeholder="What does this role do?" />
+            <input class="inp" id="new-role-desc" maxlength="70" placeholder="What does this role do?" />
         </div>
 
         <div style="margin-bottom: 14px">
@@ -144,7 +156,11 @@
         <div class="g2" style="margin-bottom: 14px">
             <div>
                 <label class="label">Role Name <span style="color: var(--red)">*</span></label>
+<<<<<<< HEAD
                 <input class="inp" id="edit-role-name" placeholder="e.g. Content Manager"  oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, ''); hideEditRoleError();"/>
+=======
+                <input class="inp" id="edit-role-name" maxlength="30" placeholder="e.g. Content Manager"  oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, ''); hideEditRoleError();"/>
+>>>>>>> 14b4245 (full updated code)
                  <small id="edit-role-name-error" style="color:#ef4444;font-size:.72rem;margin-top:4px;display:none;"></small>
             </div>
             <div>
@@ -157,7 +173,7 @@
 
         <div style="margin-bottom: 14px">
             <label class="label">Description</label>
-            <input class="inp" id="edit-role-desc" placeholder="What does this role do?" />
+            <input class="inp" id="edit-role-desc" maxlength="70" placeholder="What does this role do?" />
         </div>
 
         <div style="margin-bottom:14px">
@@ -166,6 +182,7 @@
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
             </select>
+<<<<<<< HEAD
         </div>
 
         <!-- Permissions Section with Bulk Actions -->
@@ -187,6 +204,29 @@
 
         <div style="display: flex; gap: 8px; justify-content: space-between">
             <button class="btn btn-danger btn-sm delete-btn" onclick="deleteRole()">
+=======
+        </div>
+
+        <!-- Permissions Section with Bulk Actions -->
+        <div style="margin-bottom: 16px">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <label class="label" style="margin: 0">Permissions</label>
+                <!-- Bulk Actions -->
+                <div style="display: flex; gap: 6px;">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="bulkCheckAll('edit-role-perms')" style="font-size: 0.72rem; padding: 3px 10px;">
+                        <i class="ri-checkbox-multiple-line"></i> Select All
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="bulkUncheckAll('edit-role-perms')" style="font-size: 0.72rem; padding: 3px 10px;">
+                        <i class="ri-checkbox-blank-line"></i> Deselect All
+                    </button>
+                </div>
+            </div>
+            <div id="edit-role-perms" style="margin-top: 4px"></div>
+        </div>
+
+        <div style="display: flex; gap: 8px; justify-content: space-between">
+            <button class="btn btn-danger btn-sm delete-btn hidden" onclick="deleteRole()">
+>>>>>>> 14b4245 (full updated code)
                 <i class="ri-delete-bin-line"></i> Delete Role
             </button>
             <div style="display: flex; gap: 8px;">
@@ -208,9 +248,15 @@
         position: absolute;
         top: 8px;
         right: 8px;
+<<<<<<< HEAD
         background: rgba(255, 255, 255, .05);
         border: 1px solid rgba(255, 255, 255, .1);
         color: var(--text3);
+=======
+        background: #fee5ea;
+        border: 1px solid rgb(255 255 255);
+        color: #f4495e;
+>>>>>>> 14b4245 (full updated code)
         width: 28px;
         height: 28px;
         border-radius: 6px;
@@ -305,6 +351,7 @@ ROLES
             '<div class="role-card ' + (selectedRole === r.id ? 'selected' : '') + '"' +
            ' onclick="selectRole(' + r.id + ',this)">' +
 
+<<<<<<< HEAD
            '<button class="role-edit-btn edit-btn" onclick="openEditRole(' + r.id + ', event)">' +
             '<i class="ri-edit-line"></i></button>' +
 
@@ -326,6 +373,39 @@ ROLES
 
             '</div>' +
             permsHtml +
+=======
+            '<div style="position:absolute;top:8px;right:8px;display:flex;gap:6px;">' +
+
+                '<button class="role-edit-btn edit-btn" style="position:static;" onclick="openEditRole(' + r.id + ', event)">' +
+                    '<i class="ri-edit-line"></i>' +
+                '</button>' +
+            
+                '<button class="role-edit-btn delete-btn" style="position:static;" onclick="deleteRole(' + r.id + ')">' +
+                    '<i class="ri-delete-bin-line"></i>' +
+                '</button>'+
+            
+            '</div>' +
+
+
+           '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">' +
+
+'<div style="width:36px;height:36px;border-radius:9px;background:' + r.color + '22;' +
+'display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+'<i class="ri-key-2-line" style="color:' + r.color + '"></i></div>' +
+
+'<div style="flex:1;min-width:0">' +
+'<div style="font-size:.87rem;font-weight:700;color:var(--text)">' + r.name + '</div>' +
+'<div style="font-size:.72rem;color:var(--text3)">' + r.desc + '</div>' +
+'</div>' +
+
+'</div>' +
+            permsHtml +
+            '<div style="margin-top:10px">' +
+            '<span style="white-space:nowrap;font-size:.65rem;font-weight:700;background:' + r.color + '22;color:' + r.color + ';' +
+            'padding:2px 8px;border-radius:99px;border:1px solid ' + r.color + '44">' +
+            r.count + ' member' + (r.count !== 1 ? 's' : '') + '</span>' +
+            '</div>' +
+>>>>>>> 14b4245 (full updated code)
             '</div>'
         );
     }).join('');
@@ -391,12 +471,33 @@ ROLES
         }).join('');
     }
 
+<<<<<<< HEAD
+=======
+    // function buildRoleModal() {
+    //     var permsEl = document.getElementById("new-role-perms");
+    //     permsEl.innerHTML = buildPermGroupsHTML('new-role-perms', []);
+
+    //     var cp = document.getElementById("role-color-picker");
+    //     cp.innerHTML = ROLE_COLORS.map(function(c) {
+    //         return (
+    //             "<div onclick=\"selectedRoleColor='" +
+    //             c +
+    //             "';document.querySelectorAll('#role-color-picker div').forEach(function(d){d.style.outline='none'});this.style.outline='2px solid #fff'\" style=\"width:20px;height:20px;border-radius:50%;background:" +
+    //             c +
+    //             ";cursor:pointer;transition:transform .15s;outline:" +
+    //             (c === selectedRoleColor ? "2px solid #fff" : "none") +
+    //             '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
+    //         );
+    //     }).join("");
+    // }
+>>>>>>> 14b4245 (full updated code)
     function buildRoleModal() {
         var permsEl = document.getElementById("new-role-perms");
         permsEl.innerHTML = buildPermGroupsHTML('new-role-perms', []);
 
         var cp = document.getElementById("role-color-picker");
         cp.innerHTML = ROLE_COLORS.map(function(c) {
+<<<<<<< HEAD
             return (
                 "<div onclick=\"selectedRoleColor='" +
                 c +
@@ -405,6 +506,14 @@ ROLES
                 ";cursor:pointer;transition:transform .15s;outline:" +
                 (c === selectedRoleColor ? "2px solid #fff" : "none") +
                 '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
+=======
+            var isSel = c === selectedRoleColor;
+            return (
+                "<div onclick=\"selectedRoleColor='" + c + "';document.querySelectorAll('#role-color-picker div').forEach(function(d){d.style.boxShadow='none';d.style.transform='scale(1)'});this.style.boxShadow='0 0 0 2px #fff, 0 0 0 4px " + c + "';this.style.transform='scale(1.15)'\" " +
+                "style=\"width:20px;height:20px;border-radius:50%;background:" + c + ";cursor:pointer;transition:transform .15s,box-shadow .15s;" +
+                (isSel ? "box-shadow:0 0 0 2px #fff, 0 0 0 4px " + c + ";transform:scale(1.15)" : "") +
+                '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'' + (isSel ? "scale(1.15)" : "scale(1)") + "'\"></div>"
+>>>>>>> 14b4245 (full updated code)
             );
         }).join("");
     }
@@ -527,7 +636,11 @@ function createRole() {
 
         // Handle other errors
         if (status !== 200 && status !== 201) {
+<<<<<<< HEAD
             toast(data.message || "Something went wrong!", "error");
+=======
+            toast(data.message || "Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
             return;
         }
 
@@ -541,7 +654,15 @@ function createRole() {
             count: 0
         });
 
+<<<<<<< HEAD
         toast("Role created successfully!", "success");
+=======
+        toast("Role created successfully", "success");
+        
+        setTimeout(()=>{
+            location.reload();
+        });
+>>>>>>> 14b4245 (full updated code)
 
         // Reset form
         document.getElementById("new-role-name").value = "";
@@ -555,7 +676,11 @@ function createRole() {
     })
     .catch(function(error) {
         console.error("createRole error:", error);
+<<<<<<< HEAD
         toast("Something went wrong!", "error");
+=======
+        toast("Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
     });
 }
 
@@ -589,6 +714,7 @@ function createRole() {
         selectedEditRoleColor = role.color;
 
         // Color picker
+<<<<<<< HEAD
         var cp = document.getElementById("edit-role-color-picker");
         cp.innerHTML = ROLE_COLORS.map(function(c) {
             return (
@@ -599,6 +725,28 @@ function createRole() {
                 ";cursor:pointer;transition:transform .15s;outline:" +
                 (c === role.color ? "2px solid #fff" : "none") +
                 '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
+=======
+        // var cp = document.getElementById("edit-role-color-picker");
+        // cp.innerHTML = ROLE_COLORS.map(function(c) {
+        //     return (
+        //         "<div onclick=\"selectedEditRoleColor='" +
+        //         c +
+        //         "';document.querySelectorAll('#edit-role-color-picker div').forEach(function(d){d.style.outline='none'});this.style.outline='2px solid #fff'\" style=\"width:20px;height:20px;border-radius:50%;background:" +
+        //         c +
+        //         ";cursor:pointer;transition:transform .15s;outline:" +
+        //         (c === role.color ? "2px solid #fff" : "none") +
+        //         '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'scale(1)\'"></div>'
+        //     );
+        // }).join("");
+        var cp = document.getElementById("edit-role-color-picker");
+        cp.innerHTML = ROLE_COLORS.map(function(c) {
+            var isSel = c === role.color;
+            return (
+                "<div onclick=\"selectedEditRoleColor='" + c + "';document.querySelectorAll('#edit-role-color-picker div').forEach(function(d){d.style.boxShadow='none';d.style.transform='scale(1)'});this.style.boxShadow='0 0 0 2px #fff, 0 0 0 4px " + c + "';this.style.transform='scale(1.15)'\" " +
+                "style=\"width:20px;height:20px;border-radius:50%;background:" + c + ";cursor:pointer;transition:transform .15s,box-shadow .15s;" +
+                (isSel ? "box-shadow:0 0 0 2px #fff, 0 0 0 4px " + c + ";transform:scale(1.15)" : "") +
+                '" onmouseover="this.style.transform=\'scale(1.2)\'" onmouseout="this.style.transform=\'' + (isSel ? "scale(1.15)" : "scale(1)") + "'\"></div>"
+>>>>>>> 14b4245 (full updated code)
             );
         }).join("");
 
@@ -674,7 +822,11 @@ function updateRole() {
 
         // Handle other errors
         if (status !== 200 && status !== 201) {
+<<<<<<< HEAD
             toast(data.message || "Something went wrong!", "error");
+=======
+            toast(data.message || "Something went wrong", "error");
+>>>>>>> 14b4245 (full updated code)
             return;
         }
 
@@ -684,7 +836,11 @@ function updateRole() {
         role.color = selectedEditRoleColor;
         role.perms = perms;
 
+<<<<<<< HEAD
         toast('Role "' + name + '" updated!', "success");
+=======
+        toast('Role "' + name + '" updated', "success");
+>>>>>>> 14b4245 (full updated code)
         closeModal("edit-role-modal");
         renderRoles();
         setTimeout(()=>{
@@ -693,6 +849,7 @@ function updateRole() {
     })
     .catch(function(error) {
         console.error("updateRole error:", error);
+<<<<<<< HEAD
         toast("Something went wrong!", "error");
     });
 }
@@ -726,6 +883,97 @@ function updateRole() {
         console.error(error);
         toast("Something went wrong!", "error");
     });
+=======
+        toast("Something went wrong", "error");
+    });
+}
+
+//   function deleteRole() {
+//     openConfirm(
+//         'Are you sure you want to delete this role? This action cannot be undone.',
+//         function () {
+//             var role = ROLES_DATA.find(function(r) {
+//                 return r.id === editingRoleId;
+//             });
+
+//             var roleName = role ? role.name : '';
+
+//             fetch("/admin/roles/" + editingRoleId, {
+//                 method: "DELETE",
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "X-CSRF-TOKEN": document
+//                         .querySelector('meta[name="csrf-token"]')
+//                         .getAttribute("content")
+//                 }
+//             })
+//             .then(async function(response) {
+//                 var data = await response.json();
+
+//                 if (!response.ok) {
+//                     toast(data.message || "Delete failed!", "error");
+//                     return;
+//                 }
+
+//                 ROLES_DATA = ROLES_DATA.filter(function(r) {
+//                     return r.id !== editingRoleId;
+//                 });
+
+//                 toast('Role "' + roleName + '" deleted!', "success");
+//                 closeModal("edit-role-modal");
+//                 renderRoles();
+//             })
+//             .catch(function(error) {
+//                 console.error(error);
+//                 toast("Something went wrong!", "error");
+//             });
+//         }
+//     );
+// }
+
+function deleteRole(roleId) {
+    openConfirm(
+        'Are you sure you want to delete this role? This action cannot be undone.',
+        function () {
+
+            var role = ROLES_DATA.find(function(r) {
+                return r.id === roleId;
+            });
+
+            var roleName = role ? role.name : '';
+
+            fetch("/admin/roles/" + roleId, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document
+                        .querySelector('meta[name="csrf-token"]')
+                        .getAttribute("content")
+                }
+            })
+            .then(async function(response) {
+                var data = await response.json();
+
+                if (!response.ok) {
+                    toast(data.message || "Delete failed", "error");
+                    return;
+                }
+
+                ROLES_DATA = ROLES_DATA.filter(function(r) {
+                    return r.id !== roleId;
+                });
+
+                toast('Role "' + roleName + '" deleted', "success");
+                closeModal("edit-role-modal");
+                renderRoles();
+            })
+            .catch(function(error) {
+                console.error(error);
+                toast("Something went wrong", "error");
+            });
+        }
+    );
+>>>>>>> 14b4245 (full updated code)
 }
 
 

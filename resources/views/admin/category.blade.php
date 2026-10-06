@@ -2,7 +2,11 @@
 @section('content')
 
 <!-- ═══ CATEGORIES ═══ -->
+<<<<<<< HEAD
  @if(!auth('admin')->user()->hasPermission('Categories','categories.edit'))
+=======
+@if(!auth('admin')->user()->hasPermission('Categories','categories.edit'))
+>>>>>>> 14b4245 (full updated code)
 <style>
 .edit-btn {
     display: none !important;
